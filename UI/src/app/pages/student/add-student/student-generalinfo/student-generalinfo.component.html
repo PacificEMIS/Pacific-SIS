@@ -345,10 +345,11 @@
                 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
                     <li *ngIf="studentCreateMode === studentCreate.EDIT">
                         <mat-checkbox name="activeDeactiveUser" [checked]="studentAddModel?.studentMaster.isActive===false"
-                            (change)="activateUser($event.checked)" color="primary">
+                            (change)="activateUser($event)" color="primary">
                             {{'disableStudent'
                             | translate}}
                         </mat-checkbox>
+                        <p class="text-xs text-secondary mt-1">{{'disableStudentHint' | translate}}</p>
                     </li>
                 </ul>
             </div>

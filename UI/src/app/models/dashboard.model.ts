@@ -26,6 +26,7 @@ export class DashboardViewModel extends CommonField{
     public dropoutsByGrade: GradeCount[];
     public staffByProfile: NameCount[];
     public staffByJobTitle: NameCount[];
+    public studentsByStatus: NameCount[];
     constructor() {
         super();
         this.noticeList = [];
@@ -34,6 +35,7 @@ export class DashboardViewModel extends CommonField{
         this.dropoutsByGrade = [];
         this.staffByProfile = [];
         this.staffByJobTitle = [];
+        this.studentsByStatus = [];
     }
 }
 
@@ -46,6 +48,7 @@ export class GradeCount {
 
 export class NameCount {
     name: string;
+    key: string;
     count: number;
 }
 

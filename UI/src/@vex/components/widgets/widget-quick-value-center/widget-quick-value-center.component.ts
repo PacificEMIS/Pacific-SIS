@@ -19,6 +19,7 @@ export class WidgetQuickValueCenterComponent implements OnInit {
   @Input() icon: Icon;
   @Input() value: string;
   @Input() label: string;
+  @Input() subtext: string;
   @Input() change: number;
   @Input() helpText: string;
   @Input() iconClass: string;

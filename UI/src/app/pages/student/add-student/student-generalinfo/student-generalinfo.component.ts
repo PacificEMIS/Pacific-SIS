@@ -63,6 +63,7 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { MatSelect } from '@angular/material/select';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { MatDialog } from '@angular/material/dialog';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/confirm-dialog.component';
 import { ActiveDeactiveUserModel } from 'src/app/models/common.model';
 import { ValidationService } from 'src/app/pages/shared/validation.service';
@@ -667,10 +668,32 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
     });
   }
 
-  activateUser(event) {
-    // if (event === false) {
+  activateUser(event: MatCheckboxChange) {
+    if (event.checked) {
+      // Disabling hides the student everywhere and the rollover skips them, without
+      // recording an exit. Make the user confirm they do not mean to drop the student.
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        maxWidth: '480px',
+        data: {
+          title: this.defaultValuesService.translateKey('disableStudent'),
+          message: this.defaultValuesService.translateKey('disableStudentConfirm')
+        }
+      });
+      dialogRef.afterClosed().subscribe(confirmed => {
+        if (confirmed) {
+          this.saveActiveStatus(false);
+        } else {
+          event.source.checked = false;
+        }
+      });
+    } else {
+      this.saveActiveStatus(true);
+    }
+  }
+
+  saveActiveStatus(isActive: boolean) {
       this.activeDeactiveUserModel.userId = this.studentAddModel.studentMaster.studentId;
-      this.activeDeactiveUserModel.isActive = !event;
+      this.activeDeactiveUserModel.isActive = isActive;
       this.activeDeactiveUserModel.module = 'student';
       this.activeDeactiveUserModel.loginEmail = this.studentAddModel.loginEmail;
       this.commonService.activeDeactiveUser(this.activeDeactiveUserModel).subscribe(res => {
@@ -695,7 +718,6 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
           });
         }
       });
-    // }
   }
 
   submit() {

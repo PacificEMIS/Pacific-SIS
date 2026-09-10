@@ -1,5 +1,5 @@
 <div (mouseenter)="showButton = true" (mouseleave)="showButton = false"
-  class="card px-4 pt-6 pb-5 relative hover:shadow-16 trans-shadow" fxLayout="row" fxLayoutAlign="start center" [ngClass]="cardClass">
+  class="card h-full px-4 pt-6 pb-5 relative hover:shadow-16 trans-shadow" fxLayout="row" fxLayoutAlign="start center" [ngClass]="cardClass">
   <div [ngClass]="iconClass" class="rounded-full w-10 h-10 flex items-center justify-center">
     <mat-icon [icIcon]="icon"></mat-icon>
   </div>
@@ -7,6 +7,7 @@
   <div class="ml-3">
     <h4 class="m-0 text-white">{{ label }}</h4>
     <h2 class="font-bold -mt-1 mb-0 text-white">{{ value | number }}</h2>
+    <p *ngIf="subtext" class="m-0 text-white caption">{{ subtext }}</p>
   </div>
 
   <h4 [class.text-green]="change > 0" [class.text-red]="change <= 0" class="subheading-1 font-medium mt-4 mb-0">

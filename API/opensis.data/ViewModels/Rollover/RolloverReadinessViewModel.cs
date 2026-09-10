@@ -71,6 +71,12 @@ namespace opensis.data.ViewModels.Rollover
         // Active enrollments with no calendar link — they belong to no school
         // year and are excluded from every table above.
         public int UnlinkedEnrollmentCount { get; set; }
+        /// <summary>
+        /// Students switched off with the "Disable Student" toggle (StudentMaster.IsActive =
+        /// false) who still hold an open enrollment on this year's calendars. The rollover
+        /// selects only active students, so these would be silently skipped.
+        /// </summary>
+        public int DisabledWithOpenEnrollmentCount { get; set; }
     }
 
     public class GradeGenderCount

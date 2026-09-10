@@ -1187,13 +1187,15 @@ namespace opensis.data.Repository
                         && c.AcademicYear == dashboardViewModel.AcademicYear)
                     .Max(c => c.EndDate);
 
-                // Students: count those enrolled in a calendar for this academic year
+                // Students: everyone with an enrollment in a calendar of this academic year.
+                // Deliberately NOT filtered on IsActive: the rollover marks the previous
+                // year's enrollments inactive, and graduating/leaving students get an
+                // inactive StudentMaster, so an active-only filter shows 0 for any past
+                // year. "Enrolled in year Y" means having an enrollment record for year Y.
                 var enrolledStudents = this.context?.StudentEnrollment
                     .Include(e => e.StudentMaster)
                     .Where(e => e.TenantId == dashboardViewModel.TenantId
                         && e.SchoolId == dashboardViewModel.SchoolId
-                        && e.IsActive == true
-                        && e.StudentMaster.IsActive != false
                         && e.CalenderId != null
                         && calendarIds.Contains(e.CalenderId.Value))
                     .ToList() ?? new List<opensis.data.Models.StudentEnrollment>();
@@ -1203,40 +1205,63 @@ namespace opensis.data.Repository
                     .Distinct()
                     .Count();
 
-                // Enrollment by grade (for chart)
-                dashboardView.EnrollmentByGrade = enrolledStudents
-                    .Where(e => e.GradeId != null)
-                    .GroupBy(e => new { e.GradeId, e.GradeLevelTitle })
-                    .Select(g => new GradeCount
-                    {
-                        GradeId = g.Key.GradeId,
-                        GradeLevelTitle = g.Key.GradeLevelTitle,
-                        Count = g.Select(e => e.StudentId).Distinct().Count()
-                    })
-                    .ToList();
-
-                // Fetch grade sort orders for proper ordering
-                var gradeSortOrders = this.context?.Gradelevels
+                // Grade level titles and sort orders, keyed by GradeId
+                var gradeLevels = this.context?.Gradelevels
                     .Where(gl => gl.TenantId == dashboardViewModel.TenantId
                         && gl.SchoolId == dashboardViewModel.SchoolId)
-                    .ToDictionary(gl => gl.GradeId, gl => gl.SortOrder ?? 0)
-                    ?? new Dictionary<int, int>();
+                    .ToDictionary(gl => gl.GradeId, gl => new { gl.Title, SortOrder = gl.SortOrder ?? 0 });
 
-                foreach (var gc in dashboardView.EnrollmentByGrade)
-                {
-                    gc.SortOrder = gc.GradeId.HasValue && gradeSortOrders.ContainsKey(gc.GradeId.Value)
-                        ? gradeSortOrders[gc.GradeId.Value]
-                        : 999;
-                }
-                dashboardView.EnrollmentByGrade = dashboardView.EnrollmentByGrade
-                    .OrderBy(g => g.SortOrder)
+                // Group by GradeId only: the GradeLevelTitle copied onto enrollment rows is
+                // not reliable (some rows have null or stale titles), and grouping on it
+                // splits one grade into several bars. Labels come from Gradelevels instead.
+                List<GradeCount> GroupByGrade(IEnumerable<opensis.data.Models.StudentEnrollment> enrollments) =>
+                    enrollments
+                        .Where(e => e.GradeId != null)
+                        .GroupBy(e => e.GradeId!.Value)
+                        .Select(g => new GradeCount
+                        {
+                            GradeId = g.Key,
+                            GradeLevelTitle = gradeLevels != null && gradeLevels.TryGetValue(g.Key, out var gl)
+                                ? gl.Title
+                                : g.Select(e => e.GradeLevelTitle).FirstOrDefault(t => !string.IsNullOrEmpty(t)),
+                            Count = g.Select(e => e.StudentId).Distinct().Count(),
+                            SortOrder = gradeLevels != null && gradeLevels.TryGetValue(g.Key, out var gl2)
+                                ? gl2.SortOrder
+                                : 999
+                        })
+                        .OrderBy(g => g.SortOrder)
+                        .ToList();
+
+                // Enrollment by grade (for chart)
+                dashboardView.EnrollmentByGrade = GroupByGrade(enrolledStudents);
+
+                // Students by status: each student's latest enrollment row in the year decides
+                // the bucket. An exit code wins; otherwise the enrollment is open and the student
+                // is either still enrolled or was switched off with the status toggle
+                // (StudentMaster.IsActive = false) without an exit being recorded. Surfacing the
+                // latter separately is deliberate: those students are invisible in the student
+                // list and are skipped by the rollover, so they need attention.
+                const string stillEnrolledKey = "stillEnrolled";
+                const string deactivatedKey = "deactivated";
+                dashboardView.StudentsByStatus = enrolledStudents
+                    .GroupBy(e => e.StudentId)
+                    .Select(g => g.OrderByDescending(e => e.EnrollmentId).First())
+                    .Select(e => !string.IsNullOrEmpty(e.ExitCode)
+                        ? new NameCount { Name = e.ExitCode }
+                        : e.StudentMaster?.IsActive == false
+                            ? new NameCount { Key = deactivatedKey }
+                            : new NameCount { Key = stillEnrolledKey })
+                    .GroupBy(x => new { x.Name, x.Key })
+                    .Select(g => new NameCount { Name = g.Key.Name, Key = g.Key.Key, Count = g.Count() })
+                    .OrderBy(x => x.Key == stillEnrolledKey ? 0 : x.Key == deactivatedKey ? 1 : 2)
+                    .ThenByDescending(x => x.Count)
                     .ToList();
 
                 // Repeaters and dropouts by grade.
                 // Due to how enrollment codes currently work, both repeaters and dropouts
                 // share the same "Dropped Out" label (StudentEnrollmentCode.Type = "Drop").
                 // The distinction is:
-                //   - Repeaters: ACTIVE enrollments whose EnrollmentCode matches a "Drop"
+                //   - Repeaters: enrollments in this year whose EnrollmentCode matches a "Drop"
                 //     type code (the rollover "Retain" path sets this on the new enrollment)
                 //   - Dropouts: INACTIVE enrollments whose ExitCode matches a "Drop" type
                 //     code (students who actually left the school)
@@ -1249,29 +1274,10 @@ namespace opensis.data.Repository
                     .Select(c => c.Title)
                     .ToList() ?? new List<string?>();
 
-                // Repeaters: active enrollments that arrived via a "Drop" type code (retained)
-                dashboardView.RepeatersByGrade = enrolledStudents
-                    .Where(e => e.GradeId != null
-                        && !string.IsNullOrEmpty(e.EnrollmentCode)
-                        && dropCodeTitles.Contains(e.EnrollmentCode))
-                    .GroupBy(e => new { e.GradeId, e.GradeLevelTitle })
-                    .Select(g => new GradeCount
-                    {
-                        GradeId = g.Key.GradeId,
-                        GradeLevelTitle = g.Key.GradeLevelTitle,
-                        Count = g.Select(e => e.StudentId).Distinct().Count()
-                    })
-                    .ToList();
-
-                foreach (var gc in dashboardView.RepeatersByGrade)
-                {
-                    gc.SortOrder = gc.GradeId.HasValue && gradeSortOrders.ContainsKey(gc.GradeId.Value)
-                        ? gradeSortOrders[gc.GradeId.Value]
-                        : 999;
-                }
-                dashboardView.RepeatersByGrade = dashboardView.RepeatersByGrade
-                    .OrderBy(g => g.SortOrder)
-                    .ToList();
+                // Repeaters: enrollments that arrived via a "Drop" type code (retained)
+                dashboardView.RepeatersByGrade = GroupByGrade(enrolledStudents
+                    .Where(e => !string.IsNullOrEmpty(e.EnrollmentCode)
+                        && dropCodeTitles.Contains(e.EnrollmentCode)));
 
                 // Dropouts by grade: NOT YET RELIABLE.
                 // Current data model cannot distinguish actual dropouts from completers/
@@ -3047,6 +3053,21 @@ namespace opensis.data.Repository
                         && e.IsActive == true
                         && e.StudentMaster.IsActive != false
                         && e.CalenderId == null)
+                    .Count() ?? 0;
+
+                // Disabled students with an open enrollment this year. The rollover only
+                // processes StudentMaster.IsActive == true, so these students would be left
+                // with an open enrollment in a finished year (see docs/plans/student-active-flag.md).
+                readiness.DisabledWithOpenEnrollmentCount = this.context?.StudentEnrollment
+                    .Where(e => e.TenantId == tenantId
+                        && e.SchoolId == schoolId
+                        && e.IsActive == true
+                        && (e.ExitCode == null || e.ExitCode == "")
+                        && e.StudentMaster.IsActive == false
+                        && e.CalenderId != null
+                        && calendarIds.Contains(e.CalenderId.Value))
+                    .Select(e => e.StudentId)
+                    .Distinct()
                     .Count() ?? 0;
 
                 List<GradeGenderCount> BuildGradeGender(IEnumerable<opensis.data.Models.StudentEnrollment> enrollments)

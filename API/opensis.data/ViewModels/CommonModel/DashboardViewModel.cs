@@ -40,6 +40,7 @@ namespace opensis.data.ViewModels.CommonModel
             DropoutsByGrade = new List<GradeCount>();
             StaffByProfile = new List<NameCount>();
             StaffByJobTitle = new List<NameCount>();
+            StudentsByStatus = new List<NameCount>();
         }
 
         public Guid? TenantId { get; set; }
@@ -62,6 +63,12 @@ namespace opensis.data.ViewModels.CommonModel
         public List<GradeCount> DropoutsByGrade { get; set; }
         public List<NameCount> StaffByProfile { get; set; }
         public List<NameCount> StaffByJobTitle { get; set; }
+        /// <summary>
+        /// Breakdown of TotalStudent by the status of each student's latest enrollment in the
+        /// year. Exit codes come back as Name; the two synthetic buckets (still enrolled,
+        /// deactivated via the student status toggle) come back as Key for the UI to translate.
+        /// </summary>
+        public List<NameCount> StudentsByStatus { get; set; }
     }
 
     public class GradeCount
@@ -75,6 +82,8 @@ namespace opensis.data.ViewModels.CommonModel
     public class NameCount
     {
         public string? Name { get; set; }
+        /// <summary>Optional translation key for synthetic buckets that have no stored title.</summary>
+        public string? Key { get; set; }
         public int Count { get; set; }
     }
 }
