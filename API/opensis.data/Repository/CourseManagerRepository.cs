@@ -2714,6 +2714,15 @@ namespace opensis.data.Repository
 
                             CourseData.AvailableSeat = CourseData.Seats - studentSchedule;
 
+                            // Every schedule row, dropped ones included. Seat availability must not
+                            // count dropped students, but Group Delete removes rows outright and so
+                            // needs to know a section still holds deletable records.
+                            CourseData.TotalScheduleRecords = this.context?.StudentCoursesectionSchedule.AsNoTracking().Count(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId);
+
+                            // Staff rows counted separately: a section can hold teachers and no
+                            // students at all, and must still be reachable in Group Delete.
+                            CourseData.TotalStaffScheduleRecords = this.context?.StaffCoursesectionSchedule.AsNoTracking().Count(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId);
+
                             var staffScheduleData = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != true).ToList();
                             if (staffScheduleData != null && staffScheduleData.Any())
                             {

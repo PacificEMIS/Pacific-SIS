@@ -48,7 +48,7 @@ import { Subject } from 'rxjs';
 })
 export class AddCourseSectionComponent implements OnInit, OnDestroy {
   icClose = icClose;
-  displayedColumns: string[] = ['courseSection', 'course', 'markingPeriod', 'startDate', 'endDate', 'totalSeats', 'available'];
+  displayedColumns: string[] = ['courseSection', 'course', 'markingPeriod', 'startDate', 'endDate', 'totalSeats', 'available', 'studentRecords'];
   searchRecord: boolean = false;
   courseDetails: MatTableDataSource<any>;
   programList = [];

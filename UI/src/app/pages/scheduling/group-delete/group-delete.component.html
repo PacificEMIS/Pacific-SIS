@@ -7,7 +7,15 @@
     </vex-page-layout-header>
 
     <vex-page-layout-content class="-mt-6">
-        <div class="card -mt-16 mb-6">
+        <div class="card -mt-16 mb-6 px-6 py-4">
+            <div class="bg-blue-50 border border-blue-200 rounded p-4 text-sm text-gray-700">
+                <p class="font-semibold mb-1">{{ "whatDoesThisToolDo" | translate }}</p>
+                <p class="mb-2">{{ "groupDeleteToolDescription" | translate }}</p>
+                <p class="font-semibold mb-1">{{ "whenShouldIUseThis" | translate }}</p>
+                <p>{{ "groupDeleteToolWhenToUse" | translate }}</p>
+            </div>
+        </div>
+        <div class="card mb-6">
             <div class="md:flex w-full items-center cursor-pointer" (click)="selectCourseSection()">
                 <div class="w-full md:w-1/12 bg-green text-white text-center py-6 md:rounded-bl rounded-tr md:rounded-tr-none rounded-tl relative arrow-right">
                     <i class="icon icon-plus3 text-2xl lg:text-4xl"></i>
@@ -68,7 +76,8 @@
                                 [indeterminate]="someStaffComplete()" (change)="setStaffAll($event.checked)"></mat-checkbox>
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            <mat-checkbox color="primary" [checked]="element.checked"
+                            <mat-checkbox color="primary" [checked]="element.checked" [disabled]="element.hasAssociation"
+                                [matTooltip]="element.hasAssociation ? ('teacherHasTransactionalDataAndCannotBeRemoved' | translate) : ''"
                                 (change)="onChangeStaffSelection($event.checked, element.staffId)"></mat-checkbox>
                         </td>
                     </ng-container>
@@ -105,6 +114,19 @@
                         <td mat-cell *matCellDef="let element">{{ element.mobilePhone | EmtyValueCheckPipe }}</td>
                     </ng-container>
 
+                    <ng-container matColumnDef="staffStatus">
+                        <th mat-header-cell *matHeaderCellDef>{{ "status" | translate }}</th>
+                        <td mat-cell *matCellDef="let element">
+                            <span *ngIf="element.isDropped" class="text-orange">
+                                {{ "unassigned" | translate }}<span *ngIf="element.effectiveDropDate"> &mdash; {{ element.effectiveDropDate | date:'mediumDate' }}</span>
+                            </span>
+                            <span *ngIf="!element.isDropped" class="text-green">{{ "assigned" | translate }}</span>
+                            <div *ngIf="element.hasAssociation" class="text-red text-xs">
+                                {{ "teacherHasTransactionalDataAndCannotBeRemoved" | translate }}
+                            </div>
+                        </td>
+                    </ng-container>
+
                     <!-- <ng-container matColumnDef="action">
                         <th mat-header-cell *matHeaderCellDef>{{ "action" | translate }}</th>
                         <td mat-cell *matCellDef="let element" class="cursor-pointer">
@@ -113,13 +135,13 @@
                     </ng-container> -->
 
                     <ng-container matColumnDef="noData">
-                        <td mat-footer-cell *matFooterCellDef colspan="7">
+                        <td mat-footer-cell *matFooterCellDef colspan="8">
                             {{loading?('fetchingData' | translate):('noData' | translate) }}
                         </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedStaffColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedStaffColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedStaffColumns" [ngClass]="{'opacity-50': row.hasAssociation}"></tr>
                     <tr mat-footer-row *matFooterRowDef="['noData']" [class.hidden]="totalStaffCount !== 0 && totalStaffCount !== null"></tr>
                 </table>
             </div>
@@ -183,7 +205,8 @@
                                 [indeterminate]="someComplete()" (change)="setAll($event.checked)"></mat-checkbox>
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            <mat-checkbox color="primary" [checked]="element.checked"
+                            <mat-checkbox color="primary" [checked]="element.checked" [disabled]="element.hasAssociation"
+                                [matTooltip]="element.hasAssociation ? ('studentHasTransactionalDataAndCannotBeDeleted' | translate) : ''"
                                 (change)="onChangeSelection($event.checked, element.studentId)"></mat-checkbox>
                         </td>
                     </ng-container>
@@ -215,14 +238,27 @@
                         <td mat-cell *matCellDef="let element">{{ element.homePhone | EmtyValueCheckPipe }}</td>
                     </ng-container>
 
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef>{{ "status" | translate }}</th>
+                        <td mat-cell *matCellDef="let element">
+                            <span *ngIf="element.isDropped" class="text-orange">
+                                {{ "dropped" | translate }}<span *ngIf="element.effectiveDropDate"> &mdash; {{ element.effectiveDropDate | date:'mediumDate' }}</span>
+                            </span>
+                            <span *ngIf="!element.isDropped" class="text-green">{{ "scheduled" | translate }}</span>
+                            <div *ngIf="element.hasAssociation" class="text-red text-xs">
+                                {{ "studentHasTransactionalDataAndCannotBeDeleted" | translate }}
+                            </div>
+                        </td>
+                    </ng-container>
+
                     <ng-container matColumnDef="noData">
-                        <td mat-footer-cell *matFooterCellDef colspan="6">
+                        <td mat-footer-cell *matFooterCellDef colspan="7">
                             {{loading?('fetchingData' | translate):('noData' | translate) }}
                         </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns" [ngClass]="{'opacity-50': row.hasAssociation}"></tr>
                     <tr mat-footer-row *matFooterRowDef="['noData']" [class.hidden]="totalCount !== 0 && totalCount !== null"></tr>
                 </table>
             </div>

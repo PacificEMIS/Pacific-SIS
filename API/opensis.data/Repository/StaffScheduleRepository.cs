@@ -936,18 +936,19 @@ namespace opensis.data.Repository
 
                     var AssignmentMasterData = this.context?.Assignment.AsNoTracking().Where(x => x.TenantId == staffListViewModel.TenantId && x.SchoolId == staffListViewModel.SchoolId && x.CourseSectionId == staffListViewModel.CourseSectionId);
 
+                    // staffIds collects those that CANNOT be removed, so they can be shown and
+                    // flagged rather than silently omitted from the list.
                     foreach (var scheduledStaff in StaffScheduleCourseSectionMasterData)
                     {
                         var StudentAttendanceData = StudentAttendanceMasterData?.Where(x => x.StaffId == scheduledStaff.StaffId).FirstOrDefault();
                         var AssignmentData = AssignmentMasterData?.Where(x => x.StaffId == scheduledStaff.StaffId).FirstOrDefault();
 
-                        if (StudentAttendanceData == null && AssignmentData == null)
+                        if (StudentAttendanceData != null || AssignmentData != null)
                         {
                             staffIds.Add(scheduledStaff.StaffId);
                         }
                     }
 
-                    if (staffIds?.Any() == true)
                     {
                         var staffSchedule = this.context?.CourseSection.Include(x => x.SchoolYears).Include(x => x.Semesters).Include(x => x.Quarters).Include(x => x.StaffCoursesectionSchedule).ThenInclude(x => x.StaffMaster).Where(x => x.TenantId == staffListViewModel.TenantId && x.SchoolId == staffListViewModel.SchoolId && x.CourseId == staffListViewModel.CourseId && (staffListViewModel.CourseSectionId == null || x.CourseSectionId == staffListViewModel.CourseSectionId)).AsNoTracking().Select(e => new CourseSection
                         {
@@ -966,7 +967,11 @@ namespace opensis.data.Repository
                             Quarters = e.Quarters != null ? new Quarters { Title = e.Quarters.Title, StartDate = e.Quarters.StartDate, EndDate = e.Quarters.EndDate, ShortName = e.Quarters.ShortName } : null,
                             Semesters = e.Semesters != null ? new Semesters { Title = e.Semesters.Title, StartDate = e.Semesters.StartDate, EndDate = e.Semesters.EndDate, ShortName = e.Semesters.ShortName } : null,
                             SchoolYears = e.SchoolYears != null ? new SchoolYears { Title = e.SchoolYears.Title, StartDate = e.SchoolYears.StartDate, EndDate = e.SchoolYears.EndDate, ShortName = e.SchoolYears.ShortName } : null,
-                            StaffCoursesectionSchedule = e.StaffCoursesectionSchedule.Where(d => d.IsDropped != true && staffIds.Contains(d.StaffId)).Select(s => new StaffCoursesectionSchedule
+                            // Every assignment row is returned. Staff already unassigned from the
+                            // section, and those holding attendance or assignments, are flagged for
+                            // display instead of being filtered out - otherwise they become
+                            // invisible here and can never be reviewed or acted on.
+                            StaffCoursesectionSchedule = e.StaffCoursesectionSchedule.Select(s => new StaffCoursesectionSchedule
                             {
                                 TenantId = s.TenantId,
                                 SchoolId = s.SchoolId,
@@ -976,6 +981,8 @@ namespace opensis.data.Repository
                                 CourseSectionId = s.CourseSectionId,
                                 CourseSectionName = s.CourseSectionName,
                                 IsDropped = s.IsDropped,
+                                EffectiveDropDate = s.EffectiveDropDate,
+                                HasAssociation = staffIds.Contains(s.StaffId),
                                 MeetingDays = s.MeetingDays,
                                 IsPrimaryStaff = s.IsPrimaryStaff,
                                 StaffMaster = new StaffMaster
@@ -1013,11 +1020,6 @@ namespace opensis.data.Repository
                             staffListView._failure = true;
                             staffListView._message = "No staff found";
                         }
-                    }
-                    else
-                    {
-                        staffListView._failure = true;
-                        staffListView._message = "Staff deletion is not permitted due to transactional associations";
                     }
                 }
                 else

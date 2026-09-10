@@ -69,8 +69,8 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   icDeleteForever = icDeleteForever;
   showScheduledStudents: boolean = true;
 
-  displayedColumns: string[] = ['studentSelected', 'name', 'studentId', 'alternateId', 'grade', 'phone'];
-  displayedStaffColumns: string[] = ['staffSelected', 'firstGivenName', 'staffId', 'profile', 'jobTitle', 'schoolEmail', 'mobilePhone'];
+  displayedColumns: string[] = ['studentSelected', 'name', 'studentId', 'alternateId', 'grade', 'phone', 'status'];
+  displayedStaffColumns: string[] = ['staffSelected', 'firstGivenName', 'staffId', 'profile', 'jobTitle', 'schoolEmail', 'mobilePhone', 'staffStatus'];
   studentDetails: MatTableDataSource<any>;
   programList = [];
   subjectList = [];
@@ -340,9 +340,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
               });
               return item;
             });
-            this.masterCheckBox.checked = this.listOfStaffs.every((item) => {
-              return item.checked;
-            });
+            this.masterCheckBoxStaff.checked = this.allSelectableStaffChecked();
             res.courseSectionsList[0]?.staffCoursesectionSchedule.map( (item: any) => {
               item.firstGivenName = item?.staffMaster?.firstGivenName;
               item.lastFamilyName = item?.staffMaster?.lastFamilyName;
@@ -397,9 +395,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
             });
             return item;
           });
-          this.masterCheckBox.checked = this.listOfStudents.every((item) => {
-            return item.checked;
-          });
+          this.masterCheckBox.checked = this.allSelectableChecked();
           this.studentDetails = new MatTableDataSource(res.scheduleStudentForView);
         }
       } else {
@@ -427,6 +423,19 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getUnassociatedStudentListByCourseSection(this.courseSectionData.courseSectionId);
   }
 
+  // Students holding transactional data can never be checked, so the master checkbox
+  // must judge "all selected" against the selectable ones only.
+  allSelectableChecked(): boolean {
+    const selectable = this.listOfStudents.filter((item) => !item.hasAssociation);
+    return selectable.length > 0 && selectable.every((item) => item.checked);
+  }
+
+  // Same rule for teachers: those holding attendance or assignments can never be checked.
+  allSelectableStaffChecked(): boolean {
+    const selectable = this.listOfStaffs.filter((item) => !item.hasAssociation);
+    return selectable.length > 0 && selectable.every((item) => item.checked);
+  }
+
   someComplete(): boolean {
     let indetermine = false;
     for (let user of this.listOfStudents) {
@@ -437,9 +446,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     if (indetermine) {
-      this.masterCheckBox.checked = this.listOfStudents.every((item) => {
-        return item.checked;
-      })
+      this.masterCheckBox.checked = this.allSelectableChecked();
       if (this.masterCheckBox.checked) {
         return false;
       } else {
@@ -449,7 +456,8 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setAll(event) {
-    this.listOfStudents.forEach(user => { user.checked = event; });
+    // Students holding transactional data cannot be deleted, so never select them.
+    this.listOfStudents.forEach(user => { user.checked = user.hasAssociation ? false : event; });
     this.studentDetails = new MatTableDataSource(this.listOfStudents);
     this.decideCheckUncheck();
   }
@@ -462,9 +470,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     this.studentDetails = new MatTableDataSource(this.listOfStudents);
-    this.masterCheckBox.checked = this.listOfStudents.every((item) => {
-      return item.checked;
-    });
+    this.masterCheckBox.checked = this.allSelectableChecked();
 
     this.decideCheckUncheck();
   }
@@ -603,9 +609,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     if (indetermine) {
-      this.masterCheckBoxStaff.checked = this.listOfStaffs.every((item) => {
-        return item.checked;
-      })
+      this.masterCheckBoxStaff.checked = this.allSelectableStaffChecked();
       if (this.masterCheckBoxStaff.checked) {
         return false;
       } else {
@@ -615,7 +619,8 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setStaffAll(event) {
-    this.listOfStaffs.forEach(user => { user.checked = event; });
+    // Teachers holding attendance or assignments cannot be removed, so never select them.
+    this.listOfStaffs.forEach(user => { user.checked = user.hasAssociation ? false : event; });
     this.staffCoursesectionSchedule = new MatTableDataSource(this.listOfStaffs);
     this.decideStaffCheckUncheck();
   }
@@ -628,9 +633,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     this.staffCoursesectionSchedule = new MatTableDataSource(this.listOfStaffs);
-    this.masterCheckBoxStaff.checked = this.listOfStaffs.every((item) => {
-      return item.checked;
-    });
+    this.masterCheckBoxStaff.checked = this.allSelectableStaffChecked();
 
     this.decideStaffCheckUncheck();
   }
