@@ -55,10 +55,12 @@ Pacific-SIS/
 
 ## Multi-Tenancy — How It Works
 
-1. Request arrives → `TenantDBMapper` middleware extracts tenant name from subdomain
+1. Request arrives → `TenantDBMappingMiddleware` takes the tenant name from the **first path segment**, not the subdomain (`Request.Path.Value.Split('/')` → `urlParts[0]`). Controller routes are declared as `[Route("{tenant}/Controller")]`, so `POST /fedsis/StudentSchedule/...` selects tenant `fedsis`.
 2. `MySQLContextFactory.Create()` builds a connection string from the template + tenant name
 3. It calls `context.Database.Migrate()` — auto-applies any pending EF migrations
 4. All queries run against that tenant's isolated database
+
+On the UI side the tenant comes from `assets/config.json` whenever the browser URL contains `localhost` or `lvh.me`; only a real deployed hostname is parsed for a subdomain (`default-values.service.ts` → `setDefaultTenant()`). So `lvh.me` in local dev is just a convenient alias for `127.0.0.1` — it plays no part in tenant resolution.
 
 **The connection string template** (from `appsettings.json`) uses `{tenant}` as a placeholder:
 ```
@@ -146,8 +148,10 @@ Deployment is managed via Ansible (see local MEMORY for details).
 ## Development Environment
 
 - **OS:** Windows 10/11, targeting Linux for production and eventual dev migration
-- **IDE:** VS Code for both frontend and backend (C# Dev Kit installed)
-- **Backend debug:** F5 in VS Code using `.vscode/launch.json`
+- **Preferred workflow:** terminal-first — run the API and UI as two long-running terminal processes, not through the IDE. See README § *Local Development Setup* steps 4-8.
+- **Editor:** VS Code (C# Dev Kit installed), used as an editor rather than a host
+- **Backend debug:** `F5` → **API: opensisAPI** is available when breakpoints are genuinely needed. Do not build from a terminal while it is attached — the debug adapter locks the output DLLs, the copy step fails while compilation still reports success, and the running API keeps executing the old assembly. Details and the timestamp check are in the README.
+- **The API does not auto-rebuild.** After a C# edit, stop and restart it. `dotnet watch` does not stay up under the .NET 10 SDK here.
 - **Git:** User handles all commits/PRs
 - **Deployment:** ansible (see MEMORY for local path)
 

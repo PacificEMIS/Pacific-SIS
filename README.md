@@ -96,9 +96,38 @@ Set `tenant` to the database name you want to develop against (e.g. `kisis`).
 
 ### 4. Run the API
 
-Open the repo root in VS Code. Press `F5` → select **API: opensisAPI**.
+```bash
+dotnet run --project API/opensisAPI/opensisAPI.csproj
+```
 
-The API builds, starts with the debugger attached, and auto-migrates the tenant database on first request. Verify at `https://localhost:5001/swagger`.
+`launchSettings.json` already supplies `ASPNETCORE_ENVIRONMENT=Development` and binds `http://lvh.me:5000`, so no environment variables are needed. Verify at `http://lvh.me:5000/swagger`. The API auto-migrates the tenant database on first request.
+
+That profile opens a browser tab on start. To suppress it, bypass the profile and set both values yourself:
+
+```bash
+ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://lvh.me:5000 \
+  dotnet run --no-launch-profile --project API/opensisAPI/opensisAPI.csproj
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:ASPNETCORE_ENVIRONMENT = "Development"
+$env:ASPNETCORE_URLS = "http://lvh.me:5000"
+dotnet run --no-launch-profile --project API/opensisAPI/opensisAPI.csproj
+```
+
+**VS Code debugger (when you need breakpoints):** press `F5` → **API: opensisAPI**. Read the lock warning below before mixing this with terminal builds.
+
+> **The API does not auto-rebuild.** After editing any C#, stop the process (`Ctrl+C`) and re-run it. `dotnet watch` is not used here: under the .NET 10 SDK it prints `⌚ Waiting for changes`, never binds the port, and gives no error — so plain `dotnet run` is the dependable option.
+
+> **Never build while the VS Code debugger is attached.** The debug adapter holds open file handles on `API/opensisAPI/bin/Debug/net6.0/*.dll`. A terminal `dotnet build` then fails only its *copy* step with `MSB3021` / `MSB3027` — "the file is locked by: Visual Studio Debug Adapter for .NET" — while still reporting **compilation as successful**. The running API keeps executing the previous assembly, so your change appears to do nothing and you debug a version of the code that is no longer on disk. Stop the debug session before building.
+>
+> When a change seems to have no effect, verify which build is actually loaded — the DLL must be newer than the source:
+> ```powershell
+> Get-Item API\opensis.data\Repository\StudentScheduleRepository.cs,
+>          API\opensisAPI\bin\Debug\net6.0\opensis.data.dll |
+>   Select-Object LastWriteTime, Name
+> ```
 
 ### 5. Run the background job
 
@@ -126,15 +155,68 @@ npm install
 npm start
 ```
 
-UI will be at `http://localhost:4200`. (`ng serve` is equivalent for development.)
+UI will be at `http://localhost:4200`. (`ng serve` is equivalent for development.) The dev server watches and rebuilds on save, so unlike the API it needs no restart after edits.
 
-> **Serving on a real hostname for proxy tooling.** To inspect traffic through a browser proxy plugin (e.g. ZeroOmega) routed to mitmproxy / mitmweb, serve on a resolvable hostname instead of `localhost`:
+> **Serving on a real hostname for proxy tooling.** To inspect traffic through a browser proxy plugin (e.g. ZeroOmega) routed to mitmproxy / mitmweb, serve on a resolvable hostname instead of `localhost`. `lvh.me` resolves to `127.0.0.1`, so the dev server stays local while the proxy plugin no longer treats it as a bypass target:
 > ```bash
-> npm start -- --host lvh.me
+> npm start -- --host 0.0.0.0 --disable-host-check
 > ```
-> `lvh.me` resolves to `127.0.0.1`, so the dev server is reachable at `http://lvh.me:4200` while still being local. This avoids the proxy plugin treating `localhost` as a bypass target.
+> Both `http://localhost:4200` and `http://lvh.me:4200` then work.
+>
+> Without `--disable-host-check`, any hostname other than `localhost` is rejected by the dev server's host check. The failure is easy to misread: the page shows **`Invalid Host header`**, and the server returns that text with **HTTP status 200**, so a status-code-only check (`curl -o /dev/null -w "%{http_code}"`) looks like success. Check the response *body*.
+>
+> `--host lvh.me` alone also works, but then `localhost:4200` starts failing the same check instead. Binding `0.0.0.0` with the check disabled keeps both usable.
+
+> **`sessionStorage` is per-origin, so `localhost:4200` and `lvh.me:4200` hold separate logins.** Switching between them bounces you to the login screen. Pick one hostname and stay on it. The tenant itself resolves identically for both — `default-values.service.ts` treats any URL containing `localhost` or `lvh.me` as local and reads the tenant from `assets/config.json`; only a real deployed hostname is parsed for a subdomain.
+
+> **Stopping the dev server can orphan the node child.** `npm start` spawns node as a child, and killing the wrapper (or a task runner killing it for you) may leave that child holding the port. You then get a *second* server on the next start, and because Windows routes `127.0.0.1` to the most specific binding, requests can keep hitting the stale one — new flags and code silently ignored. Check for duplicates before debugging anything else:
+> ```bash
+> netstat -ano | grep -E ":4200\s+.*LISTENING"
+> ```
+> More than one line means an orphan; kill the older PID.
 
 See [UI Commands Reference](#ui-commands-reference) below for the full list of available commands.
+
+### 7. What runs where
+
+Two long-running terminals is the whole setup. The background job is run on demand, not kept up.
+
+| Process | Command | Reachable at |
+|---|---|---|
+| API | `dotnet run --project API/opensisAPI/opensisAPI.csproj` | `http://lvh.me:5000` — Swagger at `/swagger` |
+| UI | `cd UI && npm start` | `http://localhost:4200` |
+| Background job | `DOTNET_ENVIRONMENT=Development dotnet run --project API/opensis.backgroundjob/opensis.backgroundjob.csproj` | one-shot, prints `process completed.` and exits |
+
+Quick liveness checks that distinguish "up" from "bound but broken":
+
+```bash
+curl -s -o /dev/null -w "api %{http_code}\n" http://lvh.me:5000/swagger/index.html
+curl -s http://localhost:4200/ | head -c 40      # must be HTML, not "Invalid Host header"
+```
+
+> The API writes nothing useful to stdout — NLog takes over console logging, so you will **not** see the usual `Now listening on: ...` line. An empty terminal does not mean it failed to start; confirm with the `curl` above or `netstat -ano | grep -E ":5000\s+.*LISTENING"`.
+
+### 8. Logs and diagnostics
+
+NLog targets are configured in `API/opensisAPI/NLog.config` and write to `c:\temp\opensisLogs\`:
+
+| File | Contents |
+|---|---|
+| `nlog-own-<date>.log` | application logs, enriched with request URL and action — start here |
+| `nlog-all-<date>.log` | everything, including framework and EF logs |
+| `internal-nlog.txt` | NLog's own startup diagnostics (use if logging itself seems broken) |
+
+Tail the application log while reproducing a problem:
+
+```bash
+tail -f "/c/temp/opensisLogs/nlog-own-$(date +%Y-%m-%d).log"
+```
+
+> **Repository classes swallow exceptions.** Most methods in `opensis.data/Repository` catch `Exception` and return the text in the response's `_message` field instead of rethrowing, so a failure often leaves **no stack trace anywhere** unless the controller logs it explicitly. When a page reports a vague failure:
+> 1. Open the browser DevTools **Network** tab and read `_message` in the JSON response — it usually holds the real exception text.
+> 2. Check `nlog-own-<date>.log` for a matching `ERROR` line.
+>
+> If neither has anything, the controller for that endpoint has no logging yet — worth adding, following the pattern in `StudentScheduleController.AddStudentCourseSectionSchedule`.
 
 ---
 
