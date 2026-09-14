@@ -288,6 +288,11 @@ namespace opensis.core.StudentSchedule.Services
             {
                 if (tokenManager.CheckToken(scheduledStudentDeleteViewModel._tenantName + scheduledStudentDeleteViewModel._userName, scheduledStudentDeleteViewModel._token))
                 {
+                    // Identify the caller from the token ("name|email|tenant"), never from the
+                    // request body: the repository only honours DeleteAttendance for an active
+                    // Super Administrator (#863).
+                    var claimParts = (TokenManager.ValidateToken(scheduledStudentDeleteViewModel._token!) ?? "").Split('|');
+                    scheduledStudentDeleteViewModel.CallerEmail = claimParts.Length >= 2 && !string.IsNullOrWhiteSpace(claimParts[1]) ? claimParts[1] : null;
                     scheduledStudentDelete = this.studentScheduleRepository.GroupDeleteForScheduledStudent(scheduledStudentDeleteViewModel);
                 }
                 else

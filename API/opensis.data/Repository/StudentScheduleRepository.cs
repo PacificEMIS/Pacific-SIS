@@ -1997,6 +1997,19 @@ namespace opensis.data.Repository
                     string eventMessage = string.Empty;
                     List<string> staffName = new();
                     string? CourseSectionName = string.Empty;
+                    // Student-days whose period attendance is deleted below; their derived daily
+                    // attendance rows are recomputed once everything else is saved (#863).
+                    HashSet<(int StudentId, DateTime Date)> affectedStudentDays = new();
+
+                    // "Force Delete Transactional Data" is a Super Administrator action. The UI
+                    // only shows the option to them; this is the check that actually matters.
+                    if (scheduledStudentDeleteViewModel.DeleteAttendance && !CallerIsActiveSuperAdmin(scheduledStudentDeleteViewModel))
+                    {
+                        transaction?.Rollback();
+                        scheduledStudentDelete._failure = true;
+                        scheduledStudentDelete._message = "Only an active Super Administrator can force delete transactional data";
+                        return scheduledStudentDelete;
+                    }
 
                     if (scheduledStudentDeleteViewModel.StudentIds?.Any() == true)
                     {
@@ -2006,16 +2019,19 @@ namespace opensis.data.Repository
                         {
                             var gradebookGradeData = this.context?.GradebookGrades.FirstOrDefault(e => e.TenantId == scheduledStudentDeleteViewModel.TenantId && e.SchoolId == scheduledStudentDeleteViewModel.SchoolId && e.CourseSectionId == scheduledStudentDeleteViewModel.CourseSectionId && e.StudentId == studentId);
 
-                            var studentAttendanceData = this.context?.StudentAttendance.FirstOrDefault(e => e.TenantId == scheduledStudentDeleteViewModel.TenantId && e.SchoolId == scheduledStudentDeleteViewModel.SchoolId && e.CourseSectionId == scheduledStudentDeleteViewModel.CourseSectionId && e.StudentId == studentId);
-
                             var studentFinalGradeData = this.context?.StudentFinalGrade.FirstOrDefault(e => e.TenantId == scheduledStudentDeleteViewModel.TenantId && e.SchoolId == scheduledStudentDeleteViewModel.SchoolId && e.CourseSectionId == scheduledStudentDeleteViewModel.CourseSectionId && e.StudentId == studentId);
 
                             var studentEffortGradeData = this.context?.StudentEffortGradeMaster.FirstOrDefault(e => e.TenantId == scheduledStudentDeleteViewModel.TenantId && e.SchoolId == scheduledStudentDeleteViewModel.SchoolId && e.CourseSectionId == scheduledStudentDeleteViewModel.CourseSectionId && e.StudentId == studentId);
 
-                            if (gradebookGradeData != null || studentAttendanceData != null || studentFinalGradeData != null || studentEffortGradeData != null)
+                            // Grades are entered deliberately and stay a hard block. Attendance is
+                            // deleted with the schedule row, but only with explicit consent (#863).
+                            var studentAttendanceRows = this.context?.StudentAttendance.Include(a => a.StudentAttendanceComments).Where(e => e.TenantId == scheduledStudentDeleteViewModel.TenantId && e.SchoolId == scheduledStudentDeleteViewModel.SchoolId && e.CourseSectionId == scheduledStudentDeleteViewModel.CourseSectionId && e.StudentId == studentId).ToList() ?? new List<StudentAttendance>();
+
+                            if (gradebookGradeData != null || studentFinalGradeData != null || studentEffortGradeData != null
+                                || (studentAttendanceRows.Any() && !scheduledStudentDeleteViewModel.DeleteAttendance))
                             {
                                 studentFailure = true;
-                                scheduledStudentDelete._message = "Some students could not be deleted from the selected course section. They have association";
+                                scheduledStudentDelete._message = "Some students could not be deleted from the selected course section. They have grades, or attendance whose deletion was not confirmed";
                             }
                             else
                             {
@@ -2023,6 +2039,7 @@ namespace opensis.data.Repository
 
                                 if (studentCoursesectionScheduleData != null)
                                 {
+                                    RemoveAttendanceRows(scheduledStudentDeleteViewModel, studentAttendanceRows, affectedStudentDays);
                                     this.context?.StudentCoursesectionSchedule.Remove(studentCoursesectionScheduleData);
                                     studentIds.Add(studentId);
                                 }
@@ -2036,7 +2053,7 @@ namespace opensis.data.Repository
 
                         var StaffScheduleCourseSectionMasterData = this.context?.StaffCoursesectionSchedule.Include(a => a.StaffMaster).Include(a => a.CourseSection).Where(x => x.TenantId == scheduledStudentDeleteViewModel.TenantId && x.SchoolId == scheduledStudentDeleteViewModel.SchoolId && x.CourseSectionId == scheduledStudentDeleteViewModel.CourseSectionId);
 
-                        var StudentAttendanceMasterData = this.context?.StudentAttendance.Where(x => x.TenantId == scheduledStudentDeleteViewModel.TenantId && x.SchoolId == scheduledStudentDeleteViewModel.SchoolId && x.CourseSectionId == scheduledStudentDeleteViewModel.CourseSectionId);
+                        var StudentAttendanceMasterData = this.context?.StudentAttendance.Include(a => a.StudentAttendanceComments).Where(x => x.TenantId == scheduledStudentDeleteViewModel.TenantId && x.SchoolId == scheduledStudentDeleteViewModel.SchoolId && x.CourseSectionId == scheduledStudentDeleteViewModel.CourseSectionId);
 
                         var AssignmentMasterData = this.context?.Assignment.Where(x => x.TenantId == scheduledStudentDeleteViewModel.TenantId && x.SchoolId == scheduledStudentDeleteViewModel.SchoolId && x.CourseSectionId == scheduledStudentDeleteViewModel.CourseSectionId);
 
@@ -2046,17 +2063,22 @@ namespace opensis.data.Repository
 
                             if (StaffScheduleCourseSectionData != null)
                             {
-                                var StudentAttendanceData = StudentAttendanceMasterData?.Where(x => x.StaffId == staffId).FirstOrDefault();
+                                // Attendance rows carry the staff FK, so removing the teacher means
+                                // removing every record they took in the section, which is the
+                                // scheduled students' attendance. Allowed with explicit consent
+                                // only; assignments stay a hard block (#863).
+                                var staffAttendanceRows = StudentAttendanceMasterData?.Where(x => x.StaffId == staffId).ToList() ?? new List<StudentAttendance>();
                                 var AssignmentData = AssignmentMasterData?.Where(x => x.StaffId == staffId).FirstOrDefault();
 
-                                if (StudentAttendanceData != null || AssignmentData != null)
+                                if (AssignmentData != null || (staffAttendanceRows.Any() && !scheduledStudentDeleteViewModel.DeleteAttendance))
                                 {
                                     staffFailure = true;
                                     // On the returned object - writing to the input parameter discarded it (#853).
-                                    scheduledStudentDelete._message = "Some staff could not be deleted from the selected course section. They have association";
+                                    scheduledStudentDelete._message = "Some staff could not be deleted from the selected course section. They have assignments, or attendance whose deletion was not confirmed";
                                 }
                                 else
                                 {
+                                    RemoveAttendanceRows(scheduledStudentDeleteViewModel, staffAttendanceRows, affectedStudentDays);
                                     this.context?.StaffCoursesectionSchedule.Remove(StaffScheduleCourseSectionData);
                                     staffIds.Add(staffId);
                                 }
@@ -2107,6 +2129,11 @@ namespace opensis.data.Repository
                     }
 
                     this.context?.SaveChanges();
+
+                    // Daily attendance is derived from period attendance; refresh it for the
+                    // student-days whose records were just deleted, then commit everything together.
+                    RecalculateDailyAttendanceFor(scheduledStudentDeleteViewModel, affectedStudentDays);
+                    this.context?.SaveChanges();
                     transaction?.Commit();
 
                     // Report the outcome on the object that is actually returned, for every
@@ -2135,6 +2162,157 @@ namespace opensis.data.Repository
         }
 
         /// <summary>
+        /// True when the caller identified by the service layer (from the session token) holds
+        /// an active login with the Super Administrator membership in this tenant. Same rule as
+        /// SuperAdministratorRepository.CallerIsActiveSuperAdmin (#863).
+        /// </summary>
+        private bool CallerIsActiveSuperAdmin(ScheduledStudentDeleteViewModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.CallerEmail) || this.context == null)
+            {
+                return false;
+            }
+            return this.context.UserMaster.Include(x => x.Membership)
+                .Where(x => x.TenantId == model.TenantId && x.EmailAddress == model.CallerEmail && x.IsActive != false)
+                .AsEnumerable()
+                .Any(x => x.Membership != null && (x.Membership.IsSuperadmin || string.Equals(x.Membership.ProfileType, "Super Administrator", StringComparison.OrdinalIgnoreCase)));
+        }
+
+        /// <summary>
+        /// Marks the given period attendance rows for deletion together with their comments and
+        /// the matching history rows (same student, section, date and period), and records the
+        /// student-days touched so their daily attendance can be recomputed afterwards (#863).
+        /// </summary>
+        private void RemoveAttendanceRows(ScheduledStudentDeleteViewModel model, List<StudentAttendance> attendanceRows, HashSet<(int StudentId, DateTime Date)> affectedStudentDays)
+        {
+            if (attendanceRows.Count == 0 || this.context == null)
+            {
+                return;
+            }
+
+            var studentIds = attendanceRows.Select(a => a.StudentId).Distinct().ToList();
+            var historyRows = this.context.StudentAttendanceHistory
+                .Where(h => h.TenantId == model.TenantId && h.SchoolId == model.SchoolId && h.CourseSectionId == model.CourseSectionId && studentIds.Contains(h.StudentId))
+                .ToList();
+            var deletedKeys = attendanceRows.Select(a => (a.StudentId, a.AttendanceDate, a.BlockId, a.PeriodId)).ToHashSet();
+            var matchingHistory = historyRows.Where(h => deletedKeys.Contains((h.StudentId, h.AttendanceDate, h.BlockId, h.PeriodId))).ToList();
+
+            this.context.StudentAttendanceComments.RemoveRange(attendanceRows.SelectMany(a => a.StudentAttendanceComments));
+            this.context.StudentAttendanceHistory.RemoveRange(matchingHistory);
+            this.context.StudentAttendance.RemoveRange(attendanceRows);
+
+            foreach (var row in attendanceRows)
+            {
+                affectedStudentDays.Add((row.StudentId, row.AttendanceDate));
+            }
+        }
+
+        /// <summary>
+        /// Recomputes the derived StudentDailyAttendance row for each given student-day from the
+        /// period attendance that remains after a delete, and removes the row when nothing
+        /// remains. Same minute and Present/Half Day/Absent rules as
+        /// StudentAttendanceRepository.ReCalculateDailyAttendance. Must run after the deletes are
+        /// saved so the remaining rows are what the query sees (#863).
+        /// </summary>
+        private void RecalculateDailyAttendanceFor(ScheduledStudentDeleteViewModel model, HashSet<(int StudentId, DateTime Date)> studentDays)
+        {
+            if (studentDays.Count == 0 || this.context == null)
+            {
+                return;
+            }
+
+            var studentIds = studentDays.Select(x => x.StudentId).Distinct().ToList();
+            var dates = studentDays.Select(x => x.Date).Distinct().ToList();
+
+            var remainingAttendance = this.context.StudentAttendance.AsNoTracking()
+                .Where(a => a.TenantId == model.TenantId && a.SchoolId == model.SchoolId && studentIds.Contains(a.StudentId) && dates.Contains(a.AttendanceDate))
+                .ToList();
+            var dailyRows = this.context.StudentDailyAttendance
+                .Where(d => d.TenantId == model.TenantId && d.SchoolId == model.SchoolId && studentIds.Contains(d.StudentId) && dates.Contains(d.AttendanceDate))
+                .ToList();
+            var blockPeriodLookup = this.context.BlockPeriod.AsNoTracking()
+                .Where(x => x.TenantId == model.TenantId && x.SchoolId == model.SchoolId)
+                .ToLookup(x => (x.BlockId, x.PeriodId));
+            var attendanceCodeLookup = this.context.AttendanceCode.AsNoTracking()
+                .Where(x => x.TenantId == model.TenantId && x.SchoolId == model.SchoolId)
+                .ToDictionary(x => (x.AttendanceCode1, x.AttendanceCategoryId));
+            var blockLookup = this.context.Block.AsNoTracking()
+                .Where(x => x.TenantId == model.TenantId && x.SchoolId == model.SchoolId)
+                .ToDictionary(x => x.BlockId);
+
+            foreach (var (studentId, date) in studentDays)
+            {
+                var dailyRow = dailyRows.FirstOrDefault(d => d.StudentId == studentId && d.AttendanceDate == date);
+                var rows = remainingAttendance.Where(a => a.StudentId == studentId && a.AttendanceDate == date).ToList();
+
+                if (rows.Count == 0)
+                {
+                    if (dailyRow != null)
+                    {
+                        this.context.StudentDailyAttendance.Remove(dailyRow);
+                    }
+                    continue;
+                }
+
+                int totalAttendanceMin = 0;
+                foreach (var attendance in rows)
+                {
+                    var blockPeriod = blockPeriodLookup[(attendance.BlockId, attendance.PeriodId)].FirstOrDefault();
+                    if (blockPeriod is null) continue;
+                    TimeSpan start = TimeSpan.Parse(blockPeriod.PeriodStartTime!);
+                    TimeSpan end = TimeSpan.Parse(blockPeriod.PeriodEndTime!);
+                    int classMin = (int)(end - start).TotalMinutes;
+                    if (attendanceCodeLookup.TryGetValue((attendance.AttendanceCode, attendance.AttendanceCategoryId), out var code))
+                    {
+                        switch (code.StateCode?.ToLower())
+                        {
+                            case "present":
+                                totalAttendanceMin += classMin;
+                                break;
+                            case "half day":
+                                totalAttendanceMin += (int)Math.Ceiling(classMin / 2.0);
+                                break;
+                        }
+                    }
+                }
+
+                string attendanceCode = string.Empty;
+                var blockId = rows.First().BlockId;
+                if (blockLookup.TryGetValue(blockId, out var block))
+                {
+                    if (totalAttendanceMin >= block.FullDayMinutes)
+                        attendanceCode = "Present";
+                    else if (totalAttendanceMin >= block.HalfDayMinutes)
+                        attendanceCode = "Half Day";
+                    else
+                        attendanceCode = "Absent";
+                }
+
+                if (dailyRow != null)
+                {
+                    dailyRow.AttendanceMinutes = totalAttendanceMin;
+                    dailyRow.AttendanceCode = attendanceCode;
+                    dailyRow.UpdatedBy = model.UpdatedBy;
+                    dailyRow.UpdatedOn = DateTime.UtcNow;
+                }
+                else
+                {
+                    this.context.StudentDailyAttendance.Add(new StudentDailyAttendance
+                    {
+                        TenantId = model.TenantId!.Value,
+                        SchoolId = model.SchoolId!.Value,
+                        StudentId = studentId,
+                        AttendanceDate = date,
+                        AttendanceMinutes = totalAttendanceMin,
+                        AttendanceCode = attendanceCode,
+                        CreatedBy = model.UpdatedBy,
+                        CreatedOn = DateTime.UtcNow
+                    });
+                }
+            }
+        }
+
+        /// <summary>
         ///  Get Student List By Course Section who have no associationship
         /// </summary>
         /// <param name="pageResult"></param>
@@ -2155,24 +2333,30 @@ namespace opensis.data.Repository
                 {
                     List<int> studentIds = new List<int>();
 
+                    // Attendance no longer blocks deletion (#863): it is counted per student so
+                    // the UI can say how many records will be removed along with the schedule row.
+                    var attendanceCounts = this.context?.StudentAttendance.AsNoTracking()
+                        .Where(e => e.TenantId == pageResult.TenantId && e.SchoolId == pageResult.SchoolId && e.CourseSectionId == pageResult.CourseSectionId)
+                        .GroupBy(e => e.StudentId)
+                        .Select(g => new { StudentId = g.Key, Count = g.Count() })
+                        .ToDictionary(g => g.StudentId, g => g.Count) ?? new Dictionary<int, int>();
+
                     foreach (var data in scheduledData)
                     {
                         var gradebookGradeData = this.context?.GradebookGrades.AsNoTracking().FirstOrDefault(e => e.TenantId == data.scs.TenantId && e.SchoolId == data.scs.SchoolId && e.CourseSectionId == data.scs.CourseSectionId && e.StudentId == data.scs.StudentId);
-
-                        var studentAttendanceData = this.context?.StudentAttendance.AsNoTracking().FirstOrDefault(e => e.TenantId == data.scs.TenantId && e.SchoolId == data.scs.SchoolId && e.CourseSectionId == data.scs.CourseSectionId && e.StudentId == data.scs.StudentId);
 
                         var studentFinalGradeData = this.context?.StudentFinalGrade.AsNoTracking().FirstOrDefault(e => e.TenantId == data.scs.TenantId && e.SchoolId == data.scs.SchoolId && e.CourseSectionId == data.scs.CourseSectionId && e.StudentId == data.scs.StudentId);
 
                         var studentEffortGradeData = this.context?.StudentEffortGradeMaster.AsNoTracking().FirstOrDefault(e => e.TenantId == data.scs.TenantId && e.SchoolId == data.scs.SchoolId && e.CourseSectionId == data.scs.CourseSectionId && e.StudentId == data.scs.StudentId);
 
-                        if (gradebookGradeData != null || studentAttendanceData != null || studentFinalGradeData != null || studentEffortGradeData != null)
+                        if (gradebookGradeData != null || studentFinalGradeData != null || studentEffortGradeData != null)
                         {
                             studentIds.Add(data.scs.StudentId);
                         }
                     }
 
-                    // Students with transactional data are kept in the list and flagged instead of
-                    // being silently omitted, so the user can see who cannot be deleted and why.
+                    // Students with grades are kept in the list and flagged instead of being
+                    // silently omitted, so the user can see who cannot be deleted and why.
                     // GroupDeleteForScheduledStudent re-checks and refuses them regardless.
                     scheduledStudentData = scheduledData?.Select(ssv => new ScheduleStudentForView
                     {
@@ -2224,6 +2408,7 @@ namespace opensis.data.Repository
                         IsDropped = ssv.scs.IsDropped,
                         EffectiveDropDate = ssv.scs.EffectiveDropDate,
                         HasAssociation = studentIds.Contains(ssv.scs.StudentId),
+                        AttendanceCount = attendanceCounts.TryGetValue(ssv.scs.StudentId, out var attendanceCount) ? attendanceCount : 0,
                     }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
 
                     if (scheduledStudentData != null && scheduledStudentData.Any())

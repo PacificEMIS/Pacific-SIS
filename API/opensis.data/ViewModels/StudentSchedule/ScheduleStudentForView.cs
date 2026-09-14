@@ -85,9 +85,15 @@ namespace opensis.data.ViewModels.StudentSchedule
         /// </summary>
         public DateTime? EffectiveDropDate { get; set; }
         /// <summary>
-        /// True when the student has transactional data in this course section (attendance,
-        /// gradebook grades, final grades or effort grades) and therefore cannot be deleted.
+        /// True when the student has grades in this course section (gradebook, final or effort
+        /// grades) and therefore cannot be deleted. Attendance alone no longer blocks deletion;
+        /// see <see cref="AttendanceCount"/> (#863).
         /// </summary>
         public bool? HasAssociation { get; set; }
+        /// <summary>
+        /// Number of attendance records the student holds in this course section. Group Delete
+        /// removes them along with the schedule row once the user explicitly agrees to it.
+        /// </summary>
+        public int AttendanceCount { get; set; }
     }
 }
