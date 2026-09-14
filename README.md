@@ -108,7 +108,7 @@ Edit `config.json`:
 }
 ```
 
-Set `tenant` to the database name you want to develop against (e.g. `kisis`).
+Set `tenant` to the database name you want to develop against (e.g. `kisis`). To change it later, or to work against a second restored tenant, follow [9. Switching the tenant database](#9-switching-the-tenant-database).
 
 ### 4. Run the API
 
@@ -233,6 +233,36 @@ tail -f "/c/temp/opensisLogs/nlog-own-$(date +%Y-%m-%d).log"
 > 2. Check `nlog-own-<date>.log` for a matching `ERROR` line.
 >
 > If neither has anything, the controller for that endpoint has no logging yet — worth adding, following the pattern in `StudentScheduleController.AddStudentCourseSectionSchedule`.
+
+### 9. Switching the tenant database
+
+Each tenant is a MySQL database named after the tenant (`fedsis`, `kisis`, ...). To develop or verify against another one, restore its dump under that name, then switch in two places. Neither needs a rebuild.
+
+1. **API — check the template, do not edit it per tenant.** `API/opensisAPI/appsettings.Development.json` must keep the placeholder:
+   ```json
+   "ConnectionStringTemplateMySQL": "server=localhost;database={tenant};user=USER;password=PASSWORD"
+   ```
+   The API substitutes `{tenant}` from the first path segment of every request (`/kisis/...`), so one running API serves every restored tenant. If the template hard-codes a database name (`database=fedsis`), every tenant path silently lands in that database: the browser bar and page title say `kisis`, but the data is fedsis. Restart the API once if you had to fix the file.
+
+2. **UI — set the tenant.** In `UI/src/assets/config.json` (gitignored) set `"tenant": "kisis"`. The dev server serves the new value immediately, but the page reads it **once at bootstrap** and keeps it in `sessionStorage`, so **hard-refresh (Ctrl+Shift+R) or open a new tab**, then log in again with a user that exists in that tenant.
+
+3. **Catalog — register the tenant locally (once per tenant).** `catalogdb.available_tenants` needs a row with `tenant_name`, the tenant's `tenant_id` (from its own `school_master`), `is_active = 1`, a footer and the four logo blobs. Without the row the API skips auto-migration for that tenant; with the logo columns `NULL` the UI still builds `data:image/...;base64,null` URLs for the favicon and sidenav logos and the browser reports failed downloads on every page. The production catalog is not part of a tenant dump, so copy the row of a tenant you already have: the logo blobs are the shared Pacific SIS branding, only the footer names the tenant.
+   ```sql
+   INSERT INTO catalogdb.available_tenants (tenant_name, tenant_id, tenant_logo, tenant_logo_icon, tenant_sidenav_logo, tenant_fav_icon, tenant_footer, is_active)
+   SELECT 'kisis', (SELECT tenant_id FROM kisis.school_master LIMIT 1),
+          tenant_logo, tenant_logo_icon, tenant_sidenav_logo, tenant_fav_icon,
+          REPLACE(tenant_footer, 'FEDSIS', 'KISIS'), 1
+   FROM catalogdb.available_tenants WHERE tenant_name = 'fedsis';
+   ```
+   The page title is the tenant name, so the two stay easy to tell apart.
+
+**Verify you are really on the new tenant** before trusting anything you see. The page title is the tenant name in upper case, but that only proves the UI side. After logging in, confirm the API side too:
+
+```sql
+SELECT emailaddress, login_attempt_date FROM kisis.user_access_log ORDER BY id DESC LIMIT 1;
+```
+
+Your login must appear in the new tenant's `user_access_log`, not the old one's. Switching back is the same two edits in reverse.
 
 ---
 
