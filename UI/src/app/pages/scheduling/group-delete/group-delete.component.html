@@ -28,6 +28,14 @@
             </div>
         </div>
 
+        <!-- Force Delete Transactional Data: Super Administrators only (#863) -->
+        <div *ngIf="isSuperAdmin && showCourseSectionName" class="card mb-6 p-4 border-l-4 border-orange">
+            <mat-checkbox color="warn" [checked]="forceDeleteTransactionalData" (change)="onForceDeleteChange($event.checked)">
+                <span class="font-semibold">{{ 'forceDeleteTransactionalData' | translate }}</span>
+            </mat-checkbox>
+            <p class="text-xs mt-1 ml-8">{{ 'forceDeleteTransactionalDataDescription' | translate }}</p>
+        </div>
+
         <!-- No students found div start -->
         <div *ngIf="showErrorMessage && !isVisible" class="card mt-6 p-4">
             <div class="flex">
@@ -76,8 +84,8 @@
                                 [indeterminate]="someStaffComplete()" (change)="setStaffAll($event.checked)"></mat-checkbox>
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            <mat-checkbox color="primary" [checked]="element.checked" [disabled]="element.hasAssociation"
-                                [matTooltip]="element.hasAssociation ? ('teacherHasTransactionalDataAndCannotBeRemoved' | translate) : ''"
+                            <mat-checkbox color="primary" [checked]="element.checked" [disabled]="isBlocked(element)"
+                                [matTooltip]="element.hasAssociation ? ('teacherHasTransactionalDataAndCannotBeRemoved' | translate) : (isBlocked(element) ? ('teacherHasAttendanceAndCannotBeRemoved' | translate) : '')"
                                 (change)="onChangeStaffSelection($event.checked, element.staffId)"></mat-checkbox>
                         </td>
                     </ng-container>
@@ -123,6 +131,12 @@
                             <span *ngIf="!element.isDropped" class="text-green">{{ "assigned" | translate }}</span>
                             <div *ngIf="element.hasAssociation" class="text-red text-xs">
                                 {{ "teacherHasTransactionalDataAndCannotBeRemoved" | translate }}
+                            </div>
+                            <div *ngIf="!element.hasAssociation && element.attendanceCount > 0 && !forceDeleteTransactionalData" class="text-red text-xs">
+                                {{ "teacherHasAttendanceAndCannotBeRemoved" | translate }}
+                            </div>
+                            <div *ngIf="!element.hasAssociation && element.attendanceCount > 0 && forceDeleteTransactionalData" class="text-orange text-xs">
+                                {{ "teacherAttendanceWillBeDeletedWithThem" | translate:{ count: element.attendanceCount } }}
                             </div>
                         </td>
                     </ng-container>
@@ -205,8 +219,8 @@
                                 [indeterminate]="someComplete()" (change)="setAll($event.checked)"></mat-checkbox>
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            <mat-checkbox color="primary" [checked]="element.checked" [disabled]="element.hasAssociation"
-                                [matTooltip]="element.hasAssociation ? ('studentHasTransactionalDataAndCannotBeDeleted' | translate) : ''"
+                            <mat-checkbox color="primary" [checked]="element.checked" [disabled]="isBlocked(element)"
+                                [matTooltip]="element.hasAssociation ? ('studentHasTransactionalDataAndCannotBeDeleted' | translate) : (isBlocked(element) ? ('studentHasAttendanceAndCannotBeDeleted' | translate) : '')"
                                 (change)="onChangeSelection($event.checked, element.studentId)"></mat-checkbox>
                         </td>
                     </ng-container>
@@ -247,6 +261,12 @@
                             <span *ngIf="!element.isDropped" class="text-green">{{ "scheduled" | translate }}</span>
                             <div *ngIf="element.hasAssociation" class="text-red text-xs">
                                 {{ "studentHasTransactionalDataAndCannotBeDeleted" | translate }}
+                            </div>
+                            <div *ngIf="!element.hasAssociation && element.attendanceCount > 0 && !forceDeleteTransactionalData" class="text-red text-xs">
+                                {{ "studentHasAttendanceAndCannotBeDeleted" | translate }}
+                            </div>
+                            <div *ngIf="!element.hasAssociation && element.attendanceCount > 0 && forceDeleteTransactionalData" class="text-orange text-xs">
+                                {{ "studentAttendanceWillBeDeletedWithThem" | translate:{ count: element.attendanceCount } }}
                             </div>
                         </td>
                     </ng-container>

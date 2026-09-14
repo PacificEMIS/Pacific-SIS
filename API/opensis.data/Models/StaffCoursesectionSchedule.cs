@@ -66,11 +66,19 @@ namespace opensis.data.Models
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
         /// <summary>
-        /// True when the staff member has attendance or assignments in this course section and
-        /// therefore cannot be removed from it. Not persisted - populated for display only.
+        /// True when the staff member has assignments in this course section and therefore
+        /// cannot be removed from it. Attendance alone no longer blocks removal; see
+        /// <see cref="AttendanceCount"/> (#863). Not persisted - populated for display only.
         /// </summary>
         [NotMapped]
         public bool? HasAssociation { get; set; }
+        /// <summary>
+        /// Number of attendance records this staff member took in the course section. Those
+        /// records belong to the scheduled students; Group Delete removes them with the staff
+        /// row once the user explicitly agrees. Not persisted - populated for display only.
+        /// </summary>
+        [NotMapped]
+        public int? AttendanceCount { get; set; }
 
         [ValidateNever]
         public virtual CourseSection CourseSection { get; set; } = null!;

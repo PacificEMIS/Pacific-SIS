@@ -932,7 +932,13 @@ namespace opensis.data.Repository
 
                 if (StaffScheduleCourseSectionMasterData?.Any() == true)
                 {
-                    var StudentAttendanceMasterData = this.context?.StudentAttendance.AsNoTracking().Where(x => x.TenantId == staffListViewModel.TenantId && x.SchoolId == staffListViewModel.SchoolId && x.CourseSectionId == staffListViewModel.CourseSectionId);
+                    // Attendance no longer blocks removal (#863): it is counted per teacher so the
+                    // UI can say how many records will be removed along with the staff row.
+                    var attendanceCounts = this.context?.StudentAttendance.AsNoTracking()
+                        .Where(x => x.TenantId == staffListViewModel.TenantId && x.SchoolId == staffListViewModel.SchoolId && x.CourseSectionId == staffListViewModel.CourseSectionId)
+                        .GroupBy(x => x.StaffId)
+                        .Select(g => new { StaffId = g.Key, Count = g.Count() })
+                        .ToDictionary(g => g.StaffId, g => g.Count) ?? new Dictionary<int, int>();
 
                     var AssignmentMasterData = this.context?.Assignment.AsNoTracking().Where(x => x.TenantId == staffListViewModel.TenantId && x.SchoolId == staffListViewModel.SchoolId && x.CourseSectionId == staffListViewModel.CourseSectionId);
 
@@ -940,10 +946,9 @@ namespace opensis.data.Repository
                     // flagged rather than silently omitted from the list.
                     foreach (var scheduledStaff in StaffScheduleCourseSectionMasterData)
                     {
-                        var StudentAttendanceData = StudentAttendanceMasterData?.Where(x => x.StaffId == scheduledStaff.StaffId).FirstOrDefault();
                         var AssignmentData = AssignmentMasterData?.Where(x => x.StaffId == scheduledStaff.StaffId).FirstOrDefault();
 
-                        if (StudentAttendanceData != null || AssignmentData != null)
+                        if (AssignmentData != null)
                         {
                             staffIds.Add(scheduledStaff.StaffId);
                         }
@@ -1012,6 +1017,12 @@ namespace opensis.data.Repository
 
                         if (staffSchedule?.Any() == true)
                         {
+                            // Set in memory: the projection above is translated to SQL and a
+                            // dictionary lookup cannot be part of it.
+                            foreach (var scheduledStaff in staffSchedule.SelectMany(cs => cs.StaffCoursesectionSchedule))
+                            {
+                                scheduledStaff.AttendanceCount = attendanceCounts.TryGetValue(scheduledStaff.StaffId, out var attendanceCount) ? attendanceCount : 0;
+                            }
                             staffListView.CourseSectionsList = staffSchedule;
                             staffListView._failure = false;
                         }

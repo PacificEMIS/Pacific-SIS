@@ -45,6 +45,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GetUnassociatedStudentListByCourseSectionModel, ScheduledStudentDeleteModel } from 'src/app/models/student-schedule.model';
 import { Permissions } from '../../../models/roll-based-access.model';
+import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormControl } from '@angular/forms';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
@@ -88,6 +89,11 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   isStaffVisible: boolean = false;
   isGroupDelete: boolean = false;
   isGroupStaffDelete: boolean = false;
+  // "Force Delete Transactional Data" (#863): only Super Administrators see the checkbox. While
+  // it is unticked, rows holding attendance stay blocked exactly as before; ticked, they become
+  // selectable and their attendance is deleted with them. The API enforces the same rule.
+  isSuperAdmin: boolean = false;
+  forceDeleteTransactionalData: boolean = false;
   showCourseSectionName: boolean = false;
   showErrorMessage: string = '';
   showStaffErrorMessage: string = '';
@@ -135,6 +141,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
+    this.isSuperAdmin = this.defaultService.getUserMembershipType() === ProfilesTypes.SuperAdmin;
     this.searchCtrl = new FormControl();
     this.getAllCourse();
     this.getAllSubjectList();
@@ -426,14 +433,35 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   // Students holding transactional data can never be checked, so the master checkbox
   // must judge "all selected" against the selectable ones only.
   allSelectableChecked(): boolean {
-    const selectable = this.listOfStudents.filter((item) => !item.hasAssociation);
+    const selectable = this.listOfStudents.filter((item) => !this.isBlocked(item));
     return selectable.length > 0 && selectable.every((item) => item.checked);
   }
 
-  // Same rule for teachers: those holding attendance or assignments can never be checked.
+  // Same rule for teachers: those holding assignments can never be checked; those who took
+  // attendance only while Force Delete Transactional Data is ticked.
   allSelectableStaffChecked(): boolean {
-    const selectable = this.listOfStaffs.filter((item) => !item.hasAssociation);
+    const selectable = this.listOfStaffs.filter((item) => !this.isBlocked(item));
     return selectable.length > 0 && selectable.every((item) => item.checked);
+  }
+
+  // A row cannot be selected when it holds grades or assignments (hasAssociation), or when it
+  // holds attendance and the force option is off. Same for students and teachers.
+  isBlocked(item): boolean {
+    return !!item.hasAssociation || (item.attendanceCount > 0 && !this.forceDeleteTransactionalData);
+  }
+
+  // Turning the force option off must drop any attendance-bearing rows that were selected
+  // while it was on, so a later delete never sends them without consent.
+  onForceDeleteChange(checked: boolean) {
+    this.forceDeleteTransactionalData = checked;
+    if (!checked) {
+      this.listOfStudents.forEach(item => { if (item.attendanceCount > 0) { item.checked = false; } });
+      this.listOfStaffs.forEach(item => { if (item.attendanceCount > 0) { item.checked = false; } });
+      this.selectedStudents = this.selectedStudents.filter(item => !(item.attendanceCount > 0));
+      this.selectedStaffs = this.selectedStaffs.filter(item => !(item.attendanceCount > 0));
+    }
+    if (this.masterCheckBox) { this.masterCheckBox.checked = this.allSelectableChecked(); }
+    if (this.masterCheckBoxStaff) { this.masterCheckBoxStaff.checked = this.allSelectableStaffChecked(); }
   }
 
   someComplete(): boolean {
@@ -456,8 +484,8 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setAll(event) {
-    // Students holding transactional data cannot be deleted, so never select them.
-    this.listOfStudents.forEach(user => { user.checked = user.hasAssociation ? false : event; });
+    // Blocked students (grades, or attendance without the force option) are never selected.
+    this.listOfStudents.forEach(user => { user.checked = this.isBlocked(user) ? false : event; });
     this.studentDetails = new MatTableDataSource(this.listOfStudents);
     this.decideCheckUncheck();
   }
@@ -511,11 +539,21 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
       });
       return;
     }
+    // Attendance-bearing rows can only be selected while Force Delete Transactional Data is
+    // ticked (Super Administrators only). The confirmation then says how much attendance goes,
+    // and the API refuses such deletes unless deleteAttendance is sent by a Super Administrator (#863).
+    const attendanceCount = this.selectedStudents.reduce((sum, item) => sum + (item.attendanceCount || 0), 0)
+      + this.selectedStaffs.reduce((sum, item) => sum + (item.attendanceCount || 0), 0);
+    this.scheduledStudentDeleteModel.deleteAttendance = this.forceDeleteTransactionalData && attendanceCount > 0;
+    let message = selectedStudentsStaffsLength > 1 ? this.defaultService.translateKey('areYouSureYouWantToDeleteTheSelectedStudentsFromTheCourseSection?') : this.defaultService.translateKey('areYouSureYouWantToDeleteTheSelectedStudentFromTheCourseSection?');
+    if (attendanceCount > 0) {
+      message += ' ' + this.translateService.instant('deleteSelectedWithAttendanceConfirmation', { count: attendanceCount });
+    }
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '400px',
       data: {
-        title: this.defaultService.translateKey('areYouSure'),
-        message: selectedStudentsStaffsLength > 1 ? this.defaultService.translateKey('areYouSureYouWantToDeleteTheSelectedStudentsFromTheCourseSection?') : this.defaultService.translateKey('areYouSureYouWantToDeleteTheSelectedStudentFromTheCourseSection?')
+        title: attendanceCount > 0 ? this.defaultService.translateKey('deleteAttendanceToo') : this.defaultService.translateKey('areYouSure'),
+        message: message
       }
     });
     dialogRef.afterClosed().subscribe(dialogResult => {
@@ -625,8 +663,8 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setStaffAll(event) {
-    // Teachers holding attendance or assignments cannot be removed, so never select them.
-    this.listOfStaffs.forEach(user => { user.checked = user.hasAssociation ? false : event; });
+    // Blocked teachers (assignments, or attendance without the force option) are never selected.
+    this.listOfStaffs.forEach(user => { user.checked = this.isBlocked(user) ? false : event; });
     this.staffCoursesectionSchedule = new MatTableDataSource(this.listOfStaffs);
     this.decideStaffCheckUncheck();
   }

@@ -303,9 +303,12 @@ export class ScheduledStudentDeleteModel extends CommonField {
   studentIds: any[];
   staffIds?: any[];
   courseSectionId: number;
+  // Explicit consent to delete the attendance held by the selected rows (#863).
+  deleteAttendance: boolean;
 
   constructor() {
     super();
     this.studentIds = [];
+    this.deleteAttendance = false;
   }
 }
