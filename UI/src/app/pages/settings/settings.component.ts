@@ -33,7 +33,7 @@ import icAdministration from '@iconify/icons-ic/twotone-admin-panel-settings';
 import icAttendance from '@iconify/icons-ic/twotone-access-alarm';
 import icListOfValues from '@iconify/icons-ic/twotone-list-alt';
 import { TranslateService } from '@ngx-translate/core';
-import { NavigationService } from 'src/@vex/services/navigation.service';
+import { NavigationService } from '@vex/services/navigation.service';
 import { CryptoService } from 'src/app/services/Crypto.service';
 import { PermissionCategory, PermissionGroup, RolePermissionListViewModel } from '../../models/roll-based-access.model';
 import { Router } from '@angular/router';

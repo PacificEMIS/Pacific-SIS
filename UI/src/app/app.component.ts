@@ -24,11 +24,11 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, LOCALE_ID, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { ConfigService } from '../@vex/services/config.service';
+import { ConfigService } from '@vex/services/config.service';
 import { Settings } from 'luxon';
 import { DOCUMENT } from '@angular/common';
 import { Platform } from '@angular/cdk/platform';
-import { NavigationService } from '../@vex/services/navigation.service';
+import { NavigationService } from '@vex/services/navigation.service';
 import icLayers from '@iconify/icons-ic/twotone-layers';
 import icschool from '@iconify/icons-ic/baseline-account-balance';
 import icinfo from '@iconify/icons-ic/info';
@@ -44,13 +44,13 @@ import icreports from '@iconify/icons-ic/baseline-list-alt';
 import ictools from '@iconify/icons-ic/baseline-construction';
 import icparents from '@iconify/icons-ic/baseline-escalator-warning';
 import icbook from '@iconify/icons-ic/baseline-book';
-import { LayoutService } from '../@vex/services/layout.service';
+import { LayoutService } from '@vex/services/layout.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, takeUntil, tap } from 'rxjs/operators';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { SplashScreenService } from '../@vex/services/splash-screen.service';
-import { Style, StyleService } from '../@vex/services/style.service';
-import { ConfigName } from '../@vex/interfaces/config-name.model';
+import { SplashScreenService } from '@vex/services/splash-screen.service';
+import { Style, StyleService } from '@vex/services/style.service';
+import { ConfigName } from '@vex/interfaces/config-name.model';
 import { SchoolService } from './services/school.service';
 import { Subject, Subscription } from 'rxjs';
 import { PermissionGroupListViewModel, RolePermissionListViewModel } from './models/roll-based-access.model';
@@ -60,11 +60,11 @@ import { CryptoService } from './services/Crypto.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from './services/common.service';
 import { UserIdleService } from 'angular-user-idle';
-import { SessionExpireAlertComponent } from 'src/@vex/layout/session-expire/session-expire-alert/session-expire-alert.component';
+import { SessionExpireAlertComponent } from '@vex/layout/session-expire/session-expire-alert/session-expire-alert.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DefaultValuesService } from './common/default-values.service';
 import { UserViewModel } from './models/user.model';
-import { SessionService } from 'src/@vex/services/session.service';
+import { SessionService } from '@vex/services/session.service';
 import { LoginService } from './services/login.service';
 import * as jwt_decode from 'jwt-decode';
 

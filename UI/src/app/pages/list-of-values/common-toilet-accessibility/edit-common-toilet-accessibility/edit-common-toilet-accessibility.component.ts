@@ -31,8 +31,8 @@ import icClose from '@iconify/icons-ic/twotone-close';
 import { LovAddView } from '../../../../models/lov.model';
 import { ValidationService } from '../../../shared/validation.service';
 import { CommonService } from '../../../../services/common.service';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({

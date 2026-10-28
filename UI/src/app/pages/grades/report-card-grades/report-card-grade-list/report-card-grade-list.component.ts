@@ -31,8 +31,8 @@ import icSearch from '@iconify/icons-ic/search';
 import icFilterList from '@iconify/icons-ic/filter-list';
 import { Router} from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
-import { stagger40ms } from '../../../../../@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger40ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { EditReportCardGradeComponent } from '../edit-report-card-grade/edit-report-card-grade.component';
 

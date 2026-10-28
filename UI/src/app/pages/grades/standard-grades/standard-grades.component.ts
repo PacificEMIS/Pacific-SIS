@@ -41,8 +41,8 @@ import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confi
 import { MatTableDataSource } from '@angular/material/table';
 import { LoaderService } from 'src/app/services/loader.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
-import { stagger40ms } from '../../../../@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger40ms } from '@vex/animations/stagger.animation';
 import { MatSort } from '@angular/material/sort';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../models/roll-based-access.model';
 import { CryptoService } from '../../../services/Crypto.service';

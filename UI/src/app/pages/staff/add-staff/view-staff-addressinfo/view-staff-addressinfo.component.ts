@@ -28,7 +28,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { StaffAddModel } from '../../../../models/staff.model';
 import icCheckBox from '@iconify/icons-ic/check-box';
 import icCheckBoxOutlineBlank from '@iconify/icons-ic/check-box-outline-blank';
-import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StaffService } from 'src/app/services/staff.service';
 

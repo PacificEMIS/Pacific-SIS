@@ -25,9 +25,9 @@ All rights reserved.
 
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { fadeInUp400ms } from '../../../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../../../@vex/animations/stagger.animation';
-import { fadeInRight400ms } from '../../../../../../@vex/animations/fade-in-right.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { TranslateService } from '@ngx-translate/core';
 import icEdit from '@iconify/icons-ic/twotone-edit';
 import icDelete from '@iconify/icons-ic/twotone-delete';

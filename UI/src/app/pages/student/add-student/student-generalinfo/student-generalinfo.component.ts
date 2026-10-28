@@ -25,9 +25,9 @@ All rights reserved.
 
 import { Component, OnInit, Input, ViewChild, ChangeDetectorRef, OnDestroy, EventEmitter, Output, AfterViewInit, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
-import { fadeInRight400ms } from '../../../../../@vex/animations/fade-in-right.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { StudentService } from '../../../../services/student.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';

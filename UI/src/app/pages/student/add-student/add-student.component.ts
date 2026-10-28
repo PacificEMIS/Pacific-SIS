@@ -31,11 +31,11 @@ import {
   OnInit,
 } from "@angular/core";
 import { Subject } from "rxjs";
-import { fadeInRight400ms } from "../../../../@vex/animations/fade-in-right.animation";
+import { fadeInRight400ms } from "@vex/animations/fade-in-right.animation";
 import { ImageCropperService } from "src/app/services/image-cropper.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { stagger60ms } from "../../../../@vex/animations/stagger.animation";
-import { fadeInUp400ms } from "../../../../@vex/animations/fade-in-up.animation";
+import { stagger60ms } from "@vex/animations/stagger.animation";
+import { fadeInUp400ms } from "@vex/animations/fade-in-up.animation";
 import icSchool from "@iconify/icons-ic/outline-school";
 import icCalendar from "@iconify/icons-ic/outline-calendar-today";
 import icAlarm from "@iconify/icons-ic/outline-alarm";

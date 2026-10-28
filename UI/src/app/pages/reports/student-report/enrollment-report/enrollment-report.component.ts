@@ -36,9 +36,9 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { LoaderService } from 'src/app/services/loader.service';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
-import { stagger40ms } from 'src/@vex/animations/stagger.animation';
-import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger40ms } from '@vex/animations/stagger.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { ReportService } from '../../../../services/report.service'
 import { GetStudentEnrollmentReportModel } from 'src/app/models/report.model';
 import { Subject } from 'rxjs';

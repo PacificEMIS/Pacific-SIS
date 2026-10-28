@@ -5,12 +5,12 @@ import { RecalculateDailyAttendanceComponent } from './recalculate-daily-attenda
 import { MatIconModule } from '@angular/material/icon';
 import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
-import { SecondaryToolbarModule } from '../../../../@vex/components/secondary-toolbar/secondary-toolbar.module';
-import { BreadcrumbsModule } from '../../../../@vex/components/breadcrumbs/breadcrumbs.module';
-import { PageLayoutModule } from '../../../../@vex/components/page-layout/page-layout.module';
-import { ContainerModule } from '../../../../@vex/directives/container/container.module';
+import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
+import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
+import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module';
+import { ContainerModule } from '@vex/directives/container/container.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { ScrollbarModule } from '../../../../@vex/components/scrollbar/scrollbar.module';
+import { ScrollbarModule } from '@vex/components/scrollbar/scrollbar.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';

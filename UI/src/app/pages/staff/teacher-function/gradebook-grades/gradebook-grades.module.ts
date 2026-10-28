@@ -4,11 +4,11 @@ import { CommonModule } from '@angular/common';
 import { GradebookGradesRoutingModule } from './gradebook-grades-routing.module';
 import { GradebookGradesComponent } from './gradebook-grades.component'
 import { RouterModule } from '@angular/router';
-import { SecondaryToolbarModule } from 'src/@vex/components/secondary-toolbar/secondary-toolbar.module';
+import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { PageLayoutModule } from 'src/@vex/components/page-layout/page-layout.module';
-import { ContainerModule } from 'src/@vex/directives/container/container.module';
+import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module';
+import { ContainerModule } from '@vex/directives/container/container.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';

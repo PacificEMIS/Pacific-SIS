@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 
 import { AccessLogRoutingModule } from './access-log-routing.module';
 import { AccessLogComponent } from './access-log.component';
-import { SecondaryToolbarModule } from 'src/@vex/components/secondary-toolbar/secondary-toolbar.module';
-import { BreadcrumbsModule } from 'src/@vex/components/breadcrumbs/breadcrumbs.module';
+import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
+import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { PageLayoutModule } from 'src/@vex/components/page-layout/page-layout.module';
-import { ContainerModule } from 'src/@vex/directives/container/container.module';
+import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module';
+import { ContainerModule } from '@vex/directives/container/container.module';
 import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule } from '@angular/material/paginator';

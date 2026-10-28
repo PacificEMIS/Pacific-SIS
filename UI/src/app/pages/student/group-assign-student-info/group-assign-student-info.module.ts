@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 
 import { GroupAssignStudentInfoRoutingModule } from './group-assign-student-info-routing.module';
 import { GroupAssignStudentInfoComponent } from './group-assign-student-info.component';
-import { SecondaryToolbarModule } from 'src/@vex/components/secondary-toolbar/secondary-toolbar.module';
-import { BreadcrumbsModule } from 'src/@vex/components/breadcrumbs/breadcrumbs.module';
+import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
+import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { PageLayoutModule } from 'src/@vex/components/page-layout/page-layout.module';
-import { ContainerModule } from 'src/@vex/directives/container/container.module';
+import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module';
+import { ContainerModule } from '@vex/directives/container/container.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxModule } from '@angular/material/checkbox';

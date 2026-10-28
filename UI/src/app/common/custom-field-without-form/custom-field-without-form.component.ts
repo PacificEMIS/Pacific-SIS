@@ -34,7 +34,7 @@ import { SharedFunction } from '../../../../src/app/pages/shared/shared-function
 import { CustomFieldService } from '../../../../src/app/services/custom-field.service';
 import { SchoolService } from '../../../../src/app/services/school.service';
 import { CustomFieldsValueModel } from '../../models/custom-fields-value.model';
-import { stagger60ms } from '../../../../src/@vex/animations/stagger.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
 import { StudentAddModel } from '../../models/student.model';
 import { StudentService } from '../../../../src/app/services/student.service';
 import { StaffAddModel } from '../../models/staff.model';

@@ -24,8 +24,8 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input } from '@angular/core';
-import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
-import { stagger40ms } from '../../../../@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger40ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import icSettings from '@iconify/icons-ic/twotone-settings';
 import icAdd from '@iconify/icons-ic/baseline-add';

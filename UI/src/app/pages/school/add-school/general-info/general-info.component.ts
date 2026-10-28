@@ -27,9 +27,9 @@ All rights reserved.
 import { Component, OnInit, Input, ViewChild, AfterViewInit, OnDestroy, ElementRef } from '@angular/core';
 import { FormControl, NgForm, Validators } from '@angular/forms';
 import { CheckSchoolInternalIdViewModel, SchoolAddViewModel } from '../../../../models/school-master.model';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
-import { fadeInRight400ms } from '../../../../../@vex/animations/fade-in-right.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { SchoolService } from '../../../../services/school.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as _moment from 'moment';

@@ -36,9 +36,9 @@ import { FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
-import { stagger40ms } from '../../../../../@vex/animations/stagger.animation';
-import { fadeInRight400ms } from '../../../../../@vex/animations/fade-in-right.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger40ms } from '@vex/animations/stagger.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { CommonService } from 'src/app/services/common.service';
 
 import { DefaultValuesService } from 'src/app/common/default-values.service';

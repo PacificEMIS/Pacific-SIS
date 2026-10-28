@@ -27,8 +27,8 @@ import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import icClose from '@iconify/icons-ic/twotone-close';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
 import { EditorChangeContent, EditorChangeSelection } from 'ngx-quill';
 import { GetAllMembersList } from '../../../../models/membership.model';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -55,7 +55,7 @@ import { OnlySchoolListModel } from 'src/app/models/get-all-school.model';
   templateUrl: './edit-notice.component.html',
   styleUrls: ['./edit-notice.component.scss',
     '../../../../../../node_modules/quill/dist/quill.snow.css',
-    '../../../../../@vex/styles/partials/plugins/_quill.scss'],
+    '../../../../vex/styles/partials/plugins/_quill.scss'],
   animations: [
     stagger60ms,
     fadeInUp400ms

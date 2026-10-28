@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ForgotPasswordComponent } from './forgot-password.component';
-import { VexRoutes } from '../../../../@vex/interfaces/vex-route.interface';
+import { VexRoutes } from '@vex/interfaces/vex-route.interface';
 
 const routes: VexRoutes = [
   {

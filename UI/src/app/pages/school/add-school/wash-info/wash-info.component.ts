@@ -24,13 +24,13 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, EventEmitter, Output, Input, ViewChild, OnDestroy } from '@angular/core';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
 import { WashInfoEnum } from '../../../../enums/wash-info.enum';
 import { SchoolAddViewModel } from '../../../../models/school-master.model';
-import { fadeInRight400ms } from '../../../../../@vex/animations/fade-in-right.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { SchoolService } from '../../../../../app/services/school.service'
 import { MatSnackBar } from '@angular/material/snack-bar';

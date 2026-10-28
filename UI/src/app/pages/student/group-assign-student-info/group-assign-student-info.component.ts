@@ -12,9 +12,9 @@ import { debounceTime, distinctUntilChanged, take, takeUntil } from 'rxjs/operat
 import { ReplaySubject, Subject } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { ScheduleStudentListViewModel } from '../../../models/student-schedule.model';
-import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
-import { stagger40ms, stagger60ms } from 'src/@vex/animations/stagger.animation';
-import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger40ms, stagger60ms } from '@vex/animations/stagger.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { SearchFilter, SearchFilterListViewModel } from '../../../models/search-filter.model';
 import { CommonService } from '../../../services/common.service';
 import { MatSelect } from '@angular/material/select';

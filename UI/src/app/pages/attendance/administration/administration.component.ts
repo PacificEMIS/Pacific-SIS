@@ -41,9 +41,9 @@ import { StudentAttendanceService } from "../../../services/student-attendance.s
 import { SharedFunction } from "../../shared/shared-function";
 import { AddCommentsComponent } from "./add-comments/add-comments.component";
 import { StudentAttendanceCommentComponent } from "./student-attendance-comment/student-attendance-comment.component";
-import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
-import { stagger40ms, stagger60ms } from '../../../../@vex/animations/stagger.animation';
-import { fadeInRight400ms } from "../../../../@vex/animations/fade-in-right.animation";
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger40ms, stagger60ms } from '@vex/animations/stagger.animation';
+import { fadeInRight400ms } from "@vex/animations/fade-in-right.animation";
 import { AdvancedSearchExpansionModel } from "src/app/models/common.model";
 
 export interface StudentList {

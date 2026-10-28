@@ -9,7 +9,7 @@ import icEventAvailable from '@iconify/icons-ic/twotone-event-available';
 import icAdmionPanelSettings from '@iconify/icons-ic/twotone-admin-panel-settings';
 import { TranslateService } from '@ngx-translate/core';
 import { PermissionCategory } from '../../models/roll-based-access.model';
-import { NavigationService } from '../../../@vex/services/navigation.service';
+import { NavigationService } from '@vex/services/navigation.service';
 import { PageRolesPermission } from '../../common/page-roles-permissions.service';
 import { DefaultValuesService } from '../../common/default-values.service';
 import { Router } from '@angular/router';

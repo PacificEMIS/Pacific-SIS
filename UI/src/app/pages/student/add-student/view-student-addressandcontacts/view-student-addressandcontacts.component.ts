@@ -28,7 +28,7 @@ import { SchoolCreate } from '../../../../enums/school-create.enum';
 import icCheckBoxOutlineBlank from '@iconify/icons-ic/check-box-outline-blank';
 import icCheckBox from '@iconify/icons-ic/check-box';
 import { StudentAddModel } from '../../../../models/student.model';
-import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

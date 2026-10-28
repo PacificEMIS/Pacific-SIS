@@ -52,7 +52,7 @@ import { ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/co
 import { CryptoService } from '../../../../services/Crypto.service';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../../models/roll-based-access.model';
 import { GradeScaleModel } from '../../../../models/grades.model';
-import { stagger40ms } from '../../../../../@vex/animations/stagger.animation';
+import { stagger40ms } from '@vex/animations/stagger.animation';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';

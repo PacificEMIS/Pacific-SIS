@@ -32,9 +32,8 @@ import icStudent from '@iconify/icons-ic/twotone-school';
 import icStaff from '@iconify/icons-ic/twotone-people';
 import icParent from '@iconify/icons-ic/twotone-escalator-warning';
 import icMissingAttendance from '@iconify/icons-ic/twotone-alarm-off';
-import { defaultChartOptions } from '../../../../@vex/utils/default-chart-options';
 import { Order, tableSalesData } from '../../../../static-data/table-sales-data';
-import { TableColumn } from '../../../../@vex/interfaces/table-column.interface';
+import { TableColumn } from '@vex/interfaces/table-column.interface';
 import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
 import icPreview from '@iconify/icons-ic/round-preview';
 import icPeople from '@iconify/icons-ic/twotone-people';
@@ -117,41 +116,6 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
     }
   ];
   tableData = tableSalesData;
-
-  series: ApexAxisChartSeries = [{
-    name: 'Subscribers',
-    data: [28, 40, 36, 0, 52, 38, 60, 55, 67, 33, 89, 44]
-  }];
-
-  userSessionsSeries: ApexAxisChartSeries = [
-    {
-      name: 'Attendance',
-      data: [38480, 40203, 36890, 41520, 38005, 34060, 23150, 35002, 29161, 38054, 40250, 36492]
-    }
-  ];
-
-  salesSeries: ApexAxisChartSeries = [{
-    name: 'Sales',
-    data: [28, 40, 36, 0, 52, 38, 60, 55, 99, 54, 38, 87]
-  }];
-
-  pageViewsSeries: ApexAxisChartSeries = [{
-    name: 'Page Views',
-    data: [405, 800, 200, 600, 105, 788, 600, 204]
-  }];
-
-  uniqueUsersSeries: ApexAxisChartSeries = [{
-    name: 'Unique Users',
-    data: [356, 806, 600, 754, 432, 854, 555, 1004]
-  }];
-
-  uniqueUsersOptions = defaultChartOptions({
-    chart: {
-      type: 'area',
-      height: 100
-    },
-    colors: ['#ff9800']
-  });
 
   icGroup = icGroup;
   icPageView = icPageView;

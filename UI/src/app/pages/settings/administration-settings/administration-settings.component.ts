@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewChecked, AfterContentChecked } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import icAdd from '@iconify/icons-ic/baseline-add';
 import icSuperadmin from '@iconify/icons-ic/baseline-admin-panel-settings';
 import icAdmin from '@iconify/icons-ic/baseline-account-box';

@@ -24,9 +24,9 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
-import { stagger60ms } from '../../../../@vex/animations/stagger.animation';
-import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { LoaderService } from 'src/app/services/loader.service';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';

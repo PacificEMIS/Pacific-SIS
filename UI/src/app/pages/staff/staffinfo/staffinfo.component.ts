@@ -24,10 +24,10 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
-import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
-import { stagger40ms } from '../../../../@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger40ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
-import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { RollBasedAccessService } from '../../../services/roll-based-access.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 

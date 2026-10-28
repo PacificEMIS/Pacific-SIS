@@ -25,9 +25,9 @@ All rights reserved.
 
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
-import { stagger60ms } from 'src/@vex/animations/stagger.animation';
-import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 
 @Component({
   selector: 'vex-input-final-grade',

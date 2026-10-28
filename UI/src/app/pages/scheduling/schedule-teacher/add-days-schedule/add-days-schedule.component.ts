@@ -27,8 +27,8 @@ import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import icClose from "@iconify/icons-ic/twotone-close";
 import { TranslateService } from "@ngx-translate/core";
-import { fadeInUp400ms } from "../../../../../@vex/animations/fade-in-up.animation";
-import { stagger60ms } from "../../../../../@vex/animations/stagger.animation";
+import { fadeInUp400ms } from "@vex/animations/fade-in-up.animation";
+import { stagger60ms } from "@vex/animations/stagger.animation";
 import {
   CalendarEvent,
   CalendarMonthViewBeforeRenderEvent,

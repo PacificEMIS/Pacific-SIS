@@ -25,8 +25,8 @@ All rights reserved.
 
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import icClose from '@iconify/icons-ic/twotone-close';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CourseManagerService } from '../../../../services/course-manager.service';

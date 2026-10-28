@@ -26,8 +26,8 @@ All rights reserved.
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import icClose from '@iconify/icons-ic/twotone-close';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MarkingPeriodAddModel, SemesterAddModel, QuarterAddModel, ProgressPeriodAddModel } from '../../../../models/marking-period.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MarkingPeriodService } from '../../../../services/marking-period.service';

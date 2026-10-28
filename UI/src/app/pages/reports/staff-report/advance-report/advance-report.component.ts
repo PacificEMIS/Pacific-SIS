@@ -19,9 +19,9 @@ import { debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/oper
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import icSearch from '@iconify/icons-ic/search';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
-import { stagger40ms } from 'src/@vex/animations/stagger.animation';
-import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger40ms } from '@vex/animations/stagger.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { GetStaffAdvancedReportModel } from 'src/app/models/report.model';
 import { ReportService } from 'src/app/services/report.service';
 import { SharedFunction } from 'src/app/pages/shared/shared-function';

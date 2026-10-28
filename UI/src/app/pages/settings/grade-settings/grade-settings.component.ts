@@ -26,7 +26,7 @@ All rights reserved.
 import { Component, OnInit } from '@angular/core';
 import { RolePermissionListViewModel } from 'src/app/models/roll-based-access.model';
 import { CryptoService } from 'src/app/services/Crypto.service';
-import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { TranslateService } from '@ngx-translate/core';

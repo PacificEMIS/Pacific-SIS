@@ -33,8 +33,8 @@
             ],
             "styles": [
               "node_modules/angular-calendar/css/angular-calendar.css",
-              "src/@vex/styles/partials/plugins/_angular-calendar.scss",
-              "src/@vex/styles/tailwind.scss",
+              "src/app/vex/styles/partials/plugins/_angular-calendar.scss",
+              "src/app/vex/styles/tailwind.scss",
               "src/styles.scss"
             ],
             "scripts": [],
@@ -43,8 +43,6 @@
             },
             "allowedCommonJsDependencies": [
               "simplebar",
-              "highlight.js",
-              "faker",
               "showdown",
               "core-js/modules/es.string.match",
               "core-js/modules/es.array.for-each",

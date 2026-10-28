@@ -12,7 +12,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { GradeLevelService } from 'src/app/services/grade-level.service';
 import { LoaderService } from 'src/app/services/loader.service';
 import { ReportService } from 'src/app/services/report.service';
-import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 
 export interface StudentListData {
   studentName: string;

@@ -24,14 +24,13 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { LayoutService } from '../../@vex/services/layout.service';
+import { LayoutService } from '@vex/services/layout.service';
 import { filter, map, startWith } from 'rxjs/operators';
 import { NavigationEnd, Router } from '@angular/router';
-import { checkRouterChildsData } from '../../@vex/utils/check-router-childs-data';
+import { checkRouterChildsData } from '@vex/utils/check-router-childs-data';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { ConfigService } from '../../@vex/services/config.service';
+import { ConfigService } from '@vex/services/config.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { SidebarComponent } from '../../@vex/components/sidebar/sidebar.component';
 
 
 @UntilDestroy()
@@ -52,8 +51,6 @@ export class CustomLayoutComponent implements OnInit {
     map(() => checkRouterChildsData(this.router.routerState.root.snapshot, data => data.toolbarShadowEnabled))
   );
 
-  @ViewChild('configpanel', { static: true }) configpanel: SidebarComponent;
-
   constructor(private layoutService: LayoutService,
               private configService: ConfigService,
               private breakpointObserver: BreakpointObserver,
@@ -61,8 +58,5 @@ export class CustomLayoutComponent implements OnInit {
 
   ngOnInit() {
     this.router.url === '/school' ? this.router.navigate(['/school', 'dashboards']) : null;
-    this.layoutService.configpanelOpen$.pipe(
-      untilDestroyed(this)
-    ).subscribe(open => open ? this.configpanel.open() : this.configpanel.close());
   }
 }

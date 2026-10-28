@@ -1,11 +1,10 @@
 @import "~simplebar/dist/simplebar.css";
-@import "~highlight.js/styles/androidstudio.css";
 // Vex Core
 // @import "~bootstrap/dist/css/bootstrap.css";
-@import "./@vex/styles/core";
+@import "./app/vex/styles/core";
 
 @import "../node_modules/quill/dist/quill.snow.css";
-@import "./@vex/styles/partials/plugins/_quill.scss";
+@import "./app/vex/styles/partials/plugins/_quill.scss";
 @import "~ng-pick-datetime/assets/style/picker.min.css";
 
 .mat-button-toggle-appearance-standard {
@@ -487,7 +486,7 @@
    --sidenav-background: #333333;
   }
 
-  All possible variables can be found in @vex/styles/core or by simply inspecting the element you want to change
+  All possible variables can be found in app/vex/styles/core or by simply inspecting the element you want to change
   in Chrome/Firefox DevTools
 */
 

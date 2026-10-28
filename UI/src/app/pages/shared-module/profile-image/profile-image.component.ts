@@ -27,7 +27,7 @@ import { Component, OnInit, ViewChild, TemplateRef, Input, OnDestroy, OnChanges 
 import { ImageCroppedEvent, base64ToFile } from 'ngx-image-cropper';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import icClose from '@iconify/icons-ic/twotone-close';
 import icUpload from '@iconify/icons-ic/cloud-upload';
 import { ImageCropperService } from '../../../services/image-cropper.service';

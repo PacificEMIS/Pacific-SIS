@@ -34,7 +34,7 @@ import { RolePermissionListViewModel, RolePermissionViewModel, PermissionCategor
 import { NgForm } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CryptoService } from '../../../services/Crypto.service';
-import { NavigationService } from 'src/@vex/services/navigation.service';
+import { NavigationService } from '@vex/services/navigation.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';

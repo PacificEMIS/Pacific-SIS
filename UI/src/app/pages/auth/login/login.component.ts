@@ -30,7 +30,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import icVisibility from '@iconify/icons-ic/twotone-visibility';
 import icVisibilityOff from '@iconify/icons-ic/twotone-visibility-off';
 import icLanguage from '@iconify/icons-ic/twotone-language';
-import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { UserViewModel } from '../../../models/user.model';
 import { LoginService } from '../../../services/login.service';
 import { Observable, timer } from 'rxjs';

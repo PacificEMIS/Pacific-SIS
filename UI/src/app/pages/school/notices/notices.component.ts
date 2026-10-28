@@ -27,8 +27,8 @@ import { ChangeDetectionStrategy, AfterViewChecked, ChangeDetectorRef, Component
 import icArrowDropDown from '@iconify/icons-ic/arrow-drop-down';
 import icAdd from '@iconify/icons-ic/add';
 import { MatDialog } from '@angular/material/dialog';
-import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
 import { EditNoticeComponent } from '../notices/edit-notice/edit-notice.component';
 import { NoticeService } from '../../../services/notice.service';
 import { NoticeListViewModel } from '../../../models/notice.model';

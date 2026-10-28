@@ -25,9 +25,9 @@ All rights reserved.
 
 import { Component, Input, OnDestroy, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
-import { fadeInRight400ms } from '../../../../../@vex/animations/fade-in-right.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { CountryModel } from '../../../../models/country.model';
 import { StaffAddModel } from '../../../../models/staff.model';

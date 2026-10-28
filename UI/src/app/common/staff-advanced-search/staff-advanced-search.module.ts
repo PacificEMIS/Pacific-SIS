@@ -25,10 +25,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { IconModule } from '@visurel/iconify-angular';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { BreadcrumbsModule } from 'src/@vex/components/breadcrumbs/breadcrumbs.module';
-import { PageLayoutModule } from 'src/@vex/components/page-layout/page-layout.module';
-import { SecondaryToolbarModule } from 'src/@vex/components/secondary-toolbar/secondary-toolbar.module';
-import { ContainerModule } from 'src/@vex/directives/container/container.module';
+import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
+import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module';
+import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
+import { ContainerModule } from '@vex/directives/container/container.module';
 import { SharedModuleModule } from 'src/app/pages/shared-module/shared-module.module';
 import { StaffinfoRoutingModule } from 'src/app/pages/staff/staffinfo/staffinfo-routing-module';
 

@@ -23,9 +23,9 @@ import { ReportCardService } from 'src/app/services/report-card.service';
 import { SearchFilterAddViewModel, SearchFilterListViewModel } from 'src/app/models/search-filter.model';
 import { StudentInfoReportModel } from 'src/app/models/student-info-report.model';
 import { StudentReportService } from 'src/app/services/student-report.service';
-import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
-import { stagger40ms } from 'src/@vex/animations/stagger.animation';
-import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger40ms } from '@vex/animations/stagger.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 
 

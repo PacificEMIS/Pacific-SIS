@@ -27,8 +27,8 @@ import { Component, ElementRef, Inject, OnDestroy, OnInit, Optional, ViewChild }
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import icClose from '@iconify/icons-ic/twotone-close';
 import icAdd from '@iconify/icons-ic/add-circle-outline';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
 import { GetAllGradeLevelsModel } from '../../../../models/grade-level.model';
 import { GradeLevelService } from '../../../../services/grade-level.service';
 import { LoaderService } from '../../../../services/loader.service';

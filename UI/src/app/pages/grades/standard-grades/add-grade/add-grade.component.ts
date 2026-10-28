@@ -32,8 +32,8 @@ import { GradeAddViewModel } from 'src/app/models/grades.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GradesService } from 'src/app/services/grades.service';
 import { ValidationService } from 'src/app/pages/shared/validation.service';
-import { stagger60ms } from 'src/@vex/animations/stagger.animation';
-import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 

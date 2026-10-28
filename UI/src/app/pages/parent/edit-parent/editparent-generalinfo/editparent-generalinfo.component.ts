@@ -25,9 +25,9 @@ All rights reserved.
 
 import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormControl, NgForm, Validators } from '@angular/forms';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
-import { fadeInRight400ms } from '../../../../../@vex/animations/fade-in-right.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { TranslateService } from '@ngx-translate/core';
 import icAdd from '@iconify/icons-ic/baseline-add';
 import icClear from '@iconify/icons-ic/baseline-clear';

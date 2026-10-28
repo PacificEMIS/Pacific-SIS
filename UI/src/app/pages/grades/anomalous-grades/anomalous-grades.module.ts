@@ -14,10 +14,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 
-import { SecondaryToolbarModule } from '../../../../@vex/components/secondary-toolbar/secondary-toolbar.module';
-import { BreadcrumbsModule } from '../../../../@vex/components/breadcrumbs/breadcrumbs.module';
-import { PageLayoutModule } from '../../../../@vex/components/page-layout/page-layout.module';
-import { ContainerModule } from '../../../../@vex/directives/container/container.module';
+import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
+import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
+import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module';
+import { ContainerModule } from '@vex/directives/container/container.module';
 import { SharedModuleModule } from '../../shared-module/shared-module.module';
 
 import { AnomalousGradesRoutingModule } from './anomalous-grades-routing.module';

@@ -24,9 +24,9 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { fadeInRight400ms } from '../../../@vex/animations/fade-in-right.animation';
-import { fadeInUp400ms } from '../../../@vex/animations/fade-in-up.animation';
-import { stagger40ms } from '../../../@vex/animations/stagger.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger40ms } from '@vex/animations/stagger.animation';
 import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
 import icAdd from '@iconify/icons-ic/baseline-add';
 import icSearch from '@iconify/icons-ic/search';

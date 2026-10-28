@@ -9,7 +9,7 @@ import { FillAttendanceViewModel } from '../../../models/fill-attendance.model';
 import { LoaderService } from '../../../services/loader.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 
 @Component({
   selector: 'vex-fill-attendance',

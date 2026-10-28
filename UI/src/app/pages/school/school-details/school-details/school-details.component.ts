@@ -35,9 +35,9 @@ import { GetAllSchoolModel,AllSchoolListModel } from '../../../../models/get-all
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router} from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions } from '@angular/material/form-field';
-import { stagger40ms } from '../../../../../@vex/animations/stagger.animation';
+import { stagger40ms } from '@vex/animations/stagger.animation';
 import { MatSelectChange } from '@angular/material/select';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';

@@ -29,8 +29,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ControlContainer, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import icClose from '@iconify/icons-ic/twotone-close';
 import  icWarning  from '@iconify/icons-ic/warning';
-import { fadeInUp400ms } from '../../../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../../../@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {WashInfoEnum} from '../../../../../enums/wash-info.enum'
 import { TranslateService } from '@ngx-translate/core';

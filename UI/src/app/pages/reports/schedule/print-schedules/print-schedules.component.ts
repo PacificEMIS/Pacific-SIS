@@ -44,9 +44,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
-import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
-import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
-import { stagger40ms } from 'src/@vex/animations/stagger.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger40ms } from '@vex/animations/stagger.animation';
 import { ReportService } from 'src/app/services/report.service';
 
 @Component({

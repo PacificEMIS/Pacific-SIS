@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
-import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
+import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({

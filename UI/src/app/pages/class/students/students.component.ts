@@ -30,8 +30,8 @@ import { ScheduleStudentListViewModel } from 'src/app/models/student-schedule.mo
 import { StudentScheduleService } from 'src/app/services/student-schedule.service';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../@vex/animations/stagger.animation';
+import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
+import { stagger60ms } from '@vex/animations/stagger.animation';
 import { LoaderService } from 'src/app/services/loader.service';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
