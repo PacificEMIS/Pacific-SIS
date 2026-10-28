@@ -26,6 +26,7 @@ import { CalendarModule as AngularCalendarModule, DateAdapter } from 'angular-ca
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CourseSectionModule } from './course-section/course-section.module';
+import { CloneCourseSectionsModule } from './clone-course-sections/clone-course-sections.module';
 
 @NgModule({
   declarations: [CourseManagerComponent],
@@ -37,6 +38,7 @@ import { CourseSectionModule } from './course-section/course-section.module';
     }),
     CourseManagerRoutingModule,
     CourseSectionModule,
+    CloneCourseSectionsModule,
     SecondaryToolbarModule,
     BreadcrumbsModule,
     MatIconModule,

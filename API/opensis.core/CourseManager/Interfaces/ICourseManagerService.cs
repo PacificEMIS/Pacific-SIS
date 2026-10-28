@@ -48,6 +48,7 @@ namespace opensis.core.CourseManager.Interfaces
         public CourseSectionViewModel GetAllCourseSection(CourseSectionViewModel courseSectionViewModel);
         public CourseSectionAddViewModel UpdateCourseSection(CourseSectionAddViewModel courseSectionAddViewModel);
         public CourseSectionAddViewModel DeleteCourseSection(CourseSectionAddViewModel courseSectionAddViewModel);
+        public CloneCourseSectionsViewModel CloneCourseSections(CloneCourseSectionsViewModel cloneCourseSectionsViewModel);
         public CourseStandardForCourseViewModel GetAllCourseStandardForCourse(CourseStandardForCourseViewModel courseStandardForCourseViewModel);
         //public DeleteScheduleViewModel DeleteSchedule(DeleteScheduleViewModel deleteScheduleViewModel);
         public SearchCourseSectionViewModel SearchCourseSectionForSchedule(SearchCourseSectionViewModel searchCourseSectionViewModel);

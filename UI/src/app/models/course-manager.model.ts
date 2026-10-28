@@ -308,3 +308,28 @@ export class CourseSectionByStaffModel extends CommonField {
         super();
     }
 }
+
+export class CourseSectionCloneResultModel {
+    courseTitle: string;
+    courseSectionName: string;
+    sourceCourseSectionId: number;
+    newCourseSectionId: number;
+    cloned: boolean;
+    reason: string;
+    warnings: string[];
+}
+
+export class CloneCourseSectionsModel extends CommonField {
+    sourceAcademicYear: number;
+    targetAcademicYear: number;
+    courseId: number;
+    includeStaff: boolean = true;
+    dryRun: boolean = false;
+    createdBy: string;
+    clonedCount: number;
+    skippedCount: number;
+    results: CourseSectionCloneResultModel[] = [];
+    constructor() {
+        super();
+    }
+}

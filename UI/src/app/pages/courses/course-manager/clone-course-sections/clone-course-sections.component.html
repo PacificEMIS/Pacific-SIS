@@ -1,0 +1,79 @@
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+    <h2 class="headline m-0" fxFlex="auto">
+        {{'cloneCourseSections' | translate}}
+        <span *ngIf="data?.courseTitle" class="text-secondary font-normal"> - {{data.courseTitle}}</span>
+    </h2>
+    <button class="text-secondary" (click)="close()" mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+
+<mat-dialog-content fxLayout="column" class="pt-4">
+    <p class="text-secondary mb-4">
+        {{(data?.courseId ? 'cloneCourseExplanation' : 'cloneExplanation') | translate}}
+    </p>
+
+    <form [formGroup]="form" class="md:flex md:items-center">
+        <mat-form-field appearance="outline" class="w-full md:w-1/2 md:mr-4">
+            <mat-label>{{'cloneSourceYear' | translate}}</mat-label>
+            <mat-select formControlName="sourceYear" (selectionChange)="onOptionsChanged()">
+                <mat-option *ngFor="let year of academicYears" [value]="year.academyYear">{{year.year}}</mat-option>
+            </mat-select>
+            <mat-hint>{{'cloneTargetYear' | translate}}: {{currentYearLabel}}</mat-hint>
+        </mat-form-field>
+        <mat-checkbox formControlName="includeStaff" color="primary" class="mb-4 md:mb-0" (change)="onOptionsChanged()">
+            {{'cloneIncludeStaff' | translate}}
+        </mat-checkbox>
+    </form>
+
+    <p *ngIf="!loading && academicYears.length === 0" class="text-red mt-2">{{'cloneNoYears' | translate}}</p>
+
+    <div *ngIf="result" class="mt-4">
+        <div class="flex items-center mb-2">
+            <span class="status-pill cloned mr-2">{{result.clonedCount}} {{'cloneStatusCloned' | translate}}</span>
+            <span class="status-pill skipped">{{result.skippedCount}} {{'cloneStatusSkipped' | translate}}</span>
+            <span *ngIf="previewed" class="ml-3 text-secondary">{{'clonePreviewHint' | translate}}</span>
+        </div>
+        <div class="results-table">
+            <table class="w-full">
+                <thead>
+                    <tr>
+                        <th class="text-left">{{'course' | translate}}</th>
+                        <th class="text-left">{{'cloneColSection' | translate}}</th>
+                        <th class="text-left">{{'status' | translate}}</th>
+                        <th class="text-left">{{'cloneColDetails' | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let row of result.results">
+                        <td>{{row.courseTitle}}</td>
+                        <td>{{row.courseSectionName}}</td>
+                        <td class="whitespace-no-wrap">
+                            <span *ngIf="row.cloned" class="flex items-center text-green">
+                                <mat-icon [icIcon]="icCheck" class="mr-1"></mat-icon>{{'cloneStatusCloned' | translate}}
+                            </span>
+                            <span *ngIf="!row.cloned" class="flex items-center text-gray">
+                                <mat-icon [icIcon]="icSkip" class="mr-1"></mat-icon>{{'cloneStatusSkipped' | translate}}
+                            </span>
+                        </td>
+                        <td>
+                            <div *ngIf="row.reason">{{row.reason}}</div>
+                            <div *ngFor="let warning of row.warnings" class="flex items-start text-amber">
+                                <mat-icon [icIcon]="icWarning" class="mr-1 flex-none"></mat-icon><span>{{warning}}</span>
+                            </div>
+                            <span *ngIf="!row.reason && !row.warnings?.length">-</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+    <mat-spinner *ngIf="loading" diameter="24" class="mr-4"></mat-spinner>
+    <button mat-button type="button" (click)="close()">{{(done ? 'close' : 'cancel') | translate}}</button>
+    <button *ngIf="!done" mat-stroked-button color="primary" type="button" (click)="preview()" [disabled]="form.invalid || loading">{{'preview' | translate}}</button>
+    <button *ngIf="!done" mat-raised-button color="primary" type="button" (click)="clone()" [disabled]="form.invalid || loading">{{'cloneRun' | translate}}</button>
+</mat-dialog-actions>

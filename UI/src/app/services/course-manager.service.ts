@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { DefaultValuesService } from '../common/default-values.service';
 import { CalendarBellScheduleModel, CalendarBellScheduleViewModel } from '../models/calendar.model';
-import { GetAllSubjectModel, AddSubjectModel, MassUpdateSubjectModel, MassUpdateProgramModel, AddProgramModel, DeleteSubjectModel, DeleteProgramModel, GetAllProgramModel, SearchCourseForScheduleModel, CourseStandardForCourseViewModel, CourseWithCourseSectionDetailsViewModel, CourseCatelogViewModel, CourseSectionByStaffModel  } from '../models/course-manager.model';
+import { GetAllSubjectModel, AddSubjectModel, MassUpdateSubjectModel, MassUpdateProgramModel, AddProgramModel, DeleteSubjectModel, DeleteProgramModel, GetAllProgramModel, SearchCourseForScheduleModel, CourseStandardForCourseViewModel, CourseWithCourseSectionDetailsViewModel, CourseCatelogViewModel, CourseSectionByStaffModel, CloneCourseSectionsModel } from '../models/course-manager.model';
 import { GetAllCourseListModel, AddCourseModel } from '../models/course-manager.model';
 import { CryptoService } from './Crypto.service';
 
@@ -138,5 +138,12 @@ export class CourseManagerService {
         obj.academicYear = this.defaultValuesService.getAcademicYear();
         let apiurl = this.apiUrl + obj._tenantName + "/CourseManager/getCourseSectionByStaff";
         return this.http.post<CourseSectionByStaffModel>(apiurl, obj, this.httpOptions)
+    }
+    cloneCourseSections(obj: CloneCourseSectionsModel) {
+        obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+        obj.targetAcademicYear = this.defaultValuesService.getAcademicYear();
+        obj.createdBy = this.defaultValuesService.getUserGuidId();
+        let apiurl = this.apiUrl + obj._tenantName + "/CourseManager/cloneCourseSections";
+        return this.http.post<CloneCourseSectionsModel>(apiurl, obj, this.httpOptions)
     }
 }
