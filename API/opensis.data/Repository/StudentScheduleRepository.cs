@@ -90,6 +90,11 @@ namespace opensis.data.Repository
                         var studentEnrollmentAllData = this.context?.StudentEnrollment.AsNoTracking().Where(x => x.TenantId == studentCourseSectionScheduleAddViewModel.TenantId && x.SchoolId == studentCourseSectionScheduleAddViewModel.SchoolId && studentIds.Contains(x.StudentId)).ToList();
 
                         var studentScheduleViewData = this.context?.StudentScheduleView.Where(e => e.SchoolId == studentCourseSectionScheduleAddViewModel.SchoolId && e.TenantId == studentCourseSectionScheduleAddViewModel.TenantId).ToList();
+                        // Titles for the conflict comment. Period ids can repeat across blocks within a
+                        // school, so the first title wins; room ids are unique per school.
+                        var periodTitles = this.context?.BlockPeriod.AsNoTracking().Where(p => p.TenantId == studentCourseSectionScheduleAddViewModel.TenantId && p.SchoolId == studentCourseSectionScheduleAddViewModel.SchoolId).ToList().GroupBy(p => p.PeriodId).ToDictionary(g => g.Key, g => g.First().PeriodTitle ?? "") ?? new Dictionary<int, string>();
+                        var roomTitles = this.context?.Rooms.AsNoTracking().Where(r => r.TenantId == studentCourseSectionScheduleAddViewModel.TenantId && r.SchoolId == studentCourseSectionScheduleAddViewModel.SchoolId).ToList().ToDictionary(r => r.RoomId, r => r.Title ?? "") ?? new Dictionary<int, string>();
+
 
                         //if (studentScheduleViewData.Count > 0)
                         if (studentScheduleViewData != null && studentScheduleViewData.Any())
@@ -389,26 +394,17 @@ namespace opensis.data.Repository
                                                         if (courseSectionAllData != null && courseSectionAllData.Any())
                                                         {
                                                             bool isPeriodConflict = false;
+                                                            var conflictingSections = new List<AllCourseSectionView>();
 
                                                             foreach (var courseSectionAll in courseSectionAllData)
                                                             {
                                                                 var courseSectionData = allCourseSectionViewMasterData!.Join(studentCoursesectionScheduleMasterData!, acsv => acsv.CourseSectionId, scs => scs.CourseSectionId,
-                                                                                        (acsv, scs) => new { acsv, scs }).Where(x => x.scs.TenantId == courseSection.TenantId && x.acsv.TenantId == courseSection.TenantId && x.scs.SchoolId == courseSection.SchoolId && x.acsv.SchoolId == courseSection.SchoolId && x.scs.StudentId == student.StudentId && ((courseSectionAll.DurationStartDate >= x.acsv.DurationStartDate && courseSectionAll.DurationStartDate <= x.acsv.DurationEndDate) || (courseSectionAll.DurationEndDate >= x.acsv.DurationStartDate && courseSectionAll.DurationEndDate <= x.acsv.DurationEndDate)) && x.scs.IsDropped != true && x.acsv.AllowStudentConflict != true &&
-                                                                                        (
-                                                                                        courseSectionAll.FixedPeriodId != null && ((x.acsv.FixedPeriodId == courseSectionAll.FixedPeriodId || x.acsv.VarPeriodId == courseSectionAll.FixedPeriodId || x.acsv.CalPeriodId == courseSectionAll.FixedPeriodId) && ((x.acsv.FixedDays != null && (Regex.IsMatch((courseSectionAll.FixedDays ?? "").ToLower(), x.acsv.FixedDays.ToLower(), RegexOptions.IgnoreCase))) || (x.acsv.VarDay != null && ((courseSectionAll.FixedDays ?? "").ToLower().Contains(x.acsv.VarDay.ToLower()))) || (x.acsv.CalDay != null && ((courseSectionAll.FixedDays ?? "").ToLower().Contains(x.acsv.CalDay.ToLower())))))
-                                                                                        ||
-                                                                                        courseSectionAll.VarPeriodId != null && ((x.acsv.FixedPeriodId == courseSectionAll.VarPeriodId || x.acsv.VarPeriodId == courseSectionAll.VarPeriodId || x.acsv.CalPeriodId == courseSectionAll.VarPeriodId) && ((x.acsv.FixedDays != null && (Regex.IsMatch((courseSectionAll.VarDay ?? "").ToLower(), x.acsv.FixedDays.ToLower(), RegexOptions.IgnoreCase))) || (x.acsv.VarDay != null && ((courseSectionAll.VarDay ?? "").ToLower().Contains(x.acsv.VarDay.ToLower()))) || (x.acsv.CalDay != null && ((courseSectionAll.VarDay ?? "").ToLower().Contains(x.acsv.CalDay.ToLower())))))
-                                                                                        ||
-                                                                                        courseSectionAll.CalPeriodId != null && ((x.acsv.FixedPeriodId == courseSectionAll.CalPeriodId || x.acsv.VarPeriodId == courseSectionAll.CalPeriodId || x.acsv.CalPeriodId == courseSectionAll.CalPeriodId) && ((x.acsv.FixedDays != null && (Regex.IsMatch((courseSectionAll.CalDay ?? "").ToLower(), x.acsv.FixedDays.ToLower(), RegexOptions.IgnoreCase))) || (x.acsv.VarDay != null && ((courseSectionAll.CalDay ?? "").ToLower().Contains(x.acsv.VarDay.ToLower()))) || (x.acsv.CalDay != null && ((courseSectionAll.CalDay ?? "").ToLower().Contains(x.acsv.CalDay.ToLower())))))
-                                                                                        ||
-                                                                                         courseSectionAll.BlockPeriodId != null && (x.acsv.BlockPeriodId == courseSectionAll.BlockPeriodId && x.acsv.BlockRoomId == courseSectionAll.BlockRoomId && x.acsv.BlockId == courseSectionAll.BlockId)
-                                                                                        )
-                                                                                     );
+                                                                                        (acsv, scs) => new { acsv, scs }).Where(x => x.scs.TenantId == courseSection.TenantId && x.acsv.TenantId == courseSection.TenantId && x.scs.SchoolId == courseSection.SchoolId && x.acsv.SchoolId == courseSection.SchoolId && x.scs.StudentId == student.StudentId && ((courseSectionAll.DurationStartDate >= x.acsv.DurationStartDate && courseSectionAll.DurationStartDate <= x.acsv.DurationEndDate) || (courseSectionAll.DurationEndDate >= x.acsv.DurationStartDate && courseSectionAll.DurationEndDate <= x.acsv.DurationEndDate)) && x.scs.IsDropped != true && x.acsv.AllowStudentConflict != true && StudentScheduleConflict.MeetsAtSameTime(courseSectionAll, x.acsv));
 
                                                                 if (courseSectionData?.Any() == true)
                                                                 {
                                                                     isPeriodConflict = true;
-                                                                    break;
+                                                                    conflictingSections.AddRange(courseSectionData.Select(x => x.acsv));
                                                                 }
                                                             }
                                                             if (!(bool)isPeriodConflict)
@@ -536,7 +532,7 @@ namespace opensis.data.Repository
                                                                     StudentInternalId = student.StudentInternalId,
                                                                     StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
                                                                     Scheduled = false,
-                                                                    ConflictComment = "There is a period conflict"
+                                                                    ConflictComment = StudentScheduleConflict.BuildPeriodConflictComment(conflictingSections, periodTitles, roomTitles)
                                                                 };
                                                                 studentCourseSectionScheduleAddViewModel._conflictFailure = true;
                                                                 this.context?.StudentScheduleView.Add(conflictStudent);
