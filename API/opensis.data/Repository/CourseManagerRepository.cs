@@ -36,7 +36,7 @@ using opensis.data.ViewModels.CourseManager;
 
 namespace opensis.data.Repository
 {
-    public class CourseManagerRepository : ICourseManagerRepository
+    public partial class CourseManagerRepository : ICourseManagerRepository
     {
         private readonly CRMContext? context;
         private static readonly string NORECORDFOUND = "No Record Found";

@@ -471,6 +471,34 @@ namespace opensis.core.CourseManager.Services
             }
             return courseSectionDelete;
         }
+        /// <summary>
+        /// Clone the course sections of a past academic year into another year
+        /// </summary>
+        /// <param name="cloneCourseSectionsViewModel"></param>
+        /// <returns></returns>
+        public CloneCourseSectionsViewModel CloneCourseSections(CloneCourseSectionsViewModel cloneCourseSectionsViewModel)
+        {
+            CloneCourseSectionsViewModel cloneResult = new CloneCourseSectionsViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(cloneCourseSectionsViewModel._tenantName + cloneCourseSectionsViewModel._userName, cloneCourseSectionsViewModel._token))
+                {
+                    cloneResult = this.courseManagerRepository.CloneCourseSections(cloneCourseSectionsViewModel);
+                }
+                else
+                {
+                    cloneResult._failure = true;
+                    cloneResult._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                cloneResult._failure = true;
+                cloneResult._message = es.Message;
+            }
+            return cloneResult;
+        }
+
 
         /// <summary>
         /// Get All Course Standard For Course

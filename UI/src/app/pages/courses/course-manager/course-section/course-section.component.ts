@@ -25,6 +25,7 @@ All rights reserved.
 
 import { AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import icAdd from '@iconify/icons-ic/baseline-add';
+import icContentCopy from '@iconify/icons-ic/baseline-content-copy';
 import icEdit from '@iconify/icons-ic/twotone-edit';
 import icDelete from '@iconify/icons-ic/twotone-delete';
 import icMoreVertical from '@iconify/icons-ic/baseline-more-vert';
@@ -37,6 +38,7 @@ import icCheckboxUnchecked from '@iconify/icons-ic/check-box-outline-blank';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { EditCourseSectionComponent } from '../edit-course-section/edit-course-section.component';
+import { CloneCourseSectionsComponent } from '../clone-course-sections/clone-course-sections.component';
 import { CourseSectionService } from '../../../../services/course-section.service';
 import { CourseSectionAddViewModel, CourseSectionDataTransferModel, GetAllCourseSectionModel } from '../../../../models/course-section.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -74,6 +76,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class CourseSectionComponent implements OnInit,OnDestroy,AfterViewChecked{
   icAdd = icAdd;
+  icContentCopy = icContentCopy;
   icEdit = icEdit;
   icDelete = icDelete;
   icMoreVertical = icMoreVertical;
@@ -154,6 +157,20 @@ export class CourseSectionComponent implements OnInit,OnDestroy,AfterViewChecked
       width: '900px'
     }).afterClosed().subscribe((res) => {
       if (res) {
+        this.getAllCourseSection();
+      }
+    });
+  }
+
+  cloneCourseSections() {
+    this.dialog.open(CloneCourseSectionsComponent, {
+      width: '900px',
+      data: {
+        courseId: this.courseDetailsFromParent.courseId,
+        courseTitle: this.courseDetailsFromParent.courseTitle
+      }
+    }).afterClosed().subscribe(cloned => {
+      if (cloned) {
         this.getAllCourseSection();
       }
     });

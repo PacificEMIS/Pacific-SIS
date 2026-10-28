@@ -41,11 +41,13 @@ import icCheckboxUnchecked from '@iconify/icons-ic/check-box-outline-blank';
 import icSearch from '@iconify/icons-ic/search';
 import icFilterList from '@iconify/icons-ic/filter-list';
 import icEmail from '@iconify/icons-ic/twotone-email';
+import icContentCopy from '@iconify/icons-ic/baseline-content-copy';
 import { MatDialog } from '@angular/material/dialog';
 import { ManageSubjectsComponent } from './manage-subjects/manage-subjects.component';
 import { ManageProgramsComponent } from './manage-programs/manage-programs.component';
 import { EditCourseComponent } from './edit-course/edit-course.component';
 import { EditCourseSectionComponent } from './edit-course-section/edit-course-section.component';
+import { CloneCourseSectionsComponent } from './clone-course-sections/clone-course-sections.component';
 import {GetAllCourseListModel,AddCourseModel,GetAllProgramModel,GetAllSubjectModel, CourseListFilterModel} from '../../../models/course-manager.model';
 import {CourseManagerService} from '../../../services/course-manager.service';
 import {MatSnackBar} from  '@angular/material/snack-bar';
@@ -86,6 +88,7 @@ export class CourseManagerComponent implements OnInit {
   icEdit = icEdit;
   icDelete = icDelete;
   icEmail = icEmail;
+  icContentCopy = icContentCopy;
   icMoreVertical = icMoreVertical;
   icRemoveCircle = icRemoveCircle;
   icInfo = icInfo;
@@ -583,6 +586,17 @@ export class CourseManagerComponent implements OnInit {
     });
   }
 
+
+  openModalCloneCourseSections() {
+    this.dialog.open(CloneCourseSectionsComponent, {
+      width: '900px',
+      data: {}
+    }).afterClosed().subscribe(cloned => {
+      if (cloned) {
+        this.getAllCourse();
+      }
+    });
+  }
 
   changeTab(currentTab) {
     this.selectedTab = currentTab;

@@ -313,6 +313,22 @@ namespace opensisAPI.Controllers
             }
             return courseSectionDelete;
         }
+        [HttpPost("cloneCourseSections")]
+        public ActionResult<CloneCourseSectionsViewModel> CloneCourseSections(CloneCourseSectionsViewModel cloneCourseSectionsViewModel)
+        {
+            CloneCourseSectionsViewModel cloneResult = new CloneCourseSectionsViewModel();
+            try
+            {
+                cloneResult = _courseManagerService.CloneCourseSections(cloneCourseSectionsViewModel);
+            }
+            catch (Exception es)
+            {
+                cloneResult._failure = true;
+                cloneResult._message = es.Message;
+            }
+            return cloneResult;
+        }
+
 
         /// <summary>
         /// Get All CourseStandard For Course

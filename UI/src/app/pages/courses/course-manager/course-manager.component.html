@@ -63,11 +63,18 @@
                         </ng-template> -->
                         <h3>{{courseList?.length}} {{'courseFound' | translate}}</h3>
 
-                            <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" mat-raised-button color="primary"
-                                (click)="openModalEditCourse()">
-                                <mat-icon [icIcon]="icAdd" class="md:mr-2"></mat-icon><span
-                                    class="hidden md:inline-block">{{'addNewCourse'|translate}}</span>
-                        </button>
+                            <div class="flex items-center">
+                                <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" mat-stroked-button color="primary" class="mr-2"
+                                    (click)="openModalCloneCourseSections()" matTooltip="{{'cloneFromPreviousYearInfo'|translate}}">
+                                    <mat-icon [icIcon]="icContentCopy" class="md:mr-2"></mat-icon><span
+                                        class="hidden md:inline-block">{{'cloneFromPreviousYear'|translate}}</span>
+                                </button>
+                                <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" mat-raised-button color="primary"
+                                    (click)="openModalEditCourse()">
+                                    <mat-icon [icIcon]="icAdd" class="md:mr-2"></mat-icon><span
+                                        class="hidden md:inline-block">{{'addNewCourse'|translate}}</span>
+                                </button>
+                            </div>
                     </div>
                     <hr />
                     <input
