@@ -27,8 +27,6 @@ import { StaffService } from '../../../../../services/staff.service';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ControlContainer, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import icClose from '@iconify/icons-ic/twotone-close';
-import  icWarning  from '@iconify/icons-ic/warning';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -54,8 +52,8 @@ import { SchoolCreate } from 'src/app/enums/school-create.enum';
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }]
 })
 export class AddCertificateComponent implements OnInit, OnDestroy {
-  icClose = icClose;
-  icWarning= icWarning;
+  icClose = 'close';
+  icWarning = 'warning';
   form:FormGroup;
   staffCertificateTitle: string;
   primaryCertificationStatusEnum=Object.keys(WashInfoEnum)

@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { TeacherFunctionRoutingModule } from './teacher-function-routing.module';
 import { TeacherFunctionComponent } from './teacher-function.component';
 import { MatIconModule } from '@angular/material/icon';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
@@ -33,7 +32,6 @@ import { SharedModuleModule } from '../../shared-module/shared-module.module';
     CommonModule,
     TeacherFunctionRoutingModule,
     MatIconModule,
-    IconModule,  
     MatCardModule,
     MatSidenavModule,
     SecondaryToolbarModule,

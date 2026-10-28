@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icPrint from '@iconify/icons-ic/twotone-print';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { GetAllCourseSectionModel } from 'src/app/models/course-section.model';
 import { CommonService } from 'src/app/services/common.service';
@@ -21,7 +20,7 @@ import { GradeScaleModel } from 'src/app/models/grades.model';
   styleUrls: ['./schedule-report-details.component.scss']
 })
 export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
-  icPrint = icPrint;
+  icPrint = 'print';
   getAllCourseSectionModel: GetAllCourseSectionModel = new GetAllCourseSectionModel();
   GetCourseId;
   courseSectionForView;

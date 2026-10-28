@@ -1,7 +1,7 @@
 <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
     <h2 class="headline m-0" fxFlex="auto">{{staffCertificateTitle | translate}}</h2>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-        <mat-icon [icIcon]="icClose"></mat-icon>
+        <mat-icon>{{ icClose }}</mat-icon>
     </button>
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
@@ -58,7 +58,7 @@
 <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
     <div class="flex justify-between w-full">
         <div class="text-left">
-            <span [hidden]="formvalidstatas" class="text-warn"><mat-icon class="align-middle" [icIcon]="icWarning"></mat-icon> {{'CannotSubmitEmptyForm'|translate}}</span>
+            <span [hidden]="formvalidstatas" class="text-warn"><mat-icon class="align-middle">{{ icWarning }}</mat-icon> {{'CannotSubmitEmptyForm'|translate}}</span>
         </div>
         <div> <button mat-button type="button" (click)="cancel()">{{'cancel' | translate}}</button>
                 <button color="primary" (click)="checkSubmittedForm()" mat-raised-button type="submit">{{buttonType|translate}}</button>

@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module';
 import { ContainerModule } from '@vex/directives/container/container.module';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
@@ -45,7 +44,6 @@ import { CloneCourseSectionsModule } from './clone-course-sections/clone-course-
     MatButtonModule,
     PageLayoutModule,
     ContainerModule,
-    IconModule,
     MatCardModule,
     MatSnackBarModule,
     MatSelectModule,

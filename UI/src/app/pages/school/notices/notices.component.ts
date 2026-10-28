@@ -24,8 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { ChangeDetectionStrategy, AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
-import icArrowDropDown from '@iconify/icons-ic/arrow-drop-down';
-import icAdd from '@iconify/icons-ic/add';
 import { MatDialog } from '@angular/material/dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -62,8 +60,8 @@ export class NoticesComponent implements OnInit, AfterViewChecked, OnDestroy {
   noticeListViewModel: NoticeListViewModel = new NoticeListViewModel();
   noticeList = [];
   cloneNoticeList = [];
-  icPreview = icArrowDropDown;
-  icAdd = icAdd;
+  icPreview = 'arrow_drop_down';
+  icAdd = 'add';
   activateOpenAddNew = true;
   recordFor: string = 'current';
   getAllMembersList: GetAllMembersList = new GetAllMembersList();

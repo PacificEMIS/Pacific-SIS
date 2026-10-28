@@ -4,7 +4,7 @@
         <span *ngIf="data?.courseTitle" class="text-secondary font-normal"> - {{data.courseTitle}}</span>
     </h2>
     <button class="text-secondary" (click)="close()" mat-icon-button type="button">
-        <mat-icon [icIcon]="icClose"></mat-icon>
+        <mat-icon>{{ icClose }}</mat-icon>
     </button>
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
@@ -51,16 +51,16 @@
                         <td>{{row.courseSectionName}}</td>
                         <td class="whitespace-no-wrap">
                             <span *ngIf="row.cloned" class="flex items-center text-green">
-                                <mat-icon [icIcon]="icCheck" class="mr-1"></mat-icon>{{'cloneStatusCloned' | translate}}
+                                <mat-icon class="mr-1">{{ icCheck }}</mat-icon>{{'cloneStatusCloned' | translate}}
                             </span>
                             <span *ngIf="!row.cloned" class="flex items-center text-gray">
-                                <mat-icon [icIcon]="icSkip" class="mr-1"></mat-icon>{{'cloneStatusSkipped' | translate}}
+                                <mat-icon class="mr-1">{{ icSkip }}</mat-icon>{{'cloneStatusSkipped' | translate}}
                             </span>
                         </td>
                         <td>
                             <div *ngIf="row.reason">{{row.reason}}</div>
                             <div *ngFor="let warning of row.warnings" class="flex items-start text-amber">
-                                <mat-icon [icIcon]="icWarning" class="mr-1 flex-none"></mat-icon><span>{{warning}}</span>
+                                <mat-icon class="mr-1 flex-none">{{ icWarning }}</mat-icon><span>{{warning}}</span>
                             </div>
                             <span *ngIf="!row.reason && !row.warnings?.length">-</span>
                         </td>

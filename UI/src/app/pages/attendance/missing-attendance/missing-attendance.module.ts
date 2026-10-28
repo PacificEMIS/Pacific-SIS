@@ -27,7 +27,6 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { IconModule } from "@visurel/iconify-angular";
 import { RouterModule } from "@angular/router";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FlexLayoutModule } from "@angular/flex-layout";
@@ -73,7 +72,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule,
-    IconModule,
     RouterModule,
     MatSlideToggleModule,
     FlexLayoutModule,

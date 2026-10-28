@@ -27,7 +27,6 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { SearchStudentComponent } from './search-student/search-student.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedModuleModule } from '../../shared-module/shared-module.module';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
@@ -64,7 +63,6 @@ import { SearchStudentModule } from 'src/app/common/search-student/search-studen
     FormsModule,
     ReactiveFormsModule,
     MatExpansionModule,
-    IconModule,
     MatProgressSpinnerModule,
     SharedModuleModule,
     SearchStudentModule

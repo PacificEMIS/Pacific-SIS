@@ -3,7 +3,7 @@
     <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
         <h2 class="headline m-0" fxFlex="auto">{{(viewData.salutation?viewData.salutation+' ':'')+viewData.firstname+' '+(viewData.middlename?viewData.middlename+' ':'')+viewData.lastname+(viewData.suffix?' '+viewData.suffix:'')}}</h2>
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-            <mat-icon [icIcon]="icClose"></mat-icon>
+            <mat-icon>{{ icClose }}</mat-icon>
         </button>
     </div>
     <mat-divider class="-mx-6 text-border"></mat-divider>
@@ -95,7 +95,7 @@
                
             </ng-template>
             <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-                <mat-icon [icIcon]="icClose"></mat-icon>
+                <mat-icon>{{ icClose }}</mat-icon>
             </button>
         </div>
         <mat-divider class="-mx-6 text-border"></mat-divider>
@@ -307,10 +307,10 @@
                 <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
                     <h2 class="headline m-0" fxFlex="auto"><a mat-dialog-close
                         class="text-primary cursor-pointer inline-block align-middle mr-3">
-                        <mat-icon [icIcon]="icBack" (click)="backToAdd()"></mat-icon>
+                        <mat-icon (click)="backToAdd()">{{ icBack }}</mat-icon>
                     </a> {{'searchContact' | translate}}</h2>
                     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-                        <mat-icon [icIcon]="icClose"></mat-icon>
+                        <mat-icon>{{ icClose }}</mat-icon>
                     </button>
                 </div>
                 <mat-divider class="-mx-6 text-border"></mat-divider>
@@ -362,10 +362,10 @@
                     <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
                         <h2 class="headline m-0" fxFlex="auto"><a mat-dialog-close
                             class="text-primary cursor-pointer inline-block align-middle mr-3">
-                            <mat-icon [icIcon]="icBack" (click)="backToSearch()"></mat-icon>
+                            <mat-icon (click)="backToSearch()">{{ icBack }}</mat-icon>
                         </a> {{singleParentInfo.firstname+' '+singleParentInfo.lastname}}</h2>
                         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-                            <mat-icon [icIcon]="icClose"></mat-icon>
+                            <mat-icon>{{ icClose }}</mat-icon>
                         </button>
                     </div>
                     <mat-divider class="-mx-6 text-border"></mat-divider>
@@ -440,10 +440,10 @@
                     <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
                         <h2 class="headline m-0" fxFlex="auto"><a mat-dialog-close
                             class="text-primary cursor-pointer inline-block align-middle mr-3">
-                            <mat-icon [icIcon]="icBack"  (click)="backToSearch()"></mat-icon>
+                            <mat-icon  (click)="backToSearch()">{{ icBack }}</mat-icon>
                         </a> {{'multipleResultsFound' | translate}}.</h2>
                         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-                            <mat-icon [icIcon]="icClose"></mat-icon>
+                            <mat-icon>{{ icClose }}</mat-icon>
                         </button>
                     </div>
                     <mat-divider class="-mx-6 text-border"></mat-divider>

@@ -28,19 +28,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, Subject } from 'rxjs';
 import * as moment from 'moment';
 import { CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarMonthViewBeforeRenderEvent, CalendarMonthViewDay, CalendarView, DAYS_OF_WEEK } from 'angular-calendar';
-import icClose from '@iconify/icons-ic/twotone-close';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icAdd from '@iconify/icons-ic/twotone-add';
-import icList from '@iconify/icons-ic/twotone-list-alt';
-import icInfo from '@iconify/icons-ic/info';
-import icRemove from '@iconify/icons-ic/remove-circle';
-import icBack from '@iconify/icons-ic/baseline-arrow-back';
-import icExpand from '@iconify/icons-ic/outline-add-box';
-import icCollapse from '@iconify/icons-ic/outline-indeterminate-check-box';
-import icPlusCircle from '@iconify/icons-ic/add-circle-outline';
-import icLeftArrow from '@iconify/icons-ic/baseline-west';
-import icRightArrow from '@iconify/icons-ic/baseline-east';
 import { Router } from '@angular/router';
 import {
   startOfDay, endOfDay, subDays,
@@ -76,19 +63,19 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
   encapsulation: ViewEncapsulation.None
 })
 export class CalendarDaysComponent implements OnInit, OnChanges {
-  icClose = icClose;
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icAdd = icAdd;
-  icList = icList;
-  icInfo = icInfo;
-  icRemove = icRemove;
-  icBack = icBack;
-  icExpand = icExpand;
-  icCollapse = icCollapse;
-  icPlusCircle = icPlusCircle;
-  icLeftArrow = icLeftArrow;
-  icRightArrow = icRightArrow;
+  icClose = 'close';
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icAdd = 'add';
+  icList = 'list_alt';
+  icInfo = 'info';
+  icRemove = 'remove_circle';
+  icBack = 'arrow_back';
+  icExpand = 'add_box';
+  icCollapse = 'indeterminate_check_box';
+  icPlusCircle = 'add_circle_outline';
+  icLeftArrow = 'west';
+  icRightArrow = 'east';
   useStandardGrades = false;
   isChecked = false;
   scheduleType = '1';

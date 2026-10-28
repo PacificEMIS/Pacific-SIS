@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -9,7 +8,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./data-edit-info.component.scss']
 })
 export class DataEditInfoComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   createdBy = this.data?.createdBy;
   createdOn = this.data?.createdOn;
   modifiedBy = this.data?.modifiedBy;

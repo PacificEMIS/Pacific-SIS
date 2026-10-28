@@ -11,7 +11,7 @@
             </div>
             <div fxFlex="none" fxLayout="column" fxLayoutAlign="center end">
                 <button *ngIf="permissions.edit" mat-icon-button matTooltip="{{'removeAssociation' | translate}}" (click)="confirmDelete(sibling)" type="button" class="text-gray">
-                    <mat-icon [icIcon]="icRemove"></mat-icon>
+                    <mat-icon>{{ icRemove }}</mat-icon>
                 </button>
             </div>
         </div>
@@ -23,7 +23,7 @@
 </div>
 <div class="text-center mt-6">
     <button *ngIf="permissions.add" color="primary" mat-raised-button type="button" (click)='openAddNew()'>
-        <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true" size="24px"></ic-icon>
+        <mat-icon class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2">{{ icAdd }}</mat-icon>
         <span>{{'addSibling' | translate}}</span>
     </button>
 </div>

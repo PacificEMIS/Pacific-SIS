@@ -11,7 +11,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
 import { EditCourseSectionComponent } from './edit-course-section.component';
@@ -41,7 +40,6 @@ import { NgxMaskModule } from 'ngx-mask';
     MatDialogModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    IconModule,
     FlexLayoutModule,
     MatInputModule,
     MatDividerModule,

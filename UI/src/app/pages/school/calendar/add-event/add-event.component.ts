@@ -26,11 +26,6 @@ All rights reserved.
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import icClose from '@iconify/icons-ic/twotone-close';
-import icEdit from '@iconify/icons-ic/edit';
-import icDelete from '@iconify/icons-ic/delete';
-import icMoreVertical from '@iconify/icons-ic/more-vert';
-import icDone from '@iconify/icons-ic/done';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { GetAllMembersList } from '../../../../models/membership.model';
@@ -95,11 +90,11 @@ export class AddEventComponent implements OnInit {
     { name: 'Blue', value: '#1763b3' }
   ];
 
-  icClose = icClose;
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icMoreVertical = icMoreVertical;
-  icDone = icDone;
+  icClose = 'close';
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icMoreVertical = 'more_vert';
+  icDone = 'done';
   form: FormGroup;
   permissions: Permissions;
   profiles = ProfilesTypes

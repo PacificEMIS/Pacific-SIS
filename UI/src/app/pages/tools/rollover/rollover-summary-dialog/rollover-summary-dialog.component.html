@@ -25,10 +25,10 @@
 </ng-template>
 
 <div class="flex items-center" mat-dialog-title>
-    <mat-icon [icIcon]="icWarning" class="text-orange mr-2 align-middle"></mat-icon>
+    <mat-icon class="text-orange mr-2 align-middle">{{ icWarning }}</mat-icon>
     <h2 class="headline m-0 flex-auto">{{ 'rolloverPreflightTitle' | translate }} — {{ data.academicYear }}</h2>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-        <mat-icon [icIcon]="icClose"></mat-icon>
+        <mat-icon>{{ icClose }}</mat-icon>
     </button>
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
@@ -36,7 +36,7 @@
 <mat-dialog-content class="py-4">
     <div class="bg-orange-light px-4 py-3 rounded mb-4">
         <span class="text-orange font-semibold">
-            <mat-icon [icIcon]="icWarning" class="align-middle"></mat-icon>
+            <mat-icon class="align-middle">{{ icWarning }}</mat-icon>
             <span> {{ 'caution' | translate }}</span>
         </span><span class="mx-1">:</span>
         <span>{{ (data.reviewOnly ? 'rolloverPreflightReviewBanner' : 'rolloverPreflightBanner') | translate }}</span>

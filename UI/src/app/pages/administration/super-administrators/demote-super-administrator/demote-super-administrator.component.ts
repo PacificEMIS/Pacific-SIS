@@ -27,7 +27,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { OnlySchoolListModel } from 'src/app/models/get-all-school.model';
 import { SchoolMasterModel } from 'src/app/models/school-master.model';
@@ -48,7 +47,7 @@ import { SuperAdministratorService } from 'src/app/services/super-administrator.
   templateUrl: './demote-super-administrator.component.html'
 })
 export class DemoteSuperAdministratorComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   form: FormGroup;
   schools: SchoolMasterModel[] = [];
   profileTypes = ['School Administrator', 'Admin Assistant', 'Teacher', 'Homeroom Teacher'];

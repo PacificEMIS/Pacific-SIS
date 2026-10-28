@@ -44,7 +44,7 @@
                 <td>
                     <div class="cursor-pointer" *ngIf="!assignment?.enableComment && defaultValuesService.checkAcademicYear()"
                         (click)="assignment.enableComment = true;">
-                        <mat-icon [icIcon]="icEdiit"></mat-icon>
+                        <mat-icon>{{ icEdiit }}</mat-icon>
                     </div>
                 </td>
             </tr>

@@ -1,7 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icListAlt from '@iconify/icons-ic/twotone-list-alt';
-import icSchool from '@iconify/icons-ic/twotone-school';
 import { StudentService } from 'src/app/services/student.service';
 import { CommonService } from 'src/app/services/common.service';
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
@@ -42,8 +40,8 @@ import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 
 export class ContactInfoReportComponent implements OnInit, AfterViewInit {
 
-  icListAlt = icListAlt;
-  icSchool = icSchool;
+  icListAlt = 'list_alt';
+  icSchool = 'school';
   columns = [
     { label: '', property: 'studentCheck', type: 'text', visible: true },
     { label: 'Name', property: 'studentName', type: 'text', visible: true },

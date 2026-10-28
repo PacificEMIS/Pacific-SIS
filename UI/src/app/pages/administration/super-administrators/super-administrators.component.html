@@ -8,10 +8,10 @@
     <ng-container *ngIf="isSuperAdministrator; else notAllowed">
         <div class="px-6 py-3 flex flex-wrap items-center justify-end">
             <button mat-stroked-button color="primary" class="mr-2 my-1" type="button" (click)="openPromote()">
-                <mat-icon [icIcon]="icArrowUpward" class="mr-1 align-middle"></mat-icon>{{ 'promoteExistingStaff' | translate }}
+                <mat-icon class="mr-1 align-middle">{{ icArrowUpward }}</mat-icon>{{ 'promoteExistingStaff' | translate }}
             </button>
             <button mat-raised-button color="primary" class="my-1" type="button" (click)="openAdd()">
-                <mat-icon [icIcon]="icAdd" class="mr-1 align-middle"></mat-icon>{{ 'addSuperAdministrator' | translate }}
+                <mat-icon class="mr-1 align-middle">{{ icAdd }}</mat-icon>{{ 'addSuperAdministrator' | translate }}
             </button>
         </div>
         <div class="border-t overflow-x-auto overflow-y-hidden">
@@ -59,7 +59,7 @@
                     <td mat-cell *matCellDef="let row" class="text-right">
                         <button mat-icon-button type="button" [matMenuTriggerFor]="rowMenu" [disabled]="row.isSelf"
                             matTooltip="{{ row.isSelf ? ('superAdministratorSelfHint' | translate) : '' }}">
-                            <mat-icon [icIcon]="icMoreVert"></mat-icon>
+                            <mat-icon>{{ icMoreVert }}</mat-icon>
                         </button>
                         <mat-menu #rowMenu="matMenu" xPosition="before" yPosition="below">
                             <button mat-menu-item type="button" (click)="viewStaffRecord(row)">{{ 'viewStaffRecord' | translate }}</button>

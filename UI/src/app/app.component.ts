@@ -29,21 +29,6 @@ import { Settings } from 'luxon';
 import { DOCUMENT } from '@angular/common';
 import { Platform } from '@angular/cdk/platform';
 import { NavigationService } from '@vex/services/navigation.service';
-import icLayers from '@iconify/icons-ic/twotone-layers';
-import icschool from '@iconify/icons-ic/baseline-account-balance';
-import icinfo from '@iconify/icons-ic/info';
-import icsettings from '@iconify/icons-ic/settings';
-import icstudents from '@iconify/icons-ic/school';
-import icusers from '@iconify/icons-ic/people';
-import icschedule from '@iconify/icons-ic/date-range';
-import icgrade from '@iconify/icons-ic/baseline-leaderboard';
-import icattendance from '@iconify/icons-ic/baseline-access-alarm';
-import icmessage from '@iconify/icons-ic/baseline-mark-email-unread';
-import icactivity from '@iconify/icons-ic/accessibility';
-import icreports from '@iconify/icons-ic/baseline-list-alt';
-import ictools from '@iconify/icons-ic/baseline-construction';
-import icparents from '@iconify/icons-ic/baseline-escalator-warning';
-import icbook from '@iconify/icons-ic/baseline-book';
 import { LayoutService } from '@vex/services/layout.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, takeUntil, tap } from 'rxjs/operators';
@@ -185,195 +170,195 @@ export class AppComponent implements OnInit, OnDestroy {
     //     type: 'link',
     //     label: 'Dashboard',
     //     route: '/school/dashboards',
-    //     icon: icLayers
+    //     icon: 'layers'
     //   },
     //   {
     //     type: 'dropdown',
     //     label: 'Schools',
-    //     icon: icschool,
+    //     icon: 'account_balance',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'School Information',
     //         route: '/school/schoolinfo',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Marking Periods',
     //         route: '/school/marking-periods',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Calendars',
     //         route: '/school/schoolcalendars',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Notices',
     //         route: '/school/notices',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //     ]
     //   },
     //   { type: 'dropdown',
     //     label: 'Students',
-    //     icon: icstudents,
+    //     icon: 'school',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Student Information',
     //         route: '/school/students',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Group Assign Student Info',
     //         route: '/school/students',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Student Re Enroll',
     //         route: '/school/students',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
     //   { type: 'link',
     //     label: 'Parents',
-    //     icon: icparents,
+    //     icon: 'escalator_warning',
     //     route: '/school/parents'
     //   },
     //   { type: 'dropdown',
     //     label: 'Staff',
-    //     icon: icusers,
+    //     icon: 'people',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Staff Info',
     //         route: '/school/staff',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Teacher Functions',
     //         route: '/school/teacherfunctions',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
     //   { type: 'dropdown',
     //     label: 'Courses',
-    //     icon: icbook,
+    //     icon: 'book',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Course Manager',
     //         route: '/school/course-manager',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Course Catalog',
     //         route: '/school/coursemanager',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Teacher Reassignment',
     //         route: '/school/coursemanager',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
     //   { type: 'dropdown',
     //     label: 'Scheduling',
-    //     icon: icschedule,
+    //     icon: 'date_range',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Schedule Students',
     //         route: '/school/schedule-student',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Schedule Teacher',
     //         route: '/school/schedule-teacher',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Run Scheduler',
     //         route: '/school/runscheduler',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Group Drop',
     //         route: '/school/group-drop',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //     ]
     //   },
     //   { type: 'dropdown',
     //     label: 'Grades',
-    //     icon: icgrade,
+    //     icon: 'leaderboard',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Progress Reports',
     //         route: '/school/progressreport',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
     //   { type: 'dropdown',
     //     label: 'Attendance',
-    //     icon: icattendance,
+    //     icon: 'access_alarm',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Administration',
     //         route: '/school/administration',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
     //   { type: 'dropdown',
     //     label: 'Messaging',
-    //     icon: icmessage,
+    //     icon: 'mark_email_unread',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Inbox',
     //         route: '/school/inbox',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
     //   { type: 'link',
     //     label: 'Reports',
-    //     icon: icreports,
+    //     icon: 'list_alt',
     //     route: '/school/progressreport'
     //   },
     //   { type: 'link',
     //     label: 'Settings',
-    //     icon: icsettings,
+    //     icon: 'settings',
     //     route: '/school/settings'
     //   },
     //   { type: 'dropdown',
     //     label: 'Tools',
-    //     icon: ictools,
+    //     icon: 'construction',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Access Log',
     //         route: '/school/acesslog',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
@@ -383,207 +368,207 @@ export class AppComponent implements OnInit, OnDestroy {
     //     type: 'link',
     //     label: 'Dashboard',
     //     route: '/school/dashboards',
-    //     icon: icLayers
+    //     icon: 'layers'
     //   },
     //   {
     //     type: 'dropdown',
     //     label: 'Schools',
-    //     icon: icschool,
+    //     icon: 'account_balance',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'School Information',
     //         route: '/school/schoolinfo',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Marking Periods',
     //         route: '/school/marking-periods',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Calendars',
     //         route: '/school/schoolcalendars',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Notices',
     //         route: '/school/notices',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //     ]
     //   },
     //   { type: 'dropdown',
     //     label: 'Students',
-    //     icon: icstudents,
+    //     icon: 'school',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Student Information',
     //         route: '/school/students',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Group Assign Student Info',
     //         route: '/school/students',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Student Re Enroll',
     //         route: '/school/students',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Student Data Import',
     //         route: '/school/studentdataimport',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
     //   { type: 'link',
     //     label: 'Parents',
-    //     icon: icparents,
+    //     icon: 'escalator_warning',
     //     route: '/school/parents'
     //   },
     //   { type: 'dropdown',
     //     label: 'Staff',
-    //     icon: icusers,
+    //     icon: 'people',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Staff Info',
     //         route: '/school/staff',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Teacher Functions',
     //         route: '/school/teacherfunctions',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
     //   { type: 'dropdown',
     //     label: 'Courses',
-    //     icon: icbook,
+    //     icon: 'book',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Course Manager',
     //         route: '/school/course-manager',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Course Catalog',
     //         route: '/school/coursemanager',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Teacher Reassignment',
     //         route: '/school/coursemanager',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
     //   { type: 'dropdown',
     //     label: 'Scheduling',
-    //     icon: icschedule,
+    //     icon: 'date_range',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Schedule Students',
     //         route: '/school/schedule-student',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Schedule Teacher',
     //         route: '/school/schedule-teacher',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Run Scheduler',
     //         route: '/school/runscheduler',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Group Drop',
     //         route: '/school/group-drop',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //       {
     //         type: 'link',
     //         label: 'Teacher Reassignment',
     //         route: '/school/teacher-reassignment',
-    //         icon: icinfo
+    //         icon: 'info'
     //       },
     //     ]
     //   },
     //   { type: 'dropdown',
     //     label: 'Grades',
-    //     icon: icgrade,
+    //     icon: 'leaderboard',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Progress Reports',
     //         route: '/school/progressreport',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
     //   { type: 'dropdown',
     //     label: 'Attendance',
-    //     icon: icattendance,
+    //     icon: 'access_alarm',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Administration',
     //         route: '/school/administration',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
     //   { type: 'dropdown',
     //     label: 'Messaging',
-    //     icon: icmessage,
+    //     icon: 'mark_email_unread',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Inbox',
     //         route: '/school/inbox',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
     //   { type: 'link',
     //     label: 'Reports',
-    //     icon: icreports,
+    //     icon: 'list_alt',
     //     route: '/school/progressreport'
     //   },
     //   { type: 'link',
     //     label: 'Settings',
-    //     icon: icsettings,
+    //     icon: 'settings',
     //     route: '/school/settings'
     //   },
     //   { type: 'dropdown',
     //     label: 'Tools',
-    //     icon: ictools,
+    //     icon: 'construction',
     //     children: [
     //       {
     //         type: 'link',
     //         label: 'Access Log',
     //         route: '/school/acesslog',
-    //         icon: icinfo
+    //         icon: 'info'
     //       }
     //     ]
     //   },
@@ -860,46 +845,46 @@ export class AppComponent implements OnInit, OnDestroy {
   convertStringToIcon(icon: string) {
     switch (icon) {
       case 'icLayers': {
-        return icLayers;
+        return 'layers';
       }
       case 'icschool': {
-        return icschool;
+        return 'account_balance';
       }
       case 'icstudents': {
-        return icstudents;
+        return 'school';
       }
       case 'icparents': {
-        return icparents;
+        return 'escalator_warning';
       }
       case 'icusers': {
-        return icusers;
+        return 'people';
       }
       case 'icbook': {
-        return icbook;
+        return 'book';
       }
       case 'icschedule': {
-        return icschedule;
+        return 'date_range';
       }
       case 'icgrade': {
-        return icgrade;
+        return 'leaderboard';
       }
       case 'icattendance': {
-        return icattendance;
+        return 'access_alarm';
       }
       case 'icmessage': {
-        return icmessage;
+        return 'mark_email_unread';
       }
       case 'icreports': {
-        return icreports;
+        return 'list_alt';
       }
       case 'icsettings': {
-        return icsettings;
+        return 'settings';
       }
       case 'ictools': {
-        return ictools;
+        return 'construction';
       }
       default: {
-        return icinfo;
+        return 'info';
       }
     }
   }

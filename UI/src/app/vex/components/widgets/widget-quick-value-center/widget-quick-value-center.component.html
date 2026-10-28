@@ -1,7 +1,7 @@
 <div (mouseenter)="showButton = true" (mouseleave)="showButton = false"
   class="card h-full px-4 pt-6 pb-5 relative hover:shadow-16 trans-shadow" fxLayout="row" fxLayoutAlign="start center" [ngClass]="cardClass">
   <div [ngClass]="iconClass" class="rounded-full w-10 h-10 flex items-center justify-center">
-    <mat-icon [icIcon]="icon"></mat-icon>
+    <mat-icon>{{ icon }}</mat-icon>
   </div>
 
   <div class="ml-3">
@@ -11,18 +11,18 @@
   </div>
 
   <h4 [class.text-green]="change > 0" [class.text-red]="change <= 0" class="subheading-1 font-medium mt-4 mb-0">
-    <ic-icon *ngIf="change > 0" [icon]="faCaretUp" [inline]="true" height="20px" width="20px"></ic-icon>
-    <ic-icon *ngIf="change <= 0" [icon]="faCaretDown" [inline]="true" height="20px" width="20px"></ic-icon>
+    <mat-icon *ngIf="change > 0" style="font-size: 20px">{{ faCaretUp }}</mat-icon>
+    <mat-icon *ngIf="change <= 0" style="font-size: 20px">{{ faCaretDown }}</mat-icon>
     <!-- <span>{{ change }}%</span> -->
   </h4>
 
   <!-- <button *ngIf="helpText" [matTooltip]="helpText" class="absolute top-0 left-0 mt-2 ml-2 text-hint" mat-icon-button
     matTooltipPosition="after" type="button">
-    <mat-icon [icIcon]="icHelp" height="18px" width="18px"></mat-icon>
+    <mat-icon style="font-size: 18px">{{ icHelp }}</mat-icon>
   </button> -->
 
   <!-- <button (click)="openSheet()" *ngIf="showButton" @scaleInOut class="absolute -top-3 -right-3 bg-card shadow-8"
     color="primary" mat-icon-button type="button">
-    <mat-icon [icIcon]="icShare" height="24px" width="24px"></mat-icon>
+    <mat-icon>{{ icShare }}</mat-icon>
   </button> -->
 </div>

@@ -6,7 +6,6 @@ import { DashboardAnalyticsComponent } from './dashboard-analytics.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatIconModule } from '@angular/material/icon';
 import { WidgetQuickValueCenterModule } from '@vex/components/widgets/widget-quick-value-center/widget-quick-value-center.module';
-import { IconModule } from '@visurel/iconify-angular';
 import { WidgetAssistantModule } from '@vex/components/widgets/widget-assistant/widget-assistant.module';
 import { WidgetTableModule } from '@vex/components/widgets/widget-table/widget-table.module';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
@@ -35,7 +34,6 @@ import { MatDividerModule } from '@angular/material/divider';
     MatIconModule,
     MatTooltipModule,
     WidgetQuickValueCenterModule,
-    IconModule,
     WidgetAssistantModule,
     WidgetTableModule,
     SecondaryToolbarModule,

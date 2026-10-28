@@ -24,7 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import icClose from '@iconify/icons-ic/twotone-close';
 
 @Component({
   selector: 'vex-view-assignment-details',
@@ -32,7 +31,7 @@ import icClose from '@iconify/icons-ic/twotone-close';
   styleUrls: ['./view-assignment-details.component.scss']
 })
 export class ViewAssignmentDetailsComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
 
   constructor(@Optional() @Inject(MAT_DIALOG_DATA) public data: any) { }
 

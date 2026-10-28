@@ -24,7 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
@@ -58,7 +57,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
   getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
   getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel();
   getMarkingPeriodTitleListModel: GetMarkingPeriodTitleListModel = new GetMarkingPeriodTitleListModel();
-  icClose = icClose;
+  icClose = 'close';
   displayedColumns: string[] = ['staffSelected', 'course', 'courseSectionName', 'markingPeriod', 'startDate', 'endDate', 'gradeLevelTitle', 'scheduledTeacher'];
   courseSectionSearch: SearchCourseSectionViewModel = new SearchCourseSectionViewModel();
   courseSectionList: MatTableDataSource<any>;

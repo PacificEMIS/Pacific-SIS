@@ -11,7 +11,6 @@ import { RelativeDateTimeModule } from '../../../pipes/relative-date-time/relati
 import { RouterModule } from '@angular/router';
 import { MatRippleModule } from '@angular/material/core';
 import { ToolbarNotificationsDropdownComponent } from './toolbar-notifications-dropdown/toolbar-notifications-dropdown.component';
-import { IconModule } from '@visurel/iconify-angular';
 
 
 @NgModule({
@@ -26,8 +25,7 @@ import { IconModule } from '@visurel/iconify-angular';
     MatMenuModule,
     RelativeDateTimeModule,
     RouterModule,
-    MatRippleModule,
-    IconModule
+    MatRippleModule
   ],
   exports: [ToolbarNotificationsComponent],
   entryComponents: [ToolbarNotificationsDropdownComponent]

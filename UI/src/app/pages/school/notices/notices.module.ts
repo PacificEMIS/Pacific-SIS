@@ -4,7 +4,6 @@ import { NoticesComponent } from './notices.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
-import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
@@ -25,7 +24,6 @@ import {NoticeRoutingModule} from '../notices/notice-routing-module';
   imports: [
     CommonModule,
     MatIconModule,
-    IconModule,
     MatButtonModule,
     MatCardModule,
     MatSidenavModule,

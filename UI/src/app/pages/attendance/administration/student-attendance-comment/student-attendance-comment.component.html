@@ -1,7 +1,7 @@
 <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title class="mb-4">
     <h2 class="headline m-0" fxFlex="auto">{{data?.firstGivenName+' '+data?.lastFamilyName}}</h2>
     <button class="text-secondary" (click)="close()" mat-icon-button type="button">
-        <mat-icon [icIcon]="icClose"></mat-icon>
+        <mat-icon>{{ icClose }}</mat-icon>
     </button>
 
 </div>

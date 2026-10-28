@@ -25,7 +25,6 @@ All rights reserved.
 
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icSearch from "@iconify/icons-ic/search";
 import { StaffPortalService } from '../../../../services/staff-portal.service';
 import { ScheduledCourseSectionViewModel } from '../../../../models/dashboard.model';
 import { GetAllStaffModel } from '../../../../models/staff.model';
@@ -54,7 +53,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class MissingAttendanceListComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  icSearch = icSearch;
+  icSearch = 'search';
   @Output() showTakeAttendance = new EventEmitter<any>();
   @Input() courseSectionClass;
   scheduledCourseSectionViewModel: ScheduledCourseSectionViewModel = new ScheduledCourseSectionViewModel();

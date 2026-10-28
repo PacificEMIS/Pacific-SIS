@@ -7,7 +7,6 @@ import { ScrollbarModule } from '../../components/scrollbar/scrollbar.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
@@ -26,7 +25,6 @@ import { MatDividerModule } from '@angular/material/divider';
     FlexLayoutModule,
     MatButtonModule,
     MatIconModule,
-    IconModule,
     MatMenuModule,
     MatDialogModule,
     MatInputModule,

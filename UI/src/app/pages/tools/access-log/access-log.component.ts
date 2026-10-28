@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
-import icDeleteForever from "@iconify/icons-ic/twotone-delete-forever";
 import { TranslateService } from "@ngx-translate/core";
 import { LoginService } from "src/app/services/login.service";
 import { DefaultValuesService } from "../../../common/default-values.service";
@@ -63,7 +62,7 @@ export class AccessLogComponent implements OnInit, OnDestroy {
     { label: "IP Address", property: "ipAddress", type: "text", visible: true },
   ];
   accessLogModel: GetAccessLogInfoModel = new GetAccessLogInfoModel();
-  icDeleteForever = icDeleteForever;
+  icDeleteForever = 'delete_forever';
   totalCount = 0;
   pageNumber: number;
   pageSize: number;

@@ -24,11 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input } from '@angular/core';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icSearch from '@iconify/icons-ic/search';
-import icFilterList from '@iconify/icons-ic/filter-list';
 import { Router} from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -60,11 +55,11 @@ export class ReportCardGradeListComponent implements OnInit {
 
   ReportCardGradesModelList;
 
-  icAdd = icAdd;
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icSearch = icSearch;
-  icFilterList = icFilterList;
+  icAdd = 'add';
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icSearch = 'search';
+  icFilterList = 'filter_list';
   loading:Boolean;
 
   constructor(private router: Router,private dialog: MatDialog,public translateService:TranslateService) {

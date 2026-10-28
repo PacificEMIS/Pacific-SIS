@@ -26,7 +26,6 @@ All rights reserved.
 import { Component, OnInit,Inject } from '@angular/core';
 import { MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder,FormGroup, Validators } from '@angular/forms';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import {CountryAddModel} from '../../../../models/country.model';
@@ -45,7 +44,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 
 export class EditCountryComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   countryAddModel = new CountryAddModel();
   form: FormGroup;
   countryModalTitle:string;

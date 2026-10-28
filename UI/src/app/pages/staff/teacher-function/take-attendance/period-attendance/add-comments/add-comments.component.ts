@@ -26,7 +26,6 @@ All rights reserved.
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { StudentUpdateAttendanceCommentsModel } from 'src/app/models/take-attendance-list.model';
 import { StudentAttendanceService } from 'src/app/services/student-attendance.service';
@@ -38,7 +37,7 @@ import { CommonService } from 'src/app/services/common.service';
   templateUrl: './add-comments.component.html',
   styleUrls: ['./add-comments.component.scss']
 })
-export class AddCommentsComponent implements OnInit {  icClose = icClose;
+export class AddCommentsComponent implements OnInit {  icClose = 'close';
   comments:string;
   actionButtonTitle='submit';
   headerTitle='addCommentTo';

@@ -42,8 +42,8 @@
                     <td>{{grade.gradeScaleName}}</td>
                     <td>{{grade.gradeScaleValue |number : '1.2'|EmtyValueCheckPipe:'0.00'}}</td>
                     <td class="text-primary cursor-pointer">
-                        <mat-icon [icIcon]="icEdit" class="mr-2 cursor-pointer" (click)="grade.isGradeEdit=true;showUpdate=true"></mat-icon>
-                        <mat-icon [icIcon]="icRestore" class="cursor-pointer" (click)="openDataEdit(grade)"></mat-icon>
+                        <mat-icon class="mr-2 cursor-pointer" (click)="grade.isGradeEdit=true;showUpdate=true">{{ icEdit }}</mat-icon>
+                        <mat-icon class="cursor-pointer" (click)="openDataEdit(grade)">{{ icRestore }}</mat-icon>
                     </td>
                 </tr>
             </tbody>
@@ -77,8 +77,8 @@
                         </div>
                     </td>
                     <td class="text-primary cursor-pointer">
-                        <mat-icon [icIcon]="icEdit" class="mr-2 cursor-pointer" (click)="credit.isCreditEdit=true;showUpdate=true"></mat-icon>
-                        <mat-icon [icIcon]="icRestore" class="cursor-pointer" (click)="openDataEdit(credit)"></mat-icon>
+                        <mat-icon class="mr-2 cursor-pointer" (click)="credit.isCreditEdit=true;showUpdate=true">{{ icEdit }}</mat-icon>
+                        <mat-icon class="cursor-pointer" (click)="openDataEdit(credit)">{{ icRestore }}</mat-icon>
                     </td>
                 </tr>
             </tbody>

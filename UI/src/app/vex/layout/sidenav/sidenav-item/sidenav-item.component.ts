@@ -5,7 +5,6 @@ import { NavigationEnd, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { filter } from 'rxjs/operators';
 import { NavigationService } from '../../../services/navigation.service';
-import icKeyboardArrowRight from '@iconify/icons-ic/twotone-keyboard-arrow-right';
 import { SchoolCreate } from 'src/app/enums/school-create.enum';
 import { SchoolService } from 'src/app/services/school.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -25,7 +24,7 @@ export class SidenavItemComponent implements OnInit, OnChanges {
   @Input() level: number;
   isOpen: boolean;
   isActive: boolean;
-  icKeyboardArrowRight = icKeyboardArrowRight;
+  icKeyboardArrowRight = 'keyboard_arrow_right';
   stateObj = {type: SchoolCreate.VIEW};
 
   isLink = this.navigationService.isLink;

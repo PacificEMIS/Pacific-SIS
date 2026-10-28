@@ -24,17 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icContentCopy from '@iconify/icons-ic/baseline-content-copy';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icMoreVertical from '@iconify/icons-ic/baseline-more-vert';
-import icRemoveCircle from '@iconify/icons-ic/remove-circle';
-import icBack from '@iconify/icons-ic/baseline-arrow-back';
-import icInfo from '@iconify/icons-ic/info';
-import icClose from '@iconify/icons-ic/twotone-close';
-import icCheckboxChecked from '@iconify/icons-ic/check-box';
-import icCheckboxUnchecked from '@iconify/icons-ic/check-box-outline-blank';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { EditCourseSectionComponent } from '../edit-course-section/edit-course-section.component';
@@ -75,17 +64,17 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
   ]
 })
 export class CourseSectionComponent implements OnInit,OnDestroy,AfterViewChecked{
-  icAdd = icAdd;
-  icContentCopy = icContentCopy;
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icMoreVertical = icMoreVertical;
-  icRemoveCircle = icRemoveCircle;
-  icInfo = icInfo;
-  icBack = icBack;
-  icClose = icClose;
-  icCheckboxChecked = icCheckboxChecked;
-  icCheckboxUnchecked = icCheckboxUnchecked;
+  icAdd = 'add';
+  icContentCopy = 'content_copy';
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icMoreVertical = 'more_vert';
+  icRemoveCircle = 'remove_circle';
+  icInfo = 'info';
+  icBack = 'arrow_back';
+  icClose = 'close';
+  icCheckboxChecked = 'check_box';
+  icCheckboxUnchecked = 'check_box_outline_blank';
 
   courseDetails = 0;
   selectedTab = 'overview';

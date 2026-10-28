@@ -8,7 +8,7 @@
                     <input class="px-2 py-3 border-0 outline-none w-full bg-transparent" placeholder="Search..."
                         type="search">
                     <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
-                        <mat-icon [icIcon]="icSearch"></mat-icon>
+                        <mat-icon>{{ icSearch }}</mat-icon>
                     </button>
                 </div>
             </div>
@@ -19,12 +19,10 @@
                     matTooltip="{{'exportToExcel' | translate}}"><img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24"></a>
                 <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
                     matTooltip="{{'filterColumns' | translate}}" type="button">
-                    <mat-icon [icIcon]="icFilterList"></mat-icon>
+                    <mat-icon>{{ icFilterList }}</mat-icon>
                 </button>
                 <button color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button" (click)='goToAddPeriod()'>
-                    <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true"
-                        size="24px">
-                    </ic-icon>
+                    <mat-icon class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2">{{ icAdd }}</mat-icon>
                     <span>{{'addNewPeriod'|translate}}</span>
                 </button>
             </div>
@@ -83,10 +81,10 @@
             <th mat-header-cell *matHeaderCellDef>{{'action'|translate}}</th>
             <td mat-cell *matCellDef="let element">
                 <a routerLink="" matTooltip="{{'editInfo' | translate}}" class="mr-3 cursor-pointer">
-                    <mat-icon [icIcon]="icEdit"></mat-icon>
+                    <mat-icon>{{ icEdit }}</mat-icon>
                 </a>
                 <a routerLink="" matTooltip="{{'deleteInfo' | translate}}" class="mr-3 cursor-pointer">
-                    <mat-icon [icIcon]="icDelete"></mat-icon>
+                    <mat-icon>{{ icDelete }}</mat-icon>
                 </a>
             </td>
         </ng-container>

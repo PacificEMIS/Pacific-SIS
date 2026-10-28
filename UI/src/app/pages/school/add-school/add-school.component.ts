@@ -42,8 +42,6 @@ import { FieldsCategoryListView, FieldsCategoryModel } from 'src/app/models/fiel
 import { CustomFieldService } from 'src/app/services/custom-field.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
-import icAccountBalance from '@iconify/icons-ic/twotone-account-balance';
-import icCleanHands from '@iconify/icons-ic/outline-clean-hands';
 import { Module } from 'src/app/enums/module.enum';
 import { SchoolCreate } from 'src/app/enums/school-create.enum';
 
@@ -72,8 +70,8 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
   fieldsCategoryListView: FieldsCategoryListView = new FieldsCategoryListView();
   fieldsCategory;
   currentCategory: number;
-  icAccountBalance = icAccountBalance;
-  icCleanHands = icCleanHands;
+  icAccountBalance = 'account_balance';
+  icCleanHands = 'clean_hands';
   pageStatus = 'Add School';
   schoolCreateMode: SchoolCreate = SchoolCreate.ADD;
   schoolCreate = SchoolCreate;

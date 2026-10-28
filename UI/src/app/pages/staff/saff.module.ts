@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MatIconModule } from '@angular/material/icon';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
@@ -30,7 +29,6 @@ import { EffortGradeDetailsModule } from './teacher-function/input-effort-grades
     CommonModule,
     StaffRoutingModule,
     MatIconModule,
-    IconModule,  
     MatCardModule,
     MatSidenavModule,
     SecondaryToolbarModule,

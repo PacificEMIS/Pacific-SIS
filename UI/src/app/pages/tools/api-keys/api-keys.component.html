@@ -34,9 +34,9 @@
                                             <p class="font-semibold">{{apiKeyDetails?.apiTitle}}</p>
                                             <div class="sm:flex items-center">
                                                 <p class="italic text-xs mb-2 md:mb-0">{{ 'generatedOn' | translate }} {{apiKeyDetails?.createdOn | date: 'longDate'}}</p>
-                                                <mat-icon class="cursor-pointer ml-2" (click)="upddateApi(apiKeyDetails); $event.stopPropagation();" [icIcon]="icEdit"></mat-icon>
-                                                <mat-icon class="cursor-pointer ml-2" (click)="deleteApiKey(apiKeyDetails); $event.stopPropagation();" [icIcon]="icDeleteForever"></mat-icon>
-                                                <mat-icon class="cursor-pointer ml-2" [icIcon]="icSettings" (click)="goToDetails(apiKeyDetails)"></mat-icon>
+                                                <mat-icon class="cursor-pointer ml-2" (click)="upddateApi(apiKeyDetails); $event.stopPropagation();">{{ icEdit }}</mat-icon>
+                                                <mat-icon class="cursor-pointer ml-2" (click)="deleteApiKey(apiKeyDetails); $event.stopPropagation();">{{ icDeleteForever }}</mat-icon>
+                                                <mat-icon class="cursor-pointer ml-2" (click)="goToDetails(apiKeyDetails)">{{ icSettings }}</mat-icon>
                                             </div>
                                         </div>
                                     </mat-panel-title>
@@ -47,7 +47,7 @@
                                             <p class="mb-2 md:mb-0"><span class="font-semibold">{{ 'apiKey' | translate }}</span> : <span class="break-words">{{apiKeyDetails?.apiKey}}</span></p>
                                         </div>
                                         <div>
-                                            <mat-icon class="cursor-pointer" (click)="copyToClipboard(apiKeyDetails?.apiKey)" [icIcon]="icContentCopy"></mat-icon>
+                                            <mat-icon class="cursor-pointer" (click)="copyToClipboard(apiKeyDetails?.apiKey)">{{ icContentCopy }}</mat-icon>
                                             <mat-icon class="cursor-pointer ml-2" (click)="regenerateApiKey(apiKeyDetails)">refresh</mat-icon>
                                         </div>
                                     </div>

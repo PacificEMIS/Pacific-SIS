@@ -24,12 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
-import icEdit from "@iconify/icons-ic/twotone-edit";
-import icDelete from "@iconify/icons-ic/twotone-delete";
-import icMoreVert from "@iconify/icons-ic/more-vert";
-import icInfo from "@iconify/icons-ic/twotone-info";
-import icPendingActions from "@iconify/icons-ic/twotone-pending-actions";
-import icCalendarToday from "@iconify/icons-ic/twotone-calendar-today";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { AddAssignCourseComponent } from "./add-assign-course/add-assign-course.component";
@@ -74,12 +68,12 @@ import { buildSchedulePrintWeekPages, getSchedulePrintStyles } from "src/app/com
   encapsulation: ViewEncapsulation.None,
 })
 export class StudentCourseScheduleComponent implements OnInit {
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icMoreVert = icMoreVert;
-  icInfo = icInfo;
-  icPendingActions = icPendingActions;
-  icCalendarToday = icCalendarToday;
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icMoreVert = 'more_vert';
+  icInfo = 'info';
+  icPendingActions = 'pending_actions';
+  icCalendarToday = 'calendar_today';
 
   uniqueColors = uniqueColors;
   view: CalendarView | string = CalendarView.Week;

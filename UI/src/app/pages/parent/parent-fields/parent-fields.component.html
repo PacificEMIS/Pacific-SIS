@@ -8,16 +8,14 @@
                 <div *ngFor="let fieldsCategory of fieldsCategoryList" class="mt-2 flex flex-wrap justify-between">
                     <a class="cursor-pointer" [ngClass]="{'font-bold':currentCategoryId === fieldsCategory.categoryId}" (click)="selectCategory(fieldsCategory)">{{fieldsCategory.title}} </a>
                     <div *ngIf="!fieldsCategory.isSystemCategory">
-                        <a class="cursor-pointer mr-3" (click)="editFieldCategory(fieldsCategory)"><mat-icon [icIcon]="icEdit"></mat-icon></a>
-                        <a class="cursor-pointer" (click)="confirmDeleteFieldCategory(fieldsCategory)"><mat-icon [icIcon]="icDelete"></mat-icon></a>
+                        <a class="cursor-pointer mr-3" (click)="editFieldCategory(fieldsCategory)"><mat-icon>{{ icEdit }}</mat-icon></a>
+                        <a class="cursor-pointer" (click)="confirmDeleteFieldCategory(fieldsCategory)"><mat-icon>{{ icDelete }}</mat-icon></a>
                     </div>
                 </div>
                 <hr class="my-3"/>
                 <button color="" class="w-full text-primary" mat-button type="button"
                     (click)='goToAddCategory()'>
-                    <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true"
-                        size="24px">
-                    </ic-icon>
+                    <mat-icon class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2">{{ icAdd }}</mat-icon>
                     <span>{{'addNewCategory'|translate}}</span>
                 </button>
             </div>
@@ -50,14 +48,12 @@
                     <div fxFlex="200px" class="pt-3">
                         <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
                             matTooltip="{{'filterColumns' | translate}}" type="button">
-                            <mat-icon [icIcon]="icFilterList"></mat-icon>
+                            <mat-icon>{{ icFilterList }}</mat-icon>
                         </button>
 
                         <button color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
                             (click)='goToAdd()'>
-                            <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true"
-                                size="24px">
-                            </ic-icon>
+                            <mat-icon class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2">{{ icAdd }}</mat-icon>
                             <span>{{'addNewField'|translate}}</span>
                         </button>
                     </div>
@@ -133,10 +129,10 @@
                     <td mat-cell *matCellDef="let element">
                         <!-- <span *ngIf="element.type === 'Custom'"> -->
                         <a class="mr-3 cursor-pointer" (click)="openEditdata(element)">
-                            <mat-icon [icIcon]="icEdit"></mat-icon>
+                            <mat-icon>{{ icEdit }}</mat-icon>
                         </a>
                         <a class="cursor-pointer"(click)="confirmDelete(element)">
-                            <mat-icon [icIcon]="icDelete"></mat-icon>
+                            <mat-icon>{{ icDelete }}</mat-icon>
                         </a>
                         <!-- </span> -->
                     </td>

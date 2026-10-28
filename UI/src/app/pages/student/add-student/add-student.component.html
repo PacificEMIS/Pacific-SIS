@@ -7,7 +7,7 @@
                 <vex-profile-image [enableCropTool]="enableCropTool" [responseImage]="responseImage"
                     class="mx-auto inline-block"></vex-profile-image>
                 <span class="critical-alert shadow-md cursor-pointer" *ngIf="criticalAlert" [matTooltip]="studentCriticalInfo" (click)="navigateToMedicalInfo()">
-                    <mat-icon [icIcon]="icHospital" class="mr-3"></mat-icon>
+                    <mat-icon class="mr-3">{{ icHospital }}</mat-icon>
                 </span>
             </div>
             <div class="text-center px-4">
@@ -20,7 +20,7 @@
                 <mat-expansion-panel expanded="true">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
-                            <mat-icon [icIcon]="icSchool" class="mr-3"></mat-icon> {{ 'studentDetails' | translate }}
+                            <mat-icon class="mr-3">{{ icSchool }}</mat-icon> {{ 'studentDetails' | translate }}
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div>
@@ -45,17 +45,17 @@
             <div>
                 <a *ngIf="otherTabs?.courseSchedule" @fadeInRight class="list-item mt-2 no-underline flex items-center" matRipple
                     (click)="changeTempCategory('/school/students/student-course-schedule')" [ngClass]="categoryPath === '/school/students/student-course-schedule' ?'text-blue' : ''">
-                    <mat-icon [icIcon]="icCalendar" class="mr-3"></mat-icon> {{ 'courseSchedule' | translate }}
+                    <mat-icon class="mr-3">{{ icCalendar }}</mat-icon> {{ 'courseSchedule' | translate }}
                 </a>
                 <a *ngIf="otherTabs?.attendance" @fadeInRight class="list-item mt-2 no-underline flex items-center" matRipple (click)="changeTempCategory('/school/students/student-attendance')" [ngClass]="categoryPath === '/school/students/student-attendance' ?'text-blue' : ''">
-                    <mat-icon [icIcon]="icAlarm" class="mr-3"></mat-icon> {{ 'attendance' | translate }}
+                    <mat-icon class="mr-3">{{ icAlarm }}</mat-icon> {{ 'attendance' | translate }}
                 </a>
             </div>
             <mat-accordion *ngIf="otherTabs?.reportCard || otherTabs?.transcript">
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>
-                            <mat-icon [icIcon]="icPoll" class="mr-3"></mat-icon> {{ 'grades' | translate }}
+                            <mat-icon class="mr-3">{{ icPoll }}</mat-icon> {{ 'grades' | translate }}
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div>
@@ -91,7 +91,7 @@
                         <vex-profile-image [enableCropTool]="enableCropTool" [responseImage]="responseImage" style="width:50px"
                             class="mx-auto inline-block rounded"></vex-profile-image>
                         <span class="critical-alert shadow-md" *ngIf="criticalAlert" [matTooltip]="studentCriticalInfo" (click)="navigateToMedicalInfo()">
-                            <mat-icon  [icIcon]="icHospital" class="mr-3"></mat-icon>
+                            <mat-icon  class="mr-3">{{ icHospital }}</mat-icon>
                         </span>
                     </div>
                     <div class="text-left px-4">

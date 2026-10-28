@@ -24,12 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icSearch from '@iconify/icons-ic/search';
-import icFilterList from '@iconify/icons-ic/filter-list';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router} from '@angular/router';
@@ -77,12 +71,12 @@ export class StaffFieldsComponent implements OnInit {
   fieldsCategoryList;
   currentCategoryId=null;
   fieldCategoryModuleEnum=FieldCategoryModuleEnum
-  icMoreVert = icMoreVert;
-  icAdd = icAdd;
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icSearch = icSearch;
-  icFilterList = icFilterList;
+  icMoreVert = 'more_vert';
+  icAdd = 'add';
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icSearch = 'search';
+  icFilterList = 'filter_list';
   loading:Boolean;
   searchKey:string;
   customFieldListViewModel:CustomFieldListViewModel= new CustomFieldListViewModel();

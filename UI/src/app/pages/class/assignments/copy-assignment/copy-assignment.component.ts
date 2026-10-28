@@ -2,7 +2,6 @@ import { Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icClose from '@iconify/icons-ic/twotone-close'
 import { map } from 'rxjs/operators';
 import { StaffPortalAssignmentService } from '../../../../services/staff-portal-assignment.service';
 import { AllScheduledCourseSectionForStaffModel } from '../../../../models/teacher-schedule.model';
@@ -21,7 +20,7 @@ export class CopyAssignmentComponent implements OnInit {
 
   @ViewChild('checkBox') checkBox: MatCheckbox;
   checkAll: boolean;
-  icClose = icClose;
+  icClose = 'close';
   showCopyAssignment = true;
   showSuccessAssignment = false;
   coursecount: number=0;

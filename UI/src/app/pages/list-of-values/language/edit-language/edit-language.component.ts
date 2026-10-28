@@ -26,7 +26,6 @@ All rights reserved.
 import { Component, OnInit,Inject } from '@angular/core';
 import { MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder,FormGroup, Validators } from '@angular/forms';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import {LanguageAddModel} from '../../../../models/language.model';
@@ -47,7 +46,7 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 })
 
 export class EditLanguageComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   languageModel = new LanguageAddModel();
   form: FormGroup;
   languageModalTitle="addLanguage";

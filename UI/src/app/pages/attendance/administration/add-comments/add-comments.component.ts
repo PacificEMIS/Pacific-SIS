@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -35,7 +34,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class AddCommentsComponent implements OnInit {
 
-  icClose = icClose;
+  icClose = 'close';
   comments: string;
   actionButtonTitle='submit';
   headerTitle='addCommentTo';

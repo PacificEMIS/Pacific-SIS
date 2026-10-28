@@ -66,3 +66,8 @@ a {
     @apply text-white;
   }
 }
+
+// the Add New icon is a font glyph now; keep the button's white instead of the toolbar icon colour
+.global-add-button .mat-icon {
+  color: inherit;
+}

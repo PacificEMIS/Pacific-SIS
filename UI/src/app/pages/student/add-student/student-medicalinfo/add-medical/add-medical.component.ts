@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { StudentService } from '../../../../../services/student.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { AddEditStudentMedicalNoteModel } from '../../../../../models/student.model';
@@ -42,7 +41,7 @@ import { DefaultValuesService } from '../../../../../common/default-values.servi
 })
 export class AddMedicalComponent implements OnInit {
 
-  icClose = icClose;
+  icClose = 'close';
   form: FormGroup;
   addEditStudentMedicalNoteModel: AddEditStudentMedicalNoteModel = new AddEditStudentMedicalNoteModel();
   buttonType: string;

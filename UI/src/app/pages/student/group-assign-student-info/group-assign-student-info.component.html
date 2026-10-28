@@ -180,7 +180,7 @@
                                     <th mat-header-cell *matHeaderCellDef> {{ 'remove' | translate }} </th>
                                     <td mat-cell *matCellDef="let element">
                                         <mat-icon (click)="setSelectedStudentList({checked: false}, element)"
-                                            [icIcon]="icRemoveCircle" class="cursor-pointer"></mat-icon>
+                                            class="cursor-pointer">{{ icRemoveCircle }}</mat-icon>
                                     </td>
                                 </ng-container>
 

@@ -25,8 +25,6 @@ All rights reserved.
 
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icListAlt from '@iconify/icons-ic/twotone-list-alt';
-import icSchool from '@iconify/icons-ic/twotone-school';
 import { StudentListByDateRangeModel, StudentListModel } from 'src/app/models/student.model';
 import { StudentInfoReportModel } from 'src/app/models/student-info-report.model';
 import { StudentService } from 'src/app/services/student.service';
@@ -57,8 +55,8 @@ import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
   ]
 })
 export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
-  icListAlt = icListAlt;
-  icSchool = icSchool;
+  icListAlt = 'list_alt';
+  icSchool = 'school';
   columns = [
     { label: '', property: 'studentCheck', type: 'text', visible: true },
     { label: 'Name', property: 'studentName', type: 'text', visible: true },

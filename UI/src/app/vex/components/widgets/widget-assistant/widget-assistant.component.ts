@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import icCheckCircle from '@iconify/icons-ic/twotone-check-circle';
-import icError from '@iconify/icons-ic/twotone-error';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 @Component({
   selector: 'vex-widget-assistant',
@@ -9,8 +7,8 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 })
 export class WidgetAssistantComponent implements OnInit {
 
-  icCheckCircle = icCheckCircle;
-  icError = icError;
+  icCheckCircle = 'check_circle';
+  icError = 'error';
   today : Date;
   userName: string;
   constructor(private defaultValuesService: DefaultValuesService) { }

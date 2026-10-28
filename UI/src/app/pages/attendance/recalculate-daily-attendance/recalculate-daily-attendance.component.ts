@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import icCheckCircle from "@iconify/icons-ic/check-circle";
 import { StudentRecalculateDailyAttendance } from "../../../models/student-recalculate-attendance.model";
 import { DefaultValuesService } from "../../../common/default-values.service";
 import { DatePipe } from "@angular/common";
@@ -45,7 +44,7 @@ export class RecalculateDailyAttendanceComponent implements OnInit {
   isShowMainView:boolean=true;
   isShowLoadingView:boolean=false;
   isShowSuccessView:boolean=false;
-  icCheckCircle = icCheckCircle;
+  icCheckCircle = 'check_circle';
   constructor(
     private snackbar: MatSnackBar,
     public translateService: TranslateService,

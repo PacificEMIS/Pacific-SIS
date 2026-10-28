@@ -25,8 +25,6 @@ All rights reserved.
 
 import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/twotone-close';
-import icSchedule from '@iconify/icons-ic/twotone-schedule';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -44,8 +42,8 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class AddNurseVisitComponent implements OnInit {
 
-  icClose = icClose;
-  icSchedule = icSchedule;
+  icClose = 'close';
+  icSchedule = 'schedule';
   form: FormGroup;
   addEditStudentMedicalNurseVisitModel: AddEditStudentMedicalNurseVisitModel = new AddEditStudentMedicalNurseVisitModel();
   editMode: boolean;

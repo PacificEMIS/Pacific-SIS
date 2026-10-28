@@ -24,7 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icEmail from '@iconify/icons-ic/twotone-email';
 import { CommonService } from 'src/app/services/common.service';
 import { RemoveStaffCourseSectionSchedule, ScheduledStaffForCourseSection } from '../../../../../models/course-section.model';
 import { CourseSectionService } from '../../../../../services/course-section.service';
@@ -36,15 +35,14 @@ import { StaffService } from 'src/app/services/staff.service';
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 import { Router } from '@angular/router';
 import { TeacherScheduleService } from 'src/app/services/teacher-schedule.service';
-import icDelete from '@iconify/icons-ic/twotone-delete';
 @Component({
   selector: 'vex-scheduled-teachers',
   templateUrl: './scheduled-teachers.component.html',
   styleUrls: ['./scheduled-teachers.component.scss']
 })
 export class ScheduledTeachersComponent implements OnInit {
-  icDelete = icDelete;
-  icEmail = icEmail;
+  icDelete = 'delete';
+  icEmail = 'email';
   @Input() courseSectionDetails;
   moduleIdentifier=ModuleIdentifier;
   createMode=SchoolCreate;

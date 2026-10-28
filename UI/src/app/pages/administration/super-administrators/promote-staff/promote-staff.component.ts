@@ -27,7 +27,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -49,7 +48,7 @@ import { SuperAdministratorService } from 'src/app/services/super-administrator.
   templateUrl: './promote-staff.component.html'
 })
 export class PromoteStaffComponent implements OnInit, OnDestroy {
-  icClose = icClose;
+  icClose = 'close';
   searchCtrl = new FormControl('');
   candidates: SuperAdministratorCandidateModel[] = [];
   selected: SuperAdministratorCandidateModel = null;

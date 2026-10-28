@@ -1,7 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icListAlt from '@iconify/icons-ic/twotone-list-alt';
-import icAccountBalance from '@iconify/icons-ic/twotone-account-balance';
 import { GetAllSchoolModel } from 'src/app/models/get-all-school.model';
 import { SchoolService } from 'src/app/services/school.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -17,8 +15,6 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { GetSchoolReportModel } from 'src/app/models/report.model';
 import { ReportService } from 'src/app/services/report.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import icCheckboxChecked from '@iconify/icons-ic/check-box';
-import icCheckboxUnchecked from '@iconify/icons-ic/check-box-outline-blank';
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 
 @Component({
@@ -27,10 +23,10 @@ import { PageRolesPermission } from 'src/app/common/page-roles-permissions.servi
   styleUrls: ['./institute-report.component.scss']
 })
 export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewInit {
-  icListAlt = icListAlt;
-  icAccountBalance = icAccountBalance;
-  icCheckboxChecked = icCheckboxChecked;
-  icCheckboxUnchecked = icCheckboxUnchecked;
+  icListAlt = 'list_alt';
+  icAccountBalance = 'account_balance';
+  icCheckboxChecked = 'check_box';
+  icCheckboxUnchecked = 'check_box_outline_blank';
   displayedColumns: string[] = ['schoolCheck', 'schoolName', 'address', 'state', 'principal', 'phone'];
   getAllSchoolModel: GetAllSchoolModel = new GetAllSchoolModel();
   getSchoolReportModel: GetSchoolReportModel = new GetSchoolReportModel();

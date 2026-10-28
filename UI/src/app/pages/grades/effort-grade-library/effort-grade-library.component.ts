@@ -24,13 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input } from '@angular/core';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icSearch from '@iconify/icons-ic/search';
-import icFilterList from '@iconify/icons-ic/filter-list';
-import icMoreVertical from '@iconify/icons-ic/baseline-more-vert';
-import icCancel from '@iconify/icons-ic/baseline-close';
 import { Router } from '@angular/router';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
@@ -78,13 +71,13 @@ export class EffortGradeLibraryComponent implements OnInit {
 
   PeriodsModelList;
 
-  icAdd = icAdd;
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icSearch = icSearch;
-  icFilterList = icFilterList;
-  icMoreVertical = icMoreVertical;
-  icCancel = icCancel;
+  icAdd = 'add';
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icSearch = 'search';
+  icFilterList = 'filter_list';
+  icMoreVertical = 'more_vert';
+  icCancel = 'close';
   addCategory = false;
   loading: Boolean;
   effortGradeLibraryCategoryListView: EffortGradeLibraryCategoryListView = new EffortGradeLibraryCategoryListView();

@@ -30,9 +30,6 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { TranslateService } from '@ngx-translate/core';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icEdit from '@iconify/icons-ic/edit';
-import icClear from '@iconify/icons-ic/baseline-clear';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { AddParentInfoModel } from '../../../../models/parent-info.model';
 import { CountryModel } from '../../../../models/country.model';
@@ -61,9 +58,9 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EditparentAddressinfoComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  icAdd = icAdd;
-  icClear = icClear;
-  icEdit = icEdit;
+  icAdd = 'add';
+  icClear = 'clear';
+  icEdit = 'edit';
   parentDetailsForViewAndEdit;
   @ViewChild('f') currentForm: NgForm;
   f: NgForm;

@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/close';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CourseManagerService } from 'src/app/services/course-manager.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -47,7 +46,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./add-course-section.component.scss']
 })
 export class AddCourseSectionComponent implements OnInit, OnDestroy {
-  icClose = icClose;
+  icClose = 'close';
   displayedColumns: string[] = ['courseSection', 'course', 'markingPeriod', 'startDate', 'endDate', 'totalSeats', 'available', 'studentRecords'];
   searchRecord: boolean = false;
   courseDetails: MatTableDataSource<any>;

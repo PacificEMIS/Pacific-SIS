@@ -26,7 +26,6 @@ All rights reserved.
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatCheckbox } from '@angular/material/checkbox';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { StudentDetails } from '../../../../models/student-details.model';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -91,7 +90,7 @@ export class AddStudentComponent implements OnInit,OnDestroy {
   selectedStudent=[]
   studentDetails: MatTableDataSource<any>;
   selection : SelectionModel<StudentMasterModel> = new SelectionModel<StudentMasterModel>(true, []);
-  icClose = icClose;
+  icClose = 'close';
   displayedColumns: string[] = ['studentSelected', 'studentName', 'studentId', 'alternateId', 'gradeLevel', 'section', 'gender', 'firstLanguage'];
   numRows:number;
   constructor(private dialogRef: MatDialogRef<AddStudentComponent>, public translateService:TranslateService,

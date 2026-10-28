@@ -26,14 +26,6 @@ All rights reserved.
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewChecked, AfterContentChecked } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icSuperadmin from '@iconify/icons-ic/baseline-admin-panel-settings';
-import icAdmin from '@iconify/icons-ic/baseline-account-box';
-import icTeacher from '@iconify/icons-ic/twotone-person';
-import icHomeroomTeacher from '@iconify/icons-ic/twotone-account-circle';
-import icParent from '@iconify/icons-ic/twotone-escalator-warning';
-import icStudent from '@iconify/icons-ic/baseline-face';
-import icMoreVert from '@iconify/icons-ic/more-vert';
 import { TranslateService } from '@ngx-translate/core';
 import { EditCustomProfileComponent } from '../../administration/access-control/edit-custom-profile/edit-custom-profile.component';
 import { RollBasedAccessService } from '../../../services/roll-based-access.service';
@@ -64,14 +56,14 @@ export class AdministrationSettingsComponent implements OnInit, AfterContentChec
   pageTitle: string;
   pageId: string = '';
 
-  icAdd = icAdd;
-  icSuperadmin = icSuperadmin;
-  icAdmin = icAdmin;
-  icTeacher = icTeacher;
-  icHomeroomTeacher = icHomeroomTeacher;
-  icParent = icParent;
-  icStudent = icStudent;
-  icMoreVert = icMoreVert;
+  icAdd = 'add';
+  icSuperadmin = 'admin_panel_settings';
+  icAdmin = 'account_box';
+  icTeacher = 'person';
+  icHomeroomTeacher = 'account_circle';
+  icParent = 'escalator_warning';
+  icStudent = 'face';
+  icMoreVert = 'more_vert';
   rolePermissionListViewModel: RolePermissionListViewModel = new RolePermissionListViewModel();
   permissionGroupListViewModel: PermissionGroupListViewModel = new PermissionGroupListViewModel();
   memberList = [];
@@ -256,7 +248,7 @@ export class AdministrationSettingsComponent implements OnInit, AfterContentChec
               }
             } else {
               obj["className"] = "mr-3 align-middle";
-              obj['icon'] = icAdmin
+              obj['icon'] = 'account_box'
             }
 
             this.memberList.push(obj)
@@ -289,15 +281,15 @@ export class AdministrationSettingsComponent implements OnInit, AfterContentChec
   getIcon(val) {
     switch (val) {
       case "Super Administrator": {
-        return icSuperadmin
+        return 'admin_panel_settings'
 
       }
       case "Administrator": {
-        return icAdmin
+        return 'account_box'
 
       }
       case "Admin Assistant": {
-        return icAdmin
+        return 'account_box'
 
       }
       case "Teacher": {
@@ -309,11 +301,11 @@ export class AdministrationSettingsComponent implements OnInit, AfterContentChec
 
       }
       case "Parent": {
-        return icParent
+        return 'escalator_warning'
 
       }
       case "Student": {
-        return icStudent
+        return 'face'
 
       }
     }

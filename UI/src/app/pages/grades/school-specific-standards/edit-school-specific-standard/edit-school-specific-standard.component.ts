@@ -25,8 +25,6 @@ All rights reserved.
 
 import { Component, ElementRef, Inject, OnDestroy, OnInit, Optional, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import icClose from '@iconify/icons-ic/twotone-close';
-import icAdd from '@iconify/icons-ic/add-circle-outline';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { GetAllGradeLevelsModel } from '../../../../models/grade-level.model';
@@ -54,8 +52,8 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EditSchoolSpecificStandardComponent implements OnInit, OnDestroy{
   @ViewChild('subject') subject: ElementRef;
-  icClose = icClose;
-  icAdd = icAdd;
+  icClose = 'close';
+  icAdd = 'add_circle_outline';
 
   gradeLevelList: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
   schoolSpecificStandard:SchoolSpecificStandarModel= new SchoolSpecificStandarModel();

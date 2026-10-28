@@ -26,7 +26,6 @@ All rights reserved.
 import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { EditorChangeContent, EditorChangeSelection } from 'ngx-quill';
@@ -72,7 +71,7 @@ export class EditNoticeComponent implements OnInit {
   noticeModalActionTitle='submit';
   @Output() afterClosed = new EventEmitter<boolean>();
   getAllMembersList: GetAllMembersList = new GetAllMembersList();
-  icClose = icClose;
+  icClose = 'close';
   body: string = null;
   noticeAddViewModel = new NoticeAddViewModel();
   memberArray: number[] = [];

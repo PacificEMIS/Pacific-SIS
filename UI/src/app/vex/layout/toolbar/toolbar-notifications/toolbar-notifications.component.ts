@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { PopoverService } from '../../../components/popover/popover.service';
 import { ToolbarNotificationsDropdownComponent } from './toolbar-notifications-dropdown/toolbar-notifications-dropdown.component';
-import icNotificationsActive from '@iconify/icons-ic/twotone-notifications-active';
 
 @Component({
   selector: 'vex-toolbar-notifications',
@@ -14,7 +13,7 @@ export class ToolbarNotificationsComponent implements OnInit {
   @ViewChild('originRef', { static: true, read: ElementRef }) originRef: ElementRef;
 
   dropdownOpen: boolean;
-  icNotificationsActive = icNotificationsActive;
+  icNotificationsActive = 'notifications_active';
 
   constructor(private popover: PopoverService,
               private cd: ChangeDetectorRef) {}

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RecalculateDailyAttendanceRoutingModule } from './recalculate-daily-attendance-routing.module';
 import { RecalculateDailyAttendanceComponent } from './recalculate-daily-attendance.component';
 import { MatIconModule } from '@angular/material/icon';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
 import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
@@ -26,7 +25,6 @@ import { MatButtonModule } from '@angular/material/button';
     CommonModule,
     RecalculateDailyAttendanceRoutingModule,
     MatIconModule,
-    IconModule,  
     MatCardModule,
     SecondaryToolbarModule,
     BreadcrumbsModule,

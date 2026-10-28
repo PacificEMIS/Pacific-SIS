@@ -3,7 +3,7 @@
         {{ headerTitle | translate }} <span class="font-medium">{{data.studentName}}</span> {{ "attendance" | translate }} 
     </h2>
     <button class="text-secondary" (click)="close()" mat-icon-button type="button">
-        <mat-icon [icIcon]="icClose"></mat-icon>
+        <mat-icon>{{ icClose }}</mat-icon>
     </button>
     
 </div>

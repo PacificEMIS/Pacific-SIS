@@ -1,9 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ConfigService } from '../../services/config.service';
 import { map } from 'rxjs/operators';
-import icHelp from '@iconify/icons-ic/help';
-import icSearch from '@iconify/icons-ic/search';
-import icDropdown from '@iconify/icons-ic/arrow-drop-down';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -14,9 +11,9 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class SecondaryToolbarComponent implements OnInit {
 
-  icHelp = icHelp;
-  icSearch = icSearch;
-  icDropdown = icDropdown;
+  icHelp = 'help';
+  icSearch = 'search';
+  icDropdown = 'arrow_drop_down';
   @Input() pages:string[] = [];
   @Input() schoolSettings: boolean = false;
   @Output() selectedPage = new EventEmitter<string>();

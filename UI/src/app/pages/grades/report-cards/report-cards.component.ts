@@ -27,7 +27,6 @@ import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import icSearch from '@iconify/icons-ic/search';
 import { StudentDetails } from '../../../models/student-details.model';
 import { StudentListModel } from "../../../../app/models/student.model";
 import { StudentService } from "../../../../app/services/student.service";
@@ -72,7 +71,7 @@ import { SharedFunction } from "../../shared/shared-function";
 })
 export class ReportCardsComponent implements OnInit {
 
-  icSearch = icSearch;
+  icSearch = 'search';
   getAllStudent: StudentListModel = new StudentListModel();
   totalCount: number = 0;
   StudentModelList: MatTableDataSource<any>;

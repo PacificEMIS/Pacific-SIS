@@ -25,7 +25,6 @@ All rights reserved.
 
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import icSearch from "@iconify/icons-ic/search";
 import { LoaderService } from "../../../services/loader.service";
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
@@ -57,7 +56,7 @@ import { SearchFilter, SearchFilterListViewModel } from "src/app/models/search-f
   ]
 })
 export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDestroy {
-  icSearch = icSearch;
+  icSearch = 'search';
   getAllStaffModel: GetAllStaffModel = new GetAllStaffModel();
   destroySubject$: Subject<void> = new Subject();
   columns = [

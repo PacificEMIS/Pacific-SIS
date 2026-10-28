@@ -1,10 +1,10 @@
 <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
     <h2 class="headline m-0" fxFlex="auto"><a class="text-primary cursor-pointer inline-block mr-3"
             @fadeInRight (click)="backToSearch()" *ngIf="studentSiblingSearch.getStudentForView?.length==1">
-            <mat-icon [icIcon]="icBack" class="inline-block align-middle"></mat-icon>
+            <mat-icon class="inline-block align-middle">{{ icBack }}</mat-icon>
         </a> {{'searchAndAssociateStudent' | translate}}</h2>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-        <mat-icon (click)="cancel()" [icIcon]="icClose"></mat-icon>
+        <mat-icon (click)="cancel()">{{ icClose }}</mat-icon>
     </button>
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>

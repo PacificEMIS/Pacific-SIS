@@ -2,8 +2,6 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } 
 import { NgForm } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icRestore from '@iconify/icons-ic/twotone-restore';
 import { GradeScaleListView } from 'src/app/models/grades.model';
 import { ResponseStudentReportCardGradesModel } from 'src/app/models/report-card.model';
 import { DataEditInfoComponent } from 'src/app/pages/shared-module/data-edit-info/data-edit-info.component';
@@ -17,8 +15,8 @@ import { GradesService } from 'src/app/services/grades.service';
 })
 export class EditReportCardGradesDetailsComponent implements OnInit, OnChanges {
 
-  icEdit = icEdit;
-  icRestore = icRestore;
+  icEdit = 'edit';
+  icRestore = 'restore';
   inactive:boolean = true;
   showUpdate = false;
   @Input() studentReportCardGrades;

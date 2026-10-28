@@ -178,7 +178,7 @@
                     <p class="font-medium mb-4">{{'addressContact' | translate }}</p>
                     <div class="md:flex">
                         <div class="w-1/3">
-                            <mat-icon class="mr-2 align-bottom" [icIcon]="icHome"></mat-icon>{{'studentHomeAddress' | translate }}
+                            <mat-icon class="mr-2 align-bottom">{{ icHome }}</mat-icon>{{'studentHomeAddress' | translate }}
                         </div>
                         <div class="w-2/3">
                             <ng-container *ngFor="let field of fieldsDetailsArray?.addressContact; let i = index;">
@@ -197,7 +197,7 @@
 
                     <div class="md:flex">
                         <div class="w-1/3">
-                            <mat-icon class="mr-2 align-bottom" [icIcon]="icMarkunreadMailbox"></mat-icon>{{'studentMailingAddress' | translate }}
+                            <mat-icon class="mr-2 align-bottom">{{ icMarkunreadMailbox }}</mat-icon>{{'studentMailingAddress' | translate }}
                         </div>
                         <div class="w-2/3">
                             <ng-container *ngFor="let field of fieldsDetailsArray?.studentMailingAddress; let i = index;">
@@ -216,7 +216,7 @@
 
                     <div class="flex">
                         <div class="w-1/3">
-                            <mat-icon class="mr-2 align-bottom" [icIcon]="icContactPhone"></mat-icon>{{'personalContactInformation' | translate }}
+                            <mat-icon class="mr-2 align-bottom">{{ icContactPhone }}</mat-icon>{{'personalContactInformation' | translate }}
                         </div>
                         <div class="w-2/3">
                             <ul class="grid grid-cols-2 row-gap-3 mb-8">
@@ -247,13 +247,13 @@
                 <div class="md:flex w-full justify-end">
                     <div class="py-2 md:pt-2 items-center">
                         <!-- <a class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Print">
-                            <mat-icon [icIcon]="icPrint"></mat-icon>
+                            <mat-icon>{{ icPrint }}</mat-icon>
                         </a> -->
                         <a class="cursor-pointer inline-block align-middle ml-2" (click)="generateExcel()" matTooltip="{{'exportToExcel' | translate}}">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
                         <a [matMenuTriggerFor]="columnFilterMenu" class="cursor-pointer p-1 mt-1 inline-block align-middle ml-2" matTooltip="{{'filter' | translate}}">
-                            <mat-icon [icIcon]="icFilterList"></mat-icon>
+                            <mat-icon>{{ icFilterList }}</mat-icon>
                         </a>
                     </div>
                 </div>

@@ -24,10 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit } from "@angular/core";
-import icEdit from "@iconify/icons-ic/twotone-edit";
-import icDeleteForever from "@iconify/icons-ic/twotone-delete-forever";
-import icDelete from "@iconify/icons-ic/twotone-delete";
-import icFileCopy from "@iconify/icons-ic/twotone-file-copy";
 import { MatDialog } from "@angular/material/dialog";
 import { AddAssignmentComponent } from "./add-assignment/add-assignment.component";
 import { CreateAssignmentComponent } from "./create-assignment/create-assignment.component";
@@ -56,10 +52,10 @@ import { GradeBookConfigurationService } from "../../../services/gradebook-confi
   styleUrls: ["./assignments.component.scss"],
 })
 export class AssignmentsComponent implements OnInit {
-  icEdit = icEdit;
-  icDeleteForever = icDeleteForever;
-  icDelete = icDelete;
-  icFileCopy = icFileCopy;
+  icEdit = 'edit';
+  icDeleteForever = 'delete_forever';
+  icDelete = 'delete';
+  icFileCopy = 'file_copy';
   gradebookConfigurationAddViewModel: GradebookConfigurationAddViewModel = new GradebookConfigurationAddViewModel();
   assignmentModel: GetAllAssignmentsModel = new GetAllAssignmentsModel();
   courseSectionId: number;

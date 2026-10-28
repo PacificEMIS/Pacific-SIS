@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
@@ -62,7 +61,7 @@ import { CommonLOV } from '../../../shared-module/lov/common-lov';
 export class AddTeacherComponent implements OnInit {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
-  icClose = icClose;
+  icClose = 'close';
   displayedColumns: string[] = ['staffSelected', 'staffName', 'staffId', 'gender', 'primaryGrade', 'primarySubject', 'homeroomTeacher'];
   getAllGradeLevelsModel:GetAllGradeLevelsModel= new GetAllGradeLevelsModel();
   getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();

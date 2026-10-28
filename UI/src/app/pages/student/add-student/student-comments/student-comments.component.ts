@@ -29,11 +29,6 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { TranslateService } from '@ngx-translate/core';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icPrint from '@iconify/icons-ic/baseline-print';
-import icComment from '@iconify/icons-ic/twotone-comment';
 import { MatDialog } from '@angular/material/dialog';
 import { EditCommentComponent } from './edit-comment/edit-comment.component';
 import {StudentService} from '../../../../services/student.service';
@@ -67,11 +62,11 @@ import { ReportService } from 'src/app/services/report.service';
 })
 export class StudentCommentsComponent implements OnInit {
 
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icAdd = icAdd;
-  icComment = icComment;
-  icPrint = icPrint;
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icAdd = 'add';
+  icComment = 'comment';
+  icPrint = 'print';
   listCount;
   StudentCreate = SchoolCreate;
   studentCreateMode: SchoolCreate;

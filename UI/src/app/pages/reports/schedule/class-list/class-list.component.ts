@@ -25,11 +25,6 @@ All rights reserved.
 
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icPrint from '@iconify/icons-ic/twotone-print';
-import icHome from '@iconify/icons-ic/twotone-home';
-import icMarkunreadMailbox from '@iconify/icons-ic/twotone-markunread-mailbox';
-import icContactPhone from '@iconify/icons-ic/twotone-contact-phone';
-import icGrade from '@iconify/icons-ic/twotone-grade';
 import { ScheduleReportFilterModel, ScheduleReportFilterViewModel, ScheduleReportStaddAndCourseListFilterModel } from 'src/app/models/schedule-report-filter.model';
 import { StudentScheduleService } from 'src/app/services/student-schedule.service';
 import { MatTableDataSource } from '@angular/material/table';
@@ -103,11 +98,11 @@ import moment from 'moment';
   styleUrls: ['./class-list.component.scss']
 })
 export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
-  icPrint = icPrint;
-  icHome = icHome;
-  icMarkunreadMailbox = icMarkunreadMailbox;
-  icContactPhone = icContactPhone;
-  icGrade = icGrade;
+  icPrint = 'print';
+  icHome = 'home';
+  icMarkunreadMailbox = 'markunread_mailbox';
+  icContactPhone = 'contact_phone';
+  icGrade = 'grade';
   currentTab: string = 'selectSTeacher';
   displayedColumns: string[] = ['staffAndCourseCheck', 'courseSection', 'teacher', 'subject', 'course', 'noOfAssociatedStudent'];
   // classLists = classListData;

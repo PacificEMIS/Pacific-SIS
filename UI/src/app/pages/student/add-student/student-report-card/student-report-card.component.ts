@@ -28,7 +28,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { AddCommentsComponent } from './add-comments/add-comments.component';
 import { AddTeacherCommentsComponent } from './add-teacher-comments/add-teacher-comments.component';
-import icPrint from '@iconify/icons-ic/twotone-print';
 import { AddReportCardPdf } from 'src/app/models/report-card.model';
 import { GetMarkingPeriodByCourseSectionModel, GetMarkingPeriodTitleListModel } from 'src/app/models/marking-period.model';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
@@ -49,7 +48,7 @@ import { reportCardType } from '../../../../common/static-data';
 })
 export class StudentReportCardComponent implements OnInit {
 
-  icPrint = icPrint;
+  icPrint = 'print';
   addReportCardPdf: AddReportCardPdf =  new AddReportCardPdf();
   getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
   markingPeriodList = [];

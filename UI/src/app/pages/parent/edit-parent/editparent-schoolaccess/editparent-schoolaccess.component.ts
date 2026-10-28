@@ -28,8 +28,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
-import icVisibility from '@iconify/icons-ic/twotone-visibility';
-import icVisibilityOff from '@iconify/icons-ic/twotone-visibility-off';
 
 @Component({
   selector: 'vex-editparent-schoolaccess',
@@ -44,8 +42,8 @@ import icVisibilityOff from '@iconify/icons-ic/twotone-visibility-off';
 export class EditparentSchoolaccessComponent implements OnInit {
 
   form: FormGroup;
-  icVisibility = icVisibility;
-  icVisibilityOff = icVisibilityOff;
+  icVisibility = 'visibility';
+  icVisibilityOff = 'visibility_off';
   inputType = 'password';
   visible = false;
 

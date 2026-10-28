@@ -145,14 +145,14 @@
           (click)="changeCalendarView(CalendarView.Month)" [class.active]="view === CalendarView.Month" [ngClass]="
             view === CalendarView.Month && !scheduleSwitch ? 'text-blue' : ''
           " matTooltip="{{ 'monthView' | translate }}" [matTooltipPosition]="'above'">
-          <mat-icon [icIcon]="icCalendarToday"></mat-icon>
+          <mat-icon>{{ icCalendarToday }}</mat-icon>
         </button>
         <button [disabled]="events?.length===0" mat-icon-button aria-label="Example icon button with a menu icon"
           (click)="changeCalendarView('routineView')" [class.active]="view === 'routineView' && !scheduleSwitch"
           [ngClass]="
             view === 'routineView' && !scheduleSwitch ? 'text-blue' : ''
           " matTooltip="{{ 'routineView' | translate }}" [matTooltipPosition]="'above'">
-          <mat-icon [icIcon]="icPendingActions"></mat-icon>
+          <mat-icon>{{ icPendingActions }}</mat-icon>
         </button>
 				</div>
 				<div class="lg:inline-block">
@@ -162,7 +162,7 @@
         </button>
         <button mat-button [matMenuTriggerFor]="menu" type="button" mat-flat-button class="p-0 ml-2"
           style="min-width: 0">
-          <mat-icon [icIcon]="icMoreVert"></mat-icon>
+          <mat-icon>{{ icMoreVert }}</mat-icon>
         </button>
 				</div>
 			</div>
@@ -259,14 +259,14 @@
                       [matTooltip]="course.isDropped ? 'Dropped Course':('editItem'|translate)"
                       [matTooltipPosition]="'left'">
                       <button [disabled]="course.isDropped" (click)="takeInput(index)">
-                        <mat-icon [icIcon]="icEdit"></mat-icon>
+                        <mat-icon>{{ icEdit }}</mat-icon>
                       </button>
                     </span>
                   </td>
                   <td>
                     <button matTooltip="{{ 'viewCourse' | translate }}" [matTooltipPosition]="'left'"
                       (click)="scheduleDetails(course)">
-                      <mat-icon [icIcon]="icInfo"></mat-icon>
+                      <mat-icon>{{ icInfo }}</mat-icon>
                     </button>
                     <span
                       [matTooltip]="course.isDropped ? ('droppedCourse'|translate) : course.isAssociationship?('deletionDisallowedDueToAssociation'|translate):('deleteCourse'|translate)"
@@ -274,7 +274,7 @@
                       <button [disabled]="course.isDropped || course.isAssociationship"
                         [ngClass]="course.isDropped || course.isAssociationship? 'text-gray' : ''"
                         (click)="confirmDelete(course)" class="pl-2">
-                        <mat-icon [icIcon]="icDelete"></mat-icon>
+                        <mat-icon>{{ icDelete }}</mat-icon>
                       </button>
                     </span>
                   </td>

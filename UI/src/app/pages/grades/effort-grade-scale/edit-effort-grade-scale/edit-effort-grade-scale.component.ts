@@ -26,7 +26,6 @@ All rights reserved.
 import { Component, ElementRef, Inject, OnInit, Optional } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { EffortGradeScaleModel } from '../../../../models/grades.model';
@@ -45,7 +44,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
   ]
 })
 export class EditEffortGradeScaleComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   form: FormGroup;
   editMode:boolean;
   effortGradeScaleModel:EffortGradeScaleModel=new EffortGradeScaleModel();

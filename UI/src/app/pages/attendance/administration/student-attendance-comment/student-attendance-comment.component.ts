@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, Inject, OnInit } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import icClose from "@iconify/icons-ic/twotone-close";
 import { TranslateService } from "@ngx-translate/core";
 import { StudentAttendanceService } from "../../../../services/student-attendance.service";
 import { DefaultValuesService } from "../../../../common/default-values.service";
@@ -44,7 +43,7 @@ import * as moment from "moment";
   styleUrls: ["./student-attendance-comment.component.scss"],
 })
 export class StudentAttendanceCommentComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   category: number;
   rowIndex: number;
   commentBox = false;

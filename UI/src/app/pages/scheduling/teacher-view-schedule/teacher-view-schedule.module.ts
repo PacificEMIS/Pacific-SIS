@@ -6,7 +6,6 @@ import { TeacherViewScheduleComponent } from './teacher-view-schedule.component'
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { DateAdapter } from '@angular/material/core';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
 import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
@@ -36,7 +35,6 @@ import { FormsModule } from '@angular/forms';
     TeacherViewScheduleRoutingModule,
     MatIconModule,
     MatButtonModule,
-    IconModule,
     MatCardModule,
     SecondaryToolbarModule,
     BreadcrumbsModule,

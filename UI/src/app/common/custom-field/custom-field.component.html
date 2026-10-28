@@ -128,7 +128,7 @@
                 <h3 class="flex-auto">{{ categoryTitle }}</h3>
                 <div *ngIf="schoolCustomFields?.length > 0">
                     <button *ngIf="schoolPermissions?.edit" mat-raised-button color="primary" (click)="editOtherInfo()">
-                        <mat-icon [icIcon]="icEdit"></mat-icon><span
+                        <mat-icon>{{ icEdit }}</mat-icon><span
                             class="hidden sm:inline-block ml-1">{{'editInformation' |translate}}</span>
                     </button>
                 </div>
@@ -147,9 +147,8 @@
                                     <p *ngIf="customField.type === 'Checkbox'"
                                         class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
                                         <mat-icon
-                                            [icIcon]="customField?.customFieldsValue[0].customFieldValue === true?icCheckboxChecked:icCheckboxUnchecked"
-                                            class="inline-block align-middle mr-1">
-                                        </mat-icon>
+                                           
+                                            class="inline-block align-middle mr-1">{{ customField?.customFieldsValue[0].customFieldValue === true?icCheckboxChecked:icCheckboxUnchecked }}</mat-icon>
                                     </p>
                                     <p *ngIf="customField.type === 'Date'"
                                         class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | date:'mediumDate' |  EmtyValueCheckPipe}}
@@ -301,7 +300,7 @@
                 <div *ngIf="studentCustomFields?.length > 0">
                     <button *ngIf="studentPermissions?.edit" mat-raised-button color="primary"
                         (click)="editOtherInfo()">
-                        <mat-icon [icIcon]="icEdit"></mat-icon><span
+                        <mat-icon>{{ icEdit }}</mat-icon><span
                             class="hidden sm:inline-block ml-1">{{'editInformation' |translate}}</span>
                     </button>
                 </div>
@@ -320,9 +319,8 @@
                                     <p *ngIf="customField.type === 'Checkbox'"
                                         class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
                                         <mat-icon
-                                            [icIcon]="customField?.customFieldsValue[0].customFieldValue === true?icCheckboxChecked:icCheckboxUnchecked"
-                                            class="inline-block align-middle mr-1">
-                                        </mat-icon>
+                                           
+                                            class="inline-block align-middle mr-1">{{ customField?.customFieldsValue[0].customFieldValue === true?icCheckboxChecked:icCheckboxUnchecked }}</mat-icon>
                                     </p>
                                     <p *ngIf="customField.type === 'Date'"
                                         class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | date:'mediumDate' | EmtyValueCheckPipe}}
@@ -475,7 +473,7 @@
                 <h3 class="flex-auto">{{ categoryTitle }}</h3>
                 <div *ngIf="staffCustomFields?.length > 0">
                     <button *ngIf="staffPermissions?.edit" mat-raised-button color="primary" (click)="editOtherInfo()">
-                        <mat-icon [icIcon]="icEdit"></mat-icon><span
+                        <mat-icon>{{ icEdit }}</mat-icon><span
                             class="hidden sm:inline-block ml-1">{{'editInformation' |translate}}</span>
                     </button>
                 </div>
@@ -494,9 +492,8 @@
                                     <p *ngIf="customField.type === 'Checkbox'"
                                         class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
                                         <mat-icon
-                                            [icIcon]="customField?.customFieldsValue[0].customFieldValue === true?icCheckboxChecked:icCheckboxUnchecked"
-                                            class="inline-block align-middle mr-1">
-                                        </mat-icon>
+                                           
+                                            class="inline-block align-middle mr-1">{{ customField?.customFieldsValue[0].customFieldValue === true?icCheckboxChecked:icCheckboxUnchecked }}</mat-icon>
                                     </p>
                                     <p *ngIf="customField.type === 'Date'"
                                         class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | date:'mediumDate' | EmtyValueCheckPipe}}

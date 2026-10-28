@@ -124,58 +124,58 @@
             <li class="col-span-3">
                 <div class="flex items-center">
                     <div class="mr-6" *ngIf="studentViewDetails?.studentMaster.eligibility504; else NOTEligibility">
-                <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                <mat-icon class="inline-block align-middle mr-2">{{ icCheckbox }}</mat-icon>
                 <span class="inline-block text-base align-middle">{{'504Eligibility' |translate}}</span>
             </div>
             <ng-template #NOTEligibility>
                         <div class="mr-6">
-                    <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2"></mat-icon>
+                    <mat-icon class="inline-block align-middle mr-2">{{ icCheckboxOutline }}</mat-icon>
                     <span class="inline-block text-base align-middle">{{'504Eligibility' |translate}}</span>
                 </div>
             </ng-template>
 
 
                     <div class="mr-6" *ngIf="studentViewDetails?.studentMaster.economicDisadvantage; else economicadvantage">
-                <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                <mat-icon class="inline-block align-middle mr-2">{{ icCheckbox }}</mat-icon>
                 <span class="inline-block text-base align-middle">{{'economicDisadvantage' |translate}}</span>
             </div>
             <ng-template #economicadvantage>
                         <div class="mr-6">
-                    <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2"></mat-icon>
+                    <mat-icon class="inline-block align-middle mr-2">{{ icCheckboxOutline }}</mat-icon>
                     <span class="inline-block text-base align-middle">{{'economicDisadvantage' |translate}}</span>
                 </div>
             </ng-template>
 
                     <div class="mr-6" *ngIf="studentViewDetails?.studentMaster.freeLunchEligibility; else LunchEligibility">
-                <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                <mat-icon class="inline-block align-middle mr-2">{{ icCheckbox }}</mat-icon>
                 <span class="inline-block text-base align-middle">{{'freeLunchEligibility' |translate}}</span>
             </div>
             <ng-template #LunchEligibility>
                         <div class="mr-6">
-                    <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2"></mat-icon>
+                    <mat-icon class="inline-block align-middle mr-2">{{ icCheckboxOutline }}</mat-icon>
                     <span class="inline-block text-base align-middle">{{'freeLunchEligibility' |translate}}</span>
                 </div>
             </ng-template>
 
                     <div class="mr-6" *ngIf="studentViewDetails?.studentMaster.specialEducationIndicator; else nonSpecialEducationIndicator">
-                <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                <mat-icon class="inline-block align-middle mr-2">{{ icCheckbox }}</mat-icon>
                 <span class="inline-block text-base align-middle">{{'specialEducationIndicator' |translate}}</span>
             </div>
             <ng-template #nonSpecialEducationIndicator>
                         <div class="mr-6">
-                    <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2"></mat-icon>
+                    <mat-icon class="inline-block align-middle mr-2">{{ icCheckboxOutline }}</mat-icon>
                     <span class="inline-block text-base align-middle">{{'specialEducationIndicator' |translate}}</span>
                 </div>
             </ng-template>
 
 
                     <div class="mr-6" *ngIf="studentViewDetails?.studentMaster.lepIndicator; else Indicator">
-                <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                <mat-icon class="inline-block align-middle mr-2">{{ icCheckbox }}</mat-icon>
                 <span class="inline-block text-base align-middle">{{'lepIndicator' |translate}}</span>
             </div>
             <ng-template #Indicator>
                         <div class="mr-6">
-                    <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2"></mat-icon>
+                    <mat-icon class="inline-block align-middle mr-2">{{ icCheckboxOutline }}</mat-icon>
                     <span class="inline-block text-base align-middle">{{'lepIndicator' |translate}}</span>
                 </div>
             </ng-template>
@@ -210,13 +210,12 @@
             <!-- <li>
                 <div class="mr-6"
                     *ngIf="studentViewDetails.studentMaster?.isActive === true || studentViewDetails.studentMaster?.isActive === null; else NotActive">
-                    <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2"></mat-icon>
+                    <mat-icon class="inline-block align-middle mr-2">{{ icCheckboxOutline }}</mat-icon>
                     <span class="inline-block text-base align-middle">{{'disableStudent' |translate}}</span>
                 </div>
                 <ng-template #NotActive>
                     <div class="mr-6">
-                        <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2">
-                        </mat-icon>
+                        <mat-icon class="inline-block align-middle mr-2">{{ icCheckbox }}</mat-icon>
                         <span class="inline-block text-base align-middle">{{'disableStudent' |translate}}</span>
                     </div>
                 </ng-template>

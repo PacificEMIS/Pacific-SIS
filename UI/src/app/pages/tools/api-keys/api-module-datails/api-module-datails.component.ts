@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDeleteForever from '@iconify/icons-ic/twotone-delete-forever';
-import icContentCopy from '@iconify/icons-ic/twotone-content-copy';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { ApiKeyService } from 'src/app/services/api-key.service';
@@ -22,9 +19,9 @@ import { LoaderService } from 'src/app/services/loader.service';
 })
 export class ApiModuleDatailsComponent implements OnInit {
 
-  icEdit = icEdit;
-  icDeleteForever = icDeleteForever;
-  icContentCopy = icContentCopy;
+  icEdit = 'edit';
+  icDeleteForever = 'delete_forever';
+  icContentCopy = 'content_copy';
   apiDetails: any;
   apiAccessmodel: ApiAccessmodel = new ApiAccessmodel();
   apiDetailsList: any;

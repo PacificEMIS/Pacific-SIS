@@ -8,7 +8,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
@@ -29,7 +28,6 @@ import { RouterModule } from '@angular/router';
     MatFormFieldModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    IconModule,
     MatCardModule,
     MatSnackBarModule,
     SecondaryToolbarModule,

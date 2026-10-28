@@ -25,8 +25,6 @@ All rights reserved.
 
 import { Component, Input, OnInit } from '@angular/core';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
-import icCheckBoxOutlineBlank from '@iconify/icons-ic/check-box-outline-blank';
-import icCheckBox from '@iconify/icons-ic/check-box';
 import { StudentAddModel } from '../../../../models/student.model';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -40,8 +38,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   ],
 })
 export class ViewStudentAddressandcontactsComponent implements OnInit {
-  icCheckBoxOutlineBlank = icCheckBoxOutlineBlank;
-  icCheckBox = icCheckBox;
+  icCheckBoxOutlineBlank = 'check_box_outline_blank';
+  icCheckBox = 'check_box';
 
   @Input() studentCreateMode: SchoolCreate;
   @Input() studentViewDetails: StudentAddModel;

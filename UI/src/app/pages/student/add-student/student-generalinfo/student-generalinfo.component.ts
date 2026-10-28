@@ -43,10 +43,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { MY_FORMATS } from '../../../shared/format-datepicker';
 import { SharedFunction } from '../../../shared/shared-function';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
-import icEdit from '@iconify/icons-ic/edit';
 import { auditTime, debounceTime, distinctUntilChanged, takeUntil, shareReplay, take } from 'rxjs/operators';
-import icVisibility from '@iconify/icons-ic/twotone-visibility';
-import icVisibilityOff from '@iconify/icons-ic/twotone-visibility-off';
 import { SectionService } from '../../../../services/section.service';
 import { GetAllSectionModel, TableSectionList } from '../../../../models/section.model';
 import { CheckUserEmailAddressViewModel } from '../../../../models/user.model';
@@ -82,9 +79,9 @@ import { ValidationService } from 'src/app/pages/shared/validation.service';
   ],
 })
 export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDestroy {
-  icEdit = icEdit;
-  icVisibility = icVisibility;
-  icVisibilityOff = icVisibilityOff;
+  icEdit = 'edit';
+  icVisibility = 'visibility';
+  icVisibilityOff = 'visibility_off';
   studentCreate = SchoolCreate;
   studentCreateMode;
   studentDetailsForViewAndEdit;

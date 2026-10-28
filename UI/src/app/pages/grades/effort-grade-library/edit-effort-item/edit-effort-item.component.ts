@@ -27,7 +27,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { EffortGradeLibraryCategoryItemAddViewModel } from '../../../../models/grades.model';
 import { GradesService } from '../../../../services/grades.service';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -46,7 +45,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
   ]
 })
 export class EditEffortItemComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   form: FormGroup;
   effortGradeLibraryCategoryItemAddViewModel:EffortGradeLibraryCategoryItemAddViewModel=new EffortGradeLibraryCategoryItemAddViewModel()
   effortCategoryId: number;

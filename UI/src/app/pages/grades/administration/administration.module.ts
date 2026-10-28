@@ -25,7 +25,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModuleModule } from '../../../../app/pages/shared-module/shared-module.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -72,7 +71,6 @@ import { SearchStudentModule } from 'src/app/common/search-student/search-studen
     MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule,
-    IconModule,
     MatSnackBarModule,
     SharedModuleModule,
     MatProgressSpinnerModule,

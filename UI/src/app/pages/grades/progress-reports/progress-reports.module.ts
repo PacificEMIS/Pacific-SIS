@@ -6,7 +6,6 @@ import { ProgressReportsComponent } from './progress-reports.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -34,7 +33,6 @@ import { ProgressReportDetailsComponent } from './progress-report-details/progre
     MatIconModule,
     MatInputModule,
     MatSelectModule,
-    IconModule,
     MatButtonModule,   
     MatCardModule,
     MatFormFieldModule,

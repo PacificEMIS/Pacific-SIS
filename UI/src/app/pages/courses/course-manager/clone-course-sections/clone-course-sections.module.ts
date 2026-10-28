@@ -12,7 +12,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
-import { IconModule } from '@visurel/iconify-angular';
 import { CloneCourseSectionsComponent } from './clone-course-sections.component';
 
 @NgModule({
@@ -31,8 +30,7 @@ import { CloneCourseSectionsComponent } from './clone-course-sections.component'
     MatProgressSpinnerModule,
     MatSelectModule,
     MatSnackBarModule,
-    TranslateModule,
-    IconModule
+    TranslateModule
   ]
 })
 export class CloneCourseSectionsModule { }

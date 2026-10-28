@@ -16,7 +16,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSortModule } from '@angular/material/sort';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -56,7 +55,6 @@ import { SearchStudentModule } from 'src/app/common/search-student/search-studen
     MatTableModule,
     MatButtonToggleModule,
     MatSortModule,
-    IconModule,
     MatMenuModule,
     MatFormFieldModule,
     MatInputModule,

@@ -65,13 +65,13 @@
             </div>
             <div>
                 <a class="mx-3" *ngIf="this.defaultValuesService.checkAcademicYear()" (click)="editEvent(this.classDetails)" href="javascript:void(0)">
-                    <ic-icon [icon]="icEdit" inline="true" class="text-2xl"></ic-icon>
+                    <mat-icon class="text-2xl" inline>{{ icEdit }}</mat-icon>
                 </a>
                 <a class="mx-3" *ngIf="this.defaultValuesService.checkAcademicYear()" (click)="deleteEvent(this.classDetails)" href="javascript:void(0)">
-                    <ic-icon [icon]="icDelete" class="text-2xl" inline="true"></ic-icon>
+                    <mat-icon class="text-2xl" inline>{{ icDelete }}</mat-icon>
                 </a>
                 <a class="mx-3" (click)="closeDetails()" href="javascript:void(0)">
-                    <ic-icon [icIcon]="icClose" class="text-2xl" inline="true"></ic-icon>
+                    <mat-icon class="text-2xl" inline>{{ icClose }}</mat-icon>
                 </a>
             </div>
         </div>

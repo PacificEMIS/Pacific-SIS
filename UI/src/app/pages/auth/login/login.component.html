@@ -35,8 +35,8 @@
               <mat-label>{{'password'|translate}}</mat-label>
               <input [type]="inputType" formControlName="password" name="user_password"   matInput required>
               <button (click)="toggleVisibility()" mat-icon-button matSuffix matTooltip="{{'toggleVisibility' | translate}}" type="button">
-                <mat-icon *ngIf="visible" [icIcon]="icVisibility"></mat-icon>
-                <mat-icon *ngIf="!visible" [icIcon]="icVisibilityOff"></mat-icon>
+                <mat-icon *ngIf="visible">{{ icVisibility }}</mat-icon>
+                <mat-icon *ngIf="!visible">{{ icVisibilityOff }}</mat-icon>
               </button>
               <mat-error *ngIf="form.get('password').hasError('required')">{{'passwordIsRequired'|translate}}</mat-error>
             </mat-form-field>

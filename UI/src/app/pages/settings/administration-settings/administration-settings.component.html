@@ -4,7 +4,7 @@
         <button mat-icon-button class="close-secondary-sidebar" (click)="toggleSecondarySidebar()"><mat-icon>close</mat-icon></button>
         <vex-scrollbar class="flex-auto">
             <div class="px-6 py-3 mt-12 lg:mt-0">
-                <button mat-button class="bg-green text-white w-full text-center" (click)='goToAdd()'><mat-icon [icIcon]="icAdd" class="mr-2"></mat-icon>{{'addCustomProfile' | translate}}</button>
+                <button mat-button class="bg-green text-white w-full text-center" (click)='goToAdd()'><mat-icon class="mr-2">{{ icAdd }}</mat-icon>{{'addCustomProfile' | translate}}</button>
             </div>
             <hr/>
             <h4 class="px-6 py-3 text-primary font-bold">{{ 'availableProfiles' | translate }}</h4>
@@ -17,12 +17,12 @@
                             <i [ngClass]="member.className" class="align-middle inline-block"></i>{{member.profile}}
                         </span>                        
                         <ng-template #className>                           
-                            <mat-icon [icIcon]="member.icon" class="align-middle inline-block mr-2"></mat-icon>
+                            <mat-icon class="align-middle inline-block mr-2">{{ member.icon }}</mat-icon>
                             {{member.profile}}
                         </ng-template>
                     </span>
                     <a *ngIf="member.isSystem === false" [matMenuTriggerFor]="addNewMenu">
-                        <mat-icon [icIcon]="icMoreVert"></mat-icon>
+                        <mat-icon>{{ icMoreVert }}</mat-icon>
                         </a>
                 </div> 
                 

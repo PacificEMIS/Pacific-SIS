@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icRemoveCircle from '@iconify/icons-ic/twotone-remove-circle';
 import { ControlContainer, FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { AddEditStudentMedicalProviderForGroupAssignModel, StudentAddForGroupAssignModel, StudentDocumentAddForGroupAssignModel, StudentEnrollmentForGroupAssignModel, StudentEnrollmentSchoolListModel, StudentListModel } from 'src/app/models/student.model';
 import { StudentService } from '../../../services/student.service';
@@ -87,7 +86,7 @@ export interface SelectedStudentList {
 
 export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
 
-  icRemoveCircle = icRemoveCircle;
+  icRemoveCircle = 'remove_circle';
   currentTab: string = 'generalInfo';
   form: FormGroup;
   groupAssignStudents = true;

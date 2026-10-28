@@ -1,7 +1,7 @@
 <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title class="mb-4">
     <h2 class="headline m-0" fxFlex="auto">{{ nurseVisitTitle | translate }}</h2>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-        <mat-icon [icIcon]="icClose"></mat-icon>
+        <mat-icon>{{ icClose }}</mat-icon>
     </button>
 
 </div>
@@ -25,12 +25,12 @@
                                 <mat-label>{{ 'timeIn' | translate }}</mat-label>
                                 <!-- <input matInput [matDatepicker]="date" formControlName="timeIn">
                                 <mat-datepicker-toggle matSuffix [for]="date" class="text-xl">
-                                    <mat-icon matDatepickerToggleIcon [icIcon]="icSchedule"></mat-icon>
+                                    <mat-icon matDatepickerToggleIcon>{{ icSchedule }}</mat-icon>
                                 </mat-datepicker-toggle>
                                 <mat-datepicker #date></mat-datepicker> -->
                                 <input formControlName="timeIn" [owlDateTimeTrigger]="timeIn" 
                                 [owlDateTime]="timeIn" matInput>
-                                <mat-icon matSuffix class="cursor-pointer" [owlDateTimeTrigger]="timeIn" [icIcon]="icSchedule"></mat-icon>
+                                <mat-icon matSuffix class="cursor-pointer" [owlDateTimeTrigger]="timeIn">{{ icSchedule }}</mat-icon>
                                 <owl-date-time [pickerType]="'timer'" class="text-xl" [hour12Timer]='true' #timeIn>
                                 </owl-date-time>
                             </mat-form-field>
@@ -40,14 +40,14 @@
                                 <mat-label>{{ 'timeOut' | translate }}</mat-label>
                                 <!-- <input matInput [matDatepicker]="date" formControlName="timeOut">
                                 <mat-datepicker-toggle matSuffix [for]="date" class="text-xl">
-                                    <mat-icon matDatepickerToggleIcon [icIcon]="icSchedule"></mat-icon>
+                                    <mat-icon matDatepickerToggleIcon>{{ icSchedule }}</mat-icon>
                                 </mat-datepicker-toggle>
                                 <mat-datepicker #date></mat-datepicker> -->
                                 <input formControlName="timeOut" [owlDateTimeTrigger]="timeOut" [min]="form.controls.timeIn?.value"
                                 [owlDateTime]="timeOut" matInput>
-                                <mat-icon matSuffix [owlDateTimeTrigger]="timeOut" class="cursor-pointer" [icIcon]="icSchedule"></mat-icon>
+                                <mat-icon matSuffix [owlDateTimeTrigger]="timeOut" class="cursor-pointer">{{ icSchedule }}</mat-icon>
                                 <owl-date-time [pickerType]="'timer'" class="text-xl" [hour12Timer]='true' #timeOut>
-                                    <mat-icon matDatepickerToggleIcon  [icIcon]="icSchedule"></mat-icon>
+                                    <mat-icon matDatepickerToggleIcon>{{ icSchedule }}</mat-icon>
                                 </owl-date-time>
                             </mat-form-field>
                         </li>

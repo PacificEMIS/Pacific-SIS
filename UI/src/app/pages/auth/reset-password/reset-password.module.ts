@@ -11,7 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModuleModule } from '../../shared-module/shared-module.module';
 import { RouterModule } from '@angular/router';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
@@ -28,7 +27,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     TranslateModule,
     SharedModuleModule,
     RouterModule,
-    IconModule,
     MatTooltipModule
   ]
 })

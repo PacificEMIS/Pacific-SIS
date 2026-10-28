@@ -26,7 +26,6 @@ All rights reserved.
 import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { RoomAddView } from '../../../../models/room.model';
@@ -48,7 +47,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EditRoomComponent implements OnInit {
   roomTitle;
-  icClose = icClose;
+  icClose = 'close';
   roomAddViewModel:RoomAddView= new RoomAddView();
   roomStoreViewModel:RoomAddView= new RoomAddView();
     form:FormGroup;

@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { ParentInfoService } from '../../../../../services/parent-info.service';
@@ -52,7 +51,7 @@ import { Router } from '@angular/router';
   ]
 })
 export class ViewSiblingComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   address: string;
   schoolName;
   getStudentForView = [];

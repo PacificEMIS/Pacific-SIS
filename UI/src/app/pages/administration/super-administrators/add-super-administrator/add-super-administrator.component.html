@@ -2,7 +2,7 @@
     <div class="flex items-center" mat-dialog-title>
         <h2 class="headline m-0 flex-auto">{{ 'addSuperAdministrator' | translate }}</h2>
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-            <mat-icon [icIcon]="icClose"></mat-icon>
+            <mat-icon>{{ icClose }}</mat-icon>
         </button>
     </div>
     <hr class="-mx-6" />
@@ -34,8 +34,8 @@
             <mat-label>{{ 'password' | translate }}</mat-label>
             <input matInput [type]="inputType" formControlName="password" required autocomplete="new-password">
             <button (click)="toggleVisibility()" mat-icon-button matSuffix matTooltip="{{ 'toggleVisibility' | translate }}" type="button">
-                <mat-icon *ngIf="visible" [icIcon]="icVisibility"></mat-icon>
-                <mat-icon *ngIf="!visible" [icIcon]="icVisibilityOff"></mat-icon>
+                <mat-icon *ngIf="visible">{{ icVisibility }}</mat-icon>
+                <mat-icon *ngIf="!visible">{{ icVisibilityOff }}</mat-icon>
             </button>
             <mat-error *ngIf="form.get('password').hasError('required')">{{ 'passwordIsRequired' | translate }}</mat-error>
             <mat-error *ngIf="form.get('password').hasError('minlength')">{{ 'passwordMustBeAtLeast6Characters' | translate }}</mat-error>

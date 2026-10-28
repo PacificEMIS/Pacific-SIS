@@ -137,13 +137,12 @@
             <!-- <li>
                 <div class="mr-6"
                     *ngIf="staffViewDetails?.staffMaster?.isActive === true || staffViewDetails?.staffMaster?.isActive === null; else NotActive">
-                    <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2"></mat-icon>
+                    <mat-icon class="inline-block align-middle mr-2">{{ icCheckboxOutline }}</mat-icon>
                     <span class="inline-block text-base align-middle">{{'disableStaff' |translate}}</span>
                 </div>
                 <ng-template #NotActive>
                     <div class="mr-6">
-                        <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2">
-                        </mat-icon>
+                        <mat-icon class="inline-block align-middle mr-2">{{ icCheckbox }}</mat-icon>
                         <span class="inline-block text-base align-middle">{{'disableStaff' |translate}}</span>
                     </div>
                 </ng-template>

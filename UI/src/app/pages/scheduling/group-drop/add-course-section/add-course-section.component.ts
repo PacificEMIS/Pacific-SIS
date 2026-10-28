@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { SearchStudentCourseSection } from '../../../../models/search-student-course-section.model';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { TranslateService } from '@ngx-translate/core';
 import { AllCourseSectionView, GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel, SearchCourseSectionViewModel } from '../../../../models/course-manager.model';
 import { GetAllMarkingPeriodTitle, GetMarkingPeriodTitleListModel } from '../../../../models/marking-period.model';
@@ -65,7 +64,7 @@ export class AddCourseSectionComponent implements OnInit {
   @ViewChild('f') currentForm: NgForm;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   courseDetails: MatTableDataSource<any>;
-  icClose = icClose;
+  icClose = 'close';
   displayedColumns: string[] = ['course', 'courseSection', 'markingPeriod', 'startDate', 'endDate', 'scheduledTeacher'];
   gradeList = [];
   constructor(public translateService: TranslateService,

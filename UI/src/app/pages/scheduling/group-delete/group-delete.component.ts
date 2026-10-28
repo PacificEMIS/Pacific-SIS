@@ -27,9 +27,6 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { AddCourseSectionComponent } from './add-course-section/add-course-section.component';
-import icInfo from '@iconify/icons-ic/twotone-info';
-import icCheckCircle from '@iconify/icons-ic/check-circle';
-import icDeleteForever from '@iconify/icons-ic/twotone-delete-forever';
 import { StudentScheduleService } from 'src/app/services/student-schedule.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CourseManagerService } from 'src/app/services/course-manager.service';
@@ -65,9 +62,9 @@ import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 })
 export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  icInfo = icInfo;
-  icCheckCircle = icCheckCircle;
-  icDeleteForever = icDeleteForever;
+  icInfo = 'info';
+  icCheckCircle = 'check_circle';
+  icDeleteForever = 'delete_forever';
   showScheduledStudents: boolean = true;
 
   displayedColumns: string[] = ['studentSelected', 'name', 'studentId', 'alternateId', 'grade', 'phone', 'status'];

@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { GradeAddViewModel } from '../../../../models/grades.model';
@@ -46,7 +45,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
   ]
 })
 export class EditReportCardGradeComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   gradeAddViewModel: GradeAddViewModel = new GradeAddViewModel();
   form: FormGroup;
   gradeTitle: string;

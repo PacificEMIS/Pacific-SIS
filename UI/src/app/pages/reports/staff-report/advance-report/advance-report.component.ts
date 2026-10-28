@@ -1,10 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icPrint from '@iconify/icons-ic/twotone-print';
-import icHome from '@iconify/icons-ic/twotone-home';
-import icMarkunreadMailbox from '@iconify/icons-ic/twotone-markunread-mailbox';
-import icContactPhone from '@iconify/icons-ic/twotone-contact-phone';
-import icGrade from '@iconify/icons-ic/twotone-grade';
 import { GetAllStaffReportModel } from '../../../../models/staff.model';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { StaffService } from 'src/app/services/staff.service';
@@ -17,7 +12,6 @@ import { LoaderService } from 'src/app/services/loader.service';
 import { MatSort } from '@angular/material/sort';
 import { debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/operators';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
-import icSearch from '@iconify/icons-ic/search';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
@@ -25,7 +19,6 @@ import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { GetStaffAdvancedReportModel } from 'src/app/models/report.model';
 import { ReportService } from 'src/app/services/report.service';
 import { SharedFunction } from 'src/app/pages/shared/shared-function';
-import icFilterList from '@iconify/icons-ic/filter-list';
 import { ExcelService } from 'src/app/services/excel.service';
 
 export interface GenerateListData {
@@ -62,11 +55,11 @@ export const generateListData: GenerateListData[] = [
   ]
 })
 export class AdvanceReportComponent implements OnInit {
-  icPrint = icPrint;
-  icHome = icHome;
-  icMarkunreadMailbox = icMarkunreadMailbox;
-  icContactPhone = icContactPhone;
-  icGrade = icGrade;
+  icPrint = 'print';
+  icHome = 'home';
+  icMarkunreadMailbox = 'markunread_mailbox';
+  icContactPhone = 'contact_phone';
+  icGrade = 'grade';
   currentTab: string = 'selectStaff';
   displayedColumnsReportList: string[] = ['staffName', 'staffId', 'gender', 'dateOfBirth', 'firstLanguage', 'mobilePhone', 'fullAddress'];
   generateList = generateListData;
@@ -93,7 +86,7 @@ export class AdvanceReportComponent implements OnInit {
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
   searchCount;
   toggleValues;
-  icSearch = icSearch;
+  icSearch = 'search';
   showAdvanceSearchPanel: boolean = false;
   filterJsonParams;
   listOfStaff = [];
@@ -101,7 +94,7 @@ export class AdvanceReportComponent implements OnInit {
   searchValue;
   pageSizeForReport: number;
   getStaffAdvancedReportModel: GetStaffAdvancedReportModel = new GetStaffAdvancedReportModel();
-  icFilterList = icFilterList;
+  icFilterList = 'filter_list';
   parentComponent = "staff_advanced_report"
   isFromAdvancedSearch: boolean = false;
   fieldsDetailsArray = {

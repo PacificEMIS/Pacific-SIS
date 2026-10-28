@@ -12,22 +12,21 @@
                         (click)="selectBlock(block)">{{block.blockTitle}} </a>
                     <div>
                         <a class="cursor-pointer mr-3" *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="editBlock(block)">
-                            <mat-icon [icIcon]="icEdit"></mat-icon>
+                            <mat-icon>{{ icEdit }}</mat-icon>
                         </a>
                         <a *ngIf="block.blockId === 1">
                             <mat-icon></mat-icon>
                         </a>
                         <a *ngIf="block.blockId !== 1 && permissions?.edit && this.defaultValuesService.checkAcademicYear()" class="cursor-pointer"
                             (click)="confirmDeleteBlock(block)">
-                            <mat-icon [icIcon]="icDelete"></mat-icon>
+                            <mat-icon>{{ icDelete }}</mat-icon>
                         </a>
                     </div>
                 </div>
 
                 <div *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" class="px-4 mt-4">
                     <button color="primary" class="w-full whitespace-normal leading-none py-2" mat-raised-button type="button" (click)='goToAddBlock()'>
-                    <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true" size="24px">
-                    </ic-icon>
+                    <mat-icon class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2">{{ icAdd }}</mat-icon>
                     <span>{{'addBlockRotationDay'|translate}}</span>
                 </button>
             </div>
@@ -41,8 +40,7 @@
                 <h4>{{'showingPeriodsForAllDays' | translate}}</h4>
                 <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" mat-raised-button type="button"
                     (click)='goToAddBlock()'>
-                    <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true" size="24px">
-                    </ic-icon>
+                    <mat-icon class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2">{{ icAdd }}</mat-icon>
                     <span>{{'addBlockRotationDay'|translate}}</span>
                 </button>
             </div>
@@ -72,14 +70,12 @@
                         </a>
                         <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
                             matTooltip="{{'filterColumns' | translate}}" type="button">
-                            <mat-icon [icIcon]="icFilterList"></mat-icon>
+                            <mat-icon>{{ icFilterList }}</mat-icon>
                         </button>
 
                         <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" fxFlex="none" mat-raised-button
                             type="button" (click)='goToAddPeriod()'>
-                            <ic-icon [icon]="icAdd" class="ml-0 md:mr-2" inline="true"
-                                size="24px">
-                            </ic-icon>
+                            <mat-icon class="ml-0 md:mr-2">{{ icAdd }}</mat-icon>
                             <span class="hidden md:inline-block">{{'addNewPeriod'|translate}}</span>
                         </button>
                     </div>
@@ -158,11 +154,11 @@
                         <mat-cell *matCellDef="let element" class="justify-center  text-center">
                             <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="editPeriod(element)" matTooltip="{{'editInfo' | translate}}"
                                 class="mx-1 cursor-pointer">
-                                <mat-icon [icIcon]="icEdit"></mat-icon>
+                                <mat-icon>{{ icEdit }}</mat-icon>
                             </a>
                             <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="confirmDeletePeriod(element)" matTooltip="{{'deleteInfo' | translate}}"
                                 class="mx-1 cursor-pointer">
-                                <mat-icon [icIcon]="icDelete"></mat-icon>
+                                <mat-icon>{{ icDelete }}</mat-icon>
                             </a>
                         </mat-cell>
                     </ng-container>
@@ -214,7 +210,7 @@
                         <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{blockPeriodForHalfDayFullDayModel?.block?.halfDayMinutes}}</p>
                     </li>
                     <li class="flex justify-end" *ngIf="this.defaultValuesService.checkAcademicYear()">
-                        <a class="cursor-pointer inline-block w-10 h-10 rounded-full bg-primary text-center text-white" (click)="openSetMinutes()"><mat-icon [icIcon]="icEdit" class="mt-2">create</mat-icon></a>
+                        <a class="cursor-pointer inline-block w-10 h-10 rounded-full bg-primary text-center text-white" (click)="openSetMinutes()"><mat-icon class="mt-2">{{ icEdit }}</mat-icon></a>
                     </li>
                 </ul>
             </div>

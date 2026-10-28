@@ -25,7 +25,6 @@ All rights reserved.
 
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 
@@ -41,7 +40,7 @@ import { stagger60ms } from '@vex/animations/stagger.animation';
 })
 export class CertificateDetailsComponent implements OnInit {
 
-  icClose = icClose;
+  icClose = 'close';
   certificateDetails
   constructor(
     private dialogRef: MatDialogRef<CertificateDetailsComponent>,

@@ -26,7 +26,6 @@ All rights reserved.
 import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { GetAllMembersList } from 'src/app/models/membership.model';
@@ -64,7 +63,7 @@ export class AddCalendarComponent implements OnInit {
   memberArray: number[] = [];
   @Output() afterClosed = new EventEmitter<boolean>();
   form: FormGroup;
-  icClose = icClose;
+  icClose = 'close';
   weeks: Weeks[] = [
     { name: 'sunday', id: 0 },
     { name: 'monday', id: 1 },

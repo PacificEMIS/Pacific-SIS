@@ -24,10 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import icExpandAll from '@iconify/icons-ic/unfold-more';
-import icCollapseAll from '@iconify/icons-ic/unfold-less';
-import icExpand from '@iconify/icons-ic/expand-more';
-import icCollapse from '@iconify/icons-ic/expand-less';
 import { MatAccordion } from '@angular/material/expansion';
 import { RollBasedAccessService } from '../../../services/roll-based-access.service';
 import { RolePermissionListViewModel, RolePermissionViewModel, PermissionCategory, RolePermission, PermissionSubCategory, PermissionGroupListViewModel } from '../../../models/roll-based-access.model';
@@ -48,10 +44,10 @@ export class AccessControlComponent implements OnInit {
 
   @ViewChild(MatAccordion) accordion: MatAccordion;
   @ViewChild('form') currentForm: NgForm;
-  icExpandAll = icExpandAll;
-  icExpand = icExpand;
-  icCollapseAll = icCollapseAll;
-  icCollapse = icCollapse;
+  icExpandAll = 'unfold_more';
+  icExpand = 'expand_more';
+  icCollapseAll = 'unfold_less';
+  icCollapse = 'expand_less';
   permissionList = [];
   permissionGroupList = [];
   allCanViewCheckFlag = false;

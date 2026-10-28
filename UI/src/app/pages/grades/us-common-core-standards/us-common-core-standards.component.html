@@ -62,7 +62,7 @@
             <hr class="-mx-6 block md:inline-block" />
             <div fxFlex="200px" class="pt-3">
                 <!-- <a class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Update">
-                    <mat-icon [icIcon]="icUpdate"></mat-icon>
+                    <mat-icon>{{ icUpdate }}</mat-icon>
                 </a> -->
                 <a class="cursor-pointer p-1 mt-1 ml-4 inline-block align-middle"
                     matTooltip="{{'exportToExcel' | translate}}" (click)="exportSchoolSpecificStandardsListToExcel()" >
@@ -70,12 +70,11 @@
                 </a>
                 <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
                     matTooltip="{{'filterColumns' | translate}}" type="button">
-                    <mat-icon [icIcon]="icFilterList"></mat-icon>
+                    <mat-icon>{{ icFilterList }}</mat-icon>
                 </button>
                 <button color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button" [disabled]="isDisabled"
                 (click)="addUsStandardData()">
-                    <ic-icon [icon]="icImport" class="" inline="true" size="24px">
-                    </ic-icon>
+                    <mat-icon class="">{{ icImport }}</mat-icon>
                     <span class="ml-2 hidden md:inline-block">{{'loadUsCommonCoreStandards'|translate}}</span>
                 </button>
             </div>
@@ -140,7 +139,7 @@
                 </th>
                 <td mat-cell *matCellDef="let element">
                     <a *ngIf="deletePermission" routerLink="" matTooltip="Delete Item" class="mr-3 cursor-pointer">
-                        <mat-icon [icIcon]="icDelete"></mat-icon>
+                        <mat-icon>{{ icDelete }}</mat-icon>
                     </a>
                 </td>
             </ng-container> -->

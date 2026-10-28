@@ -41,7 +41,6 @@ import { SectionService } from "../../../../services/section.service";
 import { CommonService } from "../../../../services/common.service";
 import { LoginService } from "../../../../services/login.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import icClose from "@iconify/icons-ic/twotone-close";
 import { CountryModel } from "src/app/models/country.model";
 import { LanguageModel } from "src/app/models/language.model";
 import { ReplaySubject, Subject } from "rxjs";
@@ -61,7 +60,7 @@ import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
   styleUrls: ["./search-student.component.scss"],
 })
 export class SearchStudentComponent implements OnInit, AfterViewInit {
-  icClose = icClose;
+  icClose = 'close';
   @ViewChild(MatAccordion) accordion: MatAccordion;
   @Output() showHideAdvanceSearch = new EventEmitter<any>();
   @Output() searchList = new EventEmitter<any>();

@@ -1,7 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import icClose from '@iconify/icons-ic/twotone-close';
-import icWarning from '@iconify/icons-ic/warning';
 import { TranslateService } from '@ngx-translate/core';
 import { GradeGenderCount, RolloverReadinessViewModel, SectionCompletenessRow } from '../../../../models/roll-over.model';
 
@@ -41,8 +39,8 @@ export interface ExitCodeView {
   styleUrls: ['./rollover-summary-dialog.component.scss']
 })
 export class RolloverSummaryDialogComponent implements OnInit {
-  icClose = icClose;
-  icWarning = icWarning;
+  icClose = 'close';
+  icWarning = 'warning';
 
   studentsPivot: PivotTable;
   totalStudents = 0;

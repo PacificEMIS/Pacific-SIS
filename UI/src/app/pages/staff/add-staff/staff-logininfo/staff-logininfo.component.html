@@ -19,8 +19,8 @@
                         <mat-label>{{'password'|translate}}</mat-label>
                         <input [type]="inputType" name="password" matInput required>
                         <button (click)="toggleVisibility()" mat-icon-button matSuffix matTooltip="{{'toggleVisibility' | translate}}" type="button">
-                            <mat-icon *ngIf="visible" [icIcon]="icVisibility"></mat-icon>
-                            <mat-icon *ngIf="!visible" [icIcon]="icVisibilityOff"></mat-icon>
+                            <mat-icon *ngIf="visible">{{ icVisibility }}</mat-icon>
+                            <mat-icon *ngIf="!visible">{{ icVisibilityOff }}</mat-icon>
                         </button>
                     </mat-form-field>
                     <p class="flex-none -mt-3 mb-4"><a routerLink="http://www.google.com" class="text-primary underline cursor-pointer">Auto Generate Password</a></p>

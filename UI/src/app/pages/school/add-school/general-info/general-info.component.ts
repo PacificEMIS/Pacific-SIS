@@ -52,7 +52,6 @@ import { CustomFieldListViewModel } from '../../../../models/custom-field.model'
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { debounceTime, distinctUntilChanged, take, takeUntil } from 'rxjs/operators';
 import { LovList } from '../../../../models/lov.model';
-import icEdit from '@iconify/icons-ic/twotone-edit';
 import { CommonLOV } from '../../../shared-module/lov/common-lov';
 import { ModuleIdentifier } from '../../../../enums/module-identifier.enum';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../../models/roll-based-access.model';
@@ -82,7 +81,7 @@ import { CaptureDateComponent } from '../capture-date/capture-date.component';
 })
 
 export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
-  icEdit = icEdit;
+  icEdit = 'edit';
   isMarkingPeriod: boolean = false;
   schoolCreate = SchoolCreate;
   @ViewChild('f') currentForm: NgForm;

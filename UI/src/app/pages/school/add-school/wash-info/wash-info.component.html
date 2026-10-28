@@ -226,7 +226,7 @@
     <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
         <h3 class="flex-auto">{{'washInformation'|translate}}</h3>
         <button  *ngIf="permissions?.edit" mat-raised-button color="primary" (click)="editWashInfo()">
-            <mat-icon [icIcon]="icEdit" class="mr-0 md:mr-1"></mat-icon> <span class="hidden md:inline-block">{{'editInformation'|translate}}</span>
+            <mat-icon class="mr-0 md:mr-1">{{ icEdit }}</mat-icon> <span class="hidden md:inline-block">{{'editInformation'|translate}}</span>
         </button>
     </div>
     <vex-view-wash-info [schoolCreateMode]="schoolCreateMode"

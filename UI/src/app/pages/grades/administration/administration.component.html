@@ -180,7 +180,7 @@
                                         class="animate-spin w-5" alt="Loader icon">
                                     <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button
                                         type="button">
-                                        <mat-icon [icIcon]="icSearch"></mat-icon>
+                                        <mat-icon>{{ icSearch }}</mat-icon>
                                     </button>
                                     <a (click)="showHistAdvanceSearch()" [class.disabled]="histTotalCount == null"
                                     [class.text-gray-light]="histTotalCount == null" [class.text-primary]="histTotalCount != null"

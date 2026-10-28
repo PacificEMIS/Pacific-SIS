@@ -25,8 +25,6 @@ All rights reserved.
 
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icEdit from '@iconify/icons-ic/edit';
-import icHowtoReg from '@iconify/icons-ic/outline-how-to-reg';
 import { CourseSectionService } from '../../../services/course-section.service';
 import { ClassRoomURLInCourseSectionModel, CourseSectionAddViewModel, GetAllCourseSectionModel } from 'src/app/models/course-section.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -39,8 +37,8 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class CourseOverviewComponent implements OnInit {
 
-  icEdit = icEdit;
-  icHowtoReg = icHowtoReg;
+  icEdit = 'edit';
+  icHowtoReg = 'how_to_reg';
   showUrlInput = false;
   hideUrl = true;
   hidePassword = true;

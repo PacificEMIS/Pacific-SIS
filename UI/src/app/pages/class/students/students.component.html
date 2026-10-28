@@ -6,7 +6,7 @@
                     <!-- <input matInput class="py-3 border-0 outline-none w-full bg-transparent" appearance="outline"
                         color="primary" placeholder="Search..." type="search">
                     <button class="ml-4" mat-icon-button type="button">
-                        <mat-icon [icIcon]="icSearch"></mat-icon>
+                        <mat-icon>{{ icSearch }}</mat-icon>
                     </button> -->
 
                     <input
@@ -14,15 +14,15 @@
                             class="py-3 border-0 outline-none w-full bg-transparent"
                             appearance="outline" color="primary"
                              placeholder="Search..."
-                            type="search"><mat-icon [icIcon]="icSearch"></mat-icon>
+                            type="search"><mat-icon>{{ icSearch }}</mat-icon>
                        
                             <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
                             <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button
                                 type="button">
-                                <mat-icon [icIcon]="icSearch"></mat-icon>
+                                <mat-icon>{{ icSearch }}</mat-icon>
                             </button>
                             <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
-                                <mat-icon [icIcon]="icSearch"></mat-icon>
+                                <mat-icon>{{ icSearch }}</mat-icon>
                             </button>
                             <mat-slide-toggle color="primary" class="ml-6 align-middle" [(ngModel)]="showInactiveStudents" (change)="includeInactiveStudents($event)"><span class="hidden md:inline-block">{{'includeInactiveStudents' | translate}}</span><span class="inline-block md:hidden">{{'inactive' | translate}}</span></mat-slide-toggle>
                 </div>

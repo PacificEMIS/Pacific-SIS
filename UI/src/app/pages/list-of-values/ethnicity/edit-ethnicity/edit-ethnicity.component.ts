@@ -27,7 +27,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { LovAddView } from '../../../../models/lov.model';
 import { CommonService } from '../../../../services/common.service';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -45,7 +44,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
   ]
 })
 export class EditEthnicityComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   ethnicityAddViewModel: LovAddView = new LovAddView();
   form: FormGroup;
   editMode = false;

@@ -25,8 +25,6 @@ All rights reserved.
 
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icListAlt from '@iconify/icons-ic/twotone-list-alt';
-import icSchool from '@iconify/icons-ic/twotone-school';
 import { CommonService } from 'src/app/services/common.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -45,7 +43,6 @@ import { Subject } from 'rxjs';
 import * as moment from 'moment';
 import { MarkingPeriodListModel } from 'src/app/models/marking-period.model';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
-import icPrint from '@iconify/icons-ic/twotone-print';
 import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 import { GradeLevelService } from 'src/app/services/grade-level.service';
 import { ExcelService } from "../../../../services/excel.service";
@@ -76,9 +73,9 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
   isFromAdvancedSearch: boolean = false;
   studentModelList: MatTableDataSource<any>;
   searchCtrl = new FormControl();
-  icPrint = icPrint;
-  icListAlt = icListAlt;
-  icSchool = icSchool;
+  icPrint = 'print';
+  icListAlt = 'list_alt';
+  icSchool = 'school';
   totalCount: number;
   pageNumber: number;
   pageSize: number;

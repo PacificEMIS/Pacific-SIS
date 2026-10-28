@@ -24,8 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ViewChild, Input, OnChanges, EventEmitter, Output, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
-import icClose from '@iconify/icons-ic/twotone-close';
-import icPlusCircle from '@iconify/icons-ic/add-circle-outline';
 import { weekDay } from '../../../../../enums/day.enum';
 import { SchoolPeriodService } from '../../../../../services/school-period.service';
 import { BlockListViewModel } from '../../../../../models/school-period.model';
@@ -47,8 +45,8 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 export class VariableSchedulingComponent implements OnInit, OnChanges {
   @Input() selectedCalendar;
   @Input() seatChangeFlag;
-  icClose = icClose;
-  icPlusCircle = icPlusCircle;
+  icClose = 'close';
+  icPlusCircle = 'add_circle_outline';
   variableScheduleList = [];
   blockListViewModel: BlockListViewModel = new BlockListViewModel();
   roomListViewModel: RoomListViewModel = new RoomListViewModel();

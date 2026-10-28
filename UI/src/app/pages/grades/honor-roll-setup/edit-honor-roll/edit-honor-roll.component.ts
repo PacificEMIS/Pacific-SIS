@@ -27,7 +27,6 @@ import { Component, Inject, OnInit,AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { HonorRollAddViewModel } from '../../../../models/grades.model';
 import { ValidationService } from '../../../shared/validation.service';
 import { GradesService } from '../../../../services/grades.service';
@@ -46,7 +45,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
   ]
 })
 export class EditHonorRollComponent implements OnInit,AfterViewInit {
-  icClose = icClose;
+  icClose = 'close';
   form:FormGroup
   editmod;
   honorRollAddViewModel:HonorRollAddViewModel=new HonorRollAddViewModel()

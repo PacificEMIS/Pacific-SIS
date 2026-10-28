@@ -17,7 +17,7 @@
                                 <p class="">{{course.courseName}}</p>
                                 <div *ngIf="permissions?.edit && defaultValuesService.checkAcademicYear()">
                                     <a class="cursor-pointer" (click)="confirmDeleteGradeScale(course,0,index)">
-                                        <mat-icon [icIcon]="icDelete"></mat-icon>
+                                        <mat-icon>{{ icDelete }}</mat-icon>
                                     </a>
                                 </div>
                             </div>
@@ -64,10 +64,10 @@
                                     <td class="col-md" *ngIf="defaultValuesService.checkAcademicYear()">
                                         <ng-container *ngIf="!comment.takeInput">
                                             <a *ngIf="permissions?.edit" class="cursor-pointer mr-3" (click)="onCommentEdit(comment,index)">
-                                                <mat-icon [icIcon]="icEdit"></mat-icon>
+                                                <mat-icon>{{ icEdit }}</mat-icon>
                                             </a>
                                             <a *ngIf="permissions?.edit" class="cursor-pointer" (click)="confirmDeleteGradeScale(comment,1)">
-                                                <mat-icon [icIcon]="icDelete"></mat-icon>
+                                                <mat-icon>{{ icDelete }}</mat-icon>
                                             </a>
                                         </ng-container>
                                     </td>

@@ -1,12 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import icSchool from '@iconify/icons-ic/twotone-account-balance';
-import icStudents from '@iconify/icons-ic/twotone-school';
-import icUsers from '@iconify/icons-ic/twotone-people';
-import icSchedule from '@iconify/icons-ic/twotone-date-range';
-import icGrade from '@iconify/icons-ic/twotone-leaderboard';
-import icAttendance from '@iconify/icons-ic/twotone-access-alarm';
-import icEventAvailable from '@iconify/icons-ic/twotone-event-available';
-import icAdmionPanelSettings from '@iconify/icons-ic/twotone-admin-panel-settings';
 import { TranslateService } from '@ngx-translate/core';
 import { PermissionCategory } from '../../models/roll-based-access.model';
 import { NavigationService } from '@vex/services/navigation.service';
@@ -21,14 +13,14 @@ import { Router } from '@angular/router';
 })
 export class ReportsComponent implements OnInit {
 
-  icSchool = icSchool;
-  icStudents = icStudents;
-  icUsers = icUsers;
-  icSchedule = icSchedule;
-  icGrade = icGrade;
-  icAttendance = icAttendance;
-  icEventAvailable = icEventAvailable;
-  icAdmionPanelSettings = icAdmionPanelSettings;
+  icSchool = 'account_balance';
+  icStudents = 'school';
+  icUsers = 'people';
+  icSchedule = 'date_range';
+  icGrade = 'leaderboard';
+  icAttendance = 'access_alarm';
+  icEventAvailable = 'event_available';
+  icAdmionPanelSettings = 'admin_panel_settings';
   
   reportSubmenu: PermissionCategory[]=[];
   constructor(public translateService: TranslateService,
@@ -63,25 +55,25 @@ export class ReportsComponent implements OnInit {
   pickIcon(categoryName) {
     switch (categoryName) {
       case 'School':{
-        return icSchool;
+        return 'account_balance';
       }
       case 'Student':{
-        return icStudents;
+        return 'school';
       }
       case 'Staff':{
-        return icUsers;
+        return 'people';
       }
       case 'Scheduling':{
-        return icSchedule;
+        return 'date_range';
       }
       case 'Attendance':{
-        return icAttendance;
+        return 'access_alarm';
       }
       case 'Administration':{
-        return icAdmionPanelSettings;
+        return 'admin_panel_settings';
       }
       case 'Grades':{
-        return icGrade;
+        return 'leaderboard';
       }
       
     }

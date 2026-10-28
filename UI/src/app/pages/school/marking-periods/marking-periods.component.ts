@@ -24,16 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
-import icArrowDropDown from '@iconify/icons-ic/arrow-drop-down';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icCheckBox from '@iconify/icons-ic/check-box';
-import icCheckBoxOutlineBlank from '@iconify/icons-ic/check-box-outline-blank';
-import icMoreVert from '@iconify/icons-ic/more-vert';
-import icMenu from '@iconify/icons-ic/menu';
-import icAdd from '@iconify/icons-ic/add';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icClose from '@iconify/icons-ic/close';
-import icInfo from '@iconify/icons-ic/info';
 import { MatDialog } from '@angular/material/dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -61,16 +51,16 @@ import { CommonService } from 'src/app/services/common.service';
   ]
 })
 export class MarkingPeriodsComponent implements OnInit {
-  icArrowDropDown = icArrowDropDown;
-  icEdit = icEdit;
-  icCheckBox = icCheckBox;
-  icCheckBoxOutlineBlank = icCheckBoxOutlineBlank;
-  icMoreVert = icMoreVert;
-  icMenu = icMenu;
-  icInfo = icInfo;
-  icAdd = icAdd;
-  icClose = icClose;
-  icDelete = icDelete;
+  icArrowDropDown = 'arrow_drop_down';
+  icEdit = 'edit';
+  icCheckBox = 'check_box';
+  icCheckBoxOutlineBlank = 'check_box_outline_blank';
+  icMoreVert = 'more_vert';
+  icMenu = 'menu';
+  icInfo = 'info';
+  icAdd = 'add';
+  icClose = 'close';
+  icDelete = 'delete';
   menuOpen = false;
   viewDetailsModal = 0;
   markingPeriodListModel: MarkingPeriodListModel = new MarkingPeriodListModel();

@@ -24,13 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input ,ViewChild, AfterViewInit} from '@angular/core';
-import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icSearch from '@iconify/icons-ic/search';
-import icFilterList from '@iconify/icons-ic/filter-list';
-import icImpersonate from '@iconify/icons-ic/twotone-account-circle';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router} from '@angular/router';
@@ -78,13 +71,13 @@ export class LanguageComponent implements OnInit, AfterViewInit {
 
   SchoolClassificationModelList;
 
-  icMoreVert = icMoreVert;
-  icAdd = icAdd;
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icSearch = icSearch;
-  icImpersonate = icImpersonate;
-  icFilterList = icFilterList; 
+  icMoreVert = 'more_vert';
+  icAdd = 'add';
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icSearch = 'search';
+  icImpersonate = 'account_circle';
+  icFilterList = 'filter_list';
   loading;  
   searchCtrl: FormControl
   totalCount: number;

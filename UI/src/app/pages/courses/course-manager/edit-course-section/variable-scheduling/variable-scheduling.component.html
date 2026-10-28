@@ -16,7 +16,7 @@
                 class="flex py-3 border-t border-normal">
                 <div class="w-1/12 text-center pt-2">
                     <a class="cursor-pointer" *ngIf="this.defaultValuesService.checkAcademicYear()" (click)="deleteRow(index)">
-                        <mat-icon [icIcon]="icClose"></mat-icon>
+                        <mat-icon>{{ icClose }}</mat-icon>
                     </a>
                 </div>
 
@@ -74,7 +74,7 @@
         </div>
         <div class="border-t border-normal px-6 py-3">
             <a class="text-blue cursor-pointer" *ngIf="this.defaultValuesService.checkAcademicYear()" (click)="addMoreRotatingScheduleRow()">
-                <mat-icon [icIcon]="icPlusCircle" class="mr-2 align-middle"></mat-icon>{{'addAnotherDay' |
+                <mat-icon class="mr-2 align-middle">{{ icPlusCircle }}</mat-icon>{{'addAnotherDay' |
                 translate}}
             </a>
         </div>

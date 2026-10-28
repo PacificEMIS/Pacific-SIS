@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 
 @Component({
   selector: 'vex-add-teacher-comments',
@@ -34,7 +33,7 @@ import icClose from '@iconify/icons-ic/twotone-close';
 })
 export class AddTeacherCommentsComponent implements OnInit {
 
-  icClose = icClose;
+  icClose = 'close';
 
   constructor( public translateService: TranslateService) {
     // translateService.use("en");

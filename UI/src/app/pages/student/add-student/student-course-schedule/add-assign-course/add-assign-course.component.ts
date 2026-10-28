@@ -24,7 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AllCourseSectionView, GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel, SearchCourseForScheduleModel, SearchCourseSectionViewModel } from '../../../../../models/course-manager.model';
@@ -56,7 +55,7 @@ import moment from 'moment';
   styleUrls: ['./add-assign-course.component.scss']
 })
 export class AddAssignCourseComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
 
   getAllProgramModel: GetAllProgramModel = new GetAllProgramModel();
   getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();

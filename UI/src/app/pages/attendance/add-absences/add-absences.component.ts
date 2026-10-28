@@ -26,7 +26,6 @@ All rights reserved.
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
-import icSearch from "@iconify/icons-ic/search";
 import { MatDatepicker, MatDatepickerInputEvent } from "@angular/material/datepicker";
 import { StudentAttendanceService } from "../../../services/student-attendance.service";
 import { attendance, CourseSectionForAttendanceViewModel, StudentAttendanceAddViewModel } from "../../../models/attendance-administrative.model";
@@ -76,7 +75,7 @@ export interface StudentList {
   ]
 })
 export class AddAbsencesComponent implements OnInit, AfterViewInit {
-  icSearch = icSearch;
+  icSearch = 'search';
   parentData;
   @ViewChild('f') currentForm: NgForm;
   destroySubject$: Subject<void> = new Subject();

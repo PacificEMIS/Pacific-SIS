@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import icHome from '@iconify/icons-ic/twotone-home';
 import { trackByValue } from '../../utils/track-by';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -11,10 +10,10 @@ import { ProfilesTypes } from 'src/app/enums/profiles.enum';
     <div class="flex items-center">
       <vex-breadcrumb>
         <a *ngIf="membershipType === profiles.SuperAdmin || membershipType === profiles.SchoolAdmin || membershipType === profiles.AdminAssitant" [routerLink]="['/school/dashboards']">
-          <ic-icon [icon]="icHome" inline="true" size="20px"></ic-icon>
+          <mat-icon style="font-size: 20px">home</mat-icon>
         </a>
         <a *ngIf="membershipType === profiles.Teacher || membershipType === profiles.HomeroomTeacher" [routerLink]="['/school/teacher/dashboards']">
-          <ic-icon [icon]="icHome" inline="true" size="20px"></ic-icon>
+          <mat-icon style="font-size: 20px">home</mat-icon>
         </a>
       </vex-breadcrumb>
       <ng-container *ngFor="let crumb of crumbs;let last=last; trackBy: trackByValue">
@@ -32,7 +31,7 @@ export class BreadcrumbsComponent implements OnInit {
 
   @Input() crumbs: string[] = [];
   trackByValue = trackByValue;
-  icHome = icHome;
+  icHome = 'home';
   membershipType;
   profiles = ProfilesTypes;
   schoolCount;

@@ -27,8 +27,6 @@ All rights reserved.
 import { Component, OnInit, AfterViewInit, Inject, ViewChild, Input, OnDestroy} from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormControl, NgForm, Validators } from '@angular/forms';
-import icClose from '@iconify/icons-ic/twotone-close';
-import icBack from '@iconify/icons-ic/baseline-arrow-back';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
@@ -64,8 +62,8 @@ export class EditContactComponent implements OnInit,AfterViewInit, OnDestroy {
   search: NgForm;
   associateStudents: NgForm;
   associateMultipleStudents: NgForm;
-  icClose = icClose;
-  icBack = icBack;
+  icClose = 'close';
+  icBack = 'arrow_back';
   addParentInfoModel: AddParentInfoModel = new AddParentInfoModel();
   parentInfoList: ParentInfoList = new ParentInfoList();
   associateStudent: AssociateStudent = new AssociateStudent();

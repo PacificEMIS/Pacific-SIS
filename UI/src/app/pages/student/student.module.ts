@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
@@ -47,7 +46,6 @@ import { SearchStudentModule } from 'src/app/common/search-student/search-studen
     MatButtonModule,
     PageLayoutModule,
     ContainerModule,
-    IconModule,
     MatCardModule,
     MatSnackBarModule,
     MatSelectModule,

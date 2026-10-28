@@ -646,7 +646,7 @@
                             <p *ngIf="!studentMasterSearchModel.courseSection">{{'selectCourse' | translate}}</p>
                             <p *ngIf="studentMasterSearchModel.courseSection">{{courseSectionName}}</p>
                             <span class="mt-1" mat-icon-button matSuffix>
-                                <mat-icon [icIcon]="icListAlt"></mat-icon>
+                                <mat-icon>{{ icListAlt }}</mat-icon>
                             </span>
                         </div>
                     </li>

@@ -1,8 +1,4 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import icRemoveCircle from '@iconify/icons-ic/twotone-remove-circle';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDeleteForever from '@iconify/icons-ic/twotone-delete-forever';
-import icAdd from '@iconify/icons-ic/baseline-add';
 import { HistoricalCreditTransfer, HistoricalGrade, HistoricalGradeAddViewModel, HistoricalMarkingPeriodListModel } from 'src/app/models/historical-marking-period.model';
 import { HistoricalMarkingPeriodService } from 'src/app/services/historical-marking-period.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -24,10 +20,10 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
   destroySubject$: Subject<void> = new Subject();
-  icRemoveCircle = icRemoveCircle;
-  icEdit = icEdit;
-  icDeleteForever = icDeleteForever;
-  icAdd = icAdd;
+  icRemoveCircle = 'remove_circle';
+  icEdit = 'edit';
+  icDeleteForever = 'delete_forever';
+  icAdd = 'add';
   loading: boolean;
   selectedMarkingPeriodName: string;
   histStudentDetails;

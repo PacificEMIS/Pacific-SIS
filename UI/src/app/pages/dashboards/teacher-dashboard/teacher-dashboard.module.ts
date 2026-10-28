@@ -6,7 +6,6 @@ import { TeacherDashboardComponent } from './teacher-dashboard.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { IconModule } from '@visurel/iconify-angular';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
 import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,7 +30,6 @@ import { SharedModuleModule } from '../../shared-module/shared-module.module';
     FlexLayoutModule,
     MatIconModule,
     MatTooltipModule,
-    IconModule,
     SecondaryToolbarModule,
     BreadcrumbsModule,
     MatButtonModule,

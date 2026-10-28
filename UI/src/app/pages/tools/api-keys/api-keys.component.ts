@@ -2,10 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { GenerateApiKeyComponent } from './generate-api-key/generate-api-key.component';
-import icContentCopy from '@iconify/icons-ic/twotone-content-copy';
-import icSettings from '@iconify/icons-ic/twotone-settings';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDeleteForever from '@iconify/icons-ic/twotone-delete-forever';
 import { Router } from '@angular/router';
 import { KeysGenerateService } from './service/keys-generate.service';
 import { ApiKeyService } from 'src/app/services/api-key.service';
@@ -24,10 +20,10 @@ import { LoaderService } from 'src/app/services/loader.service';
 })
 export class ApiKeysComponent implements OnInit {
 
-  icContentCopy = icContentCopy;
-  icSettings = icSettings;
-  icEdit = icEdit;
-  icDeleteForever = icDeleteForever;
+  icContentCopy = 'content_copy';
+  icSettings = 'settings';
+  icEdit = 'edit';
+  icDeleteForever = 'delete_forever';
   generatedKeysStatus: number;
   getApiKeyModel: GetApiKeyModel = new GetApiKeyModel();
   apiKeyList: any;

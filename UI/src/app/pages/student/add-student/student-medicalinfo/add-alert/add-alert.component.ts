@@ -25,7 +25,6 @@ All rights reserved.
 ***********************************************************************************/
 import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { StudentService } from 'src/app/services/student.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ValidationService } from '../../../../shared/validation.service';
@@ -42,7 +41,7 @@ import { DefaultValuesService } from '../../../../../common/default-values.servi
 })
 export class AddAlertComponent implements OnInit {
 
-  icClose = icClose;
+  icClose = 'close';
   form: FormGroup;
   addEditStudentMedicalAlertModel: AddEditStudentMedicalAlertModel = new AddEditStudentMedicalAlertModel();
   editMode;

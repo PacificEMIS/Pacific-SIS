@@ -26,7 +26,6 @@ All rights reserved.
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { SectionAddModel } from '../../../../models/section.model';
@@ -48,7 +47,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EditSectionComponent implements OnInit {
 
-  icClose = icClose;
+  icClose = 'close';
   form: FormGroup;
   sectionAddModel: SectionAddModel = new SectionAddModel();
   getAllSection: GetAllSectionModel = new GetAllSectionModel();

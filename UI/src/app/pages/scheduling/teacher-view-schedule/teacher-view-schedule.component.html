@@ -18,7 +18,7 @@
                         (click)="changeCalendarView('routineView')" [class.active]="view === 'routineView' && !scheduleSwitch"
                         [ngClass]="view === 'routineView' && !scheduleSwitch ?'text-blue' : ''"
                         matTooltip="{{ 'routineView' | translate }}" [matTooltipPosition]="'above'">
-                        <mat-icon [icIcon]=icPendingActions></mat-icon>
+                        <mat-icon>{{ icPendingActions }}</mat-icon>
                     </button>
                     <button [disabled]="!courseSectionDataTable?.length" mat-icon-button aria-label="Example icon button with a menu icon"
                         (click)="changeCalendarView(CalendarView.Week)" [class.active]="view === CalendarView.Week"
@@ -30,11 +30,11 @@
                         (click)="changeCalendarView(CalendarView.Month)" [class.active]="view === CalendarView.Month"
                         [ngClass]="view === CalendarView.Month && !scheduleSwitch ? 'text-blue' : ''"
                         matTooltip="{{ 'monthView' | translate }}" [matTooltipPosition]="'above'">
-                        <mat-icon [icIcon]=icCalendarToday></mat-icon>
+                        <mat-icon>{{ icCalendarToday }}</mat-icon>
                     </button>
                     <button [disabled]="!courseSectionDataTable?.length" mat-button [matMenuTriggerFor]="menu" type="button" mat-flat-button class="p-0 ml-2"
                         style="min-width: 0;">
-                        <mat-icon [icIcon]="icMoreVert"></mat-icon>
+                        <mat-icon>{{ icMoreVert }}</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
                         <button mat-menu-item><i class="icon icon-printer mr-4"></i>{{ "printSchedule" | translate

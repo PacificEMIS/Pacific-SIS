@@ -25,11 +25,7 @@ All rights reserved.
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icMissingAttendance from '@iconify/icons-ic/twotone-alarm-off';
-import icAssessment from '@iconify/icons-ic/outline-assessment';
-import icWarning from '@iconify/icons-ic/warning';
 import { CalendarEvent, CalendarMonthViewBeforeRenderEvent, CalendarView } from 'angular-calendar';
-import icHowToReg from '@iconify/icons-ic/outline-how-to-reg';
 import { DasboardService } from '../../../services/dasboard.service';
 import { DashboardViewModel, ScheduledCourseSectionViewModel } from '../../../models/dashboard.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -68,11 +64,11 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
   activeDayIsOpen = true;
   weekendDays: number[];
   filterDays = [];
-  icMissingAttendance = icMissingAttendance;
-  icAssessment = icAssessment;
-  icWarning = icWarning;
+  icMissingAttendance = 'alarm_off';
+  icAssessment = 'assessment';
+  icWarning = 'warning';
   panelOpenState = false;
-  icHowToReg = icHowToReg;
+  icHowToReg = 'how_to_reg';
   scheduledCourseSectionViewModel: ScheduledCourseSectionViewModel;
   dashboardViewModel: DashboardViewModel = new DashboardViewModel();
   calendarTitle: string;

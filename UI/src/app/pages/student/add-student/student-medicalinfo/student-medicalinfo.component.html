@@ -45,10 +45,10 @@
                                                 <td class="cursor-pointer">
                                                     <ng-container *ngIf="permissions?.edit || permissions?.delete">
                                                         <span class="mr-2" *ngIf="permissions?.edit">
-                                                            <mat-icon (click)="editAlert(medicalinfo)" [icIcon]="icEdit"></mat-icon>
+                                                            <mat-icon (click)="editAlert(medicalinfo)">{{ icEdit }}</mat-icon>
                                                         </span>
                                                         <span *ngIf="permissions?.delete">
-                                                            <mat-icon (click)="confirmDeleteStudentMedicalAlert(medicalinfo)" [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                            <mat-icon (click)="confirmDeleteStudentMedicalAlert(medicalinfo)" class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                         </span>
                                                     </ng-container>
     
@@ -60,10 +60,10 @@
                                                 </td>
                                                 <td class="cursor-pointer">
                                                     <span class="mr-2">
-                                                        <mat-icon [icIcon]="icEdit"></mat-icon>
+                                                        <mat-icon>{{ icEdit }}</mat-icon>
                                                     </span>
                                                     <span>
-                                                        <mat-icon [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                        <mat-icon class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                     </span>
                                                 </td>
                                             </tr> -->
@@ -71,7 +71,7 @@
                                     </table>
                                 </div>
                                 <div *ngIf="!studentMedicalInfoListModel?.studentMedicalAlertList?.length && permissions?.add" class="text-center text-blue cursor-pointer p-2" (click)="addAlert()">
-                                    <mat-icon [icIcon]="icAdd" class="mr-2"></mat-icon><span
+                                    <mat-icon class="mr-2">{{ icAdd }}</mat-icon><span
                                         class="inline-block mt-1 align-top font-medium">{{ 'addAlertInformation' | translate
                                         }}</span>
                                 </div>
@@ -95,10 +95,10 @@
                                                 <td class="cursor-pointer">
                                                     <ng-container *ngIf="permissions?.edit || permissions?.delete">
                                                     <span class="mr-2" *ngIf="permissions?.edit">
-                                                        <mat-icon (click)="editMedicalNotes(medicalinfo)" [icIcon]="icEdit"></mat-icon>
+                                                        <mat-icon (click)="editMedicalNotes(medicalinfo)">{{ icEdit }}</mat-icon>
                                                     </span>
                                                     <span *ngIf="permissions?.delete">
-                                                        <mat-icon (click)="confirmDeleteStudentMedicalNote(medicalinfo)" [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                        <mat-icon (click)="confirmDeleteStudentMedicalNote(medicalinfo)" class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                     </span>
                                                 </ng-container>
                                                 </td>
@@ -109,10 +109,10 @@
                                                     allergic symptoms.</td>
                                                 <td class="cursor-pointer">
                                                     <span class="mr-2">
-                                                        <mat-icon [icIcon]="icEdit"></mat-icon>
+                                                        <mat-icon>{{ icEdit }}</mat-icon>
                                                     </span>
                                                     <span>
-                                                        <mat-icon [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                        <mat-icon class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                     </span>
                                                 </td>
                                             </tr> -->
@@ -120,7 +120,7 @@
                                     </table>
                                 </div>
                                 <div *ngIf="permissions?.add" class="text-center text-blue cursor-pointer p-2" (click)="addMedicalNotes()">
-                                    <mat-icon [icIcon]="icAdd" class="mr-2"></mat-icon><span
+                                    <mat-icon class="mr-2">{{ icAdd }}</mat-icon><span
                                         class="inline-block mt-1 align-top font-medium">{{ 'addMedicalNotes' | translate
                                         }}</span>
                                 </div>
@@ -146,10 +146,10 @@
                                                 <td class="cursor-pointer">
                                                     <ng-container *ngIf="permissions?.edit || permissions?.delete">
                                                         <span class="mr-2" *ngIf="permissions?.edit">
-                                                            <mat-icon (click)="editImmunization(medicalinfo)" [icIcon]="icEdit"></mat-icon>
+                                                            <mat-icon (click)="editImmunization(medicalinfo)">{{ icEdit }}</mat-icon>
                                                         </span>
                                                         <span *ngIf="permissions?.delete">
-                                                            <mat-icon (click)="confirmDeleteStudentMedicalImmunization(medicalinfo)" [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                            <mat-icon (click)="confirmDeleteStudentMedicalImmunization(medicalinfo)" class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                         </span>
                                                     </ng-container>
     
@@ -161,10 +161,10 @@
                                                 <td>Rotavirus immunization was done.</td>
                                                 <td class="cursor-pointer">
                                                     <span class="mr-2">
-                                                        <mat-icon [icIcon]="icEdit"></mat-icon>
+                                                        <mat-icon>{{ icEdit }}</mat-icon>
                                                     </span>
                                                     <span>
-                                                        <mat-icon [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                        <mat-icon class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                     </span>
                                                 </td>
                                             </tr> -->
@@ -172,7 +172,7 @@
                                     </table>
                                 </div>
                                 <div class="text-center text-blue cursor-pointer p-2" *ngIf="permissions?.add" (click)="addImmunization()">
-                                    <mat-icon [icIcon]="icAdd" class="mr-2"></mat-icon><span
+                                    <mat-icon class="mr-2">{{ icAdd }}</mat-icon><span
                                         class="inline-block mt-1 align-top font-medium">{{ 'addImmunizationPhysicalRecord' |
                                         translate }}</span>
                                 </div>
@@ -206,10 +206,10 @@
                                                 <td class="cursor-pointer">
                                                     <ng-container *ngIf="permissions?.edit || permissions?.delete">
                                                     <span class="mr-2" *ngIf="permissions?.edit">
-                                                        <mat-icon (click)="editNurseVisit(medicalinfo)" [icIcon]="icEdit"></mat-icon>
+                                                        <mat-icon (click)="editNurseVisit(medicalinfo)">{{ icEdit }}</mat-icon>
                                                     </span>
                                                     <span *ngIf="permissions?.delete">
-                                                        <mat-icon (click)="confirmDeleteStudentMedicalNurseVisit(medicalinfo)" [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                        <mat-icon (click)="confirmDeleteStudentMedicalNurseVisit(medicalinfo)" class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                     </span>
                                                     </ng-container>
                                                 </td>
@@ -225,10 +225,10 @@
                                                 </td>
                                                 <td class="cursor-pointer">
                                                     <span class="mr-2">
-                                                        <mat-icon [icIcon]="icEdit"></mat-icon>
+                                                        <mat-icon>{{ icEdit }}</mat-icon>
                                                     </span>
                                                     <span>
-                                                        <mat-icon [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                        <mat-icon class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                     </span>
                                                 </td>
                                             </tr> -->
@@ -236,7 +236,7 @@
                                     </table>
                                 </div>
                                 <div *ngIf="permissions?.add" class="text-center text-blue cursor-pointer p-2" (click)="addNurseVisit()">
-                                    <mat-icon [icIcon]="icAdd" class="mr-2"></mat-icon><span
+                                    <mat-icon class="mr-2">{{ icAdd }}</mat-icon><span
                                         class="inline-block mt-1 align-top font-medium">{{ 'addNurseVisitRecord' | translate
                                         }}</span>
                                 </div>
@@ -375,7 +375,7 @@
         <h3 class="flex-auto h-9">{{'medicalInformation' | translate}}</h3>
         <button *ngIf="currentTab === 'providerInformation'  && permissions?.edit" mat-raised-button color="primary"
             (click)="editMedicalInfo()">
-            <mat-icon [icIcon]="icEdit"></mat-icon> {{'editInformation' |translate}}
+            <mat-icon>{{ icEdit }}</mat-icon> {{'editInformation' |translate}}
         </button>
     </div>
     <mat-card-content>
@@ -423,10 +423,10 @@
                                             <td class="cursor-pointer">
                                                 <ng-container *ngIf="permissions?.edit || permissions?.delete">
                                                     <span class="mr-2" *ngIf="permissions?.edit">
-                                                        <mat-icon (click)="editAlert(medicalinfo)" [icIcon]="icEdit"></mat-icon>
+                                                        <mat-icon (click)="editAlert(medicalinfo)">{{ icEdit }}</mat-icon>
                                                     </span>
                                                     <span *ngIf="permissions?.delete">
-                                                        <mat-icon (click)="confirmDeleteStudentMedicalAlert(medicalinfo)" [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                        <mat-icon (click)="confirmDeleteStudentMedicalAlert(medicalinfo)" class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                     </span>
                                                 </ng-container>
 
@@ -438,10 +438,10 @@
                                             </td>
                                             <td class="cursor-pointer">
                                                 <span class="mr-2">
-                                                    <mat-icon [icIcon]="icEdit"></mat-icon>
+                                                    <mat-icon>{{ icEdit }}</mat-icon>
                                                 </span>
                                                 <span>
-                                                    <mat-icon [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                    <mat-icon class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                 </span>
                                             </td>
                                         </tr> -->
@@ -449,7 +449,7 @@
                                 </table>
                             </div>
                             <div *ngIf="!studentMedicalInfoListModel?.studentMedicalAlertList?.length && permissions?.add" class="text-center text-blue cursor-pointer p-2" (click)="addAlert()">
-                                <mat-icon [icIcon]="icAdd" class="mr-2"></mat-icon><span
+                                <mat-icon class="mr-2">{{ icAdd }}</mat-icon><span
                                     class="inline-block mt-1 align-top font-medium">{{ 'addAlertInformation' | translate
                                     }}</span>
                             </div>
@@ -473,10 +473,10 @@
                                             <td class="cursor-pointer">
                                                 <ng-container *ngIf="permissions?.edit || permissions?.delete">
                                                 <span class="mr-2" *ngIf="permissions?.edit">
-                                                    <mat-icon (click)="editMedicalNotes(medicalinfo)" [icIcon]="icEdit"></mat-icon>
+                                                    <mat-icon (click)="editMedicalNotes(medicalinfo)">{{ icEdit }}</mat-icon>
                                                 </span>
                                                 <span *ngIf="permissions?.delete">
-                                                    <mat-icon (click)="confirmDeleteStudentMedicalNote(medicalinfo)" [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                    <mat-icon (click)="confirmDeleteStudentMedicalNote(medicalinfo)" class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                 </span>
                                             </ng-container>
                                             </td>
@@ -487,10 +487,10 @@
                                                 allergic symptoms.</td>
                                             <td class="cursor-pointer">
                                                 <span class="mr-2">
-                                                    <mat-icon [icIcon]="icEdit"></mat-icon>
+                                                    <mat-icon>{{ icEdit }}</mat-icon>
                                                 </span>
                                                 <span>
-                                                    <mat-icon [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                    <mat-icon class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                 </span>
                                             </td>
                                         </tr> -->
@@ -498,7 +498,7 @@
                                 </table>
                             </div>
                             <div *ngIf="permissions?.add" class="text-center text-blue cursor-pointer p-2" (click)="addMedicalNotes()">
-                                <mat-icon [icIcon]="icAdd" class="mr-2"></mat-icon><span
+                                <mat-icon class="mr-2">{{ icAdd }}</mat-icon><span
                                     class="inline-block mt-1 align-top font-medium">{{ 'addMedicalNotes' | translate
                                     }}</span>
                             </div>
@@ -524,10 +524,10 @@
                                             <td class="cursor-pointer">
                                                 <ng-container *ngIf="permissions?.edit || permissions?.delete">
                                                     <span class="mr-2" *ngIf="permissions?.edit">
-                                                        <mat-icon (click)="editImmunization(medicalinfo)" [icIcon]="icEdit"></mat-icon>
+                                                        <mat-icon (click)="editImmunization(medicalinfo)">{{ icEdit }}</mat-icon>
                                                     </span>
                                                     <span *ngIf="permissions?.delete">
-                                                        <mat-icon (click)="confirmDeleteStudentMedicalImmunization(medicalinfo)" [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                        <mat-icon (click)="confirmDeleteStudentMedicalImmunization(medicalinfo)" class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                     </span>
                                                 </ng-container>
 
@@ -539,10 +539,10 @@
                                             <td>Rotavirus immunization was done.</td>
                                             <td class="cursor-pointer">
                                                 <span class="mr-2">
-                                                    <mat-icon [icIcon]="icEdit"></mat-icon>
+                                                    <mat-icon>{{ icEdit }}</mat-icon>
                                                 </span>
                                                 <span>
-                                                    <mat-icon [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                    <mat-icon class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                 </span>
                                             </td>
                                         </tr> -->
@@ -550,7 +550,7 @@
                                 </table>
                             </div>
                             <div class="text-center text-blue cursor-pointer p-2" *ngIf="permissions?.add" (click)="addImmunization()">
-                                <mat-icon [icIcon]="icAdd" class="mr-2"></mat-icon><span
+                                <mat-icon class="mr-2">{{ icAdd }}</mat-icon><span
                                     class="inline-block mt-1 align-top font-medium">{{ 'addImmunizationPhysicalRecord' |
                                     translate }}</span>
                             </div>
@@ -584,10 +584,10 @@
                                             <td class="cursor-pointer">
                                                 <ng-container *ngIf="permissions?.edit || permissions?.delete">
                                                 <span class="mr-2" *ngIf="permissions?.edit">
-                                                    <mat-icon (click)="editNurseVisit(medicalinfo)" [icIcon]="icEdit"></mat-icon>
+                                                    <mat-icon (click)="editNurseVisit(medicalinfo)">{{ icEdit }}</mat-icon>
                                                 </span>
                                                 <span *ngIf="permissions?.delete">
-                                                    <mat-icon (click)="confirmDeleteStudentMedicalNurseVisit(medicalinfo)" [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                    <mat-icon (click)="confirmDeleteStudentMedicalNurseVisit(medicalinfo)" class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                 </span>
                                                 </ng-container>
                                             </td>
@@ -603,10 +603,10 @@
                                             </td>
                                             <td class="cursor-pointer">
                                                 <span class="mr-2">
-                                                    <mat-icon [icIcon]="icEdit"></mat-icon>
+                                                    <mat-icon>{{ icEdit }}</mat-icon>
                                                 </span>
                                                 <span>
-                                                    <mat-icon [icIcon]="icDeleteForever" class="mr-2"></mat-icon>
+                                                    <mat-icon class="mr-2">{{ icDeleteForever }}</mat-icon>
                                                 </span>
                                             </td>
                                         </tr> -->
@@ -614,7 +614,7 @@
                                 </table>
                             </div>
                             <div *ngIf="permissions?.add" class="text-center text-blue cursor-pointer p-2" (click)="addNurseVisit()">
-                                <mat-icon [icIcon]="icAdd" class="mr-2"></mat-icon><span
+                                <mat-icon class="mr-2">{{ icAdd }}</mat-icon><span
                                     class="inline-block mt-1 align-top font-medium">{{ 'addNurseVisitRecord' | translate
                                     }}</span>
                             </div>

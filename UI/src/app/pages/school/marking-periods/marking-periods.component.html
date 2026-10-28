@@ -12,7 +12,7 @@
                 <mat-card @stagger class="w-full">
                     <div class="flex items-center pl-0" fxLayout="row" fxLayoutAlign="center center">
                         <h6 class="flex-auto">{{'markingPeriodsList' | translate}}</h6>
-                        <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" (click)="openAddNew()" type="button" color="primary" mat-raised-button><ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 rtl:ml-2 ic-inline" inline="true"></ic-icon>
+                        <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" (click)="openAddNew()" type="button" color="primary" mat-raised-button><mat-icon class="ltr:-ml-1 rtl:-mr-1 rtl:ml-2 ic-inline" inline>{{ icAdd }}</mat-icon>
                             <span class="hidden md:inline-block">{{'addNew'| translate}}</span></button>
                     </div>
                     <p class="text-gray text-xs pb-5">{{'clickAnItemToViewDetailsOnTheRightSide' | translate}}</p>
@@ -27,14 +27,14 @@
                                         <div class="flex items-center">
                                             <div *ngIf="item.isParent || (item.semesterId > 0 && item.isParent === false) || (item.semesterId > 0 &&  item.isParent === false) || (item.yearId > 0 && item.isParent === false)">
                                                 <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" (click) = "addChildren(item)" matTooltip="{{'addChildMarkingPeriod' | translate}}" class="px-2 pt-3 pb-1">
-                                                    <mat-icon [icIcon]="icAdd"></mat-icon>
+                                                    <mat-icon>{{ icAdd }}</mat-icon>
                                     </button>
                                             </div>
                                             <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click) = "editItem(item)" matTooltip="{{'editItem' | translate}}" class="px-2 pt-3 pb-1">
-                                                <mat-icon [icIcon]="icEdit"></mat-icon>
+                                                <mat-icon>{{ icEdit }}</mat-icon>
                                         </button>
                                             <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click) = "confirmDelete(item)" matTooltip="{{'deleteItem' | translate}}" class="px-2 pt-3 pb-1">
-                                                <mat-icon [icIcon]="icDelete"></mat-icon>
+                                                <mat-icon>{{ icDelete }}</mat-icon>
                                             </button>
                                         </div>
                                     </div>
@@ -56,7 +56,7 @@
                     <h3 class="flex-auto" *ngIf="viewFirstChild != undefined">{{viewFirstChild.title}}</h3>
                     <div>
                     <button [matMenuTriggerFor]="addMenu" *ngIf="(permissions?.edit || permissions?.delete) && this.defaultValuesService.checkAcademicYear()" mat-icon-button type="button">
-                        <mat-icon [icIcon]="icMoreVert" size="20px"></mat-icon>
+                        <mat-icon style="font-size: 20px">{{ icMoreVert }}</mat-icon>
                                         </button>
                     <button (click)="closeDetailsModal()" class="md:hidden text-primary" mat-icon-button type="button">
                         <mat-icon>close</mat-icon>
@@ -134,13 +134,11 @@
         <div class="w-full bg-white rounded text-center py-20 md:py-32" *ngIf="viewFirstChild=='';">
                         <div @fadeInUp class="text-center">
                             <div class="mb-6">
-                                <ic-icon [icon]="icInfo" size="60px"></ic-icon>
+                                <mat-icon style="font-size: 60px">{{ icInfo }}</mat-icon>
                             </div>
                             <h1 class="mb-6 opacity-75">{{'no'|translate}} <span class="font-bold">{{'markingPeriod' | translate}}</span> {{'dataFound' |translate}}!</h1>
                             <button *ngIf="permissions?.add" (click)="openAddNew()" type="button" color="primary" mat-raised-button>
-                                    <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2 ic-inline"
-                                        inline="true">
-                                    </ic-icon> {{'addAFullYearToBegin' | translate}}
+                                    <mat-icon class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2 ic-inline" inline>{{ icAdd }}</mat-icon> {{'addAFullYearToBegin' | translate}}
                                 </button>
             </div>
         </div>

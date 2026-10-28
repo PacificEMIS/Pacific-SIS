@@ -25,9 +25,6 @@ All rights reserved.
 
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/twotone-close';
-import icVisibility from '@iconify/icons-ic/twotone-visibility';
-import icVisibilityOff from '@iconify/icons-ic/twotone-visibility-off';
 import { CommonService } from 'src/app/services/common.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ValidationService } from '../../shared/validation.service';
@@ -47,9 +44,9 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
 
-  icClose = icClose;
-  icVisibility = icVisibility;
-  icVisibilityOff = icVisibilityOff;
+  icClose = 'close';
+  icVisibility = 'visibility';
+  icVisibilityOff = 'visibility_off';
   form: FormGroup;
   resetPasswordModel: ResetPasswordModel = new ResetPasswordModel();
   inputType = 'password';

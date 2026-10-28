@@ -28,11 +28,6 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { TranslateService } from '@ngx-translate/core';
-import icEdit from '@iconify/icons-ic/edit';
-import icDelete from '@iconify/icons-ic/delete';
-import icCheckBox from '@iconify/icons-ic/check-box';
-import icCheckCircle from '@iconify/icons-ic/twotone-done';
-import icCheckBoxOutlineBlank from '@iconify/icons-ic/check-box-outline-blank';
 
 @Component({
   selector: 'vex-viewparent-addressinfo',
@@ -45,11 +40,11 @@ import icCheckBoxOutlineBlank from '@iconify/icons-ic/check-box-outline-blank';
   ]
 })
 export class ViewparentAddressinfoComponent implements OnInit {
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icCheckBox = icCheckBox;
-  icCheckBoxOutlineBlank = icCheckBoxOutlineBlank;
-  icCheckCircle = icCheckCircle;
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icCheckBox = 'check_box';
+  icCheckBoxOutlineBlank = 'check_box_outline_blank';
+  icCheckCircle = 'done';
 
   constructor(public translateService:TranslateService) {
     //translateService.use('en');

@@ -26,13 +26,6 @@ All rights reserved.
 import { StaffCertificateListModel, StaffCertificateModel } from '../../../../models/staff.model';
 import { StaffService } from '../../../../services/staff.service';
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icSearch from '@iconify/icons-ic/search';
-import icFilterList from '@iconify/icons-ic/filter-list';
-import icImpersonate from '@iconify/icons-ic/twotone-account-circle';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -74,13 +67,13 @@ export class StaffCertificationinfoComponent implements OnInit {
   ];
 
 
-  icMoreVert = icMoreVert;
-  icAdd = icAdd;
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icSearch = icSearch;
-  icImpersonate = icImpersonate;
-  icFilterList = icFilterList;
+  icMoreVert = 'more_vert';
+  icAdd = 'add';
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icSearch = 'search';
+  icImpersonate = 'account_circle';
+  icFilterList = 'filter_list';
   loading: boolean;
   staffCertificateListModel: StaffCertificateListModel = new StaffCertificateListModel();
   staffCertificateModel: StaffCertificateModel = new StaffCertificateModel();

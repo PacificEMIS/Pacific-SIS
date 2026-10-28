@@ -25,7 +25,6 @@ All rights reserved.
 
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import icSearch from '@iconify/icons-ic/search';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
 import { FormControl } from "@angular/forms";
@@ -63,7 +62,7 @@ import { HistoricalMarkingPeriodService } from "src/app/services/historical-mark
   ]
 })
 export class StudentTranscriptComponent implements OnInit {
-  icSearch = icSearch;
+  icSearch = 'search';
 
   loading: boolean;
   destroySubject$: Subject<void> = new Subject();

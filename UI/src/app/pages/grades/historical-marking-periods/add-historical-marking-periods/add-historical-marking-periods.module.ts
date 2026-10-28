@@ -6,7 +6,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { IconModule } from '@visurel/iconify-angular';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
@@ -28,7 +27,6 @@ import { NgxMaskModule } from 'ngx-mask';
     MatDialogModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    IconModule,
     FlexLayoutModule,
     MatInputModule,
     MatDividerModule,

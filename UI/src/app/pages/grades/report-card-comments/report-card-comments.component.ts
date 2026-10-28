@@ -25,8 +25,6 @@ All rights reserved.
 
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
 import { GetAllCourseListModel } from '../../../models/course-manager.model';
 import { CourseManagerService } from '../../../services/course-manager.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -48,8 +46,8 @@ import { CommonService } from 'src/app/services/common.service';
   styleUrls: ['./report-card-comments.component.scss']
 })
 export class ReportCardCommentsComponent implements OnInit {
-  icEdit = icEdit;
-  icDelete = icDelete;
+  icEdit = 'edit';
+  icDelete = 'delete';
 
   selectedCategoryIndex = -1;
   getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel();

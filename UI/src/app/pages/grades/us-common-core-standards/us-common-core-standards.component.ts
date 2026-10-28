@@ -24,14 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input ,ViewChild, OnDestroy } from '@angular/core';
-import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icSearch from '@iconify/icons-ic/search';
-import icFilterList from '@iconify/icons-ic/filter-list';
-import icImport from '@iconify/icons-ic/twotone-unarchive';
-import icUpdate from '@iconify/icons-ic/cached';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router} from '@angular/router';
@@ -84,14 +76,14 @@ export class UsCommonCoreStandardsComponent implements OnInit {
 
   CommonCoreStandardsModelList;
 
-  icMoreVert = icMoreVert;
-  icAdd = icAdd;
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icSearch = icSearch;
-  icImport = icImport;
-  icFilterList = icFilterList;
-  icUpdate = icUpdate;
+  icMoreVert = 'more_vert';
+  icAdd = 'add';
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icSearch = 'search';
+  icImport = 'unarchive';
+  icFilterList = 'filter_list';
+  icUpdate = 'cached';
   selectedOption = '1';
   loading:Boolean;
   editPermission = false;

@@ -23,20 +23,8 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import icGroup from '@iconify/icons-ic/twotone-group';
-import icPageView from '@iconify/icons-ic/twotone-pageview';
-import icCloudOff from '@iconify/icons-ic/twotone-cloud-off';
-import icTimer from '@iconify/icons-ic/twotone-timer';
-import icSchool from '@iconify/icons-ic/twotone-account-balance';
-import icStudent from '@iconify/icons-ic/twotone-school';
-import icStaff from '@iconify/icons-ic/twotone-people';
-import icParent from '@iconify/icons-ic/twotone-escalator-warning';
-import icMissingAttendance from '@iconify/icons-ic/twotone-alarm-off';
 import { Order, tableSalesData } from '../../../../static-data/table-sales-data';
 import { TableColumn } from '@vex/interfaces/table-column.interface';
-import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
-import icPreview from '@iconify/icons-ic/round-preview';
-import icPeople from '@iconify/icons-ic/twotone-people';
 import { DashboardViewModel, GradeCount, NameCount, ScheduledCourseSectionViewModel } from '../../../models/dashboard.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DasboardService } from '../../../services/dasboard.service';
@@ -117,18 +105,18 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
   ];
   tableData = tableSalesData;
 
-  icGroup = icGroup;
-  icPageView = icPageView;
-  icCloudOff = icCloudOff;
-  icTimer = icTimer;
-  icMoreVert = icMoreVert;
-  icSchool = icSchool;
-  icStudent = icStudent;
-  icStaff = icStaff;
-  icParent = icParent;
-  icPreview = icPreview;
-  icPeople = icPeople;
-  icMissingAttendance = icMissingAttendance;
+  icGroup = 'group';
+  icPageView = 'pageview';
+  icCloudOff = 'cloud_off';
+  icTimer = 'timer';
+  icMoreVert = 'more_vert';
+  icSchool = 'account_balance';
+  icStudent = 'school';
+  icStaff = 'people';
+  icParent = 'escalator_warning';
+  icPreview = 'preview';
+  icPeople = 'people';
+  icMissingAttendance = 'alarm_off';
   scheduleType = '1';
   durationType = '1';
   addCalendarDay = 0;

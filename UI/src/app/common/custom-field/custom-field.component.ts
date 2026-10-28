@@ -29,8 +29,6 @@ import { SharedFunction } from '../../../../src/app/pages/shared/shared-function
 import { FieldsCategoryListView, FieldsCategoryModel } from '../../models/fields-category.model';
 import { CustomFieldService } from '../../../../src/app/services/custom-field.service';
 import { CustomFieldListViewModel, CustomFieldModel } from '../../models/custom-field.model';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icEdit from '@iconify/icons-ic/twotone-edit';
 import { NgForm } from '@angular/forms';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -50,8 +48,6 @@ import { DefaultValuesService } from '../default-values.service';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { PageRolesPermission } from '../page-roles-permissions.service';
-import icCheckboxChecked from '@iconify/icons-ic/check-box';
-import icCheckboxUnchecked from '@iconify/icons-ic/check-box-outline-blank';
 import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { ConstantPool } from '@angular/compiler';
 import { TranslateService } from '@ngx-translate/core';
@@ -78,8 +74,8 @@ export class CustomFieldComponent implements OnInit, OnDestroy {
   categoryId;
   schoolDetailsForViewAndEdit;
   module;
-  icEdit = icEdit;
-  icAdd = icAdd;
+  icEdit = 'edit';
+  icAdd = 'add';
   viewInfo: boolean = true;
   editInfo: boolean = false;
   studentAddViewModel: StudentAddModel = new StudentAddModel();
@@ -88,8 +84,8 @@ export class CustomFieldComponent implements OnInit, OnDestroy {
   @ViewChild('f') currentForm: NgForm;
   staffMultiSelectValue;
   studentMultiSelectValue;
-  icCheckboxChecked = icCheckboxChecked;
-  icCheckboxUnchecked = icCheckboxUnchecked;
+  icCheckboxChecked = 'check_box';
+  icCheckboxUnchecked = 'check_box_outline_blank';
   schoolMultiSelectValue
   f: NgForm;
   formActionButtonTitle = "update";

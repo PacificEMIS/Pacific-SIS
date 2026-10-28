@@ -29,10 +29,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import icAdd from '@iconify/icons-ic/twotone-add';
-import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
-import icArrowUpward from '@iconify/icons-ic/twotone-arrow-upward';
-import icInfo from '@iconify/icons-ic/twotone-info';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -65,10 +61,10 @@ import { PromoteStaffComponent } from './promote-staff/promote-staff.component';
   styleUrls: ['./super-administrators.component.scss']
 })
 export class SuperAdministratorsComponent implements OnInit, OnDestroy {
-  icAdd = icAdd;
-  icMoreVert = icMoreVert;
-  icArrowUpward = icArrowUpward;
-  icInfo = icInfo;
+  icAdd = 'add';
+  icMoreVert = 'more_vert';
+  icArrowUpward = 'arrow_upward';
+  icInfo = 'info';
 
   displayedColumns: string[] = ['name', 'loginEmail', 'homeSchool', 'status', 'lastLogin', 'actions'];
   dataSource: MatTableDataSource<SuperAdministratorModel> = new MatTableDataSource<SuperAdministratorModel>([]);

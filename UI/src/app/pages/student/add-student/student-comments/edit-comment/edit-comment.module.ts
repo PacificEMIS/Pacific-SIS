@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
-import { IconModule } from '@visurel/iconify-angular';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslateModule } from '@ngx-translate/core';
@@ -24,7 +23,6 @@ import { QuillModule } from 'ngx-quill';
     FlexLayoutModule,
     MatInputModule,
     MatDividerModule,
-    IconModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     TranslateModule,

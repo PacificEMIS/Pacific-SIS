@@ -28,7 +28,7 @@
                     alt="Excel Icon" width="24"></a>
             <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
                 matTooltip="{{'filterColumns' | translate}}" type="button" *ngIf="parentComponent === 'staffInfo' || parentComponent === 'takeAttendence'">
-                <mat-icon [icIcon]="icFilterList"></mat-icon>
+                <mat-icon>{{ icFilterList }}</mat-icon>
             </button>
             <!-- When a fresh search happens, show this button -->
             <div *ngIf="showSaveFilter && parentComponent === 'staffInfo'" class="inline-block align-middle ml-4">
@@ -70,8 +70,7 @@
 
             <button *ngIf="permissions.add && this.defaultValuesService.checkAcademicYear() && parentComponent === 'staffInfo'" color="primary"
                 class="ml-4 rounded-r-none" fxFlex="none" mat-raised-button type="button" (click)='goToAdd()'>
-                <ic-icon [icon]="icAdd" class="md:mr-2" inline="true" size="24px">
-                </ic-icon>
+                <mat-icon class="md:mr-2">{{ icAdd }}</mat-icon>
                 <span class="hidden md:inline-block">{{'addNewStaff' | translate }}</span>
             </button>
             <button *ngIf="permissions.add && defaultValuesService.checkAcademicYear() && parentComponent === 'staffInfo'"
@@ -217,15 +216,15 @@
                                         ((defaultValuesService.getUserMembershipType() === profiles.AdminAssitant || defaultValuesService.getUserMembershipType() === profiles.SchoolAdmin) && 
                                         (element.profile !== profiles.AdminAssitant && element.profile !== profiles.SchoolAdmin));
                                         else notImpersonate">
-                            <mat-icon [icIcon]="icImpersonate"></mat-icon>
+                            <mat-icon>{{ icImpersonate }}</mat-icon>
                         </button>
                     </ng-container>
                     <ng-template #notImpersonate>
-                        <span class="opacity-25 mr-2 inline-block"><mat-icon [icIcon]="icImpersonate"></mat-icon></span>
+                        <span class="opacity-25 mr-2 inline-block"><mat-icon>{{ icImpersonate }}</mat-icon></span>
                     </ng-template>
                     <button mat-icon-button matTooltip="{{ 'dataEditInfo' | translate }}" class="cursor-pointer"
                         (click)="openDataEdit(element)">
-                        <mat-icon [icIcon]="icRestore"></mat-icon>
+                        <mat-icon>{{ icRestore }}</mat-icon>
                     </button>
                     <ng-container *ngIf="defaultValuesService.getUserMembershipType() === profiles.SuperAdmin || defaultValuesService.getUserMembershipType() === profiles.SchoolAdmin || defaultValuesService.getUserMembershipType() === profiles.AdminAssitant">
                         <ng-container *ngIf="element.loading; else showDropdown">
@@ -239,11 +238,11 @@
                 </div>
                 <mat-menu #moreActions="matMenu">
                     <button mat-menu-item (click)="deleteStaff(element, i)" *ngIf="element.profile != profiles.SuperAdmin; else fakeDelete">
-                        <mat-icon [icIcon]="icDelete"></mat-icon>{{'deleteStaff' | translate}}
+                        <mat-icon>{{ icDelete }}</mat-icon>{{'deleteStaff' | translate}}
                     </button>
                     <ng-template #fakeDelete>
                         <button mat-menu-item disabled="true">
-                            <mat-icon [icIcon]="icDelete"></mat-icon>{{'deleteStaff' | translate}}
+                            <mat-icon>{{ icDelete }}</mat-icon>{{'deleteStaff' | translate}}
                         </button>
                     </ng-template>
                 </mat-menu>

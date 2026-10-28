@@ -51,7 +51,6 @@ import { SharedFunction } from 'src/app/pages/shared/shared-function';
 import { MatSelect } from '@angular/material/select';
 import { GetAllSectionModel } from 'src/app/models/section.model';
 import { AdvancedSearchExpansionModel, FilterParamsForAdvancedSearch, FilterParamsForAdvancedSearchModel } from 'src/app/models/common.model';
-import icListAlt from '@iconify/icons-ic/twotone-list-alt';
 import { CourseSectionComponent } from 'src/app/pages/grades/administration/course-section/course-section.component';
 import { MatDialog } from '@angular/material/dialog';
 import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from 'src/app/models/course-manager.model';
@@ -64,7 +63,7 @@ import { CourseManagerService } from 'src/app/services/course-manager.service';
 })
 export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatAccordion) accordion: MatAccordion;
-  icListAlt = icListAlt;
+  icListAlt = 'list_alt';
   @Output() showHideAdvanceSearch = new EventEmitter<any>();
   @Output() searchList = new EventEmitter<any>();
   @Output() searchValue = new EventEmitter<any>();

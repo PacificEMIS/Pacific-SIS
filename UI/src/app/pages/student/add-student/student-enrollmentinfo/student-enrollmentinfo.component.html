@@ -105,7 +105,7 @@
                     <h4 class="text-primary">{{'enrollmentInfo'|translate}}</h4>
                     <div class="text-right">
                         <a mat-raised-button color="primary" (click)="addMoreEnrollments()">
-                            <mat-icon [icIcon]="icAdd"></mat-icon> {{'addEnrollmentInfo' |translate}}
+                            <mat-icon>{{ icAdd }}</mat-icon> {{'addEnrollmentInfo' |translate}}
                         </a>
                     </div>
                 </div>
@@ -298,13 +298,13 @@
                                 <div class=""
                                     *ngIf="cloneStudentEnrollment.studentEnrollments[index].enrollmentId==null || cloneStudentEnrollment.studentEnrollments[index].enrollmentId===0;else dontDelete">
                                     <a class="cursor-pointer" (click)="deleteDynamicRow(index)">
-                                        <mat-icon [icIcon]="icClear"></mat-icon>
+                                        <mat-icon>{{ icClear }}</mat-icon>
                                     </a>
                                 </div>
                                 <ng-template #dontDelete>
                                     <div class="">
                                         <a class="cursor-pointer text-gray">
-                                            <mat-icon [icIcon]="icClear"></mat-icon>
+                                            <mat-icon>{{ icClear }}</mat-icon>
                                         </a>
                                     </div>
                                 </ng-template>
@@ -328,7 +328,7 @@
     <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
         <h3 class="flex-auto">{{'schoolAndEnrollmentInfo' | translate}}</h3>
         <button *ngIf="permissions?.edit" mat-raised-button color="primary" (click)="editEnrollmentInfo()">
-            <mat-icon [icIcon]="icEdit" class="md:mt-1 md:mr-2"></mat-icon><span class="hidden md:inline-block">{{'editInformation' |translate}}</span>
+            <mat-icon class="md:mt-1 md:mr-2">{{ icEdit }}</mat-icon><span class="hidden md:inline-block">{{'editInformation' |translate}}</span>
         </button>
     </div>
     <mat-card-content>
@@ -361,41 +361,38 @@
                 <li *ngIf="membershipType !== 'Teacher' && membershipType !== 'Homeroom Teacher'" class="col-span-2 md:col-span-3 xl:col-span-4">
                     <div class="flex items-center flex-wrap">
                         <div class="mr-6" *ngIf="studentEnrollmentModel?.eligibility504; else NOTEligibility">
-                            <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                            <mat-icon class="inline-block align-middle mr-2">{{ icCheckbox }}</mat-icon>
                             <span class="inline-block text-base align-middle">{{'504Eligibility' |translate}}</span>
                         </div>
                         <ng-template #NOTEligibility>
                             <div class="mr-6">
-                                <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2">
-                                </mat-icon>
+                                <mat-icon class="inline-block align-middle mr-2">{{ icCheckboxOutline }}</mat-icon>
                                 <span class="inline-block text-base align-middle">{{'504Eligibility' |translate}}</span>
                             </div>
                         </ng-template>
 
 
                         <div class="mr-6" *ngIf="studentEnrollmentModel?.economicDisadvantage; else economicadvantage">
-                            <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                            <mat-icon class="inline-block align-middle mr-2">{{ icCheckbox }}</mat-icon>
                             <span class="inline-block text-base align-middle">{{'economicDisadvantage'
                                 |translate}}</span>
                         </div>
                         <ng-template #economicadvantage>
                             <div class="mr-6">
-                                <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2">
-                                </mat-icon>
+                                <mat-icon class="inline-block align-middle mr-2">{{ icCheckboxOutline }}</mat-icon>
                                 <span class="inline-block text-base align-middle">{{'economicDisadvantage'
                                     |translate}}</span>
                             </div>
                         </ng-template>
 
                         <div class="mr-6" *ngIf="studentEnrollmentModel?.freeLunchEligibility; else LunchEligibility">
-                            <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                            <mat-icon class="inline-block align-middle mr-2">{{ icCheckbox }}</mat-icon>
                             <span class="inline-block text-base align-middle">{{'freeLunchEligibility'
                                 |translate}}</span>
                         </div>
                         <ng-template #LunchEligibility>
                             <div class="mr-6">
-                                <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2">
-                                </mat-icon>
+                                <mat-icon class="inline-block align-middle mr-2">{{ icCheckboxOutline }}</mat-icon>
                                 <span class="inline-block text-base align-middle">{{'freeLunchEligibility'
                                     |translate}}</span>
                             </div>
@@ -403,14 +400,13 @@
 
                         <div class="mr-6"
                             *ngIf="studentEnrollmentModel?.specialEducationIndicator; else nonSpecialEducationIndicator">
-                            <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                            <mat-icon class="inline-block align-middle mr-2">{{ icCheckbox }}</mat-icon>
                             <span class="inline-block text-base align-middle">{{'specialEducationIndicator'
                                 |translate}}</span>
                         </div>
                         <ng-template #nonSpecialEducationIndicator>
                             <div class="mr-6">
-                                <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2">
-                                </mat-icon>
+                                <mat-icon class="inline-block align-middle mr-2">{{ icCheckboxOutline }}</mat-icon>
                                 <span class="inline-block text-base align-middle">{{'specialEducationIndicator'
                                     |translate}}</span>
                             </div>
@@ -418,13 +414,12 @@
 
 
                         <div class="mr-6" *ngIf="studentEnrollmentModel.lepIndicator; else Indicator">
-                            <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                            <mat-icon class="inline-block align-middle mr-2">{{ icCheckbox }}</mat-icon>
                             <span class="inline-block text-base align-middle">{{'lepIndicator' |translate}}</span>
                         </div>
                         <ng-template #Indicator>
                             <div class="mr-6">
-                                <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2">
-                                </mat-icon>
+                                <mat-icon class="inline-block align-middle mr-2">{{ icCheckboxOutline }}</mat-icon>
                                 <span class="inline-block text-base align-middle">{{'lepIndicator' |translate}}</span>
                             </div>
                         </ng-template>
@@ -457,62 +452,55 @@
                                                         <span
                                                             class="flex items-center bg-blue px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Add'">
-                                                            <mat-icon [icIcon]="icExternal" class="align-middle text-white"
-                                                                matTooltip="{{'enrolledAsExternal' | translate}}">
-                                                            </mat-icon>
+                                                            <mat-icon class="align-middle text-white"
+                                                                matTooltip="{{'enrolledAsExternal' | translate}}">{{ icExternal }}</mat-icon>
                                                         </span>
                                                         <span
                                                             class="flex items-center bg-warn px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Drop'">
-                                                            <mat-icon [icIcon]="icDrop" class="align-middle text-white"
-                                                                matTooltip="{{'drop' | translate}}">
-                                                            </mat-icon>
+                                                            <mat-icon class="align-middle text-white"
+                                                                matTooltip="{{'drop' | translate}}">{{ icDrop }}</mat-icon>
                                                         </span>
                                                     </ng-container>
                                                     <ng-template #internal>
                                                         <!-- <span
                                                             class="flex items-center bg-blue px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Add'">
-                                                            <mat-icon [icIcon]="icAdd" class="text-white"
-                                                                matTooltip="{{'new' | translate}}">
-                                                            </mat-icon>
+                                                            <mat-icon class="text-white"
+                                                                matTooltip="{{'new' | translate}}">{{ icAdd }}</mat-icon>
                                                         </span> -->
                                                         <span
                                                             class="flex items-center bg-warn px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Drop'">
-                                                            <mat-icon [icIcon]="icDrop" class="text-white"
-                                                                matTooltip="{{'drop' | translate}}">
-                                                            </mat-icon>
+                                                            <mat-icon class="text-white"
+                                                                matTooltip="{{'drop' | translate}}">{{ icDrop }}</mat-icon>
                                                         </span>
                                                         <span
                                                             class="flex items-center bg-green px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Rolled Over'">
-                                                            <mat-icon [icIcon]="icPromoted" class="text-white"
-                                                                matTooltip="{{'rolledOver' | translate}}">
-                                                            </mat-icon>
+                                                            <mat-icon class="text-white"
+                                                                matTooltip="{{'rolledOver' | translate}}">{{ icPromoted }}</mat-icon>
                                                         </span>
                                                         <span
                                                             class="flex items-center bg-deep-orange px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Drop (Transfer)'">
-                                                            <mat-icon [icIcon]="icTrasnferOut" class="text-white"
-                                                                matTooltip="{{'dropTransfer' | translate}}">
-                                                            </mat-icon>
+                                                            <mat-icon class="text-white"
+                                                                matTooltip="{{'dropTransfer' | translate}}">{{ icTrasnferOut }}</mat-icon>
                                                         </span>
                                                         <span
                                                             class="flex items-center bg-blue px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Enroll (Transfer)'">
-                                                            <mat-icon [icIcon]="icTrasnferIn" class="text-white"
-                                                                matTooltip="{{'enrollTransfer' | translate}}">
-                                                            </mat-icon>
+                                                            <mat-icon class="text-white"
+                                                                matTooltip="{{'enrollTransfer' | translate}}">{{ icTrasnferIn }}</mat-icon>
                                                         </span>
                                                     </ng-template>
                                                 </div>
 
                                                 <div class="flex justify-between items-center w-full flex-wrap">
                                                     <h5 class="px-1 inline-block font-medium">{{enrollment.schoolName}}
-                                                        <mat-icon *ngIf="index==0" [icIcon]="icHomeSchool"
+                                                        <mat-icon *ngIf="index==0"
                                                             class="text-deep-purple align-middle ml-2 text-sm mt-2"
-                                                                matTooltip="{{'homeSchool' | translate}}"></mat-icon>
+                                                                matTooltip="{{'homeSchool' | translate}}">{{ icHomeSchool }}</mat-icon>
                                                     </h5>
                                                     <div
                                                         class="inline-block justify-self-stretch md:text-right font-normal">
@@ -561,8 +549,8 @@
             <div class="text-center mb-4"><a class="text-primary cursor-pointer"
                     (click)="toggleEnrollmentHistory()"><span class="underline">{{'enrollmentHistory' |
                         translate}}</span>
-                    <mat-icon *ngIf="expandEnrollmentHistory" [icIcon]="icCollapse" class="align-middle"></mat-icon>
-                    <mat-icon *ngIf="!expandEnrollmentHistory" [icIcon]="icExpand" class="align-middle"></mat-icon>
+                    <mat-icon *ngIf="expandEnrollmentHistory" class="align-middle">{{ icCollapse }}</mat-icon>
+                    <mat-icon *ngIf="!expandEnrollmentHistory" class="align-middle">{{ icExpand }}</mat-icon>
                 </a></div>
 
 
@@ -584,43 +572,36 @@
                             <td><span
                                     *ngIf="((enrollment.exitType!='Drop (Transfer)' && enrollment.enrollmentType!=null) || enrollment.exitType!='Drop') && (!enrollment.showDrop)">{{enrollment.enrollmentDate
                                     | date}}
-                                    <mat-icon [icIcon]="icExternal" class="text-blue align-middle mx-2"
-                                        *ngIf="enrollment.enrollmentType=='Add' && enrollment.type=='External'">
-                                    </mat-icon>
-                                    <mat-icon [icIcon]="icAdd" class="text-blue align-middle mx-2"
-                                        *ngIf="enrollment.enrollmentType=='Add' && enrollment.type=='Internal'">
-                                    </mat-icon>
-                                    <mat-icon [icIcon]="icDrop" class="text-warn align-middle mx-2"
-                                        *ngIf="enrollment.enrollmentType=='Drop' && enrollment.rollingOption !=='Retain' && enrollment.type=='Internal'">
-                                    </mat-icon>
-                                    <mat-icon [icIcon]="icRetained" class="text-warn align-middle mx-2"
-                                        *ngIf="(enrollment.enrollmentCode==='Dropped Out' || enrollment?.enrollmentCodeName === 'Dropped Out') && enrollment.rollingOption==='Retain' && enrollment.type=='Internal'">
-                                    </mat-icon>
-                                    <mat-icon [icIcon]="icPromoted" class="text-green align-middle mx-2"
-                                        *ngIf="enrollment.enrollmentType=='Rolled Over' && enrollment.type=='Internal'">
-                                    </mat-icon>
-                                    <mat-icon [icIcon]="icTrasnferOut" class="text-deep-orangealign-middle mx-2"
-                                        *ngIf="enrollment.enrollmentType=='Drop (Transfer)' && enrollment.type=='Internal'">
-                                    </mat-icon>
-                                    <mat-icon [icIcon]="icTrasnferIn" class="text-blue align-middle mx-2"
-                                        *ngIf="enrollment.enrollmentType=='Enroll (Transfer)' && enrollment.type=='Internal'">
-                                    </mat-icon>
+                                    <mat-icon class="text-blue align-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Add' && enrollment.type=='External'">{{ icExternal }}</mat-icon>
+                                    <mat-icon class="text-blue align-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Add' && enrollment.type=='Internal'">{{ icAdd }}</mat-icon>
+                                    <mat-icon class="text-warn align-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Drop' && enrollment.rollingOption !=='Retain' && enrollment.type=='Internal'">{{ icDrop }}</mat-icon>
+                                    <mat-icon class="text-warn align-middle mx-2"
+                                        *ngIf="(enrollment.enrollmentCode==='Dropped Out' || enrollment?.enrollmentCodeName === 'Dropped Out') && enrollment.rollingOption==='Retain' && enrollment.type=='Internal'">{{ icRetained }}</mat-icon>
+                                    <mat-icon class="text-green align-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Rolled Over' && enrollment.type=='Internal'">{{ icPromoted }}</mat-icon>
+                                    <mat-icon class="text-deep-orangealign-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Drop (Transfer)' && enrollment.type=='Internal'">{{ icTrasnferOut }}</mat-icon>
+                                    <mat-icon class="text-blue align-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Enroll (Transfer)' && enrollment.type=='Internal'">{{ icTrasnferIn }}</mat-icon>
                                     {{enrollment.type=="External"?'Enrolled as External Student':(enrollment.enrollmentCode=='Rolled Over' || enrollment?.enrollmentCodeName == 'Rolled Over')?'Promoted':(enrollment.enrollmentCode==='Dropped Out' || enrollment?.enrollmentCodeName === 'Dropped Out')?'Retained': enrollment.enrollmentCodeName || enrollment.enrollmentCode}}
                                 </span></td>
                             <td><span>{{enrollment.gradeLevelTitle}}</span></td>
                             <td><span
                                     *ngIf="((enrollment.exitType=='Drop (Transfer)' && enrollment.enrollmentType==null) || (enrollment.exitType=='Drop' && enrollment.enrollmentType!=='Add' && enrollment.enrollmentType!=='Rolled Over' && enrollment.enrollmentType!='Enroll (Transfer)') || enrollment.enrollmentType=='Drop') || (enrollment.enrollmentType=='Drop')">{{enrollment.enrollmentType=='Drop'?'':enrollment.exitDate
                                     | date}}
-                                    <mat-icon [icIcon]="icTrasnferOut" class="text-warn align-middle mx-2"
-                                        *ngIf="enrollment.exitType=='Drop (Transfer)'"></mat-icon>
-                                    <!-- <mat-icon [icIcon]="icPromoted" class="text-blue align-middle mx-2"
-                                        *ngIf="enrollment.exitType=='Rolled Over'"></mat-icon> -->
-                                    <!-- <mat-icon [icIcon]="icDrop" class="text-warn align-middle mx-2"
-                                        *ngIf="enrollment.exitType=='Drop'"></mat-icon> -->
+                                    <mat-icon class="text-warn align-middle mx-2"
+                                        *ngIf="enrollment.exitType=='Drop (Transfer)'">{{ icTrasnferOut }}</mat-icon>
+                                    <!-- <mat-icon class="text-blue align-middle mx-2"
+                                        *ngIf="enrollment.exitType=='Rolled Over'">{{ icPromoted }}</mat-icon> -->
+                                    <!-- <mat-icon class="text-warn align-middle mx-2"
+                                        *ngIf="enrollment.exitType=='Drop'">{{ icDrop }}</mat-icon> -->
                                     <span *ngIf="enrollment.enrollmentType=='Drop' && enrollment.showDrop=== false">
                                         {{enrollment.enrollmentDate|date}}</span>
-                                    <mat-icon [icIcon]="icDrop" class="text-warn align-middle mx-2"
-                                        *ngIf="enrollment.enrollmentType=='Drop' && enrollment.showDrop=== false"></mat-icon>
+                                    <mat-icon class="text-warn align-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Drop' && enrollment.showDrop=== false">{{ icDrop }}</mat-icon>
 
                                     {{enrollment.enrollmentType=='Drop' && enrollment.showDrop=== false?enrollment.enrollmentCode:''}}
                                     {{enrollment.exitType!="Rolled Over" && !enrollment.showDrop &&
@@ -629,18 +610,17 @@
                                 </span>
                                 <span *ngIf="enrollment.exitType==='Drop' && enrollment.rolloverId === null && enrollment.showDrop">
                                     {{enrollment.exitDate|date}}
-                                    <mat-icon [icIcon]="icDrop" class="text-warn align-middle mx-2"
-                                        *ngIf="enrollment.exitType==='Drop' && enrollment.rolloverId === null && enrollment.showDrop"></mat-icon>
+                                    <mat-icon class="text-warn align-middle mx-2"
+                                        *ngIf="enrollment.exitType==='Drop' && enrollment.rolloverId === null && enrollment.showDrop">{{ icDrop }}</mat-icon>
                                     {{ enrollment.exitCode}}</span>
                                     <span *ngIf="enrollment.exitType==='Drop' && enrollment.rolloverId !== null && enrollment.showDrop">
                                         {{enrollment.exitDate|date}}
-                                        <mat-icon [icIcon]="icDrop" class="text-warn align-middle mx-2"
-                                            *ngIf="enrollment.exitType==='Drop' && enrollment.rolloverId !== null && enrollment.showDrop"></mat-icon>
+                                        <mat-icon class="text-warn align-middle mx-2"
+                                            *ngIf="enrollment.exitType==='Drop' && enrollment.rolloverId !== null && enrollment.showDrop">{{ icDrop }}</mat-icon>
                                         Not enrolled
                                         </span>
                                         <span *ngIf="enrollment.showDrop && enrollment?.exitReason">
-                                            <mat-icon [icIcon]="icInfo" class="text-black align-middle mx-2" matTooltip="{{enrollment?.exitReason}}" [matTooltipPosition]="'above'">
-                                            </mat-icon>
+                                            <mat-icon class="text-black align-middle mx-2" matTooltip="{{enrollment?.exitReason}}" [matTooltipPosition]="'above'">{{ icInfo }}</mat-icon>
                                         </span>
                             </td>
                             <td>{{enrollment.schoolName}}</td>

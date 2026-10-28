@@ -24,14 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
-import icSchool from '@iconify/icons-ic/twotone-account-balance';
-import icStudents from '@iconify/icons-ic/twotone-school';
-import icUsers from '@iconify/icons-ic/twotone-people';
-import icSchedule from '@iconify/icons-ic/twotone-date-range';
-import icGrade from '@iconify/icons-ic/twotone-leaderboard';
-import icAdministration from '@iconify/icons-ic/twotone-admin-panel-settings';
-import icAttendance from '@iconify/icons-ic/twotone-access-alarm';
-import icListOfValues from '@iconify/icons-ic/twotone-list-alt';
 import { TranslateService } from '@ngx-translate/core';
 import { NavigationService } from '@vex/services/navigation.service';
 import { CryptoService } from 'src/app/services/Crypto.service';
@@ -48,14 +40,14 @@ import { PageRolesPermission } from '../../common/page-roles-permissions.service
 })
 export class SettingsComponent implements OnInit {
 
-  icSchool = icSchool;
-  icStudents = icStudents;
-  icUsers = icUsers;
-  icSchedule = icSchedule;
-  icGrade = icGrade;
-  icAdministration=icAdministration;
-  icAttendance = icAttendance;
-  icListOfValues = icListOfValues;
+  icSchool = 'account_balance';
+  icStudents = 'school';
+  icUsers = 'people';
+  icSchedule = 'date_range';
+  icGrade = 'leaderboard';
+  icAdministration = 'admin_panel_settings';
+  icAttendance = 'access_alarm';
+  icListOfValues = 'list_alt';
 
   settingSubmenu: PermissionCategory[]=[];
   constructor(public translateService: TranslateService,
@@ -92,25 +84,25 @@ export class SettingsComponent implements OnInit {
   pickIcon(categoryName) {
     switch (categoryName) {
       case 'School':{
-        return icSchool;
+        return 'account_balance';
       }
       case 'Student':{
-        return icStudents;
+        return 'school';
       }
       case 'Staff':{
-        return icUsers;
+        return 'people';
       }
       case 'Attendance':{
-        return icAttendance;
+        return 'access_alarm';
       }
       case 'Administration':{
-        return icAdministration;
+        return 'admin_panel_settings';
       }
       case 'Grades':{
-        return icGrade;
+        return 'leaderboard';
       }
       case 'List of Values':{
-        return icListOfValues;
+        return 'list_alt';
       }
     }
   }

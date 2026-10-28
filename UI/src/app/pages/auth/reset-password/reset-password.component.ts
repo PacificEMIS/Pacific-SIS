@@ -2,8 +2,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icVisibility from '@iconify/icons-ic/twotone-visibility';
-import icVisibilityOff from '@iconify/icons-ic/twotone-visibility-off';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { ResetPasswordByTokenModel } from '../../../models/user.model';
 import { LoginService } from '../../../services/login.service';
@@ -32,8 +30,8 @@ export class ResetPasswordComponent implements OnInit {
   inputTypeConfirm = 'password';
   visibleNew = false;
   visibleConfirm = false;
-  icVisibility = icVisibility;
-  icVisibilityOff = icVisibilityOff;
+  icVisibility = 'visibility';
+  icVisibilityOff = 'visibility_off';
   tenantPhoto: string;
   tenantName: string;
   tenantFooter: string;

@@ -1,9 +1,9 @@
 <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
     <h2 class="headline m-0" fxFlex="auto" *ngIf="addStandard; else addNewCourseTitle">
-        <a routerLink="" (click)="closeStandardsSelection()" class="text-primary cursor-pointer"><mat-icon [icIcon]="icBack" matTooltip="{{'backToPrevious' | translate}}" class="mr-3 align-middle"></mat-icon></a>{{'addStandardTo'|translate}} <span class="text-green font-bold">{{addCourseModel.course.courseTitle}}</span></h2>
+        <a routerLink="" (click)="closeStandardsSelection()" class="text-primary cursor-pointer"><mat-icon matTooltip="{{'backToPrevious' | translate}}" class="mr-3 align-middle">{{ icBack }}</mat-icon></a>{{'addStandardTo'|translate}} <span class="text-green font-bold">{{addCourseModel.course.courseTitle}}</span></h2>
     <ng-template #addNewCourseTitle><h2 [ngClass]="addStandard?'hidden':''" class="headline m-0" fxFlex="auto">{{courseModalTitle | translate}}</h2></ng-template>
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-            <mat-icon [icIcon]="icClose"></mat-icon>
+            <mat-icon>{{ icClose }}</mat-icon>
         </button>
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
@@ -106,11 +106,11 @@
                 <td mat-cell *matCellDef="let element">
                     <a class="cursor-pointer text-gray" *ngIf="currentStandardDetailsIndex===element.gradeStandardId"
                         (click)="showStandardDetails(-1)">
-                        <mat-icon [icIcon]="icCollapse"></mat-icon>
+                        <mat-icon>{{ icCollapse }}</mat-icon>
                     </a>
                     <a class="cursor-pointer text-gray" *ngIf="currentStandardDetailsIndex!==element.gradeStandardId"
                         (click)="showStandardDetails(element.gradeStandardId)">
-                        <mat-icon [icIcon]="icExpand"></mat-icon>
+                        <mat-icon>{{ icExpand }}</mat-icon>
                     </a>
     
                    
@@ -225,7 +225,7 @@
                     <input [(ngModel)]="addCourseModel.course.courseProgram" name="courseProgram" id="courseProgram" matInput>                                
                 </mat-form-field>                    
               
-                <a class="cursor-pointer text-blue" *ngIf="addNewProgramFlag === false && this.defaultValuesService.checkAcademicYear()" (click)="saveProgram()"><mat-icon [icIcon]="icAdd" class="mr-1 align-middle"></mat-icon>{{'addNewProgram' | translate}}</a>
+                <a class="cursor-pointer text-blue" *ngIf="addNewProgramFlag === false && this.defaultValuesService.checkAcademicYear()" (click)="saveProgram()"><mat-icon class="mr-1 align-middle">{{ icAdd }}</mat-icon>{{'addNewProgram' | translate}}</a>
             </li>
             <li class="mb-3">
                 <mat-form-field id="subject" class="w-full mb-1" appearance="outline" color="primary">
@@ -245,7 +245,7 @@
                     </mat-form-field>                 
                
                 
-                <a class="cursor-pointer text-blue" *ngIf="addNewSubjectFlag === false && this.defaultValuesService.checkAcademicYear()" (click)="saveSubject()"><mat-icon [icIcon]="icAdd" class="mr-1 align-middle"></mat-icon>{{'addNewSubject' | translate}}</a>
+                <a class="cursor-pointer text-blue" *ngIf="addNewSubjectFlag === false && this.defaultValuesService.checkAcademicYear()" (click)="saveSubject()"><mat-icon class="mr-1 align-middle">{{ icAdd }}</mat-icon>{{'addNewSubject' | translate}}</a>
             </li>
             <li>
                 <mat-form-field class="w-full" appearance="outline" color="primary">
@@ -269,7 +269,7 @@
                 <div class="border rounded border-normal mb-4">
                     <div class="flex justify-between items-center px-3 py-2">
                         <div class="text-gray">{{'standards' | translate}}</div>
-                        <a class="cursor-pointer text-blue" (click)="selectStandards()"><mat-icon [icIcon]="icList"></mat-icon></a>
+                        <a class="cursor-pointer text-blue" (click)="selectStandards()"><mat-icon>{{ icList }}</mat-icon></a>
                     </div>
                     <ul class="w-full" *ngFor = "let checkedStandard of nonDuplicateCheckedStandardList">
                         <li>
@@ -277,8 +277,8 @@
                             <div class="flex justify-between items-center pl-3">
                                 <div title="show the standard description">{{checkedStandard.standardRefNo}} - {{checkedStandard.topic}}</div>
                                 <div>
-                                    <span [matTooltip]="checkedStandard.standardDetails" class="inline-block opacity-75 p-2"><mat-icon [icIcon]="icInfo"></mat-icon></span>
-                                    <a class="cursor-pointer opacity-75 py-2 px-3 inline-block" *ngIf="this.defaultValuesService.checkAcademicYear()" (click) = "removeStandard(checkedStandard)"><mat-icon [icIcon]="icRemove"></mat-icon></a>
+                                    <span [matTooltip]="checkedStandard.standardDetails" class="inline-block opacity-75 p-2"><mat-icon>{{ icInfo }}</mat-icon></span>
+                                    <a class="cursor-pointer opacity-75 py-2 px-3 inline-block" *ngIf="this.defaultValuesService.checkAcademicYear()" (click) = "removeStandard(checkedStandard)"><mat-icon>{{ icRemove }}</mat-icon></a>
                                 </div>
                             </div>
                         </li>                   

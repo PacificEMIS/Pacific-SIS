@@ -26,7 +26,6 @@ All rights reserved.
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddCourseSectionComponent } from './add-course-section/add-course-section.component';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
@@ -62,7 +61,7 @@ import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
   ]
 })
 export class GroupDropComponent implements OnInit, OnDestroy {
-  icClose = icClose;
+  icClose = 'close';
   selectDropDate: string;
   courseSectionData;
   startDate = new Date();

@@ -25,7 +25,6 @@ All rights reserved.
 
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icPrint from '@iconify/icons-ic/twotone-print';
 import { ReportService } from 'src/app/services/report.service';
 import { CommonService } from 'src/app/services/common.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -50,7 +49,7 @@ import { MarkingPeriodListModel } from 'src/app/models/marking-period.model';
   styleUrls: ['./add-drop-report.component.scss']
 })
 export class AddDropReportComponent implements OnInit, AfterViewInit, OnDestroy {
-  icPrint = icPrint;
+  icPrint = 'print';
   displayedColumns: string[] = ['studentCheck', 'studentName', 'studentId', 'course', 'courseSectionTeacher', 'enrolledDate', 'dropDate'];
   getScheduledAddDropReportModel: GetScheduledAddDropReportModel = new GetScheduledAddDropReportModel();
   addDropScheduleList: MatTableDataSource<any>;

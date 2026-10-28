@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icEdiit from '@iconify/icons-ic/twotone-edit';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { AddGradebookGradeByStudentModel, ViewGradebookGradeByStudentModel } from 'src/app/models/gradebook-grades.model';
 import { CommonService } from 'src/app/services/common.service';
@@ -12,7 +11,7 @@ import { GradeBookConfigurationService } from 'src/app/services/gradebook-config
   styleUrls: ['./gradebook-grade-details.component.scss']
 })
 export class GradebookGradeDetailsComponent implements OnInit {
-  icEdiit = icEdiit;
+  icEdiit = 'edit';
   @Input() studentId;
   @Input() isWeightedSection;
   @Input() maxAnomalousGrade;

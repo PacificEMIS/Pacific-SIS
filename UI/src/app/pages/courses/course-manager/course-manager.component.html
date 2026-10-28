@@ -21,7 +21,7 @@
                         </mat-form-field>
                     <a (click)="openModalManageSubjects()"
                         class="inline-block align-top cursor-pointer text-blue py-3 px-2">
-                        <mat-icon [icIcon]="icSettings"></mat-icon>
+                        <mat-icon>{{ icSettings }}</mat-icon>
                     </a>
                 </div>
         
@@ -35,7 +35,7 @@
                         </mat-form-field>
                     <a (click)="openModalManagePrograms()"
                         class="inline-block align-top cursor-pointer text-blue py-3 px-2">
-                        <mat-icon [icIcon]="icSettings"></mat-icon>
+                        <mat-icon>{{ icSettings }}</mat-icon>
                     </a>
                 </div>
         
@@ -66,12 +66,12 @@
                             <div class="flex items-center">
                                 <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" mat-stroked-button color="primary" class="mr-2"
                                     (click)="openModalCloneCourseSections()" matTooltip="{{'cloneFromPreviousYearInfo'|translate}}">
-                                    <mat-icon [icIcon]="icContentCopy" class="md:mr-2"></mat-icon><span
+                                    <mat-icon class="md:mr-2">{{ icContentCopy }}</mat-icon><span
                                         class="hidden md:inline-block">{{'cloneFromPreviousYear'|translate}}</span>
                                 </button>
                                 <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" mat-raised-button color="primary"
                                     (click)="openModalEditCourse()">
-                                    <mat-icon [icIcon]="icAdd" class="md:mr-2"></mat-icon><span
+                                    <mat-icon class="md:mr-2">{{ icAdd }}</mat-icon><span
                                         class="hidden md:inline-block">{{'addNewCourse'|translate}}</span>
                                 </button>
                             </div>
@@ -98,7 +98,7 @@
                                             (0)</span>
                                         <a [matMenuTriggerFor]="addNewMenu"
                                             class="cursor-pointer inline-block ml-3 pt-1 align-middle">
-                                            <mat-icon [icIcon]="icMoreVertical" class="mr-2"></mat-icon>
+                                            <mat-icon class="mr-2">{{ icMoreVertical }}</mat-icon>
                                         </a>
                                     </div>
                                 </div>
@@ -133,7 +133,7 @@
                                             ({{course.courseSectionCount}})</span>
                                         <a [matMenuTriggerFor]="addNewMenu" *ngIf="permissions?.edit"
                                             class="cursor-pointer inline-block ml-3 pt-1 align-middle">
-                                            <mat-icon [icIcon]="icMoreVertical" class="mr-2"></mat-icon>
+                                            <mat-icon class="mr-2">{{ icMoreVertical }}</mat-icon>
                                         </a>
                                     </div>
                                 </div>
@@ -159,11 +159,11 @@
                             <a [matMenuTriggerFor]="addNewMenu"
                                 *ngIf="permissions?.edit"
                                 class="cursor-pointer inline-block ml-2 px-1 pt-1 align-middle">
-                                <mat-icon [icIcon]="icMoreVertical" class="mr-2"></mat-icon>
+                                <mat-icon class="mr-2">{{ icMoreVertical }}</mat-icon>
                             </a>
                             <button class="text-secondary mr-4 lg:hidden" (click)="closeCourseDetails()" mat-icon-button
                                 type="button">
-                                <mat-icon [icIcon]="icClose"></mat-icon>
+                                <mat-icon>{{ icClose }}</mat-icon>
                             </button>
                         </div>
                     </div>
@@ -215,7 +215,7 @@
                                     </div>
                                     <div>
                                         <span class="inline-block opacity-75 p-2 text-gray">
-                                            <mat-icon [icIcon]="icInfo" [matTooltip]="std?.gradeUsStandard?.standardDetails"></mat-icon>
+                                            <mat-icon [matTooltip]="std?.gradeUsStandard?.standardDetails">{{ icInfo }}</mat-icon>
                                         </span>
                                     </div>
                                 </div>

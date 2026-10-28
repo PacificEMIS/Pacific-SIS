@@ -5,7 +5,6 @@ import {
   OnInit,
   TemplateRef,
 } from "@angular/core";
-import icShoppingBasket from "@iconify/icons-ic/twotone-shopping-basket";
 import { CommonService } from "../../../services/common.service";
 import { ReleaseNumberAddViewModel } from "../../../models/release-number-model";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -22,7 +21,7 @@ import { DefaultValuesService } from '../../../common/default-values.service';
 export class FooterComponent implements OnInit, OnDestroy {
   @Input() customTemplate: TemplateRef<any>;
   destroySubject$: Subject<void> = new Subject();
-  icShoppingBasket = icShoppingBasket;
+  icShoppingBasket = 'shopping_basket';
   releaseNumberAddViewModel: ReleaseNumberAddViewModel = new ReleaseNumberAddViewModel();
   tenantFooter: any;
   

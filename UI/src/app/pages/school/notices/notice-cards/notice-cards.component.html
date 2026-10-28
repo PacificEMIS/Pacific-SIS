@@ -5,7 +5,7 @@
         </div>
 
         <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" [matMenuTriggerFor]="addNewMenu" class="w-10 pt-3" type="button">
-            <mat-icon [icIcon]="icMoreVert" size="20px"></mat-icon>
+            <mat-icon style="font-size: 20px">{{ icMoreVert }}</mat-icon>
         </button>
 
         <mat-menu #addNewMenu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
@@ -21,10 +21,10 @@
 
     <div class="px-gutter border-t border-b py-3">
         <p class="text-secondary font-medium text-xs flex align-center">
-            <mat-icon [icIcon]="icPreview" class="mr-3"></mat-icon><span>{{'visibleFrom' | translate}} {{ visibleFrom }}</span>
+            <mat-icon class="mr-3">{{ icPreview }}</mat-icon><span>{{'visibleFrom' | translate}} {{ visibleFrom }}</span>
         </p>
         <p *ngIf="showMember" class="text-secondary font-medium text-xs flex align-center mt-2">
-            <mat-icon [icIcon]="icPeople" class="mr-3"></mat-icon><span>{{'visibleTo' | translate}} {{ visibleTo }}</span>
+            <mat-icon class="mr-3">{{ icPeople }}</mat-icon><span>{{'visibleTo' | translate}} {{ visibleTo }}</span>
         </p>
     </div>
 

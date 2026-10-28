@@ -93,7 +93,7 @@
                     <!-- <span
                         class="truncate w-60 inline-block text-blue mr-4">https://us04web.zoom.us/j/783452aj567890543</span> -->
                     <span class="cursor-pointer">
-                        <mat-icon [icIcon]="icEdit"></mat-icon>
+                        <mat-icon>{{ icEdit }}</mat-icon>
                     </span>
                 </p>
             </div>
@@ -275,7 +275,7 @@
         </ul>
         <div class="mb-4" *ngIf="singleCourseSection?.courseFixedSchedule?.attendanceTaken">
             <span class="mr-2 bg-black rounded inline-block text-white w-6 h-6 p-1 align-middle">
-                <mat-icon [icIcon]="icHowtoReg" class="text-base align-middle"></mat-icon>
+                <mat-icon class="text-base align-middle">{{ icHowtoReg }}</mat-icon>
             </span>{{ 'attendanceEnabled' | translate }}
         </div>
     </div>

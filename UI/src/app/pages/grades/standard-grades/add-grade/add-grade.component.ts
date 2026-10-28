@@ -26,7 +26,6 @@ All rights reserved.
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GradeAddViewModel } from 'src/app/models/grades.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -48,7 +47,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class AddGradeComponent implements OnInit {
 
-  icClose = icClose;
+  icClose = 'close';
   gradeAddViewModel: GradeAddViewModel = new GradeAddViewModel();
   form: FormGroup;
   gradeTitle: string;

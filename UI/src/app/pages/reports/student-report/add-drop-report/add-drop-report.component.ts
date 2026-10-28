@@ -25,7 +25,6 @@ All rights reserved.
 
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icPrint from '@iconify/icons-ic/twotone-print';
 import { ReportService } from 'src/app/services/report.service';
 import { GetStudentAddDropReportModel, filterParams } from 'src/app/models/report.model';
 import { CommonService } from 'src/app/services/common.service';
@@ -52,7 +51,7 @@ import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 })
 
 export class AddDropReportComponent implements OnInit, OnDestroy, AfterViewInit {
-  icPrint = icPrint;
+  icPrint = 'print';
   displayedColumns: string[] = ['studentName', 'studentId', 'school', 'enrolledDate', 'enrollmentCode', 'droppedDate', 'dropCode'];
   destroySubject$: Subject<void> = new Subject();
   loading: boolean;

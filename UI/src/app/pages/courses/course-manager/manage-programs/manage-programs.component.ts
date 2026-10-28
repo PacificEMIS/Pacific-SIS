@@ -25,10 +25,6 @@ All rights reserved.
 
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import icClose from '@iconify/icons-ic/twotone-close';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icAdd from '@iconify/icons-ic/twotone-add';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import {GetAllProgramModel,AddProgramModel,UpdateProgramModel,MassUpdateProgramModel,DeleteProgramModel,ProgramsModel} from '../../../../models/course-manager.model';
@@ -54,10 +50,10 @@ import { CommonService } from 'src/app/services/common.service';
 })
 export class ManageProgramsComponent implements OnInit {
 
-  icClose = icClose;
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icAdd = icAdd;
+  icClose = 'close';
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icAdd = 'add';
   programList=[];
   form: FormGroup;
   f: NgForm;

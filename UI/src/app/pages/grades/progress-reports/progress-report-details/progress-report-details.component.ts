@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icPrint from '@iconify/icons-ic/twotone-print';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { GetStudentProgressReportModel } from 'src/app/models/report.model';
@@ -19,7 +18,7 @@ import { SharedFunction } from 'src/app/pages/shared/shared-function';
   styleUrls: ['./progress-report-details.component.scss']
 })
 export class ProgressReportDetailsComponent implements OnInit {
-  icPrint = icPrint;
+  icPrint = 'print';
   toggleMenu = {
     assignedDate: false,
     excludeUngradedEcAssignments: true,

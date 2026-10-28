@@ -25,12 +25,7 @@ All rights reserved.
 
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icAdd from '@iconify/icons-ic/baseline-add';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import icSearch from '@iconify/icons-ic/search';
-import icFilterList from '@iconify/icons-ic/filter-list';
 import { MatDialog } from '@angular/material/dialog';
 import { AddGradeComponent } from './add-grade/add-grade.component';
 import { ValidationService } from '../../shared/validation.service';
@@ -73,15 +68,15 @@ export class StandardGradesComponent implements OnInit, OnDestroy {
     { label: 'action', property: 'action', type: 'text', visible: true }
   ];
 
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icAdd = icAdd;
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icAdd = 'add';
   effortCategoryTitle: string;
   addCategory = false;
   form: FormGroup;
   buttonType: string;
-  icSearch = icSearch;
-  icFilterList = icFilterList;
+  icSearch = 'search';
+  icFilterList = 'filter_list';
   gradeScaleAddViewModel: GradeScaleAddViewModel = new GradeScaleAddViewModel();
   gradeScaleListView: GradeScaleListView = new GradeScaleListView();
   gradeScaleList = [];

@@ -24,12 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icSearch from '@iconify/icons-ic/search';
-import icFilterList from '@iconify/icons-ic/filter-list';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -79,12 +73,12 @@ export class AttendanceCodesComponent implements OnInit {
     { label: 'action', property: 'action', type: 'text', visible: true }
   ];
 
-  icMoreVert = icMoreVert;
-  icAdd = icAdd;
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icSearch = icSearch;
-  icFilterList = icFilterList;
+  icMoreVert = 'more_vert';
+  icAdd = 'add';
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icSearch = 'search';
+  icFilterList = 'filter_list';
   loading: boolean;
   editMode = false;
   attendanceCategoryModel: AttendanceCodeCategoryModel = new AttendanceCodeCategoryModel();

@@ -30,7 +30,6 @@ import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import icSearch from '@iconify/icons-ic/search';
 import { TranslateService } from "@ngx-translate/core";
 import { debounceTime, distinctUntilChanged, timeout } from "rxjs/operators";
 import { DefaultValuesService } from "../../../common/default-values.service";
@@ -70,7 +69,7 @@ export class AdministrationComponent implements OnInit {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   parentData;
-  icSearch = icSearch;
+  icSearch = 'search';
   displayedColumns: string[] = ['studentName', 'studentId', 'grade', 'section', 'status', 'comment'];
   getAllStudent: StudentAttendanceListViewModel = new StudentAttendanceListViewModel();
   advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();

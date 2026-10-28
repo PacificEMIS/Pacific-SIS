@@ -7,10 +7,10 @@
                 {{calendarEventAddViewModel.schoolCalendarEvent.endDate | date:'longDate'}}</small>
         </h3>
         <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" [matMenuTriggerFor]="addNewMenu" class="w-10 pt-3" type="button">
-            <mat-icon [icIcon]="icMoreVertical" size="20px"></mat-icon>
+            <mat-icon style="font-size: 20px">{{ icMoreVertical }}</mat-icon>
         </button>
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-            <mat-icon [icIcon]="icClose"></mat-icon>
+            <mat-icon>{{ icClose }}</mat-icon>
         </button>
     </div>
 
@@ -45,7 +45,7 @@
         <h2 class="headline m-0" fxFlex="auto">{{calendarEventTitle | translate}}</h2>
 
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-            <mat-icon [icIcon]="icClose"></mat-icon>
+            <mat-icon>{{ icClose }}</mat-icon>
         </button>
     </div>
     <mat-divider class="-mx-6 text-border"></mat-divider>
@@ -110,7 +110,7 @@
                                     [value]="color.value">
                                 <span [style.backgroundColor]="color.value"></span>
                                 <span [style.backgroundColor]="color.value" class="text-white">
-                                    <mat-icon [icIcon]="icDone"></mat-icon>
+                                    <mat-icon>{{ icDone }}</mat-icon>
                                 </span>
                             </label>
                         </div>
@@ -222,7 +222,7 @@
         <h2 class="headline m-0" fxFlex="auto">{{calendarEventTitle | translate}}</h2>
 
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-            <mat-icon [icIcon]="icClose"></mat-icon>
+            <mat-icon>{{ icClose }}</mat-icon>
         </button>
     </div>
     <mat-divider class="-mx-6 text-border"></mat-divider>
@@ -335,7 +335,7 @@
                                 [value]="color.value">
                             <span [style.backgroundColor]="color.value"></span>
                             <span [style.backgroundColor]="color.value" class="text-white">
-                                <mat-icon [icIcon]="icDone"></mat-icon>
+                                <mat-icon>{{ icDone }}</mat-icon>
                             </span>
                         </label>
                     </div>

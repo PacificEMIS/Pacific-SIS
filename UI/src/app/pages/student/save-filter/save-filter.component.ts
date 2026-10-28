@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -45,7 +44,7 @@ import { DefaultValuesService } from '../../../common/default-values.service';
   ]
 })
 export class SaveFilterComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   form: FormGroup;
   searchFilterAddViewModel: SearchFilterAddViewModel = new SearchFilterAddViewModel();
 

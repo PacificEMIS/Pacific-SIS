@@ -49,7 +49,7 @@
                             <td>{{element.courseGradeLevel}}</td>
                             <td>{{element.periodTitle}}</td>
                             <td class="cursor-pointer text-primary">
-                                <a [routerLink]="['/school', 'attendance', 'teacher-missing-attendance', 'take-attendance']" (click)="onSent(element)"><mat-icon class="mr-1 align-middle" [icIcon]="icHowToReg"></mat-icon><span>{{ 'takeAttendance' | translate }}</span></a>
+                                <a [routerLink]="['/school', 'attendance', 'teacher-missing-attendance', 'take-attendance']" (click)="onSent(element)"><mat-icon class="mr-1 align-middle">{{ icHowToReg }}</mat-icon><span>{{ 'takeAttendance' | translate }}</span></a>
                             </td>
                         </tr>
                     </tbody>

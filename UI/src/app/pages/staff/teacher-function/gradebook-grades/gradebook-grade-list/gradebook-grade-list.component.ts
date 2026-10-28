@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
-import icSearch from "@iconify/icons-ic/search";
-import icRemoveCircle from '@iconify/icons-ic/twotone-remove-circle';
 import { MatDialog } from "@angular/material/dialog";
 import { AddGradeCommentsComponent } from '../add-grade-comments/add-grade-comments.component';
 import { GetMarkingPeriodTitleListModel } from 'src/app/models/marking-period.model';
@@ -31,8 +29,8 @@ import { GradebookConfigurationAddViewModel } from '../../../../../models/gradeb
   providers: [DatePipe]
 })
 export class GradebookGradeListComponent implements OnInit {
-  icSearch = icSearch;
-  icRemoveCircle = icRemoveCircle;
+  icSearch = 'search';
+  icRemoveCircle = 'remove_circle';
   currentComponent: string;
   gradebookGradeList = true;
   categoryDetails = false;

@@ -10,7 +10,7 @@
             <ng-container *ngFor="let submenu of settingSubmenu;let index=index">
                 <div class="px-4 py-6 border-b">
                     <div class="flex">
-                        <mat-icon [icIcon]="submenu.icon" size="24px" class="mr-4"></mat-icon>
+                        <mat-icon class="mr-4">{{ submenu.icon }}</mat-icon>
                         <h4 class="font-medium">
                             <a  (click)="setParentId(index)"
                                 [routerLink]="submenu.path">{{submenu.title | translate}}</a>

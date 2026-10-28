@@ -6,7 +6,6 @@ import { ScheduledCourseSectionViewModel } from 'src/app/models/dashboard.model'
 import { CommonService } from 'src/app/services/common.service';
 import { DasboardService } from 'src/app/services/dasboard.service';
 import { LoaderService } from 'src/app/services/loader.service';
-import icHowToReg from '@iconify/icons-ic/outline-how-to-reg';
 @Component({
   selector: 'vex-my-classes',
   templateUrl: './my-classes.component.html',
@@ -15,7 +14,7 @@ import icHowToReg from '@iconify/icons-ic/outline-how-to-reg';
 export class MyClassesComponent implements OnInit {
   loading: boolean;
   periodTitle: string;
-  icHowToReg = icHowToReg;
+  icHowToReg = 'how_to_reg';
   periodStartTime: string;
   takeAttendance: boolean;
   roomTitle: string;

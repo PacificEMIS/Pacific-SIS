@@ -2,8 +2,6 @@ import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, View
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import icMoreHoriz from '@iconify/icons-ic/twotone-more-horiz';
-import icCloudDownload from '@iconify/icons-ic/twotone-cloud-download';
 import { TableColumn } from '../../../interfaces/table-column.interface';
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 import { Router } from '@angular/router';
@@ -27,8 +25,8 @@ export class WidgetTableComponent<T> implements OnInit, OnChanges, AfterViewInit
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  icMoreHoriz = icMoreHoriz;
-  icCloudDownload = icCloudDownload;
+  icMoreHoriz = 'more_horiz';
+  icCloudDownload = 'cloud_download';
 
   constructor(
     private pageRolePermission: PageRolesPermission,

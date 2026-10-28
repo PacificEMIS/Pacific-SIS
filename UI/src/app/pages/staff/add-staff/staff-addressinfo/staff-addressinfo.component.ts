@@ -32,7 +32,6 @@ import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { CountryModel } from '../../../../models/country.model';
 import { StaffAddModel } from '../../../../models/staff.model';
 import { LanguageModel } from '../../../../models/language.model';
-import icEdit from '@iconify/icons-ic/edit';
 import { TranslateService } from '@ngx-translate/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StaffService } from '../../../../services/staff.service';
@@ -81,7 +80,7 @@ export class StaffAddressinfoComponent implements OnInit, AfterViewInit, OnDestr
   data;
   languageList;
   checkBoxChecked = false;
-  icEdit = icEdit;
+  icEdit = 'edit';
   actionButton = 'submit';
   cloneStaffAddModel;
   destroySubject$: Subject<void> = new Subject();

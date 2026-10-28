@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AddEditStudentMedicalImmunizationModel } from 'src/app/models/student.model';
 import { StudentService } from '../../../../../services/student.service';
@@ -42,7 +41,7 @@ import { DefaultValuesService } from '../../../../../common/default-values.servi
 })
 export class AddImmunizationComponent implements OnInit {
 
-  icClose = icClose;
+  icClose = 'close';
   form: FormGroup;
   editMode;
   immunizationTitle;

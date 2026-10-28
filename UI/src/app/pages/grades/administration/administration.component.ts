@@ -8,7 +8,6 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms, stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
-import icSearch from '@iconify/icons-ic/search';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { SearchFilter } from 'src/app/models/search-filter.model';
@@ -42,7 +41,7 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
   getAllStudent: StudentListModel = new StudentListModel();
   @ViewChild('reportPaginator', { static: false }) reportPaginator: MatPaginator;
   @ViewChild('histPaginator', { static: false }) histPaginator: MatPaginator;
-  icSearch = icSearch;
+  icSearch = 'search';
   StudentModelList: MatTableDataSource<any>;
   destroySubject$: Subject<void> = new Subject();
  

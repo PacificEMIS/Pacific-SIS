@@ -1,6 +1,6 @@
 <div class="toolbar w-full px-gutter" fxLayout="row" fxLayoutAlign="start center" vexContainer>
   <button (click)="openSidenav()" [fxHide]="!mobileQuery" mat-icon-button type="button">
-    <mat-icon [icIcon]="icMenu"></mat-icon>
+    <mat-icon>{{ icMenu }}</mat-icon>
   </button>
 
   <a [routerLink]="['/school/dashboards']"
@@ -25,7 +25,7 @@
       <button *ngIf="isHorizontalLayout$ | async"
               (click)="openMegaMenu(megaMenuOriginRef)"
               class="global-add-button"
-              type="button"><ic-icon [icon]="icAdd" class="ic-inline" inline="true"></ic-icon><span class="hidden lg:inline-block ml-2">{{'addNew'|translate}}</span>
+              type="button"><mat-icon class="ic-inline" inline>{{ icAdd }}</mat-icon><span class="hidden lg:inline-block ml-2">{{'addNew'|translate}}</span>
       </button>
     </div>
 

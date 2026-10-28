@@ -27,9 +27,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icVisibility from '@iconify/icons-ic/twotone-visibility';
-import icVisibilityOff from '@iconify/icons-ic/twotone-visibility-off';
-import icLanguage from '@iconify/icons-ic/twotone-language';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { UserViewModel } from '../../../models/user.model';
 import { LoginService } from '../../../services/login.service';
@@ -65,9 +62,9 @@ export class LoginComponent implements OnInit {
   time: Observable<Date> = timer(0, 1000).pipe(map(() => new Date()));
   inputType = 'password';
   visible = false;
-  icVisibility = icVisibility;
-  icVisibilityOff = icVisibilityOff;
-  icLanguage = icLanguage;
+  icVisibility = 'visibility';
+  icVisibilityOff = 'visibility_off';
+  icLanguage = 'language';
   public tenant = "";
   UserModel: UserViewModel = new UserViewModel();
   loading: boolean;

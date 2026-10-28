@@ -56,8 +56,8 @@
                         100% </p>
                 </div>
                 <div *ngIf="defaultValueService.checkAcademicYear()">
-                    <mat-icon (click)="addEditAssignmentType(selectedAssignmentType)" [icIcon]="icEdit" class="mr-3 cursor-pointer"></mat-icon>
-                    <mat-icon (click)="confirmAssignmentTypeDelete(selectedAssignmentType)" [icIcon]="icDeleteForever" class="cursor-pointer"></mat-icon>
+                    <mat-icon (click)="addEditAssignmentType(selectedAssignmentType)" class="mr-3 cursor-pointer">{{ icEdit }}</mat-icon>
+                    <mat-icon (click)="confirmAssignmentTypeDelete(selectedAssignmentType)" class="cursor-pointer">{{ icDeleteForever }}</mat-icon>
                 </div>
             </div>
             <mat-divider class="-mx-4 my-4"></mat-divider>
@@ -86,13 +86,12 @@
                                 <td>{{assignment.assignmentDate | date:'mediumDate'}}</td>
                                 <td>{{assignment.dueDate | date:'mediumDate'}}</td>
                                 <td *ngIf="defaultValueService.checkAcademicYear()">
-                                    <mat-icon [icIcon]="icEdit" matTooltip="{{ 'edit' | translate }}"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'" class="mr-2 cursor-pointer" (click)="addEditAssignment(assignment)"></mat-icon>
-                                    <mat-icon [icIcon]="icDelete" matTooltip="{{ 'delete' | translate }}"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'" (click)="confirmDeleteAssignment(assignment)" class="cursor-pointer mr-2">
-                                    </mat-icon>
-                                    <mat-icon [icIcon]="icFileCopy" matTooltip="{{ 'copyAssignmentToOtherSectionsOfThisCourse' | translate }}"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'" (click)="copyAssignment(assignment)" class="cursor-pointer"></mat-icon>
+                                    <mat-icon matTooltip="{{ 'edit' | translate }}"
+                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'" class="mr-2 cursor-pointer" (click)="addEditAssignment(assignment)">{{ icEdit }}</mat-icon>
+                                    <mat-icon matTooltip="{{ 'delete' | translate }}"
+                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'" (click)="confirmDeleteAssignment(assignment)" class="cursor-pointer mr-2">{{ icDelete }}</mat-icon>
+                                    <mat-icon matTooltip="{{ 'copyAssignmentToOtherSectionsOfThisCourse' | translate }}"
+                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'" (click)="copyAssignment(assignment)" class="cursor-pointer">{{ icFileCopy }}</mat-icon>
                                 </td>
                             </tr>
                         </ng-container>

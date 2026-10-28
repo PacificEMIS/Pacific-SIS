@@ -21,17 +21,17 @@
                     (click)="changeCategory(field,index)"
                     class="list-item mt-2 no-underline flex items-center rounded-none" matRipple
                     [ngClass]="currentCategory==field.categoryId?'text-primary active' : ''">
-                    <mat-icon *ngIf="field.categoryId==12" [icIcon]="icGeneralInfo" class="mr-3"></mat-icon>
-                    <mat-icon *ngIf="field.categoryId==13" [icIcon]="icSchoolInfo" class="mr-3"></mat-icon>
-                    <mat-icon *ngIf="field.categoryId==14" [icIcon]="icAddressInfo" class="mr-3"></mat-icon>
-                    <mat-icon *ngIf="field.categoryId==15" [icIcon]="icCertificationInfo" class="mr-3"></mat-icon>
-                    <mat-icon *ngIf="field.categoryId>15" [icIcon]="icCustomCategory" class="mr-3"></mat-icon>
+                    <mat-icon *ngIf="field.categoryId==12" class="mr-3">{{ icGeneralInfo }}</mat-icon>
+                    <mat-icon *ngIf="field.categoryId==13" class="mr-3">{{ icSchoolInfo }}</mat-icon>
+                    <mat-icon *ngIf="field.categoryId==14" class="mr-3">{{ icAddressInfo }}</mat-icon>
+                    <mat-icon *ngIf="field.categoryId==15" class="mr-3">{{ icCertificationInfo }}</mat-icon>
+                    <mat-icon *ngIf="field.categoryId>15" class="mr-3">{{ icCustomCategory }}</mat-icon>
                     {{field.title}}
                 </a> -->
                 <mat-expansion-panel expanded="true">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
-                            <mat-icon [icIcon]="icSchool" class="mr-3"></mat-icon> {{ 'staffDetails' | translate }}
+                            <mat-icon class="mr-3">{{ icSchool }}</mat-icon> {{ 'staffDetails' | translate }}
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div>
@@ -46,7 +46,7 @@
                 </mat-expansion-panel>
                 <a @fadeInRight class="list-item mt-2 no-underline flex items-center" matRipple
                     (click)="changeTempCategory('/school/staff/staff-course-schedule')" [ngClass]="categoryPath ==='/school/staff/staff-course-schedule' ?'text-primary active' : ''">
-                    <mat-icon [icIcon]="icCalendar" class="mr-3"></mat-icon> {{ 'courseSchedule' | translate }}
+                    <mat-icon class="mr-3">{{ icCalendar }}</mat-icon> {{ 'courseSchedule' | translate }}
                 </a>
             </div>
 

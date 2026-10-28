@@ -29,8 +29,7 @@
                             <span class="pl-2">{{courseSection.courseGradeLevel}}</span>
                         </div>
                         <div>
-                            <mat-icon *ngIf="getAttendanceForPeriod(courseSection)" class="text-blue text-xl"
-                                [icIcon]="icHowToReg"></mat-icon>
+                            <mat-icon *ngIf="getAttendanceForPeriod(courseSection)" class="text-blue text-xl">{{ icHowToReg }}</mat-icon>
                         </div>
                     </div>
                     <div class="flex justify-between items-center font-medium flex-wrap">

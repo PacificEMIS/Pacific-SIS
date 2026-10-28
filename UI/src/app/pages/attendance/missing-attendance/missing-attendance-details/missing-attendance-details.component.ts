@@ -25,8 +25,6 @@ All rights reserved.
 
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import icSearch from "@iconify/icons-ic/search";
-import icHowToReg from "@iconify/icons-ic/outline-how-to-reg";
 import { StudentAttendanceService } from "src/app/services/student-attendance.service";
 import { ScheduledCourseSectionViewModel } from "src/app/models/dashboard.model";
 import { GetAllStaffModel } from "src/app/models/staff.model";
@@ -56,8 +54,8 @@ import { DefaultValuesService } from "src/app/common/default-values.service";
   ]
 })
 export class MissingAttendanceDetailsComponent implements OnInit ,AfterViewInit, OnDestroy{
-  icSearch = icSearch;
-  icHowToReg = icHowToReg;
+  icSearch = 'search';
+  icHowToReg = 'how_to_reg';
   scheduledCourseSectionViewModel: ScheduledCourseSectionViewModel = new ScheduledCourseSectionViewModel();
   getAllStaffModel: GetAllStaffModel= new GetAllStaffModel();
   staffDetails;

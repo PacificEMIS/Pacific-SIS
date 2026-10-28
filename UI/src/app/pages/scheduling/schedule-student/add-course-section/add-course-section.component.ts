@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SearchStudentCourseSection } from '../../../../models/search-student-course-section.model';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { TranslateService } from '@ngx-translate/core';
 import { CourseManagerService } from '../../../../services/course-manager.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -68,7 +67,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
   courseDetails: MatTableDataSource<any>;
-  icClose = icClose;
+  icClose = 'close';
   selection: SelectionModel<AllCourseSectionView> = new SelectionModel<AllCourseSectionView>(true, []);
   displayedColumns: string[] = ['courseSelected', 'course', 'courseSection', 'markingPeriod', 'startDate', 'endDate', 'seats', 'available'];
   selectedMarkingPeriod: MarkingPeriodTitleList = new MarkingPeriodTitleList();

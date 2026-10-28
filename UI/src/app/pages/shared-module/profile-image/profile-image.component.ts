@@ -28,8 +28,6 @@ import { ImageCroppedEvent, base64ToFile } from 'ngx-image-cropper';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
-import icClose from '@iconify/icons-ic/twotone-close';
-import icUpload from '@iconify/icons-ic/cloud-upload';
 import { ImageCropperService } from '../../../services/image-cropper.service';
 import { SchoolService } from '../../../services/school.service';
 import { Subject } from 'rxjs';
@@ -63,8 +61,8 @@ import { TranslateService } from '@ngx-translate/core';
 export class ProfileImageComponent implements OnInit, OnDestroy {
   @ViewChild('mytemplate') mytemplate: TemplateRef<any>;
 
-  icUpload = icUpload;
-  icClose = icClose;
+  icUpload = 'cloud_upload';
+  icClose = 'close';
   modes = SchoolCreate;
   createMode: SchoolCreate;
   moduleIdentifier: ModuleIdentifier;

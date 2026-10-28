@@ -2,7 +2,6 @@ import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { GenerateApiKeyModel, UpdateApiKeyModel } from 'src/app/models/api-key.model';
 import { ApiKeyService } from 'src/app/services/api-key.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -16,7 +15,7 @@ import { KeysGenerateService } from '../service/keys-generate.service';
 })
 export class GenerateApiKeyComponent implements OnInit {
 
-  icClose = icClose;
+  icClose = 'close';
   apiKeyModel;
   @ViewChild('f') apiForm: NgForm;
   loading: boolean;

@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { AddAbsencesRoutingModule } from './add-absences-routing.module';
 import { AddAbsencesComponent } from './add-absences.component';
 import { MatIconModule } from '@angular/material/icon';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
@@ -38,7 +37,6 @@ import { SearchStudentModule } from 'src/app/common/search-student/search-studen
     CommonModule,
     AddAbsencesRoutingModule,
     MatIconModule,
-    IconModule,  
     MatCardModule,
     MatSidenavModule,
     SecondaryToolbarModule,

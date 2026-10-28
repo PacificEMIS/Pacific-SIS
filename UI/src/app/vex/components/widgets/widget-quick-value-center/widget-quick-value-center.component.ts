@@ -1,9 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { Icon } from '@visurel/iconify-angular';
-import faCaretUp from '@iconify/icons-fa-solid/caret-up';
-import faCaretDown from '@iconify/icons-fa-solid/caret-down';
-import icHelp from '@iconify/icons-ic/help-outline';
-import icShare from '@iconify/icons-ic/twotone-share';
 import { scaleInOutAnimation } from '../../../animations/scale-in-out.animation';
 
 @Component({
@@ -14,7 +9,7 @@ import { scaleInOutAnimation } from '../../../animations/scale-in-out.animation'
 })
 export class WidgetQuickValueCenterComponent implements OnInit {
 
-  @Input() icon: Icon;
+  @Input() icon: string;
   @Input() value: string;
   @Input() label: string;
   @Input() subtext: string;
@@ -23,10 +18,10 @@ export class WidgetQuickValueCenterComponent implements OnInit {
   @Input() iconClass: string;
   @Input() cardClass: string;
 
-  faCaretUp = faCaretUp;
-  faCaretDown = faCaretDown;
-  icHelp = icHelp;
-  icShare = icShare;
+  faCaretUp = 'arrow_drop_up';
+  faCaretDown = 'arrow_drop_down';
+  icHelp = 'help_outline';
+  icShare = 'share';
 
   showButton: boolean;
 

@@ -8,7 +8,7 @@
         <mat-slide-toggle class="mt-1 text-sm md:text-lg mr-4" color="primary" [disabled]="!this.defaultValuesService.checkAcademicYear()" formControlName="isActive" name="isActive">{{'active' | translate}}</mat-slide-toggle>
     </div>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-        <mat-icon [icIcon]="icClose"></mat-icon>
+        <mat-icon>{{ icClose }}</mat-icon>
     </button>
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>

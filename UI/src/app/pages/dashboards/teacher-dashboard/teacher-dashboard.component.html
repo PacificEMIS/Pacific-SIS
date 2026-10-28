@@ -7,15 +7,15 @@
     <vex-page-layout-content class="">
 
         <div class="card px-6 py-4 border border-warn text-warn text-lg font-semibold bg-warn-light mb-4 cursor-pointer" *ngIf="scheduledCourseSectionViewModel?.missingAttendanceCount>0" (click)="goTeacherMissingAttendance()" >
-            <mat-icon [icIcon]="icMissingAttendance" class="align-middle mr-3"></mat-icon>
+            <mat-icon class="align-middle mr-3">{{ icMissingAttendance }}</mat-icon>
             {{scheduledCourseSectionViewModel.missingAttendanceCount}} {{
             'missingAttendanceFound' | translate }}
         </div>
 
         <div *ngIf="scheduledCourseSectionViewModel?.missingAttendanceCount>0" class="card px-6 py-4 border-2 border-blue mb-4">
             <div class="text-blue relative">
-                <mat-icon [icIcon]="icAssessment" class="align-middle mr-5"></mat-icon>
-                <mat-icon [icIcon]="icWarning" class="absolute text-warn ic-warning text-base"></mat-icon>
+                <mat-icon class="align-middle mr-5">{{ icAssessment }}</mat-icon>
+                <mat-icon class="absolute text-warn ic-warning text-base">{{ icWarning }}</mat-icon>
                 <span class="text-lg font-medium">{{ 'notification' | translate }}</span>
             </div>
             <ul class="pl-6 md:pl-16 -mx-1" *ngFor="let notification of notificationsList">
@@ -47,8 +47,7 @@
                             <span class="pl-2">{{courseSection.courseGradeLevel}}</span>
                         </div>
                         <div>
-                            <mat-icon *ngIf="getAttendanceForPeriod(courseSection)" class="text-blue text-xl"
-                                [icIcon]="icHowToReg"></mat-icon>
+                            <mat-icon *ngIf="getAttendanceForPeriod(courseSection)" class="text-blue text-xl">{{ icHowToReg }}</mat-icon>
                         </div>
                     </div>
                     <div class="flex justify-between items-center font-medium flex-wrap">

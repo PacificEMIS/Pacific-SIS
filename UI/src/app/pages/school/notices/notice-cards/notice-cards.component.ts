@@ -24,9 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Input, OnInit } from '@angular/core';
-import icPreview from '@iconify/icons-ic/round-preview';
-import icPeople from '@iconify/icons-ic/twotone-people';
-import icMoreVert from '@iconify/icons-ic/more-vert';
 import { NoticeDeleteModel } from '../../../../models/notice-delete.model';
 import { NoticeService } from '../../../../services/notice.service';
 import { ActivatedRoute } from '@angular/router';
@@ -50,9 +47,9 @@ import { CommonService } from 'src/app/services/common.service';
 export class NoticeCardsComponent implements OnInit {
   noticeListViewModel: NoticeListViewModel = new NoticeListViewModel();
   noticeaddViewModel: NoticeAddViewModel = new NoticeAddViewModel();
-  icPreview = icPreview;
-  icPeople = icPeople;
-  icMoreVert = icMoreVert;
+  icPreview = 'preview';
+  icPeople = 'people';
+  icMoreVert = 'more_vert';
   showMember = true;
   editPermission = false;
   deletePermission = false;

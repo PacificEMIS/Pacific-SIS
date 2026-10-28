@@ -4,7 +4,7 @@
             {{ "selectCourseSectionsToCopyAssignment" | translate }}
         </h2>
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-            <mat-icon [icIcon]="icClose"></mat-icon>
+            <mat-icon>{{ icClose }}</mat-icon>
         </button>
     </div>
     <mat-divider class="-mx-6 mb-4"></mat-divider>
@@ -32,7 +32,7 @@
 <div *ngIf="showSuccessAssignment">
     <div fxLayout="row" mat-dialog-title class="flex w-full justify-end mb-0">
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-            <mat-icon [icIcon]="icClose"></mat-icon>
+            <mat-icon>{{ icClose }}</mat-icon>
         </button>
     </div>
     <mat-dialog-content class="mb-6">

@@ -27,7 +27,6 @@ import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { AddAssignmentModel } from '../../../../models/staff-portal-assignment.model';
@@ -42,7 +41,7 @@ import { SharedFunction } from '../../../shared/shared-function';
 })
 export class CreateAssignmentComponent implements OnInit {
 
-  icClose = icClose;
+  icClose = 'close';
   form: FormGroup;
   assignmentTypes = [];
   editMode: boolean = false;

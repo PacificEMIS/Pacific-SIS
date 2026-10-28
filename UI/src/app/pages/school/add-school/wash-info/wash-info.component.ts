@@ -37,7 +37,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoaderService } from '../../../../../app/services/loader.service';
 import { SharedFunction } from '../../../shared/shared-function';
 import { ImageCropperService } from '../../../../services/image-cropper.service';
-import icEdit from '@iconify/icons-ic/twotone-edit';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { LovList } from '../../../../models/lov.model';
 import { CommonService } from '../../../../services/common.service';
@@ -65,7 +64,7 @@ export class WashInfoComponent implements OnInit,OnDestroy {
   schoolCreate = SchoolCreate;
   moduleIdentifier = ModuleIdentifier;
   schoolCreateMode: SchoolCreate;
-  icEdit = icEdit;
+  icEdit = 'edit';
   // schoolDetailsForViewAndEdit;
   categoryId;
   form: FormGroup;

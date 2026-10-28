@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatNativeDateModule } from '@angular/material/core';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
@@ -67,7 +66,7 @@ import { AddNurseVisitComponent } from './student-medicalinfo/add-nurse-visit/ad
 import { MatDialogModule } from '@angular/material/dialog';
 import { AddDaysScheduleModule } from '../../scheduling/schedule-teacher/add-days-schedule/add-days-schedule.module';
 import { AddStudentRoutingModule } from './add-student-routing';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 // import { TruncatePipe } from '../../../pipe/truncate.pipe';
@@ -113,7 +112,6 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     MatSelectModule,
     NgxMatSelectSearchModule,
     MatProgressSpinnerModule,
-    IconModule,
     MatButtonModule,   
     MatCardModule,
     MatSidenavModule,

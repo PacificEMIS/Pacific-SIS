@@ -4,7 +4,6 @@ import { EffortGradeDetailsComponent } from './effort-grade-details.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -33,7 +32,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatIconModule,
     MatInputModule,
     MatSelectModule,
-    IconModule,
     MatButtonModule,   
     MatCardModule,
     MatSidenavModule,

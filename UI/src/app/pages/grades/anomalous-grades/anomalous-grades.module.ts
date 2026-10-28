@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { IconModule } from '@visurel/iconify-angular';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -30,7 +29,6 @@ import { AnomalousGradesComponent } from './anomalous-grades.component';
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    IconModule,
     MatButtonModule,
     MatCheckboxModule,
     MatFormFieldModule,

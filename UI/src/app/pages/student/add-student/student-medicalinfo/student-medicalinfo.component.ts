@@ -37,11 +37,6 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { TranslateService } from '@ngx-translate/core';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icComment from '@iconify/icons-ic/twotone-comment';
-import icDeleteForever from '@iconify/icons-ic/twotone-delete-forever';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import {
   AddEditStudentMedicalAlertModel,
@@ -93,13 +88,13 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
   studentAddModel: StudentAddModel = new StudentAddModel();
   parentInfoModel: ViewParentInfoModel = new ViewParentInfoModel();
   fieldsCategoryListView = new FieldsCategoryListView();
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icDeleteForever = icDeleteForever;
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icDeleteForever = 'delete_forever';
   module = 'Student';
   actionButtonTitle = 'submit';
-  icAdd = icAdd;
-  icComment = icComment;
+  icAdd = 'add';
+  icComment = 'comment';
   parentsFullName = [];
   cloneStudentAddModel;
   editPermission = false;

@@ -2,7 +2,7 @@
     <h2 class="headline m-0" fxFlex="auto">{{modalDialogTitle|translate}}</h2>
 
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
-        <mat-icon [icIcon]="icClose"></mat-icon>
+        <mat-icon>{{ icClose }}</mat-icon>
     </button>
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
@@ -18,7 +18,7 @@
         <mat-error *ngIf="form.get('subject').hasError('required')">{{'subjectIsRequired'|translate}}
         </mat-error>
     </mat-form-field>
-        <!-- <a class="cursor-pointer text-blue" *ngIf="!editMode" (click)="activeSubjectTextBox();"><mat-icon [icIcon]="icAdd" class="mr-1 align-bottom"></mat-icon>{{'addNewSubject' | translate}}</a> -->
+        <!-- <a class="cursor-pointer text-blue" *ngIf="!editMode" (click)="activeSubjectTextBox();"><mat-icon class="mr-1 align-bottom">{{ icAdd }}</mat-icon>{{'addNewSubject' | translate}}</a> -->
     </div>
     <div class="mt-6 mb-4 hidden" id="subject1">
         <mat-form-field class="w-full mb-1" appearance="outline" color="primary">
@@ -38,7 +38,7 @@
         <mat-error *ngIf="form.get('course').hasError('required')">{{'courseIsRequired'|translate}}
         </mat-error>
     </mat-form-field>
-        <!-- <a class="cursor-pointer text-blue" *ngIf="!editMode" (click)="activeCourseTextBox()"><mat-icon [icIcon]="icAdd" class="mr-1 align-bottom"></mat-icon>{{'addNewCourse' | translate}}</a> -->
+        <!-- <a class="cursor-pointer text-blue" *ngIf="!editMode" (click)="activeCourseTextBox()"><mat-icon class="mr-1 align-bottom">{{ icAdd }}</mat-icon>{{'addNewCourse' | translate}}</a> -->
     </div>
     <div class="mb-4 hidden" id="course1">
         <mat-form-field class="w-full mb-1" appearance="outline" color="primary">

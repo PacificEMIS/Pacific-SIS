@@ -1,7 +1,7 @@
 <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 <div class="card p-4 mb-6">
     <h4 class="text-primary font-medium mb-2">
-        <mat-icon [icIcon]="icListAlt" class="align-middle mr-2"></mat-icon>{{ 'includeInReport' | translate }}
+        <mat-icon class="align-middle mr-2">{{ icListAlt }}</mat-icon>{{ 'includeInReport' | translate }}
     </h4>
     <mat-divider></mat-divider>
     <div class="mt-4">
@@ -14,7 +14,7 @@
 </div>
 <div class="card">
     <h4 class="text-primary font-medium p-4">
-        <mat-icon [icIcon]="icAccountBalance" class="align-middle mr-2"></mat-icon>{{ 'selectSchools' | translate }}
+        <mat-icon class="align-middle mr-2">{{ icAccountBalance }}</mat-icon>{{ 'selectSchools' | translate }}
     </h4>
     <mat-divider></mat-divider>
     <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
@@ -279,9 +279,8 @@
                                                                 {{customField?.customFieldsValueForPDF | EmtyValueCheckPipe}}</p>
                                                             <p *ngIf="customField?.type === 'Checkbox'" class="f-s-16">
                                                                 <mat-icon
-                                                                    [icIcon]="customField?.customFieldsValueForPDF === 'true'?icCheckboxChecked:icCheckboxUnchecked"
-                                                                    class="inline-block align-middle mr-1">
-                                                                </mat-icon>
+                                                                   
+                                                                    class="inline-block align-middle mr-1">{{ customField?.customFieldsValueForPDF === 'true'?icCheckboxChecked:icCheckboxUnchecked }}</mat-icon>
                                                             </p>
                                                             <p *ngIf="customField?.type === 'Date'" class="f-s-16">
                                                                 {{customField?.customFieldsValueForPDF | date:'mediumDate' | EmtyValueCheckPipe}}
@@ -476,9 +475,8 @@
                                                                 {{customField?.customFieldsValueForPDF | EmtyValueCheckPipe}}</p>
                                                             <p *ngIf="customField?.type === 'Checkbox'" class="f-s-16">
                                                                 <mat-icon
-                                                                    [icIcon]="customField?.customFieldsValueForPDF === 'true'?icCheckboxChecked:icCheckboxUnchecked"
-                                                                    class="inline-block align-middle mr-1">
-                                                                </mat-icon>
+                                                                   
+                                                                    class="inline-block align-middle mr-1">{{ customField?.customFieldsValueForPDF === 'true'?icCheckboxChecked:icCheckboxUnchecked }}</mat-icon>
                                                             </p>
                                                             <p *ngIf="customField?.type === 'Date'" class="f-s-16">
                                                                 {{customField?.customFieldsValueForPDF | date:'mediumDate' | EmtyValueCheckPipe}}
@@ -617,9 +615,8 @@
                                                                 {{customField?.customFieldsValueForPDF | EmtyValueCheckPipe}}</p>
                                                             <p *ngIf="customField?.type === 'Checkbox'" class="f-s-16">
                                                                 <mat-icon
-                                                                    [icIcon]="customField?.customFieldsValueForPDF === 'true'?icCheckboxChecked:icCheckboxUnchecked"
-                                                                    class="inline-block align-middle mr-1">
-                                                                </mat-icon>
+                                                                   
+                                                                    class="inline-block align-middle mr-1">{{ customField?.customFieldsValueForPDF === 'true'?icCheckboxChecked:icCheckboxUnchecked }}</mat-icon>
                                                             </p>
                                                             <p *ngIf="customField?.type === 'Date'" class="f-s-16">
                                                                 {{customField?.customFieldsValueForPDF | date:'mediumDate' | EmtyValueCheckPipe}}

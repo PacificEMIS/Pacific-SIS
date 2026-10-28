@@ -24,10 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Input, OnInit,Output,EventEmitter, ViewChild, OnDestroy } from '@angular/core';
-import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icSearch from '@iconify/icons-ic/search';
-import icFilterList from '@iconify/icons-ic/filter-list';
 import { HttpClient } from 'selenium-webdriver/http';
 import { SchoolService } from '../../../../services/school.service';
 import { GetAllSchoolModel,AllSchoolListModel } from '../../../../models/get-all-school.model';
@@ -57,7 +53,6 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 import { CommonService } from '../../../../services/common.service';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../../models/roll-based-access.model';
-import icRestore from '@iconify/icons-ic/twotone-restore';
 import { DataEditInfoComponent } from 'src/app/pages/shared-module/data-edit-info/data-edit-info.component';
 import { MatDialog } from '@angular/material/dialog';
 import { SchoolCreate } from 'src/app/enums/school-create.enum';
@@ -88,11 +83,11 @@ export class SchoolDetailsComponent implements OnInit,OnDestroy {
   pageSize:number;
   searchCtrl: FormControl;
   addPermission: boolean= false;
-  icMoreVert = icMoreVert;
-  icAdd = icAdd;
-  icSearch = icSearch;
-  icRestore = icRestore;
-  icFilterList = icFilterList;
+  icMoreVert = 'more_vert';
+  icAdd = 'add';
+  icSearch = 'search';
+  icRestore = 'restore';
+  icFilterList = 'filter_list';
   fapluscircle = "fa-plus-circle";
   tenant = "";
   loading:boolean;

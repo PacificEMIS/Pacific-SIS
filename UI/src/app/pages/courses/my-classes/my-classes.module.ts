@@ -15,7 +15,6 @@ import { CourseManagerRoutingModule } from '../course-manager/course-manager-rou
 import { CourseSectionModule } from '../course-manager/course-section/course-section.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -43,7 +42,6 @@ import { MatDividerModule } from '@angular/material/divider';
     SecondaryToolbarModule,
     CourseManagerRoutingModule,
     CourseSectionModule,
-    IconModule,
     MatCardModule,
     MatSnackBarModule,
     MatSelectModule,

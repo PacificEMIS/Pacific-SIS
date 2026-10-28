@@ -27,7 +27,6 @@ import { Component, Inject, OnInit, Optional } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import icClose from "@iconify/icons-ic/twotone-close";
 import { EditSchoolSpecificStandardComponent } from "src/app/pages/grades/school-specific-standards/edit-school-specific-standard/edit-school-specific-standard.component";
 import { CommonService } from "src/app/services/common.service";
 import { DefaultValuesService } from "../../../../common/default-values.service";
@@ -41,7 +40,7 @@ import { StaffPortalAssignmentService } from "../../../../services/staff-portal-
   styleUrls: ["./add-assignment.component.scss"],
 })
 export class AddAssignmentComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   markingPeriodId:number;
   form: FormGroup;
   courseSectionId: number;

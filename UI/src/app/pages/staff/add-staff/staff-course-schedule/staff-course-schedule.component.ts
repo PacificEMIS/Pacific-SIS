@@ -1,10 +1,4 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
-import icEdit from "@iconify/icons-ic/twotone-edit";
-import icDelete from "@iconify/icons-ic/twotone-delete";
-import icMoreVert from "@iconify/icons-ic/more-vert";
-import icInfo from "@iconify/icons-ic/twotone-info";
-import icPendingActions from "@iconify/icons-ic/twotone-pending-actions";
-import icCalendarToday from "@iconify/icons-ic/twotone-calendar-today";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { CalendarEvent, CalendarView } from "angular-calendar";
@@ -60,12 +54,12 @@ import { buildSchedulePrintWeekPages, getSchedulePrintStyles } from "src/app/com
   ],
 })
 export class StaffCourseScheduleComponent implements OnInit {
-  icInfo = icInfo;
-  icPendingActions = icPendingActions;
-  icCalendarToday = icCalendarToday;
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icMoreVert = icMoreVert;
+  icInfo = 'info';
+  icPendingActions = 'pending_actions';
+  icCalendarToday = 'calendar_today';
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icMoreVert = 'more_vert';
 
   SCHEDULE_TYPE = scheduleType;
   view: CalendarView | string = "routineView";

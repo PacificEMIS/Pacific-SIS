@@ -8,7 +8,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { IconModule } from '@visurel/iconify-angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
@@ -22,7 +21,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTooltipModule,
     MatButtonModule,
     MatIconModule,
-    IconModule,
     TranslateModule
   ],
   exports: [WidgetTableComponent]

@@ -27,9 +27,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icClose from '@iconify/icons-ic/twotone-close';
-import icVisibility from '@iconify/icons-ic/twotone-visibility';
-import icVisibilityOff from '@iconify/icons-ic/twotone-visibility-off';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { SuperAdministratorAddModel } from 'src/app/models/super-administrator.model';
 import { CommonService } from 'src/app/services/common.service';
@@ -46,9 +43,9 @@ import { SharedFunction } from '../../../shared/shared-function';
   templateUrl: './add-super-administrator.component.html'
 })
 export class AddSuperAdministratorComponent implements OnInit {
-  icClose = icClose;
-  icVisibility = icVisibility;
-  icVisibilityOff = icVisibilityOff;
+  icClose = 'close';
+  icVisibility = 'visibility';
+  icVisibilityOff = 'visibility_off';
   form: FormGroup;
   inputType = 'password';
   visible = false;

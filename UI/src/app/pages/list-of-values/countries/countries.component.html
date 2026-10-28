@@ -31,11 +31,10 @@
                 mat-icon-button
                 matTooltip="{{'filterColumns' | translate}}"
                 type="button">
-                <mat-icon [icIcon]="icFilterList"></mat-icon>
+                <mat-icon>{{ icFilterList }}</mat-icon>
         </button>
       <button *ngIf="permissions?.add" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button" (click)='goToAdd()'>
-          <ic-icon [icon]="icAdd" class="mr-0 md:mr-2" inline="true" size="24px">
-                      </ic-icon>                         
+          <mat-icon class="mr-0 md:mr-2">{{ icAdd }}</mat-icon>                         
                       <span class="hidden md:inline-block"> {{'addCountry' | translate}}</span>
                      
                   </button>
@@ -92,10 +91,10 @@
                 </th>
                 <td mat-cell *matCellDef="let element">
                     <a *ngIf="permissions?.edit" (click) ="goToEdit(element)" matTooltip="{{'editItem' | translate}}" class="mr-3 cursor-pointer">
-                        <mat-icon [icIcon]="icEdit"></mat-icon>
+                        <mat-icon>{{ icEdit }}</mat-icon>
                     </a>
                     <a *ngIf="permissions?.edit" (click) = "confirmDelete(element)" matTooltip="{{'deleteItem' | translate}}" class="mr-3 cursor-pointer">
-                        <mat-icon [icIcon]="icDelete"></mat-icon>
+                        <mat-icon>{{ icDelete }}</mat-icon>
                     </a>
                 </td>
             </ng-container>

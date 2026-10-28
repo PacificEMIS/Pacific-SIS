@@ -7,7 +7,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -31,7 +30,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatCheckboxModule,
     MatFormFieldModule,
     MatButtonModule,
-    IconModule,
     MatDatepickerModule,
     FlexLayoutModule,
     MatIconModule,

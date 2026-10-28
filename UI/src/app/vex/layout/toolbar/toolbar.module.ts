@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatRippleModule } from '@angular/material/core';
 import { ToolbarNotificationsModule } from './toolbar-notifications/toolbar-notifications.module';
-import { IconModule } from '@visurel/iconify-angular';
 import { RouterModule } from '@angular/router';
 import { MegaMenuModule } from '../../components/mega-menu/mega-menu.module';
 import { ContainerModule } from '../../directives/container/container.module';
@@ -25,7 +24,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatMenuModule,
     MatRippleModule,
     ToolbarNotificationsModule,
-    IconModule,
     RouterModule,
     MegaMenuModule,
     ContainerModule,

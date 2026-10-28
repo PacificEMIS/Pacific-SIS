@@ -27,7 +27,6 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -43,7 +42,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
   styleUrls: ['./add-course.component.scss']
 })
 export class AddCourseComponent implements OnInit,OnDestroy {
-  icClose = icClose;
+  icClose = 'close';
   getAllProgramModel: GetAllProgramModel = new GetAllProgramModel();
   getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
   searchCourseForScheduleModel: SearchCourseForScheduleModel = new SearchCourseForScheduleModel();

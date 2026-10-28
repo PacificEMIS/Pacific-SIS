@@ -5,7 +5,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -30,7 +29,6 @@ import { SharedModuleModule } from '../../../../src/app/pages/shared-module/shar
     MatInputModule,
     MatCheckboxModule,
     MatSelectModule,
-    IconModule,
     MatButtonModule,   
     MatCardModule,
     MatSidenavModule,

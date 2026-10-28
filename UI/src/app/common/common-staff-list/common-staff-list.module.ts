@@ -13,7 +13,6 @@ import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/second
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { IconModule } from '@visurel/iconify-angular';
 import { SharedModuleModule } from 'src/app/pages/shared-module/shared-module.module';
 import { StaffAdvancedSearchModule } from '../staff-advanced-search/staff-advanced-search.module';
 import { MatButtonModule } from '@angular/material/button';
@@ -39,7 +38,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatTooltipModule,
     MatMenuModule,
     MatCheckboxModule,
-    IconModule,
     SharedModuleModule,
     StaffAdvancedSearchModule,
     MatButtonModule,

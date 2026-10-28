@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 
 @Component({
   selector: 'vex-course-section',
@@ -10,7 +9,7 @@ import icClose from '@iconify/icons-ic/twotone-close';
 })
 export class CourseSectionComponent implements OnInit {
 
-  icClose = icClose;
+  icClose = 'close';
   subjectList = [];
   programList = [];
   courseList = [];

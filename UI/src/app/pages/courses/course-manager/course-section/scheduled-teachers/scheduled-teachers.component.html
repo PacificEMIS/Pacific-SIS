@@ -10,10 +10,10 @@
                 </div>
                 <div fxFlex="none" fxLayout="column" fxLayoutAlign="center end">
                         <a *ngIf="staff.staffMaster.staffEmail" [href]="'mailTo:'+staff.staffMaster.staffEmail">
-                            <mat-icon [icIcon]="icEmail"></mat-icon>
+                            <mat-icon>{{ icEmail }}</mat-icon>
                         </a>
                         <a (click)="removeTeacher(staff)" *ngIf="!staff.isPrimaryStaff" style="cursor: pointer;">
-                            <mat-icon [icIcon]="icDelete"></mat-icon>
+                            <mat-icon>{{ icDelete }}</mat-icon>
                         </a>
                 </div>
             </div>

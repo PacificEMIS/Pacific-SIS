@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
@@ -76,7 +75,6 @@ import { AddCertificateComponent } from './staff-certificationinfo/add-certifica
     MatDatepickerModule,
     MatRadioModule,
     MatNativeDateModule,
-    IconModule,
     MatCardModule,
     MatSnackBarModule,
     SecondaryToolbarModule,

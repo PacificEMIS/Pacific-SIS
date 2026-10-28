@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icSearch from '@iconify/icons-ic/search';
 import { ScheduleStudentListViewModel } from 'src/app/models/student-schedule.model';
 import { StudentScheduleService } from 'src/app/services/student-schedule.service';
 import { MatTableDataSource } from '@angular/material/table';
@@ -70,7 +69,7 @@ export class StudentsComponent implements OnInit, AfterViewInit {
   }
 
 
-  icSearch = icSearch;
+  icSearch = 'search';
   totalCount = 0;
   pageNumber: number;
   pageSize: number;

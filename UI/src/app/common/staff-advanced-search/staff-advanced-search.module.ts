@@ -23,7 +23,6 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { IconModule } from '@visurel/iconify-angular';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
 import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module';
@@ -45,7 +44,6 @@ import { StaffinfoRoutingModule } from 'src/app/pages/staff/staffinfo/staffinfo-
     MatButtonModule,
     PageLayoutModule,
     ContainerModule,
-    IconModule,
     MatCardModule,
     MatSnackBarModule,
     MatSelectModule,

@@ -21,7 +21,7 @@
                             <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
                             <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button
                                 type="button">
-                                <mat-icon [icIcon]="icSearch"></mat-icon>
+                                <mat-icon>{{ icSearch }}</mat-icon>
                             </button>
                             <a (click)="showAdvanceSearch()" [ngClass]="totalCount===0 && !getAllParentModel.filterParams?'text-gray disabled':'text-primary'" class="cursor-pointer ml-3">
                                 <mat-icon aria-hidden="false" class="mr-2 align-middle">tune</mat-icon><span class="hidden md:inline-block">{{'advanceSearch'
@@ -38,7 +38,7 @@
                         </a>
                         <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
                             matTooltip="{{'filterColumns' | translate}}" type="button">
-                            <mat-icon [icIcon]="icFilterList"></mat-icon>
+                            <mat-icon>{{ icFilterList }}</mat-icon>
                         </button>
                     </div>
                 </div>
@@ -101,10 +101,10 @@
                         <th mat-header-cell *matHeaderCellDef>{{'actions'|translate}}</th>
                         <td mat-cell *matCellDef="let element">
                             <!-- <a matTooltip="{{'ImpersonateAsParent' | translate}}" class="mr-3 cursor-pointer">
-                                <mat-icon [icIcon]="icImpersonate"></mat-icon>
+                                <mat-icon>{{ icImpersonate }}</mat-icon>
                             </a> -->
                             <a matTooltip="{{ 'dataEditInfo' | translate }}" class="mr-3 cursor-pointer" (click)="openDataEdit(element)">
-                                <mat-icon [icIcon]="icRestore"></mat-icon>
+                                <mat-icon>{{ icRestore }}</mat-icon>
                             </a>
                         </td>
                     </ng-container>

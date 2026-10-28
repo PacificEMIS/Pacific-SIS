@@ -20,9 +20,6 @@ import { stagger40ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { CommonService } from 'src/app/services/common.service';
 import moment from 'moment';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icFilterList from '@iconify/icons-ic/filter-list';
-import icDelete from '@iconify/icons-ic/twotone-delete-forever';
 import { ConfirmDialogComponent } from 'src/app/pages/shared-module/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ImageCropperService } from 'src/app/services/image-cropper.service';
@@ -30,8 +27,6 @@ import { ModuleIdentifier } from '../../enums/module-identifier.enum';
 import { SchoolCreate } from '../../enums/school-create.enum';
 import { SaveFilterComponent } from 'src/app/pages/staff/staffinfo/save-filter/save-filter.component';
 import { ExcelService } from 'src/app/services/excel.service';
-import icRestore from '@iconify/icons-ic/twotone-restore';
-import icImpersonate from '@iconify/icons-ic/twotone-account-circle';
 import { ImpersonateServices } from 'src/app/services/impersonate.service';
 import { DataEditInfoComponent } from 'src/app/pages/shared-module/data-edit-info/data-edit-info.component';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
@@ -61,14 +56,14 @@ export class CommonStaffListComponent implements OnInit {
   loading: boolean;
   pageInit = 1;
   searchCtrl: FormControl;
-  icAdd = icAdd;
+  icAdd = 'add';
   searchFilterAddViewModel: SearchFilterAddViewModel = new SearchFilterAddViewModel();
   searchFilterListViewModel: SearchFilterListViewModel = new SearchFilterListViewModel();
   deleteStaffModel: DeleteStaffModel = new DeleteStaffModel();
   searchFilter: SearchFilter = new SearchFilter();
   displayedColumns: string[] = ['lastFamilyName', 'staffInternalId', 'profile', 'jobTitle', 'primaryGradeLevelTaught', 'schoolEmail', 'mobilePhone', 'status'];
-  icFilterList = icFilterList;
-  icDelete = icDelete;
+  icFilterList = 'filter_list';
+  icDelete = 'delete_forever';
   showAdvanceSearchPanel: boolean = false;
   showSaveFilter: boolean = false;
   filterJsonParams;
@@ -96,8 +91,8 @@ export class CommonStaffListComponent implements OnInit {
     { label: 'status', property: 'status', type: 'text', visible: false },
     { label: 'actions', property: 'actions', type: 'text', visible: true }
   ];
-  icImpersonate = icImpersonate;
-  icRestore = icRestore;
+  icImpersonate = 'account_circle';
+  icRestore = 'restore';
   staffAddModel: StaffAddModel = new StaffAddModel();
   profile = [
     'School Administrator',

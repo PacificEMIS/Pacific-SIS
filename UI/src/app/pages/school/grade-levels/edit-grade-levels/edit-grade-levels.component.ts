@@ -26,7 +26,6 @@ All rights reserved.
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import {AddGradeLevelModel, GelAllGradeEquivalencyModel} from '../../../../models/grade-level.model';
@@ -46,7 +45,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
   ]
 })
 export class EditGradeLevelsComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   form: FormGroup;
   addGradeLevelData:AddGradeLevelModel = new AddGradeLevelModel();
   updateGradeLevelData:AddGradeLevelModel = new AddGradeLevelModel();

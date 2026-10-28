@@ -109,9 +109,8 @@
                 <p *ngIf="customField.type !== 'Checkbox' && customField.type !== 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | EmtyValueCheckPipe}}
                 </p>
                 <p *ngIf="customField.type === 'Checkbox'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    <mat-icon [icIcon]="customField?.customFieldsValue[0].customFieldValue === true?icCheckboxChecked:icCheckboxUnchecked"
-                        class="inline-block align-middle mr-1">
-                    </mat-icon>
+                    <mat-icon
+                        class="inline-block align-middle mr-1">{{ customField?.customFieldsValue[0].customFieldValue === true?icCheckboxChecked:icCheckboxUnchecked }}</mat-icon>
                 </p>
                 <p *ngIf="customField.type === 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | date:'mediumDate' | EmtyValueCheckPipe}}
                 </p>
@@ -232,9 +231,8 @@
                 <p *ngIf="customField.type !== 'Checkbox' && customField.type !== 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | EmtyValueCheckPipe}}
                 </p>
                 <p *ngIf="customField.type === 'Checkbox'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    <mat-icon [icIcon]="customField?.customFieldsValue[0].customFieldValue === true ? icCheckboxChecked:icCheckboxUnchecked"
-                        class="inline-block align-middle mr-1">
-                    </mat-icon>
+                    <mat-icon
+                        class="inline-block align-middle mr-1">{{ customField?.customFieldsValue[0].customFieldValue === true ? icCheckboxChecked:icCheckboxUnchecked }}</mat-icon>
                 </p>
                 <p *ngIf="customField.type === 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | date:'mediumDate' | EmtyValueCheckPipe}}</p>
             </li>
@@ -351,9 +349,8 @@
                 <p *ngIf="customField.type !== 'Checkbox' && customField.type !== 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | EmtyValueCheckPipe}}
                 </p>
                 <p *ngIf="customField.type === 'Checkbox'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    <mat-icon [icIcon]="customField?.customFieldsValue[0].customFieldValue === true?icCheckboxChecked:icCheckboxUnchecked"
-                        class="inline-block align-middle mr-1">
-                    </mat-icon>
+                    <mat-icon
+                        class="inline-block align-middle mr-1">{{ customField?.customFieldsValue[0].customFieldValue === true?icCheckboxChecked:icCheckboxUnchecked }}</mat-icon>
                 </p>
                 <p *ngIf="customField.type === 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | date:'mediumDate' | EmtyValueCheckPipe}}</p>
             </li>

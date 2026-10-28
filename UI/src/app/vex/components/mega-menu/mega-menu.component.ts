@@ -1,10 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Icon } from '@visurel/iconify-angular';
-import icSchool from '@iconify/icons-ic/twotone-account-balance';
-import icStudents from '@iconify/icons-ic/twotone-school';
-import icStaff from '@iconify/icons-ic/twotone-people';
-import icEvent from '@iconify/icons-ic/twotone-event';
-import icNotice from '@iconify/icons-ic/twotone-assignment';
 import { PopoverRef } from '../popover/popover-ref';
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 import { SchoolCreate } from 'src/app/enums/school-create.enum';
@@ -13,7 +7,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { TranslateService } from '@ngx-translate/core';
 
 export interface MegaMenuFeature {
-  icon?: Icon;
+  icon?: string;
   label: string;
   route: string;
   isActive: boolean;
@@ -34,31 +28,31 @@ export class MegaMenuComponent implements OnInit {
   items:number;
   features: MegaMenuFeature[] = [
     {
-      icon: icSchool,
+      icon: 'account_balance',
       label: 'school',
       route: '/school/schoolinfo/generalinfo',
       isActive: true,
     },
     {
-      icon: icStudents,
+      icon: 'school',
       label: 'student',
       route: '/school/students/student-generalinfo',
       isActive: true,
     },
     {
-      icon: icStaff,
+      icon: 'people',
       label: 'staff',
       route: '/school/staff/staff-generalinfo',
       isActive: true,
     },
     {
-      icon: icEvent,
+      icon: 'event',
       label: 'event',
       route: '/school/schoolcalendars',
       isActive: true,
     },
     {
-      icon: icNotice,
+      icon: 'assignment',
       label: 'notice',
       route: '/school/notices',
       isActive: true,
@@ -149,22 +143,22 @@ export class MegaMenuComponent implements OnInit {
   // pickIcon(categoryName) {
   //   switch (categoryName) {
   //     case 'School':{
-  //       return icSchool;
+  //       return 'account_balance';
   //     }
   //     case 'Student':{
-  //       return icStudents;
+  //       return 'school';
 
   //     }
   //     case 'Staff':{
-  //       return icStaff;
+  //       return 'people';
 
   //     }
   //     case 'Event':{
-  //       return icEvent;
+  //       return 'event';
 
   //     }
   //     case 'Notice':{
-  //       return icNotice;
+  //       return 'assignment';
   //     }
   //   }
   // }

@@ -24,7 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit } from '@angular/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchoolService } from 'src/app/services/school.service';
@@ -36,7 +35,7 @@ import { SchoolService } from 'src/app/services/school.service';
 })
 export class SuccessCopySchoolComponent implements OnInit {
 
-  icClose = icClose;
+  icClose = 'close';
   newSchoolName = this.data.newSchoolData?.schoolName;
 
   constructor(public translateService: TranslateService,

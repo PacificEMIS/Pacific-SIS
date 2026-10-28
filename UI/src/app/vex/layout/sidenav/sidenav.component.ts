@@ -1,11 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { trackByRoute } from '../../utils/track-by';
 import { NavigationService } from '../../services/navigation.service';
-// import icRadioButtonChecked from '@iconify/icons-ic/twotone-radio-button-checked';
-// import icRadioButtonUnchecked from '@iconify/icons-ic/twotone-radio-button-unchecked';
-import icCollapseSidebar from '@iconify/icons-ic/twotone-switch-left';
-import icExpandSidebar from '@iconify/icons-ic/twotone-switch-right';
-import icArrowDropDown from '@iconify/icons-ic/arrow-drop-down';
 import { LayoutService } from '../../services/layout.service';
 import { ConfigService } from '../../services/config.service';
 import { map, takeUntil } from 'rxjs/operators';
@@ -40,9 +35,9 @@ export class SidenavComponent implements OnInit {
   trackByRoute = trackByRoute;
   // icRadioButtonChecked = icRadioButtonChecked;
   // icRadioButtonUnchecked = icRadioButtonUnchecked;
-  icCollapseSidebar = icCollapseSidebar;
-  icExpandSidebar = icExpandSidebar;
-  icArrowDropDown = icArrowDropDown;
+  icCollapseSidebar = 'switch_left';
+  icExpandSidebar = 'switch_right';
+  icArrowDropDown = 'arrow_drop_down';
   userName: any;
   membershipName: string;
   userPhoto;

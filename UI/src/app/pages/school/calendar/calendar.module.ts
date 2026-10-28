@@ -18,7 +18,6 @@ import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/second
 import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
 import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module';
 import { MatNativeDateModule } from '@angular/material/core';
-import { IconModule } from '@visurel/iconify-angular';
 import { ContainerModule } from '@vex/directives/container/container.module';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
@@ -48,7 +47,6 @@ import { MatTableModule } from '@angular/material/table';
     ReactiveFormsModule,
     PageLayoutModule,
     MatNativeDateModule,
-    IconModule,
     ContainerModule,
     MatMenuModule,
     TranslateModule,

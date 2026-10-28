@@ -51,7 +51,6 @@ import { GradeLevelService } from '../../../../services/grade-level.service';
 import { GetAllGradeLevelsModel } from '../../../../models/grade-level.model';
 import { EnrollmentCodesService } from '../../../../services/enrollment-codes.service';
 import { EnrollmentCodeListView } from '../../../../models/enrollment-code.model';
-import icListAlt from '@iconify/icons-ic/twotone-list-alt';
 import { MatDialog } from '@angular/material/dialog';
 import { CourseSectionComponent } from '../course-section/course-section.component';
 import { GetAllStudentListForFinalGradeModel } from 'src/app/models/student-final-grade.model';
@@ -67,7 +66,7 @@ import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from 's
 export class SearchStudentComponentForEditReportCardGrades implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(MatAccordion) accordion: MatAccordion;
-  icListAlt = icListAlt;
+  icListAlt = 'list_alt';
   @Output() showHideAdvanceSearch = new EventEmitter<any>();
   @Output() searchList = new EventEmitter<any>();
   @Output() searchValue = new EventEmitter<any>();

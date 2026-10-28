@@ -24,7 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, ElementRef, Inject, OnDestroy, OnInit } from '@angular/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchoolService } from 'src/app/services/school.service';
@@ -43,7 +42,7 @@ import { CommonService } from 'src/app/services/common.service';
 })
 export class AddCopySchoolComponent implements OnInit, OnDestroy {
 
-  icClose = icClose;
+  icClose = 'close';
   schoolFieldList = [{ name: "periods", value: "periods" }, { name: "markingPeriod", value: "markingPeriods" }, { name: "calendar", value: "calendar" }, { name: "sections", value: "sections" }, { name: "rooms", value: "rooms" }, { name: "gradeLevels", value: "gradeLevels" }, { name: "schoolFields", value: "schoolFields" }];
   studentFieldList = [{ name: "studentFields", value: "studentFields" }, { name: "enrollmentCodes", value: "enrollmentCodes" }];
   staffFieldList = [{ name: "staffFields", value: "staffFields" }];

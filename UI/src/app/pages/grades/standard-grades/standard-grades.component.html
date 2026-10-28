@@ -11,11 +11,11 @@
                     <a (click)="selectGradeScale(gradeScale)" class="cursor-pointer">{{gradeScale.gradeScaleName}}</a>
                     <div>
                         <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" class="cursor-pointer mr-3" (click)="editGradeScale(gradeScale)">
-                            <mat-icon [icIcon]="icEdit"></mat-icon>
+                            <mat-icon>{{ icEdit }}</mat-icon>
                         </a>
                         <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" [ngClass]="(gradeScale?.hideDeleteButton)?'disabled':''" class="cursor-pointer"
                             (click)="confirmDeleteGradeScale(gradeScale)">
-                            <mat-icon [icIcon]="icDelete"></mat-icon>
+                            <mat-icon>{{ icDelete }}</mat-icon>
                         </a>
                     </div>
                 </div>
@@ -51,8 +51,7 @@
                 <div class="text-center">
                     <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" class="w-full text-primary" mat-button type="button"
                         (click)='goToAddCategory()'>
-                        <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true" size="24px">
-                        </ic-icon>
+                        <mat-icon class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2">{{ icAdd }}</mat-icon>
                         <span>{{'addGradeScale'|translate}}</span>
                     </button>
                 </div>
@@ -91,12 +90,11 @@
                         </a>
                         <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
                             matTooltip="{{'filterColumns' | translate}}" type="button">
-                            <mat-icon [icIcon]="icFilterList"></mat-icon>
+                            <mat-icon>{{ icFilterList }}</mat-icon>
                         </button>
                         <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" [disabled]="gradeScaleList==null" class="ml-4"
                             fxFlex="none" mat-raised-button type="button" (click)="addGrade()">
-                            <ic-icon [icon]="icAdd" class="" inline="true" size="24px">
-                            </ic-icon>
+                            <mat-icon class="">{{ icAdd }}</mat-icon>
                             <span class="ml-2 hidden md:inline-block">{{'addNewGrade'|translate}}</span>
                         </button>
                     </div>
@@ -138,11 +136,11 @@
                         <mat-cell *matCellDef="let element">
                             <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" matTooltip="{{'editInfo' | translate}}" class="mr-3 cursor-pointer"
                                 (click)="editGrade(element)">
-                                <mat-icon [icIcon]="icEdit"></mat-icon>
+                                <mat-icon>{{ icEdit }}</mat-icon>
                             </a>
                             <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" matTooltip="{{'deleteInfo' | translate}}" (click)="confirmDeleteGrade(element)"
                                 class="mr-3 cursor-pointer">
-                                <mat-icon [icIcon]="icDelete"></mat-icon>
+                                <mat-icon>{{ icDelete }}</mat-icon>
                             </a>
                         </mat-cell>
                     </ng-container>

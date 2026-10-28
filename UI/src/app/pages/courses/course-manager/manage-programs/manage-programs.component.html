@@ -4,7 +4,7 @@
         <h2 class="headline m-0" fxFlex="auto">{{'programs'|translate}}</h2>
     
         <button class="text-secondary"  mat-dialog-close mat-icon-button type="button">
-            <mat-icon [icIcon]="icClose"></mat-icon>
+            <mat-icon>{{ icClose }}</mat-icon>
         </button>
     </div>
     <mat-divider class="-mx-6 text-border"></mat-divider>
@@ -27,10 +27,10 @@
                 </div>        
                 <div class="w-1/4">
                     <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="updateProgram(program,index)" [hidden]="hideDiv[index]" matTooltip="{{'editInfo' | translate}}" class="mr-3 cursor-pointer">
-                        <mat-icon [icIcon]="icEdit"></mat-icon>
+                        <mat-icon>{{ icEdit }}</mat-icon>
                     </a>
                     <a (click)="confirmDelete(program)" *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" [hidden]="hideDiv[index]" matTooltip="{{'deleteInfo' | translate}}" class="mr-3 cursor-pointer">
-                        <mat-icon [icIcon]="icDelete"></mat-icon>
+                        <mat-icon>{{ icDelete }}</mat-icon>
                     </a>
                 </div>
             </div>
@@ -42,7 +42,7 @@
                         <input type="text" [(ngModel)]="addProgramModel.programList[0].programName" name="programName"  #programName="ngModel"  placeholder="Program Name" class="border rounded p-3 w-full box-border focus:border-0 focus:border-none focus:outline-none border-gray-light">                   
                     </div>
                     <div class="w-1/4">
-                        <mat-icon [icIcon]="icAdd"></mat-icon>
+                        <mat-icon>{{ icAdd }}</mat-icon>
                     </div>
                 </div>
             </form>

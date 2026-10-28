@@ -28,7 +28,6 @@ import { FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
-import icSearch from '@iconify/icons-ic/search';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -48,7 +47,7 @@ import { StudentScheduleService } from '../../../../../services/student-schedule
   ]
 })
 export class ScheduledStudentsComponent implements OnInit, AfterViewInit{
-  icSearch = icSearch;
+  icSearch = 'search';
   @Input() courseSectionDetails;
   displayedColumns = ['studentName', 'studentId', 'gradeLevel', 'scheduleDate'];
   @ViewChild(MatPaginator) paginator: MatPaginator;

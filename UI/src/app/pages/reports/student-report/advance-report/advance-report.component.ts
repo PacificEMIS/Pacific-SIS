@@ -1,9 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icPrint from '@iconify/icons-ic/twotone-print';
-import icHome from '@iconify/icons-ic/twotone-home';
-import icMarkunreadMailbox from '@iconify/icons-ic/twotone-markunread-mailbox';
-import icContactPhone from '@iconify/icons-ic/twotone-contact-phone';
 import { StudentListByDateRangeModel } from 'src/app/models/student.model';
 import { StudentService } from 'src/app/services/student.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -19,7 +15,6 @@ import { IdentificationInformation } from 'src/app/enums/identificationInformati
 import { ReportService } from '../../../../services/report.service';
 import { GetStudentAdvancedReportModel } from 'src/app/models/report.model';
 import { ExcelService } from 'src/app/services/excel.service';
-import icFilterList from '@iconify/icons-ic/filter-list';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -88,10 +83,10 @@ export const generateStudentListData: GenerateStudentListData[] = [
 })
 export class AdvanceReportComponent implements OnInit, OnDestroy {
 
-  icPrint = icPrint;
-  icHome = icHome;
-  icMarkunreadMailbox = icMarkunreadMailbox;
-  icContactPhone = icContactPhone;
+  icPrint = 'print';
+  icHome = 'home';
+  icMarkunreadMailbox = 'markunread_mailbox';
+  icContactPhone = 'contact_phone';
   currentTab: string = 'selectStudents';
 
   displayedColumns: string[] = ['studentCheck', 'studentName', 'studentId', 'alternateId', 'gradeLevel', 'section', 'phone'];
@@ -133,7 +128,7 @@ export class AdvanceReportComponent implements OnInit, OnDestroy {
   getStudentAdvancedReportModel: GetStudentAdvancedReportModel = new GetStudentAdvancedReportModel();
   pageSizeForReport: number;
   selectedStudentListForTable: MatTableDataSource<any>;
-  icFilterList = icFilterList;
+  icFilterList = 'filter_list';
 
 
   fieldsDetailsArray = {

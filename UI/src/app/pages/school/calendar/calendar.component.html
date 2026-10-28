@@ -26,16 +26,16 @@
 
           <button type="button" *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary"
             mat-raised-button class="my-4" (click)="openAddNewCalendar()">
-            <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2 ic-inline" inline="true"></ic-icon>
+            <mat-icon class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2 ic-inline" inline>{{ icAdd }}</mat-icon>
             {{'addCalendar' | translate}}
           </button>
           <a *ngIf="showCalendarView && permissions?.edit" class="mx-3" href="javascript:void(0)"
             (click)="openEditCalendar(this.selectedCalendar)">
-            <ic-icon [icon]="icEdit" inline="true" class="text-2xl"></ic-icon>
+            <mat-icon class="text-2xl" inline>{{ icEdit }}</mat-icon>
           </a>
           <a *ngIf="showCalendarView && permissions?.edit && !selectedCalendar.sessionCalendar && this.defaultValuesService.checkAcademicYear()" class="mx-3" href="javascript:void(0)"
             (click)="deleteCalendarConfirm(this.selectedCalendar)">
-            <ic-icon [icon]="icDelete" class="text-2xl" inline="true"></ic-icon>
+            <mat-icon class="text-2xl" inline>{{ icDelete }}</mat-icon>
           </a>
         </div>
         <hr *ngIf="showCalendarView" />
@@ -47,10 +47,10 @@
           <div class="actions flex flex-col sm:flex-row justify-end items-center">
             <div class="chevrons">
               <button [disabled]="isBeforeCalendar(viewDate)" [(viewDate)]="viewDate" [view]="view" mat-icon-button mwlCalendarPreviousView>
-                <mat-icon [icIcon]="icChevronLeft"></mat-icon>
+                <mat-icon>{{ icChevronLeft }}</mat-icon>
               </button>
               <button [disabled]="isAfterCalendar(viewDate)" [(viewDate)]="viewDate" [view]="view" mat-icon-button mwlCalendarNextView>
-                <mat-icon [icIcon]="icChevronRight"></mat-icon>
+                <mat-icon>{{ icChevronRight }}</mat-icon>
               </button>
             </div>
             <div class="flex">

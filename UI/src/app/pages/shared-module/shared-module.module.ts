@@ -8,7 +8,6 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { MatDialogModule} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { IconModule } from '@visurel/iconify-angular';
 import { PhoneMaskDirective } from './directives/phone-mask.directive';
 import { EmtyBooleanCheckPipe } from './user-define-pipe/emty-boolean-check-pipe';
 import { EmtyValueCheckPipe } from './user-define-pipe/emty-value-check.pipe';
@@ -74,7 +73,6 @@ import { PasswordMaskPipe } from './user-define-pipe/password-mask.pipe';
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    IconModule,
     MatCardModule,
     TranslateModule,
     MatFormFieldModule,

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icDelete from '@iconify/icons-ic/twotone-delete-forever';
 import { CommonService } from 'src/app/services/common.service';
 import { DatabaseBackupModel } from 'src/app/models/common.model';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
@@ -15,7 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class DatabaseBackupComponent implements OnInit {
 
-  icDelete = icDelete;
+  icDelete = 'delete_forever';
   databaseBackupModel: DatabaseBackupModel = new DatabaseBackupModel()
   loading: boolean;
   

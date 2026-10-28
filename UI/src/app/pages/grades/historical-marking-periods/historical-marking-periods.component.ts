@@ -1,9 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import icSearch from '@iconify/icons-ic/search';
-import icFilterList from '@iconify/icons-ic/filter-list';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddHistoricalMarkingPeriodsComponent } from './add-historical-marking-periods/add-historical-marking-periods.component';
@@ -28,11 +23,11 @@ import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confi
 })
 export class HistoricalMarkingPeriodsComponent implements OnInit {
 
-  icSearch = icSearch;
-  icFilterList = icFilterList;
-  icAdd = icAdd;
-  icEdit = icEdit;
-  icDelete = icDelete;
+  icSearch = 'search';
+  icFilterList = 'filter_list';
+  icAdd = 'add';
+  icEdit = 'edit';
+  icDelete = 'delete';
   totalCount = 0;
   pageNumber: number;
   pageSize: number;

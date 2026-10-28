@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icMenuBook from '@iconify/icons-ic/twotone-menu-book';
 import { Router } from '@angular/router';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CourseManagerService } from 'src/app/services/course-manager.service';
@@ -18,7 +17,7 @@ import { Subject } from 'rxjs';
 })
 export class ScheduleReportComponent implements OnInit , OnDestroy{
 
-  icMenuBook = icMenuBook;
+  icMenuBook = 'menu_book';
   getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel(); 
   courseList:any;
   loading:boolean = false;

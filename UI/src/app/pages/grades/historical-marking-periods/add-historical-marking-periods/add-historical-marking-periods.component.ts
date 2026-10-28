@@ -1,5 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -42,7 +41,7 @@ export const MY_FORMATS = {
 })
 export class AddHistoricalMarkingPeriodsComponent implements OnInit {
   historyTitle: string;
-  icClose = icClose;
+  icClose = 'close';
   date = new FormControl(moment());
   historicalMarkingPeriodAddViewModel: HistoricalMarkingPeriodAddViewModel = new HistoricalMarkingPeriodAddViewModel();
   form: FormGroup;

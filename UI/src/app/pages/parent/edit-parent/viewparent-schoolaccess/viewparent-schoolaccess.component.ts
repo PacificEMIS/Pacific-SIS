@@ -28,7 +28,6 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { TranslateService } from '@ngx-translate/core';
-import icEdit from '@iconify/icons-ic/twotone-edit';
 
 @Component({
   selector: 'vex-viewparent-schoolaccess',
@@ -42,7 +41,7 @@ import icEdit from '@iconify/icons-ic/twotone-edit';
 })
 export class ViewparentSchoolaccessComponent implements OnInit {
 
-  icEdit = icEdit;
+  icEdit = 'edit';
 
   constructor(public translateService:TranslateService) {
     //translateService.use('en');

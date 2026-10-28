@@ -24,13 +24,11 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { BlockListViewModel } from '../../../../../models/school-period.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SchoolPeriodService } from '../../../../../services/school-period.service';
 import { RoomService } from '../../../../../services/room.service';
 import { RoomListViewModel } from '../../../../../models/room.model';
-import icPlusCircle from '@iconify/icons-ic/add-circle-outline';
 import { BlockedSchedulingCourseSectionAddModel, OutputEmitDataFormat, CourseBlockSchedule, DeleteCourseSectionSchedule } from '../../../../../models/course-section.model';
 import { map } from 'rxjs/operators';
 import { CourseSectionService } from '../../../../../services/course-section.service';
@@ -44,8 +42,8 @@ import { CommonService } from 'src/app/services/common.service';
   styleUrls: ['./rotating-scheduling.component.scss']
 })
 export class RotatingSchedulingComponent implements OnInit {
-  icClose = icClose;
-  icPlusCircle = icPlusCircle;
+  icClose = 'close';
+  icPlusCircle = 'add_circle_outline';
 
   blockListViewModel: BlockListViewModel = new BlockListViewModel();
   roomListViewModel: RoomListViewModel = new RoomListViewModel();

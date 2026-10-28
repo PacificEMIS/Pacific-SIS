@@ -6,7 +6,6 @@ import { InputEffortGradesComponent } from './input-effort-grades.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { IconModule } from '@visurel/iconify-angular';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
 import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,7 +35,6 @@ import { MatInputModule } from '@angular/material/input';
     FlexLayoutModule,
     MatIconModule,
     MatTooltipModule,
-    IconModule,
     SecondaryToolbarModule,
     BreadcrumbsModule,
     MatButtonModule,

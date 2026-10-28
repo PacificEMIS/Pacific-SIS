@@ -2,10 +2,6 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import icClose from '@iconify/icons-ic/twotone-close';
-import icCheck from '@iconify/icons-ic/baseline-check-circle';
-import icSkip from '@iconify/icons-ic/baseline-remove-circle-outline';
-import icWarning from '@iconify/icons-ic/baseline-warning';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CloneCourseSectionsModel } from 'src/app/models/course-manager.model';
 import { GetAcademicYearListModel } from 'src/app/models/marking-period.model';
@@ -26,10 +22,10 @@ import { MarkingPeriodService } from 'src/app/services/marking-period.service';
   styleUrls: ['./clone-course-sections.component.scss']
 })
 export class CloneCourseSectionsComponent implements OnInit {
-  icClose = icClose;
-  icCheck = icCheck;
-  icSkip = icSkip;
-  icWarning = icWarning;
+  icClose = 'close';
+  icCheck = 'check_circle';
+  icSkip = 'remove_circle_outline';
+  icWarning = 'warning';
 
   form: FormGroup;
   loading = false;

@@ -1,12 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { MatPasswordStrengthComponent } from "@angular-material-extensions/password-strength";
 import { ChangePasswordViewModel } from '../../../../models/common.model';
 import { CommonService } from '../../../../services/common.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import icVisibility from '@iconify/icons-ic/twotone-visibility';
-import icVisibilityOff from '@iconify/icons-ic/twotone-visibility-off';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedFunction } from '../../../../pages/shared/shared-function';
 import { DefaultValuesService } from '../../../../common/default-values.service';
@@ -20,9 +17,9 @@ import { MatDialog } from '@angular/material/dialog';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangePasswordComponent implements OnInit {
-  icClose = icClose;
-  icVisibility = icVisibility;
-  icVisibilityOff = icVisibilityOff;
+  icClose = 'close';
+  icVisibility = 'visibility';
+  icVisibilityOff = 'visibility_off';
   changePasswordViewModel: ChangePasswordViewModel = new ChangePasswordViewModel();
   inputType = 'password';
   form: FormGroup;

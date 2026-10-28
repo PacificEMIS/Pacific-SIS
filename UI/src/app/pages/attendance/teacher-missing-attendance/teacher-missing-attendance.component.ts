@@ -26,7 +26,6 @@ All rights reserved.
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import icHowToReg from '@iconify/icons-ic/outline-how-to-reg';
 import { GetStaffModel } from '../../../models/staff.model';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { StaffPortalService } from '../../../services/staff-portal.service';
@@ -50,7 +49,7 @@ import {
 })
 export class TeacherMissingAttendanceComponent implements OnInit {
 
-  icHowToReg = icHowToReg;
+  icHowToReg = 'how_to_reg';
   getStaffModel: GetStaffModel = new GetStaffModel();
   // @Input() courseSectionClass;
   totalCount: number = 0;

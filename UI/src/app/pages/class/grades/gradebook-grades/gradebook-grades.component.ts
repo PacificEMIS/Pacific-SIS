@@ -25,7 +25,6 @@ All rights reserved.
 
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import icSearch from "@iconify/icons-ic/search";
 import { MatDialog } from "@angular/material/dialog";
 import { AddGradeCommentsComponent } from "./add-grade-comments/add-grade-comments.component";
 import { GradeBookConfigurationService } from "src/app/services/gradebook-configuration.service";
@@ -48,7 +47,7 @@ import { GradebookConfigurationAddViewModel } from '../../../../models/gradebook
   providers: [DatePipe]
 })
 export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestroy {
-  icSearch = icSearch;
+  icSearch = 'search';
   currentComponent;
   classGrade = true;
   categoryDetails = false;

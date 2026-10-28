@@ -33,7 +33,7 @@
                     </div>
                     <div class="flex flex-col">
                         <div class="bg-green text-white rounded-l px-4 py-2 text-base font-medium -mr-4 mb-4">{{ 'progressReport' | translate }}</div>
-                        <span class="inline-block text-right cursor-pointer" *ngIf="generatedReportCardData" (click)="generatePdf()"><mat-icon [icIcon]="icPrint"></mat-icon></span>
+                        <span class="inline-block text-right cursor-pointer" *ngIf="generatedReportCardData" (click)="generatePdf()"><mat-icon>{{ icPrint }}</mat-icon></span>
                     </div>
                 </div>
             </div>

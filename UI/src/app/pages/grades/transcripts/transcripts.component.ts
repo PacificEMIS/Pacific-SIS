@@ -25,7 +25,6 @@ All rights reserved.
 
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import icSearch from '@iconify/icons-ic/search';
 import { GetAllGradeLevelsModel } from "../../../models/grade-level.model";
 import { GradeLevelService } from "../../../services/grade-level.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -65,7 +64,7 @@ import { SharedFunction } from "../../shared/shared-function";
   ]
 })
 export class TranscriptsComponent implements OnInit, OnDestroy {
-  icSearch = icSearch;
+  icSearch = 'search';
   columns = [
     { label: '', property: 'selectedStudent', type: 'text', visible: true },
     { label: 'Name', property: 'firstGivenName', type: 'text', visible: true },

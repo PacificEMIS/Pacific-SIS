@@ -9,7 +9,7 @@
         [routerLink]="feature.route"
         [state]="stateObj"
         class="text-dark p-3 text-center hover:bg-hover hover:text-primary trans-ease-out rounded block no-underline">
-       <ic-icon [icon]="feature.icon" class="text-primary" size="32px"></ic-icon>
+       <mat-icon class="text-primary" style="font-size: 32px">{{ feature.icon }}</mat-icon>
        <div class="body-1 mt-2">{{ feature.label | translate}}</div>
      </a>
       </ng-container>

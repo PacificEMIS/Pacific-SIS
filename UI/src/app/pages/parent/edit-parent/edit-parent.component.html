@@ -13,13 +13,13 @@
             <hr class="mt-4"/>
             <div class="px-gutter sm:px-0">
                 <a @fadeInRight *ngIf="showGeneralInfo" (click)='showPage("/school/parents/parent-generalinfo")' [ngClass]=" categoryPath =='/school/parents/parent-generalinfo' ? 'text-primary active' : ''" class="list-item no-underline flex items-center rounded-none" matRipple>
-                    <mat-icon [icIcon]="icGeneralInfo" class="mr-3"></mat-icon> {{'generalInfo' |translate}}
+                    <mat-icon class="mr-3">{{ icGeneralInfo }}</mat-icon> {{'generalInfo' |translate}}
                 </a>
                 <a @fadeInRight *ngIf="showAddressInfo" (click)='showPage("/school/parents/parent-addressinfo")' [ngClass]=" categoryPath =='/school/parents/parent-addressinfo' ? 'text-primary active' : ''" class="list-item no-underline flex items-center rounded-none" matRipple>
-                    <mat-icon [icIcon]="icAddress" class="mr-3"></mat-icon> {{'addressInfo' |translate}}
+                    <mat-icon class="mr-3">{{ icAddress }}</mat-icon> {{'addressInfo' |translate}}
                 </a>
                 <!-- <a @fadeInRight routerLink="" (click)='showPage("School Access")' [ngClass]=" pageId =='School Access' ? 'text-primary active' : ''" class="list-item no-underline flex items-center rounded-none" matRipple>
-                    <mat-icon [icIcon]="icAccessInfo" class="mr-3"></mat-icon> Login Information
+                    <mat-icon class="mr-3">{{ icAccessInfo }}</mat-icon> Login Information
                 </a> -->
             </div>
         </vex-scrollbar>

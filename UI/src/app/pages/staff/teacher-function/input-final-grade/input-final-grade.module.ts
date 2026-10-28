@@ -22,7 +22,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IconModule } from '@visurel/iconify-angular';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -65,7 +64,6 @@ import { CommonStaffListModule } from 'src/app/common/common-staff-list/common-s
     MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule,
-    IconModule,
     MatSnackBarModule,
     SharedModuleModule,
     MatProgressSpinnerModule,

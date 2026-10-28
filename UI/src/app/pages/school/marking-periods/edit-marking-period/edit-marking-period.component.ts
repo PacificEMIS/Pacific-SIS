@@ -25,7 +25,6 @@ All rights reserved.
 
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MarkingPeriodAddModel, SemesterAddModel, QuarterAddModel, ProgressPeriodAddModel } from '../../../../models/marking-period.model';
@@ -60,7 +59,7 @@ const moment = _moment;
 })
 export class EditMarkingPeriodComponent implements OnInit {
 
-  icClose = icClose;
+  icClose = 'close';
   markingPeriodLevel;
   form: FormGroup;
   isEdit;

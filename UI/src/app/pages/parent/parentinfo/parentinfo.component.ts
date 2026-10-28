@@ -24,13 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
-import icAdd from '@iconify/icons-ic/baseline-add';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icSearch from '@iconify/icons-ic/search';
-import icFilterList from '@iconify/icons-ic/filter-list';
-import icImpersonate from '@iconify/icons-ic/twotone-account-circle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -55,7 +48,6 @@ import { PageRolesPermission } from '../../../common/page-roles-permissions.serv
 import { ModuleIdentifier } from '../../../enums/module-identifier.enum';
 import { ImageCropperService } from '../../../services/image-cropper.service';
 import { SchoolCreate } from '../../../enums/school-create.enum';
-import icRestore from '@iconify/icons-ic/twotone-restore';
 import { DataEditInfoComponent } from '../../shared-module/data-edit-info/data-edit-info.component';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -81,15 +73,15 @@ export class ParentinfoComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort
 
-  icMoreVert = icMoreVert;
+  icMoreVert = 'more_vert';
   totalCount: number =0;
-  icAdd = icAdd;
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icSearch = icSearch;
-  icFilterList = icFilterList;
-  icImpersonate = icImpersonate;
-  icRestore = icRestore;
+  icAdd = 'add';
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icSearch = 'search';
+  icFilterList = 'filter_list';
+  icImpersonate = 'account_circle';
+  icRestore = 'restore';
   loading: boolean;
   searchCount: number;
   getAllParentModel: GetAllParentModel = new GetAllParentModel();

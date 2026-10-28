@@ -19,8 +19,8 @@
                     
                     <div class="flex items-center justify-end">
                         <p class="italic text-xs">{{ 'generatedOn' | translate }} {{apiDetails?.createdOn | date: 'longDate'}}</p>
-                        <mat-icon class="cursor-pointer ml-2" (click)="upddateApi(apiDetails);" [icIcon]="icEdit"></mat-icon>
-                        <mat-icon class="cursor-pointer ml-2" (click)="deleteApiKey(apiDetails);" [icIcon]="icDeleteForever"></mat-icon>
+                        <mat-icon class="cursor-pointer ml-2" (click)="upddateApi(apiDetails);">{{ icEdit }}</mat-icon>
+                        <mat-icon class="cursor-pointer ml-2" (click)="deleteApiKey(apiDetails);">{{ icDeleteForever }}</mat-icon>
                     </div>
                 </div>
                 <div class="bg-skyblue-light px-4 pt-2 pb-3 my-4">
@@ -30,7 +30,7 @@
                                 <span class="break-words">{{apiDetails?.apiKey}}</span></p>
                         </div>
                         <div class="sm:flex">
-                            <mat-icon class="cursor-pointer" (click)="copyToClipboard(apiDetails?.apiKey)" [icIcon]="icContentCopy"></mat-icon>
+                            <mat-icon class="cursor-pointer" (click)="copyToClipboard(apiDetails?.apiKey)">{{ icContentCopy }}</mat-icon>
                             <mat-icon class="cursor-pointer ml-2"  (click)="regenerateApiKey(apiDetails)">refresh</mat-icon>
                         </div>
                     </div>

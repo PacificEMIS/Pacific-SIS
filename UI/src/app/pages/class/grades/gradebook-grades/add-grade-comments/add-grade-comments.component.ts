@@ -26,7 +26,6 @@ All rights reserved.
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import icClose from '@iconify/icons-ic/twotone-close';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
@@ -35,7 +34,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
   styleUrls: ['./add-grade-comments.component.scss']
 })
 export class AddGradeCommentsComponent implements OnInit {
-  icClose = icClose;
+  icClose = 'close';
   isThisCurrentYeare;
   constructor(
     private dialogRef: MatDialogRef<AddGradeCommentsComponent>,

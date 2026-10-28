@@ -27,11 +27,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
-import icEdit from '@iconify/icons-ic/twotone-edit';
-import icDelete from '@iconify/icons-ic/twotone-delete';
-import icSearch from '@iconify/icons-ic/twotone-search';
-import icAdd from '@iconify/icons-ic/twotone-add';
-import icFilterList from '@iconify/icons-ic/twotone-filter-list';
 import { EditRoomComponent } from '../rooms/edit-room/edit-room.component';
 import { RoomDetailsComponent } from '../rooms/room-details/room-details.component';
 
@@ -63,11 +58,11 @@ import { LoVSortOrderValuesModel, UpdateLovSortingModel } from 'src/app/models/l
 })
 export class RoomsComponent implements OnInit {
 
-  icEdit = icEdit;
-  icDelete = icDelete;
-  icSearch = icSearch;
-  icAdd = icAdd;
-  icFilterList = icFilterList;
+  icEdit = 'edit';
+  icDelete = 'delete';
+  icSearch = 'search';
+  icAdd = 'add';
+  icFilterList = 'filter_list';
   roomaddviewmodel: RoomAddView = new RoomAddView();
   roomListViewModel: RoomListViewModel = new RoomListViewModel();
   updateLovSortingModel: UpdateLovSortingModel = new UpdateLovSortingModel();

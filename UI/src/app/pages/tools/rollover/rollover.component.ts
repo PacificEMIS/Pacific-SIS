@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import icWarning from '@iconify/icons-ic/warning';
 import { FinalGradingMarkingPeriodList } from '../../../models/gradebook-configuration.model';
 import { GradeBookConfigurationService } from '../../../services/gradebook-configuration.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -24,7 +23,7 @@ import { RolloverSummaryDialogComponent } from './rollover-summary-dialog/rollov
 })
 export class RolloverComponent implements OnInit {
 
-  icWarning = icWarning;
+  icWarning = 'warning';
   loading: boolean;
   @ViewChild('f') currentForm: NgForm;
   f: NgForm;

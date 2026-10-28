@@ -12,8 +12,8 @@
    
     <button (click)="toggleCollapse()" *ngIf="showCollapsePin$ | async"
       class="expand-btn w-8 h-8 -mr-2 leading-none flex-none hidden lg:block text-black" mat-icon-button type="button">
-      <mat-icon *ngIf="!collapsed" [icIcon]="icCollapseSidebar" size="20px"></mat-icon>
-      <mat-icon *ngIf="collapsed" [icIcon]="icExpandSidebar" size="20px"></mat-icon>
+      <mat-icon *ngIf="!collapsed" style="font-size: 20px">{{ icCollapseSidebar }}</mat-icon>
+      <mat-icon *ngIf="collapsed" style="font-size: 20px">{{ icExpandSidebar }}</mat-icon>
     </button>
   </div>
 
@@ -29,7 +29,7 @@
     <div>
       <button 
               [matMenuTriggerFor]="addNewMenu" (click)="expandSidebar()" class="absolute right-0 top-3"
-              type="button"><mat-icon [icIcon]="icArrowDropDown" size="20px"></mat-icon>
+              type="button"><mat-icon style="font-size: 20px">{{ icArrowDropDown }}</mat-icon>
       </button>
 
       <mat-menu #addNewMenu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
@@ -62,6 +62,6 @@
 </div>
 <button (click)="toggleCollapse()" *ngIf="showCollapsePin$ | async"
   class="collapse-btn w-8 h-8 -mr-2 leading-none flex-none hidden lg:block text-black" mat-icon-button type="button">
-  <mat-icon *ngIf="!collapsed" [icIcon]="icCollapseSidebar" size="20px"></mat-icon>
-  <mat-icon *ngIf="collapsed" [icIcon]="icExpandSidebar" size="20px"></mat-icon>
+  <mat-icon *ngIf="!collapsed" style="font-size: 20px">{{ icCollapseSidebar }}</mat-icon>
+  <mat-icon *ngIf="collapsed" style="font-size: 20px">{{ icExpandSidebar }}</mat-icon>
 </button>

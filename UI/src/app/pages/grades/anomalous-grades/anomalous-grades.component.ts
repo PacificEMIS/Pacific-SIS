@@ -4,7 +4,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
-import icSearch from '@iconify/icons-ic/search';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -26,7 +25,7 @@ import { AllScheduledCourseSectionForStaffModel } from '../../../models/teacher-
 export class AnomalousGradesComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  icSearch = icSearch;
+  icSearch = 'search';
   loading = false;
   searchCtrl = new FormControl();
   includeInactive = false;

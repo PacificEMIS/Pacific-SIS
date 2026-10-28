@@ -20,7 +20,7 @@
     {{'schoolYearIsEndingOrHasEndedRollOverRequiredGoToToolsRolloverToStartTheRolloverProcess'|translate}}
   </div>
   <div class="card px-6 py-4 bg-red mb-4 text-white hide cursor-pointer" *ngIf="missingAttendanceCount>0" (click)="goToMissingAttendence()">
-    <mat-icon [icIcon]="icMissingAttendance" class="align-middle mr-3"></mat-icon> {{missingAttendanceCount}}
+    <mat-icon class="align-middle mr-3">{{ icMissingAttendance }}</mat-icon> {{missingAttendanceCount}}
     {{'missingAttendanceFound'|translate}}
   </div>
   <div *ngIf="noticeList.length>0" class="card mb-4 px-4 pt-4">
