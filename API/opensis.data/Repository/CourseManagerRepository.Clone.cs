@@ -288,25 +288,25 @@ namespace opensis.data.Repository
             if (source.PrgrsprdMarkingPeriodId != null && ctx.ProgressPeriodsById.TryGetValue(source.PrgrsprdMarkingPeriodId.Value, out var pp))
             {
                 sourceTitle = pp.Title;
-                if (ctx.TargetProgressPeriodsByTitle.TryGetValue(NormalizeTitle(pp.Title), out var t))
+                if (ctx.MatchProgressPeriod(pp) is { } t)
                     matched = new MarkingPeriodRef(t.MarkingPeriodId, t.Title, t.StartDate, t.EndDate, m => section.PrgrsprdMarkingPeriodId = m);
             }
             else if (source.QtrMarkingPeriodId != null && ctx.QuartersById.TryGetValue(source.QtrMarkingPeriodId.Value, out var q))
             {
                 sourceTitle = q.Title;
-                if (ctx.TargetQuartersByTitle.TryGetValue(NormalizeTitle(q.Title), out var t))
+                if (ctx.MatchQuarter(q) is { } t)
                     matched = new MarkingPeriodRef(t.MarkingPeriodId, t.Title, t.StartDate, t.EndDate, m => section.QtrMarkingPeriodId = m);
             }
             else if (source.SmstrMarkingPeriodId != null && ctx.SemestersById.TryGetValue(source.SmstrMarkingPeriodId.Value, out var s))
             {
                 sourceTitle = s.Title;
-                if (ctx.TargetSemestersByTitle.TryGetValue(NormalizeTitle(s.Title), out var t))
+                if (ctx.MatchSemester(s) is { } t)
                     matched = new MarkingPeriodRef(t.MarkingPeriodId, t.Title, t.StartDate, t.EndDate, m => section.SmstrMarkingPeriodId = m);
             }
             else if (source.YrMarkingPeriodId != null && ctx.YearsById.TryGetValue(source.YrMarkingPeriodId.Value, out var y))
             {
                 sourceTitle = y.Title;
-                if (ctx.TargetYearsByTitle.TryGetValue(NormalizeTitle(y.Title), out var t))
+                if (ctx.MatchYear(y) is { } t)
                     matched = new MarkingPeriodRef(t.MarkingPeriodId, t.Title, t.StartDate, t.EndDate, m => section.YrMarkingPeriodId = m);
             }
 
@@ -763,19 +763,23 @@ namespace opensis.data.Repository
 
                 var years = db.SchoolYears.Where(y => y.TenantId == tenantId && y.SchoolId == schoolId).ToList();
                 YearsById = years.GroupBy(y => y.MarkingPeriodId).ToDictionary(g => g.Key, g => g.First());
+                Years = years;
                 TargetYearsByTitle = ByTitle(years.Where(y => y.AcademicYear == TargetYear).OrderBy(y => y.MarkingPeriodId), y => y.Title);
                 TargetSchoolYear = years.Where(y => y.AcademicYear == TargetYear).OrderBy(y => y.StartDate).ThenBy(y => y.MarkingPeriodId).FirstOrDefault();
 
                 var semesters = db.Semesters.Where(s => s.TenantId == tenantId && s.SchoolId == schoolId).ToList();
                 SemestersById = semesters.GroupBy(s => s.MarkingPeriodId).ToDictionary(g => g.Key, g => g.First());
+                SemesterList = semesters;
                 TargetSemestersByTitle = ByTitle(semesters.Where(s => s.AcademicYear == TargetYear).OrderBy(s => s.MarkingPeriodId), s => s.Title);
 
                 var quarters = db.Quarters.Where(q => q.TenantId == tenantId && q.SchoolId == schoolId).ToList();
                 QuartersById = quarters.GroupBy(q => q.MarkingPeriodId).ToDictionary(g => g.Key, g => g.First());
+                QuarterList = quarters;
                 TargetQuartersByTitle = ByTitle(quarters.Where(q => q.AcademicYear == TargetYear).OrderBy(q => q.MarkingPeriodId), q => q.Title);
 
                 var progressPeriods = db.ProgressPeriods.Where(p => p.TenantId == tenantId && p.SchoolId == schoolId).ToList();
                 ProgressPeriodsById = progressPeriods.GroupBy(p => p.MarkingPeriodId).ToDictionary(g => g.Key, g => g.First());
+                ProgressPeriodList = progressPeriods;
                 TargetProgressPeriodsByTitle = ByTitle(progressPeriods.Where(p => p.AcademicYear == TargetYear).OrderBy(p => p.MarkingPeriodId), p => p.Title);
 
                 SourceFixed = db.CourseFixedSchedule.Where(r => r.TenantId == tenantId && r.SchoolId == schoolId && sourceIds.Contains(r.CourseSectionId)).ToList().ToLookup(r => r.CourseSectionId);
@@ -831,6 +835,37 @@ namespace opensis.data.Repository
             public Dictionary<int, SchoolYears> YearsById { get; }
             public Dictionary<string, SchoolYears> TargetYearsByTitle { get; }
             public SchoolYears? TargetSchoolYear { get; }
+            public List<SchoolYears> Years { get; }
+            public List<Semesters> SemesterList { get; }
+            public List<Quarters> QuarterList { get; }
+            public List<ProgressPeriods> ProgressPeriodList { get; }
+
+            public SchoolYears? MatchYear(SchoolYears source) => Match(source, TargetYearsByTitle, Years, y => y.Title, y => y.AcademicYear, y => y.StartDate, y => y.MarkingPeriodId);
+            public Semesters? MatchSemester(Semesters source) => Match(source, TargetSemestersByTitle, SemesterList, s => s.Title, s => s.AcademicYear, s => s.StartDate, s => s.MarkingPeriodId);
+            public Quarters? MatchQuarter(Quarters source) => Match(source, TargetQuartersByTitle, QuarterList, q => q.Title, q => q.AcademicYear, q => q.StartDate, q => q.MarkingPeriodId);
+            public ProgressPeriods? MatchProgressPeriod(ProgressPeriods source) => Match(source, TargetProgressPeriodsByTitle, ProgressPeriodList, p => p.Title, p => p.AcademicYear, p => p.StartDate, p => p.MarkingPeriodId);
+
+            /// <summary>
+            /// Finds the target-year marking period for a source one: by title first, otherwise the one at the
+            /// same position (by start date) when both years have the same number of periods at that level.
+            /// Titles often carry the year ("School Year 2025-2026"), so a title miss alone is not a mismatch.
+            /// </summary>
+            private T? Match<T>(T source, IReadOnlyDictionary<string, T> targetByTitle, List<T> all, Func<T, string?> title, Func<T, decimal?> year, Func<T, DateTime?> start, Func<T, int> id) where T : class
+            {
+                if (targetByTitle.TryGetValue(NormalizeTitle(title(source)), out var byTitle))
+                {
+                    return byTitle;
+                }
+                var sourceYear = year(source);
+                var sourceList = all.Where(x => year(x) == sourceYear).OrderBy(start).ThenBy(id).ToList();
+                var targetList = all.Where(x => year(x) == TargetYear).OrderBy(start).ThenBy(id).ToList();
+                if (sourceList.Count == 0 || sourceList.Count != targetList.Count)
+                {
+                    return null;
+                }
+                var index = sourceList.FindIndex(x => id(x) == id(source));
+                return index < 0 ? null : targetList[index];
+            }
             public Dictionary<int, Semesters> SemestersById { get; }
             public Dictionary<string, Semesters> TargetSemestersByTitle { get; }
             public Dictionary<int, Quarters> QuartersById { get; }

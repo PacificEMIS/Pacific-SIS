@@ -615,6 +615,63 @@ namespace opensis.NunitTest.CourseManager
         }
 
         [Test]
+        public void Clone_MapsSchoolYearByPositionWhenTitlesCarryTheYear()
+        {
+            using (var db = factory.Create()!)
+            {
+                db.SchoolYears.Single(y => y.MarkingPeriodId == Year2024).Title = "School Year 2024-2025";
+                db.SchoolYears.Single(y => y.MarkingPeriodId == Year2025).Title = "School Year 2025-2026";
+                db.SaveChanges();
+            }
+
+            var result = Clone();
+            var report = ResultFor(result, MathA);
+            Assert.IsTrue(report.Cloned, report.Reason);
+            Assert.AreEqual(Year2025, NewSection(result, MathA).YrMarkingPeriodId);
+            Assert.IsFalse(report.Warnings.Any(w => w.Contains("Marking period")), string.Join(" / ", report.Warnings));
+        }
+
+        [Test]
+        public void Clone_MapsRenamedSemesterByPosition()
+        {
+            using (var db = factory.Create()!)
+            {
+                db.Semesters.Single(s => s.MarkingPeriodId == Semester2025).Title = "S1";
+                db.SaveChanges();
+            }
+
+            var result = Clone();
+            var report = ResultFor(result, MathB);
+            Assert.IsTrue(report.Cloned, report.Reason);
+
+            var section = NewSection(result, MathB);
+            Assert.AreEqual(Semester2025, section.SmstrMarkingPeriodId);
+            Assert.AreEqual(Start2025, section.DurationStartDate);
+            Assert.AreEqual(new DateTime(2025, 6, 27), section.DurationEndDate);
+            Assert.IsFalse(report.Warnings.Any(w => w.Contains("Marking period")), string.Join(" / ", report.Warnings));
+        }
+
+        [Test]
+        public void Clone_DoesNotMapByPositionWhenTheYearHasADifferentNumberOfSemesters()
+        {
+            using (var db = factory.Create()!)
+            {
+                db.Semesters.Single(s => s.MarkingPeriodId == Semester2025).Title = "Term 1";
+                db.Semesters.Add(new Semesters { TenantId = Tenant, SchoolId = School, MarkingPeriodId = 99, YearId = Year2025, Title = "Term 2", AcademicYear = Y2025, StartDate = new DateTime(2025, 6, 28), EndDate = End2025 });
+                db.SaveChanges();
+            }
+
+            var result = Clone();
+            var report = ResultFor(result, MathB);
+            Assert.IsTrue(report.Cloned, report.Reason);
+
+            var section = NewSection(result, MathB);
+            Assert.IsNull(section.SmstrMarkingPeriodId);
+            Assert.AreEqual(Year2025, section.YrMarkingPeriodId);
+            Assert.IsTrue(report.Warnings.Any(w => w.Contains("Semester 1") && w.Contains("Full Year")), string.Join(" / ", report.Warnings));
+        }
+
+        [Test]
         public void Clone_LeavesGradeScaleBlankWhenMissingInTargetYear()
         {
             using (var db = factory.Create()!)
