@@ -1,6 +1,6 @@
 <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 <vex-page-layout>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16">
         <vex-secondary-toolbar current="{{'accessLog'}}" class="w-full">
             <vex-breadcrumbs [crumbs]="['reports']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -34,10 +34,9 @@
             </div>
             <mat-divider></mat-divider>
             <div *ngIf="isVisible">
-            <div class="bg-white px-4 md:h-14 border-b sticky left-0" fxLayout="row"
-                fxLayoutAlign="start center">
+            <div class="bg-white px-4 md:h-14 border-b sticky left-0">
                 <div class="md:flex w-full justify-between">
-                    <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
+                    <div class="py-2">
                         <div class="md:flex w-full items-center">
                             <input [formControl]="searchCtrl" class="px-2 py-3 border-0 outline-none w-full bg-transparent table-search"
                                 placeholder="Search..." type="search">
@@ -52,7 +51,7 @@
                         <a class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}" (click)="exportAccessLogListToExcel()">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
-                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button matTooltip="{{'filterColumns' | translate}}" type="button">
+                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" mat-icon-button matTooltip="{{'filterColumns' | translate}}" type="button">
                             <mat-icon>filter_list</mat-icon>
                         </button>
                         <button mat-raised-button color="primary" class="ml-4" (click)="onDelete();">

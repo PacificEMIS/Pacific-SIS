@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { RoomDetailsComponent } from './room-details.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
@@ -18,7 +17,6 @@ import { TranslateModule } from '@ngx-translate/core';
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
-    FlexLayoutModule,
     MatDividerModule,
     TranslateModule,
     SharedModuleModule

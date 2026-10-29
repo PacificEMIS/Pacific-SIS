@@ -1,5 +1,5 @@
 <vex-page-layout>
-    <vex-page-layout-header [ngClass]="pageId=='Staff Bulk Data Import'?'':'pb-16'" fxLayout="column" fxLayoutAlign="center start">        
+    <vex-page-layout-header [ngClass]="pageId=='Staff Bulk Data Import'?'':'pb-16'">        
         <vex-secondary-toolbar current={{pageTitle}} [schoolSettings]="staffSettings" [pages]="pages" (selectedPage)="getSelectedPage($event)" class="w-full">
             <vex-breadcrumbs [crumbs]="['settings','staffSettings']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>

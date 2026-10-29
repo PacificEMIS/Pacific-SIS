@@ -1,6 +1,6 @@
 <div *ngIf="showCopyAssignment">
-    <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-        <h2 class="headline m-0" fxFlex="auto">
+    <div class="fx-row fx-align-start-center" mat-dialog-title>
+        <h2 class="headline m-0 fx-auto">
             {{ "selectCourseSectionsToCopyAssignment" | translate }}
         </h2>
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
@@ -23,14 +23,14 @@
             <li class="mb-2">{{'noRecordFound' | translate }}</li>
         </ul>
     </mat-dialog-content>
-    <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="pb-4">
+    <mat-dialog-actions class="pb-4 fx-row fx-align-end-center">
         <button  mat-dialog-close mat-flat-button>{{ 'cancel' | translate }}</button>
         <button color="primary" mat-flat-button type="submit" class="text-white ml-2" (click)="showSuccessMsg()">{{ 'copyAssignment' |translate }}</button>
     </mat-dialog-actions>
 </div>
 
 <div *ngIf="showSuccessAssignment">
-    <div fxLayout="row" mat-dialog-title class="flex w-full justify-end mb-0">
+    <div mat-dialog-title class="flex w-full justify-end mb-0 fx-row">
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
             <mat-icon>{{ icClose }}</mat-icon>
         </button>

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { DashboardAnalyticsRoutingModule } from './dashboard-analytics-routing.module';
 import { DashboardAnalyticsComponent } from './dashboard-analytics.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatIconModule } from '@angular/material/icon';
 import { WidgetQuickValueCenterModule } from '@vex/components/widgets/widget-quick-value-center/widget-quick-value-center.module';
 import { WidgetAssistantModule } from '@vex/components/widgets/widget-assistant/widget-assistant.module';
@@ -30,7 +29,6 @@ import { MatDividerModule } from '@angular/material/divider';
       useFactory: adapterFactory
     }),
     DashboardAnalyticsRoutingModule,
-    FlexLayoutModule,
     MatIconModule,
     MatTooltipModule,
     WidgetQuickValueCenterModule,

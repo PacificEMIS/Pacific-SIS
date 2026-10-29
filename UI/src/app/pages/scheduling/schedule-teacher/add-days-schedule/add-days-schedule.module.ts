@@ -4,7 +4,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -22,7 +21,6 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
     MatDialogModule,
     MatIconModule,
     TranslateModule,
-    FlexLayoutModule,
     ReactiveFormsModule,
     MatButtonModule,
     MatNativeDateModule,

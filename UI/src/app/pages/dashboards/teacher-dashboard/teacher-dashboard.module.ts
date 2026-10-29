@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { TeacherDashboardRoutingModule } from './teacher-dashboard-routing.module';
 import { TeacherDashboardComponent } from './teacher-dashboard.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
@@ -27,7 +26,6 @@ import { SharedModuleModule } from '../../shared-module/shared-module.module';
       useFactory: adapterFactory
     }),
     TeacherDashboardRoutingModule,
-    FlexLayoutModule,
     MatIconModule,
     MatTooltipModule,
     SecondaryToolbarModule,

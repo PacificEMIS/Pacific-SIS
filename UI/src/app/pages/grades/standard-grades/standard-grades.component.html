@@ -60,11 +60,10 @@
     </div>
 
     <div class="lg:w-9/12" *ngIf="gradeScaleList.length !== 0">
-        <div class=" border rounded">
-            <div class="bg-white px-4 md:h-16 border-b sticky left-0 pb-4 md:pb-0" fxLayout="row" fxLayoutAlign="start center">
+        <div class="border rounded">
+            <div class="bg-white px-4 md:h-16 border-b sticky left-0 pb-4 md:pb-0">
                 <div class="md:flex w-full justify-between">
-                    <div class="py-2" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
-                        fxLayoutAlign="start center">
+                    <div class="py-2">
 
                         <div class="flex">
                             <input matInput [(ngModel)]="searchKey" (keyup)="applyFilter()"
@@ -83,18 +82,17 @@
 
                     <hr class="-mx-3 block md:inline-block" />
 
-                    <div fxFlex="200px" class="pt-3">
+                    <div class="pt-3">
                         <a (click)="exportToExcel()" class="cursor-pointer inline-block align-middle"
                             matTooltip="{{'exportToExcel' | translate}}">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
-                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
+                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" mat-icon-button
                             matTooltip="{{'filterColumns' | translate}}" type="button">
                             <mat-icon>{{ icFilterList }}</mat-icon>
                         </button>
-                        <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" [disabled]="gradeScaleList==null" class="ml-4"
-                            fxFlex="none" mat-raised-button type="button" (click)="addGrade()">
-                            <mat-icon class="">{{ icAdd }}</mat-icon>
+                        <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" [disabled]="gradeScaleList==null" class="ml-4" mat-raised-button type="button" (click)="addGrade()">
+                            <mat-icon>{{ icAdd }}</mat-icon>
                             <span class="ml-2 hidden md:inline-block">{{'addNewGrade'|translate}}</span>
                         </button>
                     </div>

@@ -1,6 +1,6 @@
 <vex-page-layout>
     <vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16">
         <vex-secondary-toolbar current="{{'studentReEnroll'}}" class="w-full">
             <vex-breadcrumbs [crumbs]="['student']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -71,10 +71,9 @@
                 </h5>
             </div>
             <mat-divider></mat-divider>
-            <div class="bg-white px-5 lg:h-16 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+            <div class="bg-white px-5 lg:h-16 border-b sticky left-0">
                 <div class="lg:flex w-full justify-between pb-4 lg:pb-0">
-                    <div class="py-2 md:py-3" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
-                    fxLayoutAlign="start center">
+                    <div class="py-2 md:py-3">
                         <div class="flex items-center">
                             <input [formControl]="searchCtrl"
                                 class="pr-4 py-3 border-0 outline-none w-full bg-transparent" placeholder="Search..."
@@ -93,8 +92,7 @@
                     <div class="pt-3">
                         <a class="cursor-pointer inline-block align-middle" (click)="exportToExcelReenroll()"
                             matTooltip="{{'exportToExcel' | translate}}"><img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24"></a>
-                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-2 inline-block align-middle"
-                            fxFlex="none" mat-icon-button matTooltip="{{'filterColumns' | translate}}" type="button">
+                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-2 inline-block align-middle" mat-icon-button matTooltip="{{'filterColumns' | translate}}" type="button">
                             <mat-icon>filter_list</mat-icon>
                         </button>
                         <mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">

@@ -4,7 +4,6 @@ import { SidenavItemComponent } from './sidenav-item.component';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
@@ -14,7 +13,6 @@ import { TranslateModule } from '@ngx-translate/core';
     RouterModule,
     MatIconModule,
     MatRippleModule,
-    FlexLayoutModule,
     TranslateModule
   ],
   exports: [SidenavItemComponent]

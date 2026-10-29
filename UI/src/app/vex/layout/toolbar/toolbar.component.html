@@ -1,14 +1,14 @@
-<div class="toolbar w-full px-gutter" fxLayout="row" fxLayoutAlign="start center" vexContainer>
-  <button (click)="openSidenav()" [fxHide]="!mobileQuery" mat-icon-button type="button">
+<div class="toolbar w-full px-gutter fx-row fx-align-start-center" vexContainer>
+  <button (click)="openSidenav()" mat-icon-button type="button" [class.fx-hide]="!mobileQuery">
     <mat-icon>{{ icMenu }}</mat-icon>
   </button>
 
   <a [routerLink]="['/school/dashboards']"
      class="ltr:ml-2 rtl:ml-2 small-mobile-logo">
     <!-- <img class="w-8 select-none" src="assets/img/demo/logo.svg">
-    <h1 [fxHide]="mobileQuery" class="title ltr:pl-4 rtl:pr-4 m-0 select-none">VEX</h1> -->
+    <h1 class="title ltr:pl-4 rtl:pr-4 m-0 select-none" [class.fx-hide]="mobileQuery">VEX</h1> -->
     <img [src]="'data:image/jpeg;base64,'+tenantLogoIcon" class="w-8 select-none" [alt]="tenantName+' Logo'">
-    <!-- <h1 [fxHide]="mobileQuery" class="title ltr:pl-4 rtl:pr-4 m-0 select-none"><img src="assets/img/opensistext.png"></h1> -->
+    <!-- <h1 class="title ltr:pl-4 rtl:pr-4 m-0 select-none" [class.fx-hide]="mobileQuery"><img src="assets/img/opensistext.png"></h1> -->
   </a>
 
   <div #megaMenuOriginRef class="rtl:mr-2">
@@ -36,15 +36,11 @@
   </div>
 
   <!-- <div *ngIf="(isVerticalLayout$ | async) && isNavbarInToolbar$ | async"
-       [fxHide]="mobileQuery"
-       class="px-gutter"
-       fxFlex="none"
-       fxLayout="row"
-       fxLayoutAlign="start center">
+       class="px-gutter fx-none fx-row fx-align-start-center" [class.fx-hide]="mobileQuery">
     <vex-navigation-item *ngFor="let item of navigationItems" [item]="item"></vex-navigation-item>
   </div> -->
 
-  <span fxFlex></span>
+  <span class="fx-grow"></span>
 
   <div class="items-right">
     <div class="px-1">

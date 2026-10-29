@@ -1,6 +1,6 @@
 <vex-page-layout>
     <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16">
         <vex-secondary-toolbar current="{{ 'administration' }}" class="w-full">
             <vex-breadcrumbs [crumbs]="['grades']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -27,11 +27,9 @@
 
                     <div *ngIf="currentComponent === 'editReportGradesList'">
                         <p class="px-6 py-4 text-base">{{'selectAStudentToEditReportCardGrades' | translate}}</p>
-                        <div class="bg-white px-5 border-b border-t sticky left-0" fxLayout="row"
-                            fxLayoutAlign="start center">
+                        <div class="bg-white px-5 border-b border-t sticky left-0">
                             <div class="md:flex w-full justify-between items-center">
-                                <div class="py-2" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
-                                    fxLayoutAlign="start center">
+                                <div class="py-2">
                                     <div class="flex items-center">
                                         <input [formControl]="reportSearchCtrl" class="pr-4 py-3 border-0 outline-none w-full bg-transparent"
                                             placeholder="Search..." type="search">
@@ -167,18 +165,16 @@
                     <div *ngIf="currentComponent === 'historicalGradesList'">
                         <p class="px-6 py-4 text-base">{{'selectAStudentToAddEditHistoricalReportCardGrades' |
                             translate}}</p>
-                        <div class="bg-white px-5 border-b border-t sticky left-0" fxLayout="row"
-                            fxLayoutAlign="start center">
+                        <div class="bg-white px-5 border-b border-t sticky left-0">
                             <div class="md:flex w-full justify-between items-center">
-                                <div class="py-2" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
-                                    fxLayoutAlign="start center">
+                                <div class="py-2">
                                     <div class="flex items-center">
                                         <input [formControl]="histSearchCtrl"
                                         class="pr-4 py-3 border-0 outline-none w-full bg-transparent"
                                         placeholder="Search..." type="search">
                                     <img *ngIf="loading" src="assets/img/icons/loading-process.svg"
                                         class="animate-spin w-5" alt="Loader icon">
-                                    <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button
+                                    <button *ngIf="!loading" class="ml-4" mat-icon-button
                                         type="button">
                                         <mat-icon>{{ icSearch }}</mat-icon>
                                     </button>

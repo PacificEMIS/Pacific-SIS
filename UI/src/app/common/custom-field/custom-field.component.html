@@ -8,7 +8,7 @@
                 <mat-card-content class="mb-0">
                     <div *ngIf="schoolCustomFields?.length > 0">
 
-                        <div class="pt-6" @stagger fxLayout="column">
+                        <div class="pt-6" @stagger>
                             <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
                                 <li *ngFor="let customField of schoolCustomFields; let index = index"
                                     [ngSwitch]="customField.type">
@@ -123,8 +123,8 @@
         </mat-card>
     </div>
     <div *ngIf="schoolCreateMode == SchoolCreate.VIEW">
-        <mat-card @fadeInUp class="w-full" fxFlex="auto">
-            <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+        <mat-card @fadeInUp class="w-full">
+            <div class="flex items-center">
                 <h3 class="flex-auto">{{ categoryTitle }}</h3>
                 <div *ngIf="schoolCustomFields?.length > 0">
                     <button *ngIf="schoolPermissions?.edit" mat-raised-button color="primary" (click)="editOtherInfo()">
@@ -136,7 +136,7 @@
 
             <mat-card-content>
                 <div *ngIf="schoolCustomFields?.length > 0">
-                    <div class="">
+                    <div>
                         <div class="py-6">
                             <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
                                 <li *ngFor="let customField of schoolCustomFields; let index = index">
@@ -176,7 +176,7 @@
                 <form (ngSubmit)="submit()" #f="ngForm" novalidate appInvalidControlScroll>
                     <h3 class="font-medium">{{ categoryTitle }}</h3>
                     <mat-card-content class="mb-0">
-                        <div class="pt-6" @stagger fxLayout="column">
+                        <div class="pt-6" @stagger>
                             <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
                                 <li *ngFor="let customField of studentAddViewModel.fieldsCategoryList[categoryId].customFields; let index = index"
                                     [ngSwitch]="customField.type">
@@ -294,8 +294,8 @@
         </mat-card>
     </div>
     <div *ngIf="studentCreateMode == SchoolCreate.VIEW">
-        <mat-card @fadeInUp class="w-full" fxFlex="auto">
-            <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+        <mat-card @fadeInUp class="w-full">
+            <div class="flex items-center">
                 <h3 class="flex-auto">{{ categoryTitle }}</h3>
                 <div *ngIf="studentCustomFields?.length > 0">
                     <button *ngIf="studentPermissions?.edit" mat-raised-button color="primary"
@@ -350,7 +350,7 @@
                     <h3 class="font-medium">{{ categoryTitle }}</h3>
                     <mat-card-content class="mb-0">
 
-                        <div class="pt-6" @stagger fxLayout="column">
+                        <div class="pt-6" @stagger>
                             <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
                                 <li *ngFor="let customField of staffCustomFields; let index = index"
                                     [ngSwitch]="customField.type">
@@ -468,8 +468,8 @@
         </mat-card>
     </div>
     <div *ngIf="staffCreateMode == SchoolCreate.VIEW">
-        <mat-card @fadeInUp class="w-full" fxFlex="auto">
-            <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+        <mat-card @fadeInUp class="w-full">
+            <div class="flex items-center">
                 <h3 class="flex-auto">{{ categoryTitle }}</h3>
                 <div *ngIf="staffCustomFields?.length > 0">
                     <button *ngIf="staffPermissions?.edit" mat-raised-button color="primary" (click)="editOtherInfo()">

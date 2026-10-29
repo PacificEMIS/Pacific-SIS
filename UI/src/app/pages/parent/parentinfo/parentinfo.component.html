@@ -1,5 +1,5 @@
 <vex-page-layout>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16">
         <vex-secondary-toolbar current="{{'parentsList'}}" class="w-full">
             <vex-breadcrumbs [crumbs]="['parent']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -8,7 +8,7 @@
     <vex-page-layout-content class="-mt-6">
 
         <div class="card -mt-16">
-            <div class="bg-white px-6 md:h-16 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+            <div class="bg-white px-6 md:h-16 border-b sticky left-0">
 
                 <div class="flex w-full justify-between">
                     <div class="py-3 w-4/6 md:w-10/12">
@@ -19,7 +19,7 @@
                             class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
                             type="search">
                             <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
-                            <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button
+                            <button *ngIf="!loading" class="ml-4" mat-icon-button
                                 type="button">
                                 <mat-icon>{{ icSearch }}</mat-icon>
                             </button>
@@ -36,7 +36,7 @@
                             matTooltip="{{'exportToExcel' | translate}}">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
-                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
+                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" mat-icon-button
                             matTooltip="{{'filterColumns' | translate}}" type="button">
                             <mat-icon>{{ icFilterList }}</mat-icon>
                         </button>

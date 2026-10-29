@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ViewSiblingComponent } from './view-sibling.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,7 +19,6 @@ import {SharedModuleModule} from '../../../../shared-module/shared-module.module
     MatButtonModule,
     MatDialogModule,
     MatNativeDateModule,
-    FlexLayoutModule,
     MatDividerModule,
     MatMenuModule,
     TranslateModule,

@@ -1,8 +1,8 @@
 <div class="card">
-    <div class="bg-white px-4 md:h-16 border-b sticky left-0 pb-2 md:pb-0" fxLayout="row" fxLayoutAlign="start center">
+    <div class="bg-white px-4 md:h-16 border-b sticky left-0 pb-2 md:pb-0 fx-row fx-align-start-center">
         <div class="md:flex w-full justify-between">
-            <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
-                <div class="flex items-center w-full">
+            <div class="py-2 fx-row fx-align-start-center">
+                <div class="flex items-center w-full fx-parent">
                     <!-- <input matInput class="py-3 border-0 outline-none w-full bg-transparent" appearance="outline"
                         color="primary" placeholder="Search..." type="search">
                     <button class="ml-4" mat-icon-button type="button">
@@ -17,25 +17,25 @@
                             type="search"><mat-icon>{{ icSearch }}</mat-icon>
                        
                             <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
-                            <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button
+                            <button *ngIf="!loading" class="ml-4 fx-none fx-hide-gt-xs" mat-icon-button
                                 type="button">
                                 <mat-icon>{{ icSearch }}</mat-icon>
                             </button>
-                            <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
+                            <button class="ml-4 fx-none fx-hide-gt-xs" mat-icon-button type="button">
                                 <mat-icon>{{ icSearch }}</mat-icon>
                             </button>
                             <mat-slide-toggle color="primary" class="ml-6 align-middle" [(ngModel)]="showInactiveStudents" (change)="includeInactiveStudents($event)"><span class="hidden md:inline-block">{{'includeInactiveStudents' | translate}}</span><span class="inline-block md:hidden">{{'inactive' | translate}}</span></mat-slide-toggle>
                 </div>
             </div>
             <hr class="block md:hidden -mx-4" />
-            <div class="pt-2 items-center">
+            <div class="pt-2 items-center fx-parent">
                 <a class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}"
                     (click)="exportToExcel()">
                     <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                 </a>
 
                 <button [matMenuTriggerFor]="columnFilterMenu" class="ml-2 
-                    inline-block align-middle" fxFlex="none" mat-icon-button matTooltip="{{'filterColumns' | translate}}" type="button">
+                    inline-block align-middle fx-none" mat-icon-button matTooltip="{{'filterColumns' | translate}}" type="button">
                     <mat-icon>filter_list</mat-icon>
                 </button>
             </div>

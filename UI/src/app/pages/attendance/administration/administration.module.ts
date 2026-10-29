@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AdministrationRoutingModule } from './administration-routing.module';
 import { AdministrationComponent } from './administration.component';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
@@ -12,7 +13,6 @@ import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module
 import { ContainerModule } from '@vex/directives/container/container.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { ScrollbarModule } from '@vex/components/scrollbar/scrollbar.module';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDividerModule } from '@angular/material/divider';
@@ -41,6 +41,7 @@ import { SearchStudentModule } from 'src/app/common/search-student/search-studen
     CommonModule,
     AdministrationRoutingModule,
     MatIconModule,
+    MatDialogModule,
     MatCardModule,
     MatSidenavModule,
     SecondaryToolbarModule,
@@ -49,7 +50,6 @@ import { SearchStudentModule } from 'src/app/common/search-student/search-studen
     ContainerModule,
     TranslateModule,
     ScrollbarModule,
-    FlexLayoutModule,
     MatTableModule,
     MatPaginatorModule,
     MatDividerModule,

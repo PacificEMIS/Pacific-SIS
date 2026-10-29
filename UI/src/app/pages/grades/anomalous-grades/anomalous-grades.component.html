@@ -1,6 +1,6 @@
 <vex-page-layout>
     <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16">
         <vex-secondary-toolbar current="{{ 'anomalousGrades' | translate }}" class="w-full">
             <vex-breadcrumbs [crumbs]="['grades']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -8,9 +8,9 @@
 
     <vex-page-layout-content class="-mt-6">
         <div class="card -mt-16 mb-6">
-            <div class="px-4 md:h-16 border-b sticky left-0 pb-4 md:pb-0" fxLayout="row" fxLayoutAlign="start center">
+            <div class="px-4 md:h-16 border-b sticky left-0 pb-4 md:pb-0">
                 <div class="md:flex w-full justify-between items-center">
-                    <div class="py-3 flex items-center" fxFlex="auto">
+                    <div class="py-3 flex items-center">
                         <input [formControl]="searchCtrl"
                                class="py-3 border-0 outline-none bg-transparent"
                                placeholder="{{ 'search' | translate }}..."
@@ -20,7 +20,7 @@
                         </button>
                     </div>
 
-                    <div class="py-3 flex items-center gap-4 flex-wrap" fxFlex="none">
+                    <div class="py-3 flex items-center gap-4 flex-wrap">
                         <mat-form-field appearance="outline" class="w-64">
                             <mat-label>{{ 'courseSection' | translate }}</mat-label>
                             <mat-select [(value)]="selectedCourseSectionId" (selectionChange)="onCourseSectionChange()">

@@ -1,5 +1,5 @@
 <vex-page-layout>
-  <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+  <vex-page-layout-header class="pb-16">
     <vex-secondary-toolbar current="{{'schoolsList'}}" class="w-full">
       <vex-breadcrumbs [crumbs]="['school']" class="flex-auto"></vex-breadcrumbs>
     </vex-secondary-toolbar>
@@ -8,34 +8,33 @@
   <vex-page-layout-content class="-mt-6">
 
     <div class="card -mt-16">
-      <div class="bg-white px-4 lg:px-6 lg:h-16 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+      <div class="bg-white px-4 lg:px-6 lg:h-16 border-b sticky left-0">
         <div class="lg:flex w-full justify-between pb-4 lg:pb-0">
-          <div class="py-2 md:py-3" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
-            fxLayoutAlign="start center">
+          <div class="py-2 md:py-3">
 
             <div class="flex">
               <input [formControl]="searchCtrl" class="pr-4 py-3 border-0 outline-none w-full bg-transparent"
                 placeholder="Search..." type="search">
               <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
-              <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
+              <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
                 <mat-icon>{{ icSearch }}</mat-icon>
               </button>
             </div>
           </div>
 
           <hr class="lg:hidden -mx-6">
-          <div fxFlex="350px" class="pt-3">
+          <div class="pt-3">
                       <mat-slide-toggle color="primary" class="mr-6 align-middle" [(ngModel)]="showInactiveSchools" (change)="includeInactiveSchools($event)"><span class="hidden md:inline-block">{{'showInactiveSchool' | translate}}</span><span class="inline-block md:hidden">{{'inactive' | translate}}</span></mat-slide-toggle>
             <a (click)="exportSchoolListToExcel()" class="cursor-pointer inline-block align-middle"
               matTooltip="{{'exportToExcel' | translate}}"><img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24"></a>
-            <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
+            <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" mat-icon-button
               matTooltip="{{'filterColumns' | translate}}" type="button">
               <mat-icon>{{ icFilterList }}</mat-icon>
             </button>
 
-            <button *ngIf="permissions.add" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
+            <button *ngIf="permissions.add" color="primary" class="ml-4" mat-raised-button type="button"
               (click)='goToAdd()'>
-              <mat-icon class="">{{ icAdd }}</mat-icon>
+              <mat-icon>{{ icAdd }}</mat-icon>
               <span class="hidden md:inline-block ml-2">{{'addNewSchool' | translate}}</span>
             </button>
           </div>

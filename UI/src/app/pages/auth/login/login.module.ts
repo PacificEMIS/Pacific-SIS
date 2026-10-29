@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { LoginRoutingModule } from './login-routing.module';
 import { LoginComponent } from './login.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +20,6 @@ import {MatSelectModule} from '@angular/material/select';
   imports: [
     CommonModule,
     LoginRoutingModule,
-    FlexLayoutModule,
     ReactiveFormsModule,
     MatInputModule,
     MatIconModule,

@@ -2,7 +2,7 @@
 <div class="card">
     <div class="px-6 py-4">
         <form [formGroup]="form">
-            <!-- <mat-form-field fxFlex="auto" class="md:mb-0 md:mr-4 block md:inline-block" appearance="outline"
+            <!-- <mat-form-field class="md:mb-0 md:mr-4 block md:inline-block" appearance="outline"
                 color="primary">
                 <mat-label>{{'Subject'|translate}}</mat-label>
                 <mat-select name="subject" formControlName="subject" required>
@@ -14,7 +14,7 @@
                 </mat-error>
             </mat-form-field>
 
-            <mat-form-field fxFlex="auto" class="md:mb-0 md:mr-4 block md:inline-block" appearance="outline"
+            <mat-form-field class="md:mb-0 md:mr-4 block md:inline-block" appearance="outline"
                 color="primary">
                 <mat-label>{{'course'|translate}}</mat-label>
                 <mat-select name="course"  formControlName="course">
@@ -26,7 +26,7 @@
                 </mat-error>
             </mat-form-field> -->
 
-            <mat-form-field fxFlex="auto" class="md:mb-0 md:mr-4 block md:inline-block" appearance="outline"
+            <mat-form-field class="md:mb-0 md:mr-4 block md:inline-block" appearance="outline"
                 color="primary">
                 <mat-label>{{'gradeLevel'|translate}}</mat-label>
                 <mat-select name="gradeLevel" formControlName="gradeLevel">
@@ -44,9 +44,9 @@
         </form>
     </div>
     <hr />
-    <div class="bg-white px-6 md:h-16 border-b sticky left-0 pb-4 md:pb-0" fxLayout="row" fxLayoutAlign="start center">
+    <div class="bg-white px-6 md:h-16 border-b sticky left-0 pb-4 md:pb-0">
         <div class="md:flex w-full justify-between">
-            <div class="py-3" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row" fxLayoutAlign="start center">
+            <div class="py-3">
 
                 <div class="flex">
                     <input [formControl]="searchCtrl" name="search"
@@ -60,7 +60,7 @@
             </div>
 
             <hr class="-mx-6 block md:inline-block" />
-            <div fxFlex="200px" class="pt-3">
+            <div class="pt-3">
                 <!-- <a class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Update">
                     <mat-icon>{{ icUpdate }}</mat-icon>
                 </a> -->
@@ -68,13 +68,13 @@
                     matTooltip="{{'exportToExcel' | translate}}" (click)="exportSchoolSpecificStandardsListToExcel()" >
                     <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                 </a>
-                <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
+                <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" mat-icon-button
                     matTooltip="{{'filterColumns' | translate}}" type="button">
                     <mat-icon>{{ icFilterList }}</mat-icon>
                 </button>
-                <button color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button" [disabled]="isDisabled"
+                <button color="primary" class="ml-4" mat-raised-button type="button" [disabled]="isDisabled"
                 (click)="addUsStandardData()">
-                    <mat-icon class="">{{ icImport }}</mat-icon>
+                    <mat-icon>{{ icImport }}</mat-icon>
                     <span class="ml-2 hidden md:inline-block">{{'loadUsCommonCoreStandards'|translate}}</span>
                 </button>
             </div>

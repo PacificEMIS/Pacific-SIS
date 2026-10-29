@@ -1,9 +1,9 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
 
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto" *ngIf="isEdit; else add">{{'editMarkingPeriod' | translate}}</h2>
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto" *ngIf="isEdit; else add">{{'editMarkingPeriod' | translate}}</h2>
     <ng-template #add>
-        <h2 class="headline m-0" fxFlex="auto" >{{'addMarkingPeriod' | translate}}</h2>
+        <h2 class="headline m-0 fx-auto">{{'addMarkingPeriod' | translate}}</h2>
       </ng-template>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
         <mat-icon>{{ icClose }}</mat-icon>
@@ -11,7 +11,7 @@
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
 
-<mat-dialog-content fxLayout="column">
+<mat-dialog-content class="fx-column">
     <mat-form-field class="mt-6" appearance="outline" color="primary">
         <mat-label>{{'title' | translate}}</mat-label>
         <input formControlName="title"  [(ngModel)]="markingPeriodAddModel.tableSchoolYears.title"  name="title" cdkFocusInitial matInput required>
@@ -74,14 +74,14 @@
             </div>
         </div>
     </div>
-        <div fxLayout="row" fxLayoutGap="25px">
+        <div class="fx-row fx-gap-25">
         <mat-checkbox formControlName="doesGrades" (click) = "checkGrade(markingPeriodAddModel.tableSchoolYears.doesGrades)"[(ngModel)]="markingPeriodAddModel.tableSchoolYears.doesGrades" color="primary">{{'graded' | translate}}</mat-checkbox>
         <mat-checkbox formControlName="doesExam" [(ngModel)]="markingPeriodAddModel.tableSchoolYears.doesExam" color="primary">{{'exam' | translate}}</mat-checkbox>
         <mat-checkbox formControlName="doesComments" [(ngModel)]="markingPeriodAddModel.tableSchoolYears.doesComments" color="primary">{{'comments' | translate}}</mat-checkbox>
     </div>
 </mat-dialog-content>
 
-<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+<mat-dialog-actions class="py-6 fx-row fx-align-end-center">
     <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
     <button color="primary" mat-raised-button type="submit" >{{isEdit? "Update" : "Submit"}}</button>    
 </mat-dialog-actions>

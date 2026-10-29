@@ -1,7 +1,7 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto" *ngIf="addStandard; else addNewCourseTitle">
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto" *ngIf="addStandard; else addNewCourseTitle">
         <a routerLink="" (click)="closeStandardsSelection()" class="text-primary cursor-pointer"><mat-icon matTooltip="{{'backToPrevious' | translate}}" class="mr-3 align-middle">{{ icBack }}</mat-icon></a>{{'addStandardTo'|translate}} <span class="text-green font-bold">{{addCourseModel.course.courseTitle}}</span></h2>
-    <ng-template #addNewCourseTitle><h2 [ngClass]="addStandard?'hidden':''" class="headline m-0" fxFlex="auto">{{courseModalTitle | translate}}</h2></ng-template>
+    <ng-template #addNewCourseTitle><h2 [ngClass]="addStandard?'hidden':''" class="headline m-0 fx-auto">{{courseModalTitle | translate}}</h2></ng-template>
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
             <mat-icon>{{ icClose }}</mat-icon>
         </button>
@@ -10,7 +10,7 @@
 
 
 <div *ngIf="addStandard">
-    <mat-dialog-content fxLayout="column" class="p-0">
+    <mat-dialog-content class="p-0 fx-column">
         <div class="custom-tabs">
             <ul class="flex border-b">
                 <li [ngClass]="{'active': showUsCommonCoreStandards}" (click)="changeCategory(true)"><a class="cursor-pointer px-6 py-4 inline-block hover:bg-skyblue-light">{{'usCommonCoreStandards'|translate}}</a></li>
@@ -178,14 +178,14 @@
     <hr/>
       
     </mat-dialog-content>
-    <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+    <mat-dialog-actions class="py-6 fx-row fx-align-end-center">
         <button mat-button  type="button" (click)="closeStandardsSelection()">{{'cancel' | translate}}</button>
         <button color="primary" *ngIf="this.defaultValuesService.checkAcademicYear()" mat-raised-button type="submit" (click)="goToCourse()">{{'addStandards' | translate}}</button>
     </mat-dialog-actions>
 </div>
 
     <form  [ngClass]="addStandard?'hidden':''" #f="ngForm" appInvalidControlScroll novalidate>
-    <mat-dialog-content fxLayout="column">
+    <mat-dialog-content class="fx-column">
         <mat-form-field class="w-full mt-6" appearance="outline" color="primary">
             <mat-label>{{'title' | translate}}</mat-label>
             <input type="text" [readonly]="!this.defaultValuesService.checkAcademicYear()"  [(ngModel)]="addCourseModel.course.courseTitle" name="courseTitle" #courseTitle="ngModel" matInput required>
@@ -295,7 +295,7 @@
 
     </mat-dialog-content>
 
-    <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+    <mat-dialog-actions class="py-6 fx-row fx-align-end-center">
         <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
         <button color="primary" *ngIf="this.defaultValuesService.checkAcademicYear()" (click) ="submit()" mat-raised-button type="submit">{{courseModalActionTitle | translate}}</button>
     </mat-dialog-actions>

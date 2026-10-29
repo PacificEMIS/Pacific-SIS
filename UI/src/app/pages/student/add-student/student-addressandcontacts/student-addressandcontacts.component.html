@@ -5,11 +5,11 @@
             <h3 class="font-medium">{{'addressAndContact'|translate}}</h3>
         <mat-card-content>
 
-            <div @stagger fxLayout="column">
+            <div class="fx-column" @stagger>
                 <h4 class="text-primary pt-6 pb-2">{{'studentHomeAddress'|translate}}</h4>
                 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'streetAddress1'|translate}}</mat-label>
                             <input [(ngModel)]="studentAddModel.studentMaster.homeAddressLineOne"
                                 name="homeAddressLineOne" #homeAddressLineOne="ngModel" matInput required>
@@ -17,15 +17,15 @@
                                 {{'streetAddress1IsRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'streetAddress2'|translate}}</mat-label>
                             <input [(ngModel)]="studentAddModel.studentMaster.homeAddressLineTwo"
                                 name="homeAddressLineTwo" matInput>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'country'|translate}}</mat-label>
                             <mat-select 
                                 [(ngModel)]="studentAddModel.studentMaster.homeAddressCountry" name="country" #countryCtrl="ngModel" required>
@@ -40,8 +40,8 @@
                                 {{'countryIsRequired'|translate}}</mat-error> 
                         </mat-form-field>
                     </li> 
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'stateProvinceLocality'|translate}}</mat-label>
                             <input [(ngModel)]="studentAddModel.studentMaster.homeAddressState" name="homeAddressState"
                                 #homeAddressState="ngModel" matInput required>
@@ -49,8 +49,8 @@
                                 {{'stateProvinceLocalityIsRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'city'|translate}}</mat-label>
                             <input [(ngModel)]="studentAddModel.studentMaster.homeAddressCity" name="homeAddressCity"
                                 #homeAddressCity="ngModel" matInput required>
@@ -58,8 +58,8 @@
                                 {{'cityIsRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'zipPostalCode'|translate}}</mat-label>
                             <input [(ngModel)]="studentAddModel.studentMaster.homeAddressZip" maxlength="20"
                                 #homeAddressZip="ngModel" name="homeAddressZip" matInput required>
@@ -67,8 +67,8 @@
                                 {{'zipPostalCodeIsRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'busNo'|translate}}</mat-label>
                             <input [(ngModel)]="studentAddModel.studentMaster.busNo" name="busNo" matInput>
                         </mat-form-field>
@@ -91,24 +91,24 @@
                         {{'sameAsHomeAddress' | translate}}</mat-checkbox>
                 </div>
                 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'streetAddress1'|translate}}</mat-label>
                             <input [disabled]="checkBox.checked"
                                 [(ngModel)]="studentAddModel.studentMaster.mailingAddressLineOne"
                                 name="mailingAddressLineOne" matInput>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'streetAddress2'|translate}}</mat-label>
                             <input [disabled]="checkBox.checked"
                                 [(ngModel)]="studentAddModel.studentMaster.mailingAddressLineTwo"
                                 name="mailingAddressLineTwo" matInput>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'country'|translate}}</mat-label>
                             <mat-select [disabled]="checkBox.checked"
                                 [(ngModel)]="studentAddModel.studentMaster.mailingAddressCountry"
@@ -120,24 +120,24 @@
                             </mat-select>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'stateProvinceLocality'|translate}}</mat-label>
                             <input [disabled]="checkBox.checked"
                                 [(ngModel)]="studentAddModel.studentMaster.mailingAddressState"
                                 name="mailingAddressState" matInput>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'city'|translate}}</mat-label>
                             <input [disabled]="checkBox.checked"
                                 [(ngModel)]="studentAddModel.studentMaster.mailingAddressCity" name="mailingAddressCity"
                                 matInput>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'zip/Postal Code'|translate}}</mat-label>
                             <input [disabled]="checkBox.checked"
                                 [(ngModel)]="studentAddModel.studentMaster.mailingAddressZip" maxlength="20"
@@ -150,8 +150,8 @@
 
                 <h4 class="text-primary pb-2 pt-10">{{'personalContactInformation'|translate}}</h4>
                 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'homePhone'|translate}}</mat-label>
                             <input #homePhone="ngModel" maxlength="20" minlength="10"
                                 [(ngModel)]="studentAddModel.studentMaster.homePhone" name="homePhone" matInput>
@@ -161,8 +161,8 @@
                                     {{'minLengthTelephoneNumber'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'mobilePhone'|translate}}</mat-label>
                             <input maxlength="20" minlength="10" [(ngModel)]="studentAddModel.studentMaster.mobilePhone"
                                 #mobilePhone="ngModel" name="mobilePhone" matInput>
@@ -173,8 +173,8 @@
                                 {{'minLengthTelephoneNumber'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'personalEmail'|translate}}</mat-label>
                             <input [(ngModel)]="studentAddModel.studentMaster.personalEmail" appEmailvalidator
                                 #personalEmail="ngModel" name="personalEmail" matInput>
@@ -183,8 +183,8 @@
                             </mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'schoolEmail'|translate}}</mat-label>
                             <input [(ngModel)]="studentAddModel.studentMaster.schoolEmail" appEmailvalidator
                                 #schoolEmail="ngModel" name="schoolEmail" matInput>
@@ -194,8 +194,8 @@
 
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'twitter'|translate}}</mat-label>
                             <input [(ngModel)]="studentAddModel.studentMaster.twitter" appTwitterLinkValidator
                             #twitter="ngModel" name="twitter" matInput>
@@ -203,8 +203,8 @@
                             {{'pleaseProvideAValidTwitterLink' | translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'facebook'|translate}}</mat-label>
                             <input [(ngModel)]="studentAddModel.studentMaster.facebook" appFacebookLinkValidator
                             #facebook="ngModel" name="facebook" matInput>
@@ -212,8 +212,8 @@
                             {{'pleaseProvideAValidFacebookLink' | translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'instagram'|translate}}</mat-label>
                             <input [(ngModel)]="studentAddModel.studentMaster.instagram" appInstagramLinkValidator
                             #instagram="ngModel" name="instagram" matInput>
@@ -221,8 +221,8 @@
                             {{'pleaseProvideAValidInstagramLink' | translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'youtube'|translate}}</mat-label>
                             <input [(ngModel)]="studentAddModel.studentMaster.youtube" appYoutubeLinkValidator
                             #youtube="ngModel" name="youtube" matInput>
@@ -230,8 +230,8 @@
                             {{'pleaseProvideAValidYoutubeLink' | translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'linkedIn'|translate}}</mat-label>
                             <input [(ngModel)]="studentAddModel.studentMaster.linkedin" appLinkedinLinkValidator
                             #linkedin="ngModel" name="linkedin" matInput>
@@ -255,7 +255,7 @@
 
 <mat-card class="w-full" *ngIf="studentCreateMode == studentCreate.VIEW">
 
-    <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+    <div class="flex items-center fx-row fx-align-center-center">
         <h3 class="font-medium flex-auto">{{'addressAndContact' | translate}}</h3>
         <button *ngIf="permissions?.edit" mat-raised-button (click)="editAddressContactInfo()" color="primary">
             <mat-icon class="md:mr-2">{{ icEdit }}</mat-icon> <span class="hidden md:inline-block">{{'editInformation' |translate}}</span>

@@ -1,8 +1,7 @@
-<div class="secondary-toolbar " fxLayout="row">
-  <div fxFlex="auto" fxLayout="row" fxLayoutAlign="start center" vexContainer>
+<div class="secondary-toolbar fx-row">
+  <div class="fx-auto fx-row fx-align-start-center" vexContainer>
     <h1 *ngIf="current && !schoolSettings"
-      class="subheading-2 font-medium m-0 ltr:pr-3 rtl:pl-3 ltr:border-r rtl:border-l ltr:mr-3 rtl:ml-3"
-      fxFlex.xs="auto">{{ current|translate }}</h1>
+      class="subheading-2 font-medium m-0 ltr:pr-3 rtl:pl-3 ltr:border-r rtl:border-l ltr:mr-3 rtl:ml-3 fx-xs-auto">{{ current|translate }}</h1>
       <h1 *ngIf="schoolSettings" class="flex items-center subheading-2 font-medium m-0 ltr:pr-3 rtl:pl-3 ltr:border-r rtl:border-l ltr:mr-3 rtl:ml-3 cursor-pointer" [matMenuTriggerFor]="menu">{{selectedValue | translate }}<mat-icon class="ml-2">{{ icDropdown }}</mat-icon></h1>
     <ng-content></ng-content>
     <!-- <button class="flex" color="primary" type="button"><mat-icon>{{ icSearch }}</mat-icon> <span class="hidden md:inline-block ml-1">Search</span></button> -->

@@ -6,27 +6,27 @@
         </div>
         <mat-card-content #schoolInfo class="mb-0">
 
-        <div @stagger fxLayout="column">
+        <div class="fx-column" @stagger>
                 <h4 class="text-primary pb-2">{{'officialInformation'|translate}}</h4>
                 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
-                    <li class="md:col-span-2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="md:col-span-2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'jobTitle'|translate}}</mat-label>
                         <input #jobTitle="ngModel" name="jobTitle" matInput required [disabled]="isReadOnly" [(ngModel)]="staffSchoolInfoModel.jobTitle">
                         <mat-error *ngIf="jobTitle.errors?.required">{{'jobTitleIsRequired'|translate}}
                         </mat-error>
                     </mat-form-field>
                     </li>
-                    <li>
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'joiningDate'|translate}}</mat-label>
                         <input matInput name="joiningDate" [disabled]="isReadOnly" [matDatepicker]="picker1" [(ngModel)]="staffSchoolInfoModel.joiningDate">
                         <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                         <mat-datepicker #picker1></mat-datepicker>
                     </mat-form-field>
                     </li>
-                    <li>
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'endDate'|translate}}</mat-label>
                         <input matInput name="endDate" [disabled]="isReadOnly" [matDatepicker]="picker" [(ngModel)]="staffSchoolInfoModel.endDate">
                         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -161,7 +161,7 @@
 
 <mat-card class="w-full" *ngIf="staffCreateMode == staffCreate.VIEW">
 
-    <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+    <div class="flex items-center fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'schoolInformation' | translate}}</h3>
         <button *ngIf="permissions.edit" (click)="editSchoolInfo()" mat-raised-button color="primary">
             <mat-icon>{{ icEdit }}</mat-icon> <span class="hidden md:inline-block ml-2">{{'editInformation' |translate}}</span>
@@ -169,7 +169,7 @@
     </div>
     <mat-card-content>
 
-        <div @stagger fxLayout="column">
+        <div class="fx-column" @stagger>
             <h4 class="text-primary pt-6 pb-2">{{'officialInformation'|translate}}</h4>
             <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-6 md:row-gap-10">
                 <li>

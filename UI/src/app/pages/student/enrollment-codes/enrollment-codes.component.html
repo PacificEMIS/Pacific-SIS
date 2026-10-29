@@ -1,7 +1,7 @@
 <vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
-<div class="bg-white px-6 mb:h-16 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+<div class="bg-white px-6 mb:h-16 border-b sticky left-0">
     <div class="md:flex w-full justify-between pb-4 md:pb-0">
-        <div class="py-3" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row" fxLayoutAlign="start center">
+        <div class="py-3">
 
             <div class="flex">
                 <input matInput [(ngModel)]="searchKey" (keyup)="applyFilter()"
@@ -19,18 +19,18 @@
         </div>
         <hr class="md:hidden -mx-6">
 
-        <div fxFlex="200px" class="pt-3">
-            <button (click)="exportEnrollmentCodesToExcel()" fxFlex="none" mat-icon-button matTooltip="{{'exportToExcel' | translate}}"
+        <div class="pt-3">
+            <button (click)="exportEnrollmentCodesToExcel()" mat-icon-button matTooltip="{{'exportToExcel' | translate}}"
                 type="button" class="inline-block align-middle">
                 <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
             </button>
 
-            <button [matMenuTriggerFor]="columnFilterMenu" class="ml-2" fxFlex="none" mat-icon-button
+            <button [matMenuTriggerFor]="columnFilterMenu" class="ml-2" mat-icon-button
                 matTooltip="{{'filterColumns' | translate}}" type="button">
                 <mat-icon>{{ icFilterList }}</mat-icon>
             </button>
 
-            <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
+            <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" mat-raised-button type="button"
                 (click)='goToAdd()'>
                 <mat-icon>{{ icAdd }}</mat-icon>
                 <span class="ml-2 hidden md:inline-block">{{'addNewEnrollmentCode'|translate}}</span>

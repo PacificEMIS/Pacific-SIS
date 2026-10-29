@@ -33,7 +33,6 @@ import { SharedModuleModule } from '../../shared-module/shared-module.module';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ScrollbarModule } from '@vex/components/scrollbar/scrollbar.module';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -131,7 +130,6 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     MatCheckboxModule,
     MatExpansionModule,
     ScrollbarModule,
-    FlexLayoutModule,
     NgxDropzoneModule,
     MatTableModule,
     MatMenuModule,

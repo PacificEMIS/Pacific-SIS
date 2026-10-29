@@ -1,6 +1,6 @@
 <div *ngIf=" !isAddMode && !isEditMode">
-    <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title class="mb-3">
-        <h3 class="m-0" fxFlex="auto"><span class="event-color"
+    <div mat-dialog-title class="mb-3 fx-row fx-align-start-center">
+        <h3 class="m-0 fx-auto"><span class="event-color"
                 [style.backgroundColor]="calendarEventAddViewModel.schoolCalendarEvent.eventColor"></span>{{calendarEventAddViewModel.schoolCalendarEvent.title}}<br />
                 
             <small class="text-xs ml-6"><span *ngIf="calendarEventAddViewModel.schoolCalendarEvent.isHoliday" class="holiday mr-2">{{'holiday'| translate}}</span>{{calendarEventAddViewModel.schoolCalendarEvent.startDate | date:'longDate'}} -
@@ -41,8 +41,8 @@
     </mat-card-content>
 </div>
 <div *ngIf="isAddMode">
-    <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-        <h2 class="headline m-0" fxFlex="auto">{{calendarEventTitle | translate}}</h2>
+    <div class="fx-row fx-align-start-center" mat-dialog-title>
+        <h2 class="headline m-0 fx-auto">{{calendarEventTitle | translate}}</h2>
 
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
             <mat-icon>{{ icClose }}</mat-icon>
@@ -64,7 +64,7 @@
         <div *ngSwitchCase="'event'">
             <form [formGroup]="form" (ngSubmit)="submitCalendarEvent()">
                 <mat-dialog-content>
-                    <div fxLayout="column">
+                    <div class="fx-column">
                         <mat-form-field class="mt-6" appearance="outline" color="primary">
                             <mat-label>{{'title' | translate}}</mat-label>
                             <input formControlName="title" name="title" class="title-scroll" cdkFocusInitial matInput required>
@@ -145,7 +145,7 @@
                     </div>
                 </mat-dialog-content>
 
-                <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+                <mat-dialog-actions class="py-6 fx-row fx-align-end-center">
                     <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
                     <button mat-raised-button color="primary" type="submit">{{calendarEventActionButtonTitle |
                         translate}}</button>
@@ -155,7 +155,7 @@
         <div *ngSwitchCase="'holiday'">
             <form [formGroup]="form" (ngSubmit)="submitHolidayEvent()">
                 <mat-dialog-content>
-                    <div fxLayout="column">
+                    <div class="fx-column">
                         <mat-form-field class="mt-6" appearance="outline" color="primary">
                             <mat-label>{{'title' | translate}}</mat-label>
                             <input formControlName="title" name="title" class="title-scroll" cdkFocusInitial matInput required>
@@ -207,7 +207,7 @@
                         </div>
                     </div>
                 </mat-dialog-content>
-                <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+                <mat-dialog-actions class="py-6 fx-row fx-align-end-center">
                     <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
                     <button mat-raised-button color="primary" type="submit">{{calendarEventActionButtonTitle |
                         translate}}</button>
@@ -218,8 +218,8 @@
 </div>
 
 <div *ngIf="isEditMode">
-    <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-        <h2 class="headline m-0" fxFlex="auto">{{calendarEventTitle | translate}}</h2>
+    <div class="fx-row fx-align-start-center" mat-dialog-title>
+        <h2 class="headline m-0 fx-auto">{{calendarEventTitle | translate}}</h2>
 
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
             <mat-icon>{{ icClose }}</mat-icon>
@@ -229,7 +229,7 @@
     <div *ngIf="calendarEventAddViewModel.schoolCalendarEvent.isHoliday">
         <form [formGroup]="form" (ngSubmit)="submitHolidayEvent()">
             <mat-dialog-content>
-                <div fxLayout="column">
+                <div class="fx-column">
                     <mat-form-field class="mt-6" appearance="outline" color="primary">
                         <mat-label>{{'title' | translate}}</mat-label>
                         <input formControlName="title" name="title" cdkFocusInitial matInput required>
@@ -279,7 +279,7 @@
                     </div>
                 </div>
             </mat-dialog-content>
-            <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+            <mat-dialog-actions class="py-6 fx-row fx-align-end-center">
                 <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
                 <button mat-raised-button color="primary" type="submit">{{calendarEventActionButtonTitle |
                     translate}}</button>
@@ -289,7 +289,7 @@
     <div  *ngIf="!calendarEventAddViewModel.schoolCalendarEvent.isHoliday">
         <form [formGroup]="form" (ngSubmit)="submitCalendarEvent()">
             <mat-dialog-content>
-                <div fxLayout="column">
+                <div class="fx-column">
                     <mat-form-field class="mt-6" appearance="outline" color="primary">
                         <mat-label>{{'title' | translate}}</mat-label>
                         <input formControlName="title" name="title" cdkFocusInitial matInput required>
@@ -364,7 +364,7 @@
                 </div>
             </mat-dialog-content>
 
-            <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+            <mat-dialog-actions class="py-6 fx-row fx-align-end-center">
                 <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
                 <button mat-raised-button color="primary" type="submit">{{calendarEventActionButtonTitle |
                     translate}}</button>

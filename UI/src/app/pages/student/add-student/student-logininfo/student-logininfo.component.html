@@ -3,10 +3,10 @@
         <mat-card-title>{{'loginInformation'|translate}}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <div @stagger fxLayout="column">
+        <div class="fx-column" @stagger>
             <div class="mb-2 md:flex md:flex-wrap">
-                <div class="flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'username'|translate}}</mat-label>
                         <input name="username" matInput required>
                     </mat-form-field>
@@ -25,8 +25,8 @@
             </div>
             <h4 class="text-primary pt-6 pb-2 px-4">{{'secretQuestionAndAnswer'|translate}}</h4>
             <div class="mb-2 md:flex md:flex-wrap">
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'secretQuestion1'|translate}}</mat-label>
                         <mat-select name="suffix">
                             <mat-option></mat-option>
@@ -34,16 +34,16 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'secretAnswer1'|translate}}</mat-label>
                         <input name="password" matInput required>
                     </mat-form-field>
                 </div>
             </div>
             <div class="mb-2 md:flex md:flex-wrap">
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'secretQuestion2'|translate}}</mat-label>
                         <mat-select name="suffix">
                             <mat-option></mat-option>
@@ -51,16 +51,16 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'secretAnswer2'|translate}}</mat-label>
                         <input name="password" matInput required>
                     </mat-form-field>
                 </div>
             </div>
             <div class="mb-2 md:flex md:flex-wrap">
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'secretQuestion3'|translate}}</mat-label>
                         <mat-select name="suffix">
                             <mat-option></mat-option>
@@ -68,16 +68,16 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'secretAnswer3'|translate}}</mat-label>
                         <input name="password" matInput required>
                     </mat-form-field>
                 </div>
             </div>
             <div class="mb-2 md:flex md:flex-wrap">
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'secretQuestion4'|translate}}</mat-label>
                         <mat-select name="suffix">
                             <mat-option></mat-option>
@@ -85,16 +85,16 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'secretAnswer4'|translate}}</mat-label>
                         <input name="password" matInput required>
                     </mat-form-field>
                 </div>
             </div>
             <div class="mb-2 md:flex md:flex-wrap">
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'secretQuestion5'|translate}}</mat-label>
                         <mat-select name="suffix">
                             <mat-option></mat-option>
@@ -102,8 +102,8 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'secretAnswer5'|translate}}</mat-label>
                         <input name="password" matInput required>
                     </mat-form-field>
@@ -120,13 +120,13 @@
 
 <mat-card class="w-full" *ngIf="studentCreateMode == StudentCreate.VIEW">
 
-    <div class="flex items-center mx-4" fxLayout="row" fxLayoutAlign="center center">
+    <div class="flex items-center mx-4 fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'loginInformation' | translate}}</h3>
         <button mat-button color="primary"><mat-icon>{{ icEdit }}</mat-icon>{{'editInformation' |translate}}</button>
     </div>
     <mat-card-content>
 
-        <div @stagger fxLayout="column">
+        <div class="fx-column" @stagger>
             <ul class="grid grid-cols-2 col-gap-8 row-gap-10 mt-2 mx-4">
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'username' | translate}}</label>

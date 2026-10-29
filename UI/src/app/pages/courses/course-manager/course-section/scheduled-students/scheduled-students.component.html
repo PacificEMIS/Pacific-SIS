@@ -1,14 +1,13 @@
-<div class="bg-white px-6 h-16 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
-    <div class="flex w-full justify-between">
-        <div class="py-3" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
-            fxLayoutAlign="start center">
-            <div class="flex">
+<div class="bg-white px-6 h-16 border-b sticky left-0 fx-row fx-align-start-center">
+    <div class="flex w-full justify-between fx-parent">
+        <div class="py-3 fx-300 fx-lt-md-auto fx-hide-xs fx-row fx-align-start-center">
+            <div class="flex fx-parent">
                 <input
                     [formControl]="searchCtrl"
                     class="px-4 py-3 border-0 outline-none w-full bg-transparent" placeholder="Search..."
                     type="search">
                 <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
-                <button  *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
+                <button  *ngIf="!loading" class="ml-4 fx-none fx-hide-gt-xs" mat-icon-button type="button">
                     <mat-icon>{{ icSearch }}</mat-icon>
                 </button>
             </div>

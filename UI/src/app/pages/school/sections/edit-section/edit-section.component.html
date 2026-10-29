@@ -1,12 +1,12 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>        
-    <h2 class="headline m-0" fxFlex="auto">{{sectionModalTitle | translate}}</h2>
+<div class="fx-row fx-align-start-center" mat-dialog-title>        
+    <h2 class="headline m-0 fx-auto">{{sectionModalTitle | translate}}</h2>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
         <mat-icon (click) = 'closeDialog()'>{{ icClose }}</mat-icon>
     </button>
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
 <form [formGroup]="form" (ngSubmit)="submit()">
-    <mat-dialog-content fxLayout="column">    
+    <mat-dialog-content class="fx-column">    
         <mat-form-field class="mt-6" appearance="outline" color="primary">
             <mat-label>{{'title' | translate}}</mat-label>
             <input formControlName="title"  [(ngModel)]="sectionAddModel.tableSections.name" name="title" cdkFocusInitial matInput required>
@@ -19,7 +19,7 @@
             <mat-error *ngIf="form.get('sortOrder').hasError('min')">{{'sortOrderCannotBeLessThenOne'|translate}}</mat-error>
         </mat-form-field>
     </mat-dialog-content>
-    <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+    <mat-dialog-actions class="py-6 fx-row fx-align-end-center">
         <button mat-button mat-dialog-close type="button" (click) = 'closeDialog()'>{{'cancel' | translate}}</button>
         <button color="primary" mat-raised-button type="submit">{{ssectionModalActionTitle | translate}}</button>
     </mat-dialog-actions>

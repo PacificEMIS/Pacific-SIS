@@ -27,7 +27,6 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
-import { FlexLayoutModule } from "@angular/flex-layout";
 import { TakeAttendanceComponent } from './take-attendance/take-attendance.component';
 import { AddTeacherCommentsComponent } from './take-attendance/add-teacher-comments/add-teacher-comments.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -64,8 +63,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    MatSlideToggleModule,
-    FlexLayoutModule
+    MatSlideToggleModule
   ]
 })
 export class TeacherMissingAttendanceModule { }

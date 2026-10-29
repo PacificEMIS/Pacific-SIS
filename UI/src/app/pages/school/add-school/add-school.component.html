@@ -36,7 +36,7 @@
     <div class="right-content">
         <vex-page-layout>
 
-            <vex-page-layout-header class="pb-14" fxLayoutAlign="center start">
+            <vex-page-layout-header class="pb-14">
                 <vex-secondary-toolbar current="{{'schoolInformation'}}" class="w-full">
                     <vex-breadcrumbs [crumbs]="['school', schoolCreateMode === schoolCreate?.EDIT ? 'editSchool' : schoolCreateMode === schoolCreate?.VIEW ? 'viewSchool' : 'addSchool' ]" class="flex-auto"></vex-breadcrumbs>
                 </vex-secondary-toolbar>
@@ -54,7 +54,7 @@
                 </div>
             </div>    
             <vex-page-layout-content class="-mt-4">
-                        <div class="w-full" fxFlex="auto">
+                        <div class="w-full">
                             <router-outlet></router-outlet>
                             <!-- <vex-general-info *ngIf="currentCategory==1" [schoolCreateMode]="schoolCreateMode"
                                 [schoolDetailsForViewAndEdit]="schoolAddViewModel" [categoryId]="indexOfCategory">

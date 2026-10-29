@@ -1,6 +1,6 @@
 <mat-card class="w-full">
 
-    <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+    <div class="flex items-center fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'comments' | translate}}</h3>
         <div>
             <a (click)="exportCommentsToExcel()" class="cursor-pointer mr-3 inline-block align-middle" matTooltip="{{'exportAsExcel' | translate}}">
@@ -16,7 +16,7 @@
         </div>
     </div>
     <mat-card-content>
-        <div @stagger fxLayout="column">
+        <div class="fx-column" @stagger>
             <div class="mt-6" *ngIf="listCount > 0">
                 <div class="mb-4" *ngFor="let studentComment of studentCommentsListViewModel.studentCommentsList">
                     <mat-accordion class="w-full">

@@ -14,7 +14,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
 import { EditCourseSectionComponent } from './edit-course-section.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -40,7 +39,6 @@ import { NgxMaskModule } from 'ngx-mask';
     MatDialogModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    FlexLayoutModule,
     MatInputModule,
     MatDividerModule,
     MatMenuModule,

@@ -46,7 +46,7 @@
                         </mat-form-field>
                     </li>
                     <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'socialSecurityNumber'|translate}}</mat-label>
                             <input [(ngModel)]="staffMasterSearchModel.socialSecurityNumber"
                                 name="socialSecurityNumber" matInput>
@@ -235,7 +235,7 @@
 
                 <ul class="grid grid-cols-2 col-gap-8">
                     <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'openSISProfile'|translate}}</mat-label>
                             <mat-select name="openSISProfile" [(ngModel)]="staffMasterSearchModel.profile">
                                 <mat-option *ngFor="let profile of getAllMembersList.getAllMemberList " value={{profile.profile}}>{{profile.profile}}</mat-option>
@@ -243,14 +243,14 @@
                         </mat-form-field>
                     </li>
                     <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'jobTitle'|translate}}</mat-label>
                             <input #jobTitle="ngModel" name="jobTitle" matInput [(ngModel)]="staffMasterSearchModel.jobTitle">
           
                         </mat-form-field>
                     </li>
                     <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'joiningDate'|translate}}</mat-label>
                             <input matInput name="joiningDate" [matDatepicker]="picker1" [(ngModel)]="staffMasterSearchModel.joiningDate">
                             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
@@ -258,7 +258,7 @@
                         </mat-form-field>
                     </li>
                     <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'endDate'|translate}}</mat-label>
                             <input matInput name="endDate" [matDatepicker]="picker" [(ngModel)]="staffMasterSearchModel.endDate">
                             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -266,7 +266,7 @@
                         </mat-form-field>
                     </li>
                     <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'primaryGradeLevelTaught'|translate}}</mat-label>
                             <mat-select name="primaryGradeLevelTaught" [(ngModel)]="staffMasterSearchModel.primaryGradeLevelTaught">
                                 <mat-option></mat-option>
@@ -275,7 +275,7 @@
                         </mat-form-field>
                     </li>
                     <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'otherGradeLevelTaught'|translate}}</mat-label>
                             <mat-select name="otherGradeLevelTaught" [(ngModel)]="staffMasterSearchModel.otherGradeLevelTaught">
                                 <mat-option></mat-option>
@@ -284,7 +284,7 @@
                         </mat-form-field>
                     </li>
                     <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'primarySubjectTaught'|translate}}</mat-label>
                             <mat-select name="primarySubjectTaught" [(ngModel)]="staffMasterSearchModel.primarySubjectTaught">
                                 <mat-option></mat-option>
@@ -293,7 +293,7 @@
                         </mat-form-field>
                     </li>
                     <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'otherSubjectTaught'|translate}}</mat-label>
                             <mat-select name="otherSubjectTaught" [(ngModel)]="staffMasterSearchModel.otherSubjectTaught">
                                 <mat-option></mat-option>

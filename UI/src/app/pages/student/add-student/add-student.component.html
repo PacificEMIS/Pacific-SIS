@@ -77,7 +77,7 @@
     </div>
     <div class="right-content">
         <vex-page-layout>
-            <vex-page-layout-header class="pb-10 pt-6" fxLayoutAlign="center start">
+            <vex-page-layout-header class="pb-10 pt-6 fx-align-center-start fx-row">
                 <vex-secondary-toolbar
                     current="{{studentCreateMode==studentCreate.ADD?'addStudentInformation':'studentInformation'}}"
                     class="w-full">
@@ -103,8 +103,8 @@
             <vex-page-layout-content class="-mt-4">
                 
                 <mat-drawer-container class="bg-transparent flex-auto flex">
-                    <mat-drawer-content class="flex-auto flex items-start">
-                        <div class="w-full" fxFlex="auto">
+                    <mat-drawer-content class="flex-auto flex items-start fx-parent">
+                        <div class="w-full fx-auto">
                             <router-outlet></router-outlet>
                             <!-- <vex-student-generalinfo *ngIf="currentCategory==3" [studentCreateMode]="studentCreateMode"
                                 [studentDetailsForViewAndEdit]="studentAddModel"

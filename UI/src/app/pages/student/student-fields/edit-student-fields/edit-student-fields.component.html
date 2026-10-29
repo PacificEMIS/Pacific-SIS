@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto">{{customFieldTitle|translate}}</h2>
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto">{{customFieldTitle|translate}}</h2>
 
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
         <mat-icon>{{ icClose }}</mat-icon>
@@ -7,7 +7,7 @@
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
 
-<mat-dialog-content fxLayout="column" [formGroup]="form">
+<mat-dialog-content class="fx-column" [formGroup]="form">
     <mat-form-field class="mt-6" appearance="outline" color="primary">
         <mat-label>{{'fieldName' | translate}}</mat-label>
         <input formControlName="title" class="fieldName-scroll" cdkFocusInitial matInput required>
@@ -64,7 +64,7 @@
 
 </mat-dialog-content>
 
-<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+<mat-dialog-actions class="py-6 fx-row fx-align-end-center">
     <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
     <button [disabled]="checkSearchRecord === 1" color="primary" (click)="submit()" mat-raised-button type="submit">
         <mat-icon class="mr-2" *ngIf="checkSearchRecord === 1">

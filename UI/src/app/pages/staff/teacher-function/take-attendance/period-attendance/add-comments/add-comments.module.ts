@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { AddCommentsComponent } from './add-comments.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDividerModule } from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
@@ -19,7 +18,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     CommonModule,
     MatDialogModule,
     MatIconModule,
-    FlexLayoutModule,
     TranslateModule,
     MatDividerModule,
     MatButtonModule,

@@ -5,10 +5,10 @@
         <div *ngIf="currentComponent === 'gradebookGrade'">
 
             <div *ngIf="classGrade">
-                <div class="bg-white px-4 lg:h-16 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+                <div class="bg-white px-4 lg:h-16 border-b sticky left-0 fx-row fx-align-start-center">
                     <div class="lg:flex w-full items-center justify-between">
                         <div class="lg:flex items-center">
-                            <div class="py-2 mr-4" fxLayout="row" fxLayoutAlign="start center">
+                            <div class="py-2 mr-4 fx-row fx-align-start-center">
                                 <div class="flex items-center w-full">
                                     <input matInput class="py-3 border-0 outline-none w-full bg-transparent" [formControl]="searchCtrl"
                                         appearance="outline" color="primary" placeholder="Search..." type="search">
@@ -151,10 +151,10 @@
                 </div>
             </div>
             <mat-divider></mat-divider>
-            <div class="bg-white px-4 lg:h-16 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+            <div class="bg-white px-4 lg:h-16 border-b sticky left-0 fx-row fx-align-start-center">
                 <div class="lg:flex w-full items-center justify-between">
                     <div class="lg:flex items-center">
-                        <div class="py-2 mr-4" fxLayout="row" fxLayoutAlign="start center">
+                        <div class="py-2 mr-4 fx-row fx-align-start-center">
                             <div class="flex items-center w-full">
                                 <input matInput class="py-3 border-0 outline-none w-full bg-transparent" [formControl]="searchCtrlForAssignmentType"
                                 appearance="outline" color="primary" placeholder="Search..." type="search">

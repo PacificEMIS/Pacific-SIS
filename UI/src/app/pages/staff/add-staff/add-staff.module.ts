@@ -23,7 +23,6 @@ import { SharedModuleModule } from '../../shared-module/shared-module.module';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ScrollbarModule } from '@vex/components/scrollbar/scrollbar.module';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
@@ -92,7 +91,6 @@ import { AddCertificateComponent } from './staff-certificationinfo/add-certifica
     MatCheckboxModule,
     MatExpansionModule,
     ScrollbarModule,
-    FlexLayoutModule,
     MatMenuModule,
     MatPaginatorModule,
     MatSortModule,

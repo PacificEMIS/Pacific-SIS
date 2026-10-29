@@ -1,5 +1,5 @@
 <vex-page-layout>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16">
         <vex-secondary-toolbar current="{{'studentList'}}" class="w-full">
             <vex-breadcrumbs [crumbs]="['student']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -8,11 +8,9 @@
     <vex-page-layout-content class="-mt-6">
 
         <div class="card -mt-16">
-            <div class="bg-white px-6 lg:h-16 border-b sticky left-0" fxLayout="row"
-                fxLayoutAlign="start center">
+            <div class="bg-white px-6 lg:h-16 border-b sticky left-0">
                 <div class="lg:flex w-full justify-between pb-4 lg:pb-0">
-                    <div class="py-2 md:py-3" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
-                        fxLayoutAlign="start center">
+                    <div class="py-2 md:py-3">
 
                         <div class="flex items-center">
                                 <input [formControl]="searchCtrl"
@@ -20,7 +18,7 @@
                                     placeholder="Search..." type="search">
                                 <img *ngIf="loading" src="assets/img/icons/loading-process.svg"
                                     class="animate-spin w-5" alt="Loader icon">
-                                <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button
+                                <button *ngIf="!loading" class="ml-4" mat-icon-button
                                     type="button">
                                     <mat-icon>{{ icSearch }}</mat-icon>
                                 </button>
@@ -38,8 +36,7 @@
                         <a (click)="exportStudentListToExcel()"
                             class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24"></a>
-                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-2 inline-block align-middle"
-                            fxFlex="none" mat-icon-button matTooltip="{{'filterColumns' | translate}}" type="button">
+                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-2 inline-block align-middle" mat-icon-button matTooltip="{{'filterColumns' | translate}}" type="button">
                             <mat-icon>{{ icFilterList }}</mat-icon>
                         </button>
 
@@ -75,14 +72,14 @@
                         <!-- Show this block if there are already saved filters -->
                         <button
                             *ngIf="searchFilterListViewModel?.searchFilterList?.length > 0 && showLoadFilter && !showSaveFilter"
-                            [matMenuTriggerFor]="loadfilter" fxFlex="none" mat-stroked-button type="button"
+                            [matMenuTriggerFor]="loadfilter" mat-stroked-button type="button"
                             class="inline-block align-middle ml-4">
                             <span>{{'loadFilter' | translate}}</span>
                             <mat-icon>arrow_drop_down</mat-icon>
                         </button>
 
                         <button *ngIf="permissions.add && this.defaultValuesService.checkAcademicYear()" color="primary"
-                            class="ml-4 inline-block align-middle rounded-r-none" fxFlex="none" mat-raised-button
+                            class="ml-4 inline-block align-middle rounded-r-none" mat-raised-button
                             type="button" (click)='goToAdd()'>
                             <mat-icon>{{ icAdd }}</mat-icon>
                             <span class="hidden md:inline-block ml-2">{{'addNew' | translate}}</span>

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { AddCourseSectionComponent } from './add-course-section.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -31,7 +30,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatFormFieldModule,
     MatButtonModule,
     MatDatepickerModule,
-    FlexLayoutModule,
     MatIconModule,
     MatDialogModule,
     MatTooltipModule,

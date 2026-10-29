@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title class="flex justify-between mb-0">
-    <h2 class="headline m-0" fxFlex="auto">
+<div mat-dialog-title class="flex justify-between mb-0">
+    <h2 class="headline m-0">
         {{ "comment" | translate }}
     </h2>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
@@ -14,7 +14,7 @@
         <textarea matInput [(ngModel)]="data.comment" required [readonly]="!isThisCurrentYear"></textarea>
     </mat-form-field>
 </mat-dialog-content>
-<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="pt-0 pb-2 flex justify-end" *ngIf="isThisCurrentYear" >
+<mat-dialog-actions class="pt-0 pb-2 flex justify-end" *ngIf="isThisCurrentYear">
     <button mat-dialog-close mat-flat-button>{{ 'cancel' | translate }}</button>
     <button color="primary" mat-flat-button (click)="submitComment()" type="submit" class="text-white ml-2">{{ data?.comment ? 'update' : 'submit' |translate }}</button>
 </mat-dialog-actions>

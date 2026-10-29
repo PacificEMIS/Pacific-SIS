@@ -56,9 +56,9 @@
         </div>
 
         <div class="card">
-            <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+            <div class="bg-white px-6 md:h-14 border-b sticky left-0">
                 <div class="md:flex w-full justify-between">
-                    <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
+                    <div class="py-2">
                         <div class="flex w-full items-center">
                             <input [formControl]="searchCtrl" class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
                                 type="search">
@@ -163,7 +163,7 @@
         <!-- Start Generate Report -->
 
         <div class="card">
-            <div class="bg-white sticky left-0 p-4" fxLayout="row" fxLayoutAlign="start center">
+            <div class="bg-white sticky left-0 p-4">
                 <div class="flex w-full justify-between items-center">
                     <h4 class="text-primary font-semibold">{{studentFinalGradeReport.length}} {{'studentRecordsFound' | translate }}</h4>
                     <a (click)="exportFinalGradeReportToExcel()" class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}">

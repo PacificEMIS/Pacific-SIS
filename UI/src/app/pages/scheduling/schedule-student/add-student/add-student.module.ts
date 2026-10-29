@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -28,7 +27,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDialogModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    FlexLayoutModule,
     MatInputModule,
     MatDividerModule,
     ReactiveFormsModule,

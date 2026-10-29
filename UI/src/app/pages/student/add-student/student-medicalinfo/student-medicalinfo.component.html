@@ -3,7 +3,7 @@
     <mat-card class="w-full">
         <h3 class="flex-auto h-9">{{'medicalInformation' | translate}}</h3>
         <mat-card-content class="mb-0">
-            <div @stagger fxLayout="column" class="-mx-4">
+            <div @stagger class="-mx-4 fx-column">
                 <ul class="flex flex-row text-gray font-semibold">
                     <li class="px-4 py-2 cursor-pointer" (click)="changeTab('activities')"
                         [class.active]="currentTab === 'activities'"
@@ -246,15 +246,15 @@
                     <div *ngSwitchCase="'providerInformation'">
                         <div class="pt-6 pb-2 px-4">
                             <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
-                                <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <li class="fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'primaryCarePhysician'|translate}}</mat-label>
                                         <input name="primaryCarePhysician"
                                             [(ngModel)]="addEditStudentMedicalProviderModel.studentMedicalProvider.primaryCarePhysician" matInput>
                                     </mat-form-field>
                                 </li>
-                                <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <li class="fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'primaryCarePhysicianPhone'|translate}}</mat-label>
                                         <input name="primaryCarePhysicianPhone"
                                             [(ngModel)]="addEditStudentMedicalProviderModel.studentMedicalProvider.primaryCarePhysicianPhone"
@@ -263,15 +263,15 @@
                                                 {{'minLengthTelephoneNumber'|translate}}</mat-error>
                                     </mat-form-field>
                                 </li>
-                                <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <li class="fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'preferredMedicalFacility'|translate}}</mat-label>
                                         <input name="medicalFacility"
                                             [(ngModel)]="addEditStudentMedicalProviderModel.studentMedicalProvider.preferredMedicalFacility" matInput>
                                     </mat-form-field>
                                 </li>
-                                <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <li class="fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'preferredMedicalFacilityPhone'|translate}}</mat-label>
                                         <input name="medicalFacilityPhone"
                                             [(ngModel)]="addEditStudentMedicalProviderModel.studentMedicalProvider.preferredMedicalFacilityPhone" 
@@ -280,15 +280,15 @@
                                                 {{'minLengthTelephoneNumber'|translate}}</mat-error>
                                     </mat-form-field>
                                 </li>
-                                <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <li class="fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'insuranceCompany'|translate}}</mat-label>
                                         <input name="insuranceCompany"
                                             [(ngModel)]="addEditStudentMedicalProviderModel.studentMedicalProvider.insuranceCompany" matInput>
                                     </mat-form-field>
                                 </li>
-                                <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <li class="fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'insuranceCompanyPhone'|translate}}</mat-label>
                                         <input name="insuranceCompanyPhone"
                                             [(ngModel)]="addEditStudentMedicalProviderModel.studentMedicalProvider.insuranceCompanyPhone" 
@@ -297,15 +297,15 @@
                                                 {{'minLengthTelephoneNumber'|translate}}</mat-error>
                                     </mat-form-field>
                                 </li>
-                                <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <li class="fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'policyNumber'|translate}}</mat-label>
                                         <input name="policyNumber"
                                             [(ngModel)]="addEditStudentMedicalProviderModel.studentMedicalProvider.policyNumber" matInput>
                                     </mat-form-field>
                                 </li>
-                                <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <li class="fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'policyHolderName'|translate}}</mat-label>
                                         <mat-select name="suffix"
                                             [(ngModel)]="addEditStudentMedicalProviderModel.studentMedicalProvider.policyHolderName">
@@ -317,15 +317,15 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </li>
-                                <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <li class="fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'dentist'|translate}}</mat-label>
                                         <input name="dentist" [(ngModel)]="addEditStudentMedicalProviderModel.studentMedicalProvider.dentistName"
                                             matInput>
                                     </mat-form-field>
                                 </li>
-                                <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <li class="fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'dentistsPhone'|translate}}</mat-label>
                                         <input name="dentistPhone"
                                             [(ngModel)]="addEditStudentMedicalProviderModel.studentMedicalProvider.dentistPhone" 
@@ -334,15 +334,15 @@
                                                 {{'minLengthTelephoneNumber'|translate}}</mat-error>
                                     </mat-form-field>
                                 </li>
-                                <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <li class="fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'vision'|translate}}</mat-label>
                                         <input name="vision" [(ngModel)]="addEditStudentMedicalProviderModel.studentMedicalProvider.visionName"
                                             matInput>
                                     </mat-form-field>
                                 </li>
-                                <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <li class="fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'visionProvidersPhone'|translate}}</mat-label>
                                         <input name="visionPhone"
                                             [(ngModel)]="addEditStudentMedicalProviderModel.studentMedicalProvider.visionProviderPhone" 
@@ -371,7 +371,7 @@
 
 <mat-card class="w-full" *ngIf="studentCreateMode == studentCreate.VIEW">
 
-    <div class="flex items-center mb-2" fxLayout="row" fxLayoutAlign="center center">
+    <div class="flex items-center mb-2 fx-row fx-align-center-center">
         <h3 class="flex-auto h-9">{{'medicalInformation' | translate}}</h3>
         <button *ngIf="currentTab === 'providerInformation'  && permissions?.edit" mat-raised-button color="primary"
             (click)="editMedicalInfo()">
@@ -712,7 +712,7 @@
         <!-- End update Design -->
 
 
-        <!-- <div @stagger fxLayout="column">
+        <!-- <div class="fx-column" @stagger>
             <h3 class="text-blue pt-6 pb-2 px-4">{{'alertInformation'|translate}}</h3>
             <ul class="grid md:grid-cols-2 lg:grid-cols-3 col-gap-8 row-gap-10 mt-2 mx-4">
                 <li>

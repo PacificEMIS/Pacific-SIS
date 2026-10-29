@@ -3,7 +3,7 @@
     <div *ngIf="currentComponent === 'gradebookGrade' && classGrade">
 
         <div>
-            <div class="bg-white px-4 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+            <div class="bg-white px-4 border-b sticky left-0">
                 <div class="md:flex w-full justify-between py-4 items-center">
                     <div class="flex flex-col lg:pb-0">
                         <h4 class="flex font-medium text-lg items-center">
@@ -18,10 +18,10 @@
                     </div>
                 </div>
                 <mat-divider class="-mx-4"></mat-divider>
-                <div class="bg-white border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+                <div class="bg-white border-b sticky left-0">
                     <div class="xl:flex w-full items-center justify-between">
                         <div class="lg:flex items-center">
-                            <div class="py-2 lg:mr-4" fxLayout="row" fxLayoutAlign="start center">
+                            <div class="py-2 lg:mr-4">
                                 <div class="flex items-center w-full">
                                     <input matInput class="py-3 border-0 outline-none w-full bg-transparent" [formControl]="searchCtrl"
                                         appearance="outline" color="primary" placeholder="Search..." type="search">
@@ -34,7 +34,7 @@
                             <div class="mb-4 lg:mb-0">
                                 <mat-slide-toggle color="primary" class="mr-6" (change)="getGradebookGrade(null, $event)" [(ngModel)]="includeInactiveFlag"><span class="hidden xl:inline-block">{{ 'includeInactiveStudents' | translate }}</span><span class="xl:hidden inline-block">{{ 'inactive' | translate }}</span>
                                 </mat-slide-toggle>
-                                <mat-slide-toggle color="primary" class="" (change)="showHideUngraded($event, addGradebookGradeModel)"><span class="hidden xl:inline-block">{{ 'showUngradedOnly' | translate }}</span><span class="xl:hidden inline-block">{{ 'ungradedOnly' | translate }}</span>
+                                <mat-slide-toggle color="primary" (change)="showHideUngraded($event, addGradebookGradeModel)"><span class="hidden xl:inline-block">{{ 'showUngradedOnly' | translate }}</span><span class="xl:hidden inline-block">{{ 'ungradedOnly' | translate }}</span>
                                 </mat-slide-toggle>
                             </div>
                         </div>
@@ -114,7 +114,7 @@
                                         </mat-menu>
                                     </div>
                                 </div>
-                                <div class="">
+                                <div>
                                     <p class="text-blue cursor-pointer truncate" (click)="showCategoryList(assignment)"><a>{{assignment?.title}}</a></p>
                                     <p *ngIf="isWeightedSection">{{ 'weightage' | translate }} : {{assignment?.weightage}}%</p>
                                 </div>
@@ -136,11 +136,11 @@
                             <div class="p-4 text-gray h-16 border-b border-r" *ngIf="!grade?.isShowUngraded && !assignment?.isEditMode" matTooltip="{{grade?.firstGivenName}} {{grade?.middleName!=null ? grade?.middleName + ' ':''}}{{grade?.lastFamilyName}}, ID : {{grade?.studentInternalId}}"
                             aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
                             <div class="flex justify-between items-center">
-                                <div class="">
+                                <div>
                                     <p [ngClass]="{'text-red': grade?.allowedMarks > grade.points}">{{grade?.allowedMarks ? grade?.allowedMarks : 0}}/{{grade?.points}}</p>
                                     <p>{{grade?.percentage ? grade?.percentage + '%' : ''}} <span class="font-semibold text-black">{{grade?.letterGrade ? '[ ' + grade?.letterGrade + ' ]' : ''}}</span></p>
                                 </div>
-                                <button class="" (click)="addGradeComment(grade)">
+                                <button (click)="addGradeComment(grade)">
                                     <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0 && !grade?.isSubmitted && grade?.isComment}"></i>
                                 </button>
                             </div>
@@ -186,10 +186,10 @@
             </div>
         </div>
         <mat-divider></mat-divider>
-        <div class="bg-white px-4 lg:h-16 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+        <div class="bg-white px-4 lg:h-16 border-b sticky left-0">
             <div class="lg:flex w-full items-center justify-between">
                 <div class="lg:flex items-center">
-                    <div class="py-2 mr-4" fxLayout="row" fxLayoutAlign="start center">
+                    <div class="py-2 mr-4">
                         <div class="flex items-center w-full">
                             <input matInput class="py-3 border-0 outline-none w-full bg-transparent" [formControl]="searchCtrlForAssignmentType"
                             appearance="outline" color="primary" placeholder="Search..." type="search">
@@ -202,7 +202,7 @@
                     <div class="mb-4 lg:mb-0">
                         <mat-slide-toggle color="primary" class="mr-6" (change)="getGradebookGrade(null, $event)" [(ngModel)]="includeInactiveFlag"><span class="hidden xl:inline-block" >{{ 'includeInactiveStudents' | translate }}</span><span class="xl:hidden inline-block">{{ 'inactive' | translate }}</span>
                         </mat-slide-toggle>
-                        <mat-slide-toggle color="primary" class="" (change)="showHideUngraded($event, addGradebookGradeByAssignmentTypeModel)"><span class="hidden xl:inline-block">{{ 'showUngradedOnly' | translate }}</span><span class="xl:hidden inline-block">{{ 'ungradedOnly' | translate }}</span>
+                        <mat-slide-toggle color="primary" (change)="showHideUngraded($event, addGradebookGradeByAssignmentTypeModel)"><span class="hidden xl:inline-block">{{ 'showUngradedOnly' | translate }}</span><span class="xl:hidden inline-block">{{ 'ungradedOnly' | translate }}</span>
                         </mat-slide-toggle>
                     </div>
                 </div>
@@ -261,7 +261,7 @@
                                     </mat-menu>
                                 </div>
                             </div>
-                            <div class="">
+                            <div>
                                 <p class="text-blue truncate"><a>{{ assignment?.title}}</a></p>
                                 <p *ngIf="isWeightedSection">{{ 'weightage' | translate }} : {{ assignment?.weightage}}%</p>
                             </div>
@@ -282,11 +282,11 @@
                         <div class="p-4 text-gray h-16 border-b border-r" *ngIf="!grade?.isShowUngraded && !assignment.isEditMode" matTooltip="{{grade?.firstGivenName}} {{grade?.middleName!=null ? grade?.middleName + ' ':''}}{{grade?.lastFamilyName}}, ID : {{grade?.studentInternalId}}"
                             aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
                             <div class="flex justify-between items-center">
-                                <div class="">
+                                <div>
                                     <p [ngClass]="{'text-red': grade?.allowedMarks > grade.points}">{{grade?.allowedMarks ? grade?.allowedMarks : 0}}/{{grade?.points}}</p>
                                     <p>{{grade?.percentage ? grade?.percentage + '%' : ''}} <span class="font-semibold text-black">{{grade?.letterGrade ? '[ ' + grade?.letterGrade + ' ]' : ''}}</span></p>
                                 </div>
-                                <button class="" (click)="addGradeComment(grade)">
+                                <button (click)="addGradeComment(grade)">
                                     <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0 && !grade?.isSubmitted && grade?.isComment}"></i>
                                 </button>
                             </div>

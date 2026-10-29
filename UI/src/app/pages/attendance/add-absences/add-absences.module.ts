@@ -12,7 +12,6 @@ import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module
 import { ContainerModule } from '@vex/directives/container/container.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { ScrollbarModule } from '@vex/components/scrollbar/scrollbar.module';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDividerModule } from '@angular/material/divider';
@@ -45,7 +44,6 @@ import { SearchStudentModule } from 'src/app/common/search-student/search-studen
     ContainerModule,
     TranslateModule,
     ScrollbarModule,
-    FlexLayoutModule,
     MatTableModule,
     MatPaginatorModule,
     MatDividerModule,

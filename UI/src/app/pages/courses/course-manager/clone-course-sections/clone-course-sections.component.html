@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto">
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto">
         {{'cloneCourseSections' | translate}}
         <span *ngIf="data?.courseTitle" class="text-secondary font-normal"> - {{data.courseTitle}}</span>
     </h2>
@@ -9,7 +9,7 @@
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
 
-<mat-dialog-content fxLayout="column" class="pt-4">
+<mat-dialog-content class="pt-4 fx-column">
     <p class="text-secondary mb-4">
         {{(data?.courseId ? 'cloneCourseExplanation' : 'cloneExplanation') | translate}}
     </p>
@@ -71,7 +71,7 @@
     </div>
 </mat-dialog-content>
 
-<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+<mat-dialog-actions class="py-6 fx-row fx-align-end-center">
     <mat-spinner *ngIf="loading" diameter="24" class="mr-4"></mat-spinner>
     <button mat-button type="button" (click)="close()">{{(done ? 'close' : 'cancel') | translate}}</button>
     <button *ngIf="!done" mat-stroked-button color="primary" type="button" (click)="preview()" [disabled]="form.invalid || loading">{{'preview' | translate}}</button>

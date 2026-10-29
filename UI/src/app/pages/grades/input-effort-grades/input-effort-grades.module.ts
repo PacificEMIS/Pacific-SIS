@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { InputEffortGradesRoutingModule } from './input-effort-grades-routing.module';
 import { InputEffortGradesComponent } from './input-effort-grades.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
@@ -32,7 +31,6 @@ import { MatInputModule } from '@angular/material/input';
   imports: [
     CommonModule,
     InputEffortGradesRoutingModule,
-    FlexLayoutModule,
     MatIconModule,
     MatTooltipModule,
     SecondaryToolbarModule,

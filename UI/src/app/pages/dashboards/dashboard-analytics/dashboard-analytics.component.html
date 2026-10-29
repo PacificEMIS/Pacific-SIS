@@ -4,10 +4,9 @@
 </vex-secondary-toolbar>
 </div>
 
-<!-- <div class="px-gutter pt-4" gdColumns="1fr 1fr 1fr 1fr 1fr 1fr" gdColumns.lt-md="1fr 1fr" gdColumns.lt-sm="1fr"
-  gdGap="16px" vexContainer>
+<!-- <div class="px-gutter pt-4 gd-lt-md-cols-2 gd-lt-sm-cols-1 gd-gap-16" gdColumns="1fr 1fr 1fr 1fr 1fr 1fr" vexContainer>
 
-  <div gdColumn="1 / 4" gdColumn.lt-md="1 / -1" gdColumn.lt-sm="1">
+  <div class="gd-col-1-4 gd-lt-md-col-full gd-lt-sm-col-1">
     <vex-widget-assistant></vex-widget-assistant>
   </div>
 
@@ -42,13 +41,12 @@
   </div>
 
   <!-- Summary cards — full width -->
-  <div gdColumns="1fr 1fr 1fr" gdColumns.lt-md="1fr 1fr" gdColumns.lt-sm="1fr" gdGap="16px" vexContainer>
-    <vex-widget-quick-value-center [icon]="icStudent" cardClass="bg-red" iconClass="bg-white-light text-white" gdColumn.lt-sm="1"
-      label="{{'students' |translate}}" [value]='studentCount' [subtext]='studentStatusText' (click)="checkIsActive('students')" class="cursor-pointer"></vex-widget-quick-value-center>
-    <vex-widget-quick-value-center [icon]="icStaff" cardClass="bg-green" iconClass="bg-white-light text-white"
-      gdColumn.lt-sm="1" label="{{'staff' |translate}}" [value]='staffCount' (click)="checkIsActive('staff')" class="cursor-pointer"></vex-widget-quick-value-center>
-    <vex-widget-quick-value-center [icon]="icParent" cardClass="bg-blue" iconClass="bg-white-light text-white" gdColumn.lt-sm="1"
-      label="{{'parents' |translate}}" [value]='parentCount' (click)="checkIsActive('parents')" class="cursor-pointer"></vex-widget-quick-value-center>
+  <div class="gd-cols-3 gd-lt-md-cols-2 gd-lt-sm-cols-1 gd-gap-16" vexContainer>
+    <vex-widget-quick-value-center [icon]="icStudent" cardClass="bg-red" iconClass="bg-white-light text-white"
+      label="{{'students' |translate}}" [value]='studentCount' [subtext]='studentStatusText' (click)="checkIsActive('students')" class="cursor-pointer gd-lt-sm-col-1"></vex-widget-quick-value-center>
+    <vex-widget-quick-value-center [icon]="icStaff" cardClass="bg-green" iconClass="bg-white-light text-white" label="{{'staff' |translate}}" [value]='staffCount' (click)="checkIsActive('staff')" class="cursor-pointer gd-lt-sm-col-1"></vex-widget-quick-value-center>
+    <vex-widget-quick-value-center [icon]="icParent" cardClass="bg-blue" iconClass="bg-white-light text-white"
+      label="{{'parents' |translate}}" [value]='parentCount' (click)="checkIsActive('parents')" class="cursor-pointer gd-lt-sm-col-1"></vex-widget-quick-value-center>
   </div>
 
   <!-- Enrollment by Grade chart — full width -->
@@ -78,7 +76,7 @@
   <!-- Dropouts by Grade: hidden until enrollment codes overhaul (see docs/plans/enrollment-codes-overhaul.md) -->
 
   <!-- Staff charts — side by side -->
-  <div gdColumns="1fr 1fr" gdColumns.lt-sm="1fr" gdGap="16px" vexContainer>
+  <div class="gd-cols-2 gd-lt-sm-cols-1 gd-gap-16" vexContainer>
     <!-- Staff by Profile -->
     <div class="card px-6 py-4" *ngIf="staffByProfile.length > 0">
       <h4 class="text-primary font-semibold mb-3">{{'staffByProfile' | translate}}</h4>

@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto">{{data.siblingDetails.firstGivenName +' '+ data.siblingDetails.lastFamilyName}}</h2>
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto">{{data.siblingDetails.firstGivenName +' '+ data.siblingDetails.lastFamilyName}}</h2>
     <button *ngIf="data.flag === 'Parent'" mat-raised-button color="primary" (click)="viewStudentDetails()">
         {{'viewStudentDetails' | translate}}
     </button>

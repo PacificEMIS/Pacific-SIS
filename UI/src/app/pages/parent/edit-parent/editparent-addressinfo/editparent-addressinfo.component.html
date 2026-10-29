@@ -4,11 +4,11 @@
         <h3 class="pt-1">{{'addressInformation'|translate}}</h3>
         <mat-card-content>
 
-            <div @stagger fxLayout="column">
+            <div class="fx-column" @stagger>
                 <h4 class="text-blue pt-6 pb-2">{{'homeAddress'|translate}}</h4>
                 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'streetAddress1'|translate}}</mat-label>
                             <input [(ngModel)]="addParentInfoModel.parentInfo.parentAddress[0].addressLineOne" name="addressLineOne"
                                 #addressLineOne="ngModel" matInput required>
@@ -16,15 +16,15 @@
                                 {{'streetAddress1IsRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'streetAddress2'|translate}}</mat-label>
                             <input [(ngModel)]="addParentInfoModel.parentInfo.parentAddress[0].addressLineTwo" name="addressLineTwo"
                                 matInput>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'country'|translate}}</mat-label>
                             <mat-select [formControl]="countryCtrl" [(ngModel)]="addParentInfoModel.parentInfo.parentAddress[0].country" name="country" required>
                                <!--  <mat-option value=""></mat-option> -->
@@ -39,8 +39,8 @@
                             </mat-select>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'stateProvinceLocality'|translate}}</mat-label>
                             <input [(ngModel)]="addParentInfoModel.parentInfo.parentAddress[0].state" name="state" #state="ngModel"
                                 matInput required>
@@ -48,8 +48,8 @@
                                 {{'stateProvinceLocalityIsRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'city'|translate}}</mat-label>
                             <input [(ngModel)]="addParentInfoModel.parentInfo.parentAddress[0].city" name="city" #city="ngModel" matInput
                                 required>
@@ -57,8 +57,8 @@
                                 {{'cityIsRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'zipPostalCode'|translate}}</mat-label>
                             <input [(ngModel)]="addParentInfoModel.parentInfo.parentAddress[0].zip" #zip="ngModel" name="zip" matInput
                             maxlength="20" required>
@@ -80,7 +80,7 @@
 </form>
 
  <mat-card class="w-full" *ngIf="parentCreateMode == parentCreate.VIEW">
-    <div class="flex items-center mx-2" fxLayout="row" fxLayoutAlign="center center">
+    <div class="flex items-center mx-2 fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'addressInformation' | translate}}</h3>
         <button *ngIf="permissions?.edit" mat-raised-button (click)="editAddressContactInfo()" color="primary">
             <mat-icon class="md:mr-2">edit</mat-icon> <span class="hidden md:inline-block">{{'editInformation' |translate}}</span>
@@ -88,7 +88,7 @@
     </div>
     <mat-card-content *ngIf="addParentInfoModel?.parentInfo">
 
-        <div @stagger fxLayout="column">
+        <div class="fx-column" @stagger>
             <div class="flex w-full items-center pt-4 pb-2">
                 <h4 class="text-blue mr-4">{{'homeAddress'|translate}} &nbsp; <span class="text-gray-light">|</span></h4>
                 <a (click)="showOnGoogleMap()" class="cursor-pointer"><i class="icon icon-location4 mr-2"></i>Show on Map</a>

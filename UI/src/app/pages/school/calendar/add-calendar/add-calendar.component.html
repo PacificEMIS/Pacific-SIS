@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto">{{calendarTitle | translate}}</h2>
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto">{{calendarTitle | translate}}</h2>
 
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
         <mat-icon>{{ icClose }}</mat-icon>
@@ -8,7 +8,7 @@
 <mat-divider class="-mx-6 text-border"></mat-divider>
 <form [formGroup]="form" (ngSubmit)="submitCalendar()">
     <mat-dialog-content>
-        <div fxLayout="column">
+        <div class="fx-column">
             <mat-form-field class="mt-6" appearance="outline" color="primary">
                 <mat-label>{{'title' | translate}}</mat-label>
                 <input formControlName="title" name="title" class="title-scroll" [readonly]="!this.defaultValuesService.checkAcademicYear()" [(ngModel)]="calendarAddViewModel.schoolCalendar.title"
@@ -81,7 +81,7 @@
         </div>
     </mat-dialog-content>
 
-    <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+    <mat-dialog-actions class="py-6 fx-row fx-align-end-center">
         <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
         <button *ngIf="this.defaultValuesService.checkAcademicYear()" color="primary" mat-raised-button type="submit">{{calendarActionButtonTitle | translate}}</button>
     </mat-dialog-actions>

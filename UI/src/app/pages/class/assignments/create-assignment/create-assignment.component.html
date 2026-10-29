@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto">
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto">
         {{ editMode?("updateAssignment" | translate):("createAssignment" | translate) }}
     </h2>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
@@ -64,7 +64,7 @@
             <quill-editor formControlName="assignmentDescription" placeholder="{{ 'description' | translate }}" [styles]="{ height: '250px' }"></quill-editor>
         </div>
 </mat-dialog-content>
-<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="pt-0 pb-2">
+<mat-dialog-actions class="pt-0 pb-2 fx-row fx-align-end-center">
     <button mat-dialog-close mat-flat-button>{{ 'cancel' | translate }}</button>
     <button color="primary" mat-flat-button type="submit" class="text-white ml-2">{{ editMode?('update' |translate):('submit' |translate) }}</button>
 </mat-dialog-actions>

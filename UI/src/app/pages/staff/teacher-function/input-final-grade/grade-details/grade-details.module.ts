@@ -14,7 +14,6 @@ import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module
 import { ContainerModule } from '@vex/directives/container/container.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { ScrollbarModule } from '@vex/components/scrollbar/scrollbar.module';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -43,7 +42,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ContainerModule,
     TranslateModule,
     ScrollbarModule,
-    FlexLayoutModule,
     MatTableModule,
     MatPaginatorModule,
     MatSlideToggleModule,

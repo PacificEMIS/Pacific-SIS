@@ -1,7 +1,7 @@
 <form (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate>
 
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto">{{'subjects'|translate}}</h2>
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto">{{'subjects'|translate}}</h2>
 
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
         <mat-icon>{{ icClose }}</mat-icon>
@@ -9,7 +9,7 @@
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
 
-    <mat-dialog-content fxLayout="column" class="p-0">
+    <mat-dialog-content class="p-0 fx-column">
         <!-- Table Header -->
 
         <div class="flex my-3 px-6" *ngIf ="subjectList.length>0">
@@ -50,7 +50,7 @@
         <hr/>
     </mat-dialog-content>
 
-    <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+    <mat-dialog-actions class="py-6 fx-row fx-align-end-center">
         <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
         <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" color="primary" mat-raised-button type="submit">{{'submit' | translate}}</button>
     </mat-dialog-actions>

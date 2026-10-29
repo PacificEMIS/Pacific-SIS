@@ -29,7 +29,6 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
-import { FlexLayoutModule } from "@angular/flex-layout";
 import { AddTeacherCommentsComponent } from "./take-attendance/add-teacher-comments/add-teacher-comments.component";
 import { SharedModuleModule } from "../../shared-module/shared-module.module";
 import { SearchStaffComponent } from './search-staff/search-staff.component';
@@ -74,7 +73,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
     ReactiveFormsModule,
     RouterModule,
     MatSlideToggleModule,
-    FlexLayoutModule,
     SharedModuleModule
   ],
 })

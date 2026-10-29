@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title class="mb-4">
-    <h2 class="headline m-0" fxFlex="auto">{{ nurseVisitTitle | translate }}</h2>
+<div mat-dialog-title class="mb-4 fx-row fx-align-start-center">
+    <h2 class="headline m-0 fx-auto">{{ nurseVisitTitle | translate }}</h2>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
         <mat-icon>{{ icClose }}</mat-icon>
     </button>
@@ -7,7 +7,7 @@
 </div>
 <mat-divider class="-mx-6 mb-6"></mat-divider>
 <form [formGroup]="form">
-    <mat-dialog-content fxLayout="column">
+    <mat-dialog-content class="fx-column">
             <ul class="grid grid-cols-1">
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">

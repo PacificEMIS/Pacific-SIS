@@ -9,7 +9,6 @@ import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/second
 import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
 import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -30,7 +29,6 @@ import { FormsModule } from '@angular/forms';
     BreadcrumbsModule,
     PageLayoutModule,
     TranslateModule,
-    FlexLayoutModule,
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,

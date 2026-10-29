@@ -12,7 +12,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
@@ -53,7 +52,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     TranslateModule,
     MatTooltipModule,
     MatSlideToggleModule,
-    FlexLayoutModule,
     MatTableModule,
     MatPaginatorModule
     ],

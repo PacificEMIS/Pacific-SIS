@@ -1,5 +1,5 @@
 <vex-page-layout>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16">
         <vex-secondary-toolbar current="{{'scheduleStudents'}}" class="w-full">
             <vex-breadcrumbs [crumbs]="['scheduling']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -66,7 +66,7 @@
                 <img src="assets/img/icons/loading-process.svg" class="flex-shrink-0 mt-1 self-start animate-spin w-5" alt="Loader icon">
                 <div class="ml-4">
                     <span class="text-lg inline-block align-middle text-primary font-bold">{{'schedulingStudent' |translate}}{{studentList?.length > 1 ? 's' : ''}}</span>
-                    <p class="">{{'pleaseDoNotRefreshThePageOrClickBackButton' |translate}}.</p>
+                    <p>{{'pleaseDoNotRefreshThePageOrClickBackButton' |translate}}.</p>
                 </div>
             </div>
 
@@ -75,7 +75,7 @@
                 <mat-icon aria-hidden="false" aria-label="icon" class="mt-1 text-red">error</mat-icon>
                 <div class="ml-4">
                     <span class="text-lg inline-block align-middle text-red font-bold">{{'schedulingFailed' | translate}}</span>
-                    <p class="">{{studentCourseSectionScheduleAddViewModel.conflictMessage}}</p>
+                    <p>{{studentCourseSectionScheduleAddViewModel.conflictMessage}}</p>
                 </div>
             </div>
             <!-- when schedule completed  -->
@@ -83,7 +83,7 @@
                 <mat-icon aria-hidden="false" aria-label="icon" class="mt-1 text-green">check_circle</mat-icon>
                 <div class="ml-4">
                     <span class="text-lg inline-block align-middle text-green font-bold">{{'schedulingCompleted' | translate}}</span>
-                    <p class="">{{studentCourseSectionScheduleAddViewModel.conflictMessage}}</p>
+                    <p>{{studentCourseSectionScheduleAddViewModel.conflictMessage}}</p>
                 </div>
             </div>
             <!-- <mat-divider class="-mx-6 mt-4 text-border"></mat-divider>
@@ -189,7 +189,7 @@
             <div class="p-4">
                 <p class="text-primary font-semibold text-lg">{{ 'selectScheduleDateForSelectedStudentsIntoCourseSections' | translate }}</p>
             </div>
-            <div class="overflow-x-auto overflow-y-hidden border-b  course-section-table">
+            <div class="overflow-x-auto overflow-y-hidden border-b course-section-table">
                 <table class="table mb-0">
                     <thead class="text-left">
                         <tr>
@@ -228,7 +228,7 @@
                                         class="absolute cursor-pointer w-10 h-10 inline-block rounded-full text-center border-2 border-white overflow-hidden"
                                         [matTooltip]="teachers.fullName" aria-label="Button that shows a tooltip"
                                         [matTooltipPosition]="'above'">
-                                        <!-- <img src="assets/img/profilePic.jpg" alt="Teacher Photo" class="" *ngIf="i===0"> -->
+                                        <!-- <img src="assets/img/profilePic.jpg" alt="Teacher Photo" *ngIf="i===0"> -->
                                         <!--For future implementation of thumbnail profile image-->
                                         <p [ngClass]="teachers.bgColor" class="font-semibold text-xs p-2 text-white"
                                             *ngIf="i<=2">{{teachers.firstNameChar}}{{teachers.lastNameChar}}</p>

@@ -14,7 +14,6 @@ import { ContainerModule } from '@vex/directives/container/container.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModuleModule } from '../../shared-module/shared-module.module';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -43,7 +42,6 @@ import { FormsModule } from '@angular/forms';
     TranslateModule,
     SharedModuleModule,
     MatExpansionModule,
-    FlexLayoutModule,
     MatMenuModule,
     MatTableModule,
     MatTooltipModule,

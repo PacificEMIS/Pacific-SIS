@@ -1,5 +1,5 @@
 <vex-page-layout>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16">
         <vex-secondary-toolbar current={{pageTitle}} [schoolSettings]="attendanceSettings" [pages]="pages"
             (selectedPage)="getSelectedPage($event)" class="w-full">
             <vex-breadcrumbs [crumbs]="['settings','attendanceSettings']" class="flex-auto"></vex-breadcrumbs>

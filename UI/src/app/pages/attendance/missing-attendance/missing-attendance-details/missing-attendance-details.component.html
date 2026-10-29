@@ -1,5 +1,5 @@
 <vex-page-layout>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16 fx-column fx-align-center-start">
         <vex-secondary-toolbar current="{{ 'missingAttendance'}}" class="w-full">
             <vex-breadcrumbs [crumbs]="['attendance']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -13,9 +13,9 @@
             </a>
             <span class="font-medium text-base">{{staffDetails.staffFullName}}</span></h4>
             <mat-divider></mat-divider>
-            <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+            <div class="bg-white px-6 md:h-14 border-b sticky left-0 fx-row fx-align-start-center">
                 <div class="md:flex w-full justify-between">
-                    <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
+                    <div class="py-2 fx-row fx-align-start-center">
                         <div class="flex items-center">
                             <input [formControl]="searchCtrl"
                             class="py-3 border-0 outline-none w-full bg-transparent table-search"

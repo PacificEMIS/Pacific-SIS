@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto">
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto">
         {{ "searchselectTeacher" | translate }}
     </h2>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
@@ -94,10 +94,10 @@
         </li>
     </ul>
 
-<div fxLayout="row" fxLayoutAlign="start center" class="py-0 mb-2">
+<div class="py-0 mb-2 fx-row fx-align-start-center">
     <mat-checkbox (change)="includeInactiveStaff($event.checked)">Inactive Staff</mat-checkbox>
 </div>
-<div fxLayout="row" fxLayoutAlign="end center" class="py-0 mb-2">
+<div class="py-0 mb-2 fx-row fx-align-end-center">
     <button color="primary" mat-raised-button type="submit" (click)="submit()">Search</button>
 </div>
 <div class="-mx-6 border-t overflow-auto" *ngIf="isSearchRecordAvailable">

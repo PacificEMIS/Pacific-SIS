@@ -1,5 +1,5 @@
 <vex-page-layout>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16">
         <vex-secondary-toolbar current="{{'groupDrop'}}" class="w-full">
             <vex-breadcrumbs [crumbs]="['scheduling']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -58,7 +58,7 @@
             <img src="assets/img/icons/loading-process.svg" class="flex-shrink-0 mt-1 self-start animate-spin w-5" alt="Loader icon">
             <div class="ml-4">
                 <span class="text-lg inline-block align-middle text-primary font-bold">{{'droppingStudentsFromCourseSection' |translate}}</span>
-                <p class="">{{'pleaseDoNotRefreshThePageOrClickBackButton' |translate}}.</p>
+                <p>{{'pleaseDoNotRefreshThePageOrClickBackButton' |translate}}.</p>
             </div>
         </div>
         <div *ngIf="studentNotFound" class="card mt-6 p-4">
@@ -81,7 +81,7 @@
         <div [ngClass]="studentDetails?.data?.length>0?'card':''" class="mt-6 p-4">
             <div *ngIf="studentDetails?.data?.length>0">
                 <h6 class="text-lg text-green font-bold mb-1">{{'scheduledStudents' |translate}}</h6>
-                <p class="">{{'selectStudentsToDropFromCourseSection' |translate}}.</p>
+                <p>{{'selectStudentsToDropFromCourseSection' |translate}}.</p>
                 <div class="-mx-4 border-t overflow-auto mt-4">
                     <table mat-table [dataSource]="studentDetails" class="mat-elevation-z8 shadow-none">
                         <ng-container matColumnDef="studentSelected">

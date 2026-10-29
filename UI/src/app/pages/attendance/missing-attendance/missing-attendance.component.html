@@ -1,5 +1,5 @@
 <vex-page-layout>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16 fx-column fx-align-center-start">
         <vex-secondary-toolbar current="{{ 'missingAttendance'}}" class="w-full">
             <vex-breadcrumbs [crumbs]="['attendance']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -31,9 +31,9 @@
                 </ul>
             </div>
             <mat-divider></mat-divider>
-            <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+            <div class="bg-white px-6 md:h-14 border-b sticky left-0 fx-row fx-align-start-center">
                 <div class="md:flex w-full justify-between">
-                    <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
+                    <div class="py-2 fx-row fx-align-start-center">
                         <div class="md:flex w-full items-center">
                             <input [formControl]="searchCtrl"
                                 class="py-3 border-0 outline-none w-full bg-transparent table-search"
@@ -52,11 +52,11 @@
                         </div>
                     </div>
                     <hr class="-mx-4 block md:hidden"/>
-                    <div class="py-2 md:pt-2 items-center">
+                    <div class="py-2 md:pt-2 items-center fx-parent">
                         <a (click)="exportStaffListToExcel()" class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
-                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
+                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4 fx-none" mat-icon-button
                           matTooltip="{{'filterColumns' | translate}}" type="button">
                           <mat-icon>filter_list</mat-icon>
                         </button>

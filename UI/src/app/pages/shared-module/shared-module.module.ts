@@ -33,7 +33,6 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { DataEditInfoComponent } from './data-edit-info/data-edit-info.component';
@@ -77,7 +76,6 @@ import { PasswordMaskPipe } from './user-define-pipe/password-mask.pipe';
     TranslateModule,
     MatFormFieldModule,
     MatInputModule,
-    FlexLayoutModule,
     ReactiveFormsModule,
     MatTooltipModule,
     MatDividerModule

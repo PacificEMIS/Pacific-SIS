@@ -1,6 +1,6 @@
 <vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
 <vex-page-layout>
-  <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+  <vex-page-layout-header class="pb-16">
     <vex-secondary-toolbar current="{{'calendar'}}" class="w-full">
       <vex-breadcrumbs [crumbs]="['schoolInfo','calendar']" class="flex-auto"></vex-breadcrumbs>
     </vex-secondary-toolbar>
@@ -8,7 +8,7 @@
   <div class="-mt-16 w-full" vexContainer>
     <mat-drawer-container class="bg-transparent" vexContainer>
       <mat-card class="mb-5 mx-6 p-0">
-        <div class="flex items-center px-4" fxLayout="row" fxLayoutAlign="center center">
+        <div class="flex items-center px-4">
 
           <div class="flex-auto">
             <div style="text-align: center !important;"><label
@@ -39,7 +39,7 @@
           </a>
         </div>
         <hr *ngIf="showCalendarView" />
-        <div class="flex-auto flex flex-col sm:flex-row justify-between items-center my-3  px-4"
+        <div class="flex-auto flex flex-col sm:flex-row justify-between items-center my-3 px-4"
           *ngIf="showCalendarView">
           <div class="headline text-md text-gray">
             {{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</div>
@@ -70,11 +70,11 @@
               <div class="flex justify-between items-center mx-3 mt-2">
                 <!-- <span class="cal-day-badge hidden md:inline-block" *ngIf="day.badgeTotal > 0">{{ day.badgeTotal }}</span> -->
                 <div *ngIf="periodList.length > 1 && !day.isWeekend && isBetweenCalendar(day.date) && (userType === 'Teacher' || userType === 'Homeroom Teacher')"
-                  class="select-container bg-white border  rounded p-2">
+                  class="select-container bg-white border rounded p-2">
                   <p>{{day.blockTitle}}</p>
                 </div>
                 <div *ngIf="periodList.length > 1 && !day.isWeekend && isBetweenCalendar(day.date) && userType !== 'Teacher' && userType !== 'Homeroom Teacher'"
-                  class="select-container bg-white border  rounded p-2">
+                  class="select-container bg-white border rounded p-2">
                   <p *ngIf="!permissions?.edit">{{day.blockTitle}}</p>
                   <mat-select *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="$event.stopPropagation()" (selectionChange)="changeBlockPeriod($event, day)"
                     [value]="day.blockId ? day.blockId : 1">

@@ -1,10 +1,10 @@
 <div class="grid md:grid-cols-2 md:col-gap-8 row-gap-6">
     <div class="border border-solid rounded p-4" *ngFor="let parent of parentListArray">
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
-            <div class="relative cursor-pointer" fxFlex="none" (click)='openViewDetails(parent)'>
+        <div class="fx-row fx-align-start-center fx-gap-16">
+            <div class="relative cursor-pointer fx-none" (click)='openViewDetails(parent)'>
                 <img src="{{parent.parentPhoto?'data:image/png;base64,'+ parent.parentPhoto:'assets/img/default-person.jpg'}}" alt="Parent photo" class="avatar">
             </div>
-            <div class="overflow-hidden cursor-pointer" fxFlex="auto" (click)='openViewDetails(parent)'>
+            <div class="overflow-hidden cursor-pointer fx-auto" (click)='openViewDetails(parent)'>
                 <div class="subheading-2 leading-snug text-primary">{{parent.firstname}} {{parent.lastname}}</div>
                 <div class="body-1 text-secondary truncate contact-type">{{parent.relationship}} 
                     <span class="separator"></span> 
@@ -16,7 +16,7 @@
                     </ng-template>
                 </div>
             </div>
-            <div fxFlex="none" fxLayout="column" fxLayoutAlign="center end">
+            <div class="fx-none fx-column fx-align-center-end">
                 <div class="flex">
                         <span  class="custody mr-4"  *ngIf="parent.isCustodian;else noCustody"><img src="../../../../assets/img/icons/mother.svg"
                             matTooltip="{{'custodyOfStudent' | translate}}"

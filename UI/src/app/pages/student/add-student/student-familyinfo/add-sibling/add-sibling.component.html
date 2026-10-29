@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto"><a class="text-primary cursor-pointer inline-block mr-3"
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto"><a class="text-primary cursor-pointer inline-block mr-3"
             @fadeInRight (click)="backToSearch()" *ngIf="studentSiblingSearch.getStudentForView?.length==1">
             <mat-icon class="inline-block align-middle">{{ icBack }}</mat-icon>
         </a> {{'searchAndAssociateStudent' | translate}}</h2>
@@ -9,12 +9,12 @@
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
 <form [formGroup]="form">
-    <mat-dialog-content fxLayout="column">
+    <mat-dialog-content class="fx-column">
 
         <div class="add-form" *ngIf="hideSearchBoxAfterSearch">
             <div class="md:flex md:flex-wrap mt-6 -mx-4">
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'firstName' | translate}}</mat-label>
                         <input name="firstName" formControlName="firstGivenName"
                             [(ngModel)]="studentSiblingSearch.firstGivenName" type="text" cdkFocusInitial matInput
@@ -23,8 +23,8 @@
                             {{'firstNameIsRequired'|translate}}</mat-error>
                     </mat-form-field>
                 </div>
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'lastName' | translate}}</mat-label>
                         <input name="lastName" formControlName="lastFamilyName"
                             [(ngModel)]="studentSiblingSearch.lastFamilyName" type="text" cdkFocusInitial matInput
@@ -36,8 +36,8 @@
             </div>
 
             <div class="md:flex md:flex-wrap -mx-4">
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'gradeLevel' | translate}}</mat-label>
                         <mat-select name="gradeLevel" formControlName="gradeLevel"
                             [(ngModel)]="studentSiblingSearch.gradeLevelTitle">
@@ -48,8 +48,8 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'studentID' | translate}}</mat-label>
                         <input name="studentID" type="text" [(ngModel)]="studentSiblingSearch.studentInternalId"
                             formControlName="studentId" cdkFocusInitial matInput>
@@ -58,8 +58,8 @@
             </div>
 
             <div class="md:flex md:flex-wrap -mx-4">
-                <div class="flex flex-1 mx-4 md:w-1/2">
-                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                <div class="flex flex-1 mx-4 md:w-1/2 fx-parent">
+                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                         <mat-label>{{'dateOfBirth'|translate}}</mat-label>
                         <input name="dob" formControlName="dob" [max]="today" [matDatepicker]="dob"
                             [(ngModel)]="studentSiblingSearch.dob" matInput>
@@ -79,8 +79,8 @@
                 (ngSubmit)="associateStudents.form.valid && associateStudent(studentSiblingSearch.getStudentForView[0])"
                 #associateStudents="ngForm" novalidate>
                 <div class="md:flex md:flex-wrap mt-4" *ngIf="mode === 'Parent'">
-                    <div class="pr-4 md:w-2/3">
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <div class="pr-4 md:w-2/3 fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'contactRelationship' | translate}}</mat-label>
                             <mat-select [(ngModel)]="associatStudent.contactRelationship" #contactRelationship="ngModel"
                                 name="contactRelationship" required>
@@ -142,8 +142,8 @@
             <form (ngSubmit)="associateMultipleStudents.form.valid && associateMultipleStudentsToParent()"
                 #associateMultipleStudents="ngForm" novalidate>
                 <div class="md:flex md:flex-wrap my-4" *ngIf="mode === 'Parent'">
-                    <div class="pr-4 md:w-2/3">
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <div class="pr-4 md:w-2/3 fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'contactRelationship' | translate}}</mat-label>
                             <mat-select [(ngModel)]="associatStudent.contactRelationship" #contactRelationship="ngModel"
                                 name="contactRelationship" required>
@@ -230,7 +230,7 @@
             </mat-accordion>
         </div>
     </mat-dialog-content>
-    <mat-dialog-actions *ngIf="hideSearchBoxAfterSearch" fxLayout="row" fxLayoutAlign="end center" class="py-6">
+    <mat-dialog-actions *ngIf="hideSearchBoxAfterSearch" class="py-6 fx-row fx-align-end-center">
         <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
         <button color="primary" mat-raised-button type="submit" (click)="search()">{{'search' | translate}}</button>
     </mat-dialog-actions>

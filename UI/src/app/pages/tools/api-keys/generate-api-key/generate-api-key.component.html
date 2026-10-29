@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title class="flex justify-between mb-2">
-    <h2 class="headline m-0 text-xl" fxFlex="auto">{{data ? 'Update API Key'  : 'Generate New API Key'}}</h2>
+<div mat-dialog-title class="flex justify-between mb-2">
+    <h2 class="headline m-0 text-xl">{{data ? 'Update API Key'  : 'Generate New API Key'}}</h2>
 
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
         <mat-icon>{{ icClose }}</mat-icon>
@@ -7,7 +7,7 @@
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
 
-<mat-dialog-content fxLayout="column">
+<mat-dialog-content>
     <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 
     <form (ngSubmit)="generate()" #f="ngForm">
@@ -21,7 +21,7 @@
 </form>
 </mat-dialog-content>
 
-<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="pt-0 justify-end">
+<mat-dialog-actions class="pt-0 justify-end">
     <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
     <button color="primary" mat-raised-button type="button" (click)="generate()">{{data ? 'Update' :'Generate'}}</button>
 </mat-dialog-actions>

@@ -3,11 +3,11 @@
         <h3 class="font-medium">{{'schoolAndEnrollmentInfo'|translate}}</h3>
         <mat-card-content>
 
-            <div @stagger fxLayout="column">
+            <div class="fx-column" @stagger>
                 <h4 class="text-primary pt-6 pb-2">{{'schoolInformation'|translate}}</h4>
                 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'enrollmentCalendar'|translate}}</mat-label>
                             <mat-select #calendarId="ngModel" name="enrollment_calendar"
                                 [(ngModel)]="studentEnrollmentModel.calenderId" required>
@@ -18,8 +18,8 @@
                             </mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'rollingRetentionOption'|translate}}</mat-label>
                             <mat-select #rollingOption="ngModel" name="rolling_retention_option"
                                 [(ngModel)]="studentEnrollmentModel.rollingOption" required>
@@ -30,8 +30,8 @@
                             </mat-error>
                         </mat-form-field>
                     </li>
-                    <li *ngIf="studentEnrollmentModel.rollingOption=='Enrol to another school'">
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                    <li class="fx-parent" *ngIf="studentEnrollmentModel.rollingOption=='Enrol to another school'">
+                        <mat-form-field class="w-full fx-auto" appearance="outline"
                             color="primary" floatLabel="never">
                             <mat-label>{{'transferToSchool'|translate}}</mat-label>
                             <!-- (selectionChange)="onRolingSchoolChange($event.value)" -->
@@ -52,8 +52,8 @@
                         </ng-container>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'section'|translate}}</mat-label>
                             <mat-select [(ngModel)]="studentEnrollmentModel.sectionId" name="sectionId">
                                 <mat-option value="" *ngIf="sectionList?.tableSectionsList?.length==0">No Sections Found
@@ -64,8 +64,8 @@
                             </mat-select>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'estimatedGraduationDate'|translate}}</mat-label>
                             <input name="estimatedGradDate" [(ngModel)]="studentEnrollmentModel.estimatedGradDate"
                                 [matDatepicker]="estimatedGradDate" matInput>
@@ -117,8 +117,8 @@
                             <div class="w-11/12 ">
                                 <div class="ml-8">
                                     <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
-                                        <li>
-                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                        <li class="fx-parent">
+                                            <mat-form-field class="w-full fx-auto" appearance="outline"
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'school'|translate}}</mat-label>
                                                 <mat-select #school_name="ngModel" name="{{'schoolName'+index}}"
@@ -137,8 +137,8 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </li>
-                                        <li>
-                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                        <li class="fx-parent">
+                                            <mat-form-field class="w-full fx-auto" appearance="outline"
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'gradeLevel'|translate}}</mat-label>
                                                 <mat-select #gradeLevel="ngModel" name="{{'gradeLevel'+index}}"
@@ -154,8 +154,8 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </li>
-                                        <li>
-                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                        <li class="fx-parent">
+                                            <mat-form-field class="w-full fx-auto" appearance="outline"
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'enrollmentDate'|translate}}</mat-label>
                                                 <input #enrollment_date="ngModel" name="{{'enrollmentDate'+index}}"
@@ -170,8 +170,8 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </li>
-                                        <li>
-                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                        <li class="fx-parent">
+                                            <mat-form-field class="w-full fx-auto" appearance="outline"
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'enrollmentCode'|translate}}</mat-label>
                                                 <mat-select #transferred_code="ngModel"
@@ -202,8 +202,8 @@
                                     </ul>
                                     <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0"
                                         *ngIf="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentId!=null">
-                                        <li>
-                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                        <li class="fx-parent">
+                                            <mat-form-field class="w-full fx-auto" appearance="outline"
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'exitDate'|translate}}</mat-label>
                                                 <input #exit_date="ngModel" name="{{'exitDate'+index}}" matInput
@@ -219,9 +219,9 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </li>
-                                        <li
+                                        <li class="fx-parent"
                                             *ngIf="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentId!=null">
-                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                            <mat-form-field class="w-full fx-auto" appearance="outline"
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'exitCode'|translate}}</mat-label>
                                                 <mat-select #exit_code="ngModel" name="{{'exitCode'+index}}"
@@ -243,8 +243,8 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </li>
-                                        <li *ngIf="selectedExitCodes[index]=='Drop (Transfer)'">
-                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                        <li class="fx-parent" *ngIf="selectedExitCodes[index]=='Drop (Transfer)'">
+                                            <mat-form-field class="w-full fx-auto" appearance="outline"
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'transferToSchool'|translate}}</mat-label>
                                                 <mat-select #transferred_school="ngModel"
@@ -263,8 +263,8 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </li>
-                                        <li *ngIf="selectedExitCodes[index]=='Drop (Transfer)'">
-                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                        <li class="fx-parent" *ngIf="selectedExitCodes[index]=='Drop (Transfer)'">
+                                            <mat-form-field class="w-full fx-auto" appearance="outline"
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'gradeLevel'|translate}}</mat-label>
                                                 <mat-select #transferred_grade="ngModel"
@@ -281,8 +281,8 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </li>
-                                        <li>
-                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                        <li class="fx-parent">
+                                            <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                                 <mat-label>{{'exitReason'|translate}}</mat-label>
                                                 <input [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].exitReason"
                                                 [required]="this.cloneStudentEnrollment.studentEnrollments[index].exitCode"
@@ -325,7 +325,7 @@
 
 <mat-card class="w-full" *ngIf="studentCreateMode == studentCreate.VIEW">
 
-    <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+    <div class="flex items-center fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'schoolAndEnrollmentInfo' | translate}}</h3>
         <button *ngIf="permissions?.edit" mat-raised-button color="primary" (click)="editEnrollmentInfo()">
             <mat-icon class="md:mt-1 md:mr-2">{{ icEdit }}</mat-icon><span class="hidden md:inline-block">{{'editInformation' |translate}}</span>

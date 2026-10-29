@@ -3,14 +3,14 @@
         <h3 class="mb-6">{{'generalInformation'|translate}}</h3>
         <mat-card-content>
 
-            <div @stagger fxLayout="column">
+            <div class="fx-column" @stagger>
                 <h4 class="text-primary">{{'identificationInformation'|translate}}</h4>
                 <div class="bg-skyblue-light pt-4 px-4 mb-4 rounded border border-skyblue">
                     <h6 class="font-medium">{{'staffName' | translate}}</h6>
 
                     <ul class="staff-name-grid items-center flex-wrap">
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline"
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full bg-white mb-0 rounded fx-auto" appearance="outline"
                                 color="primary">
                                 <mat-label>{{'salutation'|translate}}</mat-label>
                                 <mat-select [(ngModel)]="staffAddModel.staffMaster.salutation" name="salutation" [disabled]="isReadOnly">
@@ -22,8 +22,8 @@
                             </mat-form-field>
 
                         </li>
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline"
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full bg-white mb-0 rounded fx-auto" appearance="outline"
                                 color="primary">
                                 <mat-label>{{'firstGivenName'|translate}}</mat-label>
                                 <input #firstGivenName="ngModel" [(ngModel)]="staffAddModel.staffMaster.firstGivenName"
@@ -32,15 +32,15 @@
                                     {{'firstGivenNameIsRequired'|translate}}</mat-error>
                             </mat-form-field>
                         </li>
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline"
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full bg-white mb-0 rounded fx-auto" appearance="outline"
                                 color="primary">
                                 <mat-label>{{'middleName'|translate}}</mat-label>
                                 <input [(ngModel)]="staffAddModel.staffMaster.middleName" name="middleName" matInput [disabled]="isReadOnly">
                             </mat-form-field>
                         </li>
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline"
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full bg-white mb-0 rounded fx-auto" appearance="outline"
                                 color="primary">
                                 <mat-label>{{'lastFamilyName'|translate}}</mat-label>
                                 <input #lastFamilyName="ngModel" [(ngModel)]="staffAddModel.staffMaster.lastFamilyName"
@@ -49,8 +49,8 @@
                                     {{'lastFamilyNameIsRequired'|translate}}</mat-error>
                             </mat-form-field>
                         </li>
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline"
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full bg-white mb-0 rounded fx-auto" appearance="outline"
                                 color="primary">
                                 <mat-label>{{'suffix'|translate}}</mat-label>
                                 <mat-select [(ngModel)]="staffAddModel.staffMaster.suffix" name="suffix" [disabled]="isReadOnly">
@@ -63,8 +63,8 @@
                     </ul>
                 </div>
                 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'staffId'|translate}}</mat-label>
                             <input [formControl]="internalId" [(ngModel)]="staffAddModel.staffMaster.staffInternalId"
                                 name="staffInternalId" matInput required>
@@ -76,40 +76,40 @@
                                 {{'staffInternalIdAlreadyExist'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'alternateID'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.alternateId" name="alternateId" [disabled]="isReadOnly" matInput>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'districtID'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.districtId" name="districtId" [disabled]="isReadOnly"
                                 matInput maxlength="50">
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'stateID'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.stateId" name="stateId" [disabled]="isReadOnly"
                                 matInput maxlength="50">
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'preferredCommonName'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.preferredName" name="preferredName" matInput [disabled]="isReadOnly">
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'previousMaidenName'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.previousName" name="previousName" matInput [disabled]="isReadOnly">
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'socialSecurityNumber'|translate}}</mat-label>
                             <input (paste)="$event.preventDefault()" type="password" [disabled]="isReadOnly"
                                 (keypress)="omitSpecialChar($event)"
@@ -117,8 +117,8 @@
                                 matInput>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'otherGovtIssuedNumber'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.otherGovtIssuedNumber" [disabled]="isReadOnly"
                                 name="otherGovtIssuedNumber" matInput>
@@ -132,8 +132,8 @@
                 <hr class="-mx-4">
                 <h4 class="text-primary pt-6">{{'demographicInformation'|translate}}</h4>
                 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'gender'|translate}}</mat-label>
                             <mat-select [(ngModel)]="staffAddModel.staffMaster.gender" name="gender" [disabled]="isReadOnly">
                                 <mat-option></mat-option>
@@ -142,8 +142,8 @@
                             </mat-select>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'race'|translate}}</mat-label>
                             <mat-select [(ngModel)]="staffAddModel.staffMaster.race" name="race" [disabled]="isReadOnly">
                                 <mat-option></mat-option>
@@ -152,8 +152,8 @@
                             </mat-select>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'ethnicity'|translate}}</mat-label>
                             <mat-select [(ngModel)]="staffAddModel.staffMaster.ethnicity" name="ethnicity" [disabled]="isReadOnly">
                                 <mat-option></mat-option>
@@ -163,8 +163,8 @@
                             </mat-select>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'maritalStatus'|translate}}</mat-label>
                             <mat-select [(ngModel)]="staffAddModel.staffMaster.maritalStatus" name="maritalStatus" [disabled]="isReadOnly">
                                 <mat-option></mat-option>
@@ -174,8 +174,8 @@
                             </mat-select>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'dateOfBirth'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.dob" name="dob" [max]="today" [disabled]="isReadOnly"
                                 [matDatepicker]="dob" matInput>
@@ -183,8 +183,8 @@
                             <mat-datepicker #dob></mat-datepicker>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'countryOfBirth'|translate}}</mat-label>
                             <mat-select [formControl]="countryOfBirthCtrl" [disabled]="isReadOnly"
                                 [(ngModel)]="staffAddModel.staffMaster.countryOfBirth" name="countryOfBirth">
@@ -200,8 +200,8 @@
                             </mat-select>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'nationality'|translate}}</mat-label>
                             <mat-select [formControl]="nationalityCtrl"
                                 [(ngModel)]="staffAddModel.staffMaster.nationality" name="nationality" [disabled]="isReadOnly">
@@ -217,8 +217,8 @@
                             </mat-select>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'firstLanguage'|translate}}</mat-label>
                             <mat-select [(ngModel)]="staffAddModel.staffMaster.firstLanguage" name="firstLanguage" [disabled]="isReadOnly">
                                 <mat-option>
@@ -233,8 +233,8 @@
                             </mat-select>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'secondLanguage'|translate}}</mat-label>
                             <mat-select [(ngModel)]="staffAddModel.staffMaster.secondLanguage" name="secondLanguage" [disabled]="isReadOnly">
                                 <mat-option>
@@ -249,8 +249,8 @@
                             </mat-select>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'thirdLanguage'|translate}}</mat-label>
                             <mat-select [(ngModel)]="staffAddModel.staffMaster.thirdLanguage" name="thirdLanguage" [disabled]="isReadOnly">
                                 <mat-option>
@@ -265,8 +265,8 @@
                             </mat-select>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'physicalDisability'|translate}}</mat-label>
                             <mat-select name="physicalDisability" (selectionChange)="checkDisability($event)"
                                 [(ngModel)]="staffAddModel.staffMaster.physicalDisability" [disabled]="isReadOnly">
@@ -296,8 +296,8 @@
                 <div *ngIf="hideAccess">
                     <h4 class="text-primary pt-3">{{'accessInformation'|translate}}</h4>
                     <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                 <mat-label>{{'loginEmailAddress'|translate}}</mat-label>
                                 <input [formControl]="loginEmail" name="loginEmailAddress"
                                     [(ngModel)]="staffAddModel.staffMaster.loginEmailAddress" matInput
@@ -362,7 +362,7 @@
 
 <!--View-->
 <mat-card class="w-full" *ngIf="staffCreateMode == staffCreate.VIEW">
-    <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+    <div class="flex items-center fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'generalInformation' | translate}}</h3>
         <button *ngIf="permissions.edit" mat-raised-button color="primary" (click)="editGeneralInfo()">
             <mat-icon class="md:mt-1 md:mr-2">{{ icEdit }}</mat-icon><span

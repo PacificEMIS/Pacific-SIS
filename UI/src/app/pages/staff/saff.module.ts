@@ -6,7 +6,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDividerModule } from '@angular/material/divider';
@@ -37,7 +36,6 @@ import { EffortGradeDetailsModule } from './teacher-function/input-effort-grades
     ContainerModule,
     TranslateModule,
     ScrollbarModule,
-    FlexLayoutModule,
     MatTableModule,
     MatPaginatorModule,
     MatDividerModule,

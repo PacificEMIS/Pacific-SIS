@@ -38,14 +38,14 @@
             </mat-form-field>
         </li>
         <li>
-            <button mat-raised-button color="primary" class="" (click)="getStudentEnrollmentWithDate()">{{'search' | translate }}</button>
+            <button mat-raised-button color="primary" (click)="getStudentEnrollmentWithDate()">{{'search' | translate }}</button>
         </li>
     </ul>
     <mat-divider class="mt-2"></mat-divider>
     <div *ngIf="isVisible">
-    <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+    <div class="bg-white px-6 md:h-14 border-b sticky left-0">
         <div class="md:flex w-full justify-between">
-            <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
+            <div class="py-2">
                 <div class="md:flex w-full items-center">
                     <input [formControl]="searchCtrl" class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
                         type="search">

@@ -1,5 +1,5 @@
 <div class="dropdown absolute left-0 top-6">
-  <div class="dropdown-header" fxLayout="row" fxLayoutAlign="space-between center">
+  <div class="dropdown-header fx-row fx-align-between-center">
     <div>
       <div class="dropdown-heading">Notifications</div>
       <div class="dropdown-subheading">You have {{ notifications.length }} new notifications.</div>
@@ -14,23 +14,20 @@
     <a *ngFor="let notification of notifications; trackBy: trackById"
        [class.read]="notification.read"
        [routerLink]="[]"
-       class="notification"
-       fxLayout="row"
-       fxLayoutAlign="start center"
+       class="notification fx-row fx-align-start-center"
        matRipple>
       <mat-icon
                [ngClass]="notification.colorClass"
-               class="notification-icon"
-               fxFlex="none">{{ notification.icon }}</mat-icon>
-      <div fxFlex="auto">
+               class="notification-icon fx-none">{{ notification.icon }}</mat-icon>
+      <div class="fx-auto">
         <div class="notification-label">{{ notification.label }}</div>
         <div class="notification-description">{{ notification.datetime | relativeDateTime }}</div>
       </div>
-      <mat-icon class="notification-chevron" fxFlex="none">{{ icChevronRight }}</mat-icon>
+      <mat-icon class="notification-chevron fx-none">{{ icChevronRight }}</mat-icon>
     </a>
   </div>
 
-  <div class="dropdown-footer" fxLayout="row" fxLayoutAlign="center center">
+  <div class="dropdown-footer fx-row fx-align-center-center">
     <button color="primary" mat-button type="button">MARK ALL AS READ</button>
   </div>
 </div>

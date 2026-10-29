@@ -1,12 +1,12 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto">{{viewDetails.standardRefNo}}</h2>
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto">{{viewDetails.standardRefNo}}</h2>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
         <mat-icon>{{ icClose }}</mat-icon>
     </button>
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
 
-<mat-dialog-content fxLayout="column">
+<mat-dialog-content class="fx-column">
     <ul class="grid grid-cols-1 md:grid-cols-2 md:col-gap-8 row-gap-6 md:row-gap-10 mt-6">
         <li>
             <label class="text-sm leading-5 text-gray">{{'subject' | translate}}</label>

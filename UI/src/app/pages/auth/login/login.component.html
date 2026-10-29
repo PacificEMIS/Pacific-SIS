@@ -4,7 +4,7 @@
   <div @fadeInUp class="w-full md:max-w-md">
 
     <div class="card overflow-hidden w-full">
-      <div class="p-4 pb-0 px-4" fxLayout="column" fxLayoutAlign="center center">
+      <div class="p-4 pb-0 px-4 fx-column fx-align-center-center">
         <div class="fill-current text-center login-logo flex items-center align-middle justify-center">
           <img *ngIf="tenantPhoto" [src]="'data:image/jpeg;base64,'+tenantPhoto" [alt]="tenantName+' Logo'">
       </div>
@@ -20,8 +20,8 @@
         <h4 class="body-2 text-primary m-0">{{'SIS'| translate}}</h4>
       </div>
   
-      <form [formGroup]="form" class="px-10 py-6" fxLayout="column" (ngSubmit)="send()">
-        <div fxFlex="auto" fxLayout="column">
+      <form [formGroup]="form" class="px-10 py-6 fx-column" (ngSubmit)="send()">
+        <div class="fx-auto fx-column">
           
             <mat-form-field appearance="outline" class="vex-flex-form-field" color="primary">
               <mat-label>{{'emailAddress'|translate}}</mat-label>
@@ -61,7 +61,7 @@
           </mat-form-field> -->
         </div>
   
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="mb-3">
+        <div class="mb-3 fx-row fx-align-between-center">
           <mat-checkbox class="caption" #inputRememberMe [checked]= "setValue" color="primary" (click)="rememberMe(inputRememberMe.checked)" class="text-sm">{{'rememberMe'|translate}}</mat-checkbox>
           <a [routerLink]="['/forgot-password']" class="caption text-sm"><span
               class="text-blue-600">{{'forgotPassword'|translate}}</span></a>

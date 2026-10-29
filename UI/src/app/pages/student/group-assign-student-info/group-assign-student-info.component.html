@@ -2,7 +2,7 @@
     <vex-page-layout>
         <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 
-        <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+        <vex-page-layout-header class="pb-16">
             <vex-secondary-toolbar current="{{ 'groupAssignStudentInfo'}}" class="w-full">
                 <vex-breadcrumbs [crumbs]="['student']" class="flex-auto"></vex-breadcrumbs>
             </vex-secondary-toolbar>
@@ -26,17 +26,16 @@
                     </div>
                 </div>
                 <mat-divider></mat-divider>
-                <div class="bg-white px-5 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+                <div class="bg-white px-5 border-b sticky left-0">
                     <div class="md:flex w-full justify-between pb-4 md:pb-0 items-center">
-                        <div class="py-2 md:py-3" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
-                            fxLayoutAlign="start center">
+                        <div class="py-2 md:py-3">
                             <div class="flex items-center">
                                 <input [formControl]="searchCtrl"
                                     class="pr-4 py-3 border-0 outline-none w-full bg-transparent"
                                     placeholder="Search..." type="search">
                                 <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5"
                                     alt="Loader icon">
-                                <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button
+                                <button *ngIf="!loading" class="ml-4" mat-icon-button
                                     type="button">
                                     <mat-icon>search</mat-icon>
                                 </button>
@@ -301,7 +300,7 @@
                             <ul
                                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-0">
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'dateOfBirth'|translate}}</mat-label>
                                         <input matInput [(ngModel)]="studentAddForGroupAssignModel.studentMaster.dob"
                                             name="dob" [max]="today" [matDatepicker]="dob">
@@ -310,7 +309,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'gender'|translate}}</mat-label>
                                         <mat-select [(ngModel)]="studentAddForGroupAssignModel.studentMaster.gender"
                                             name="gender">
@@ -322,7 +321,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'race'|translate}}</mat-label>
                                         <mat-select [(ngModel)]="studentAddForGroupAssignModel.studentMaster.race"
                                             name="race">
@@ -333,7 +332,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'ethnicity'|translate}}</mat-label>
                                         <mat-select [(ngModel)]="studentAddForGroupAssignModel.studentMaster.ethnicity"
                                             name="ethnicity">
@@ -346,7 +345,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'maritalStatus'|translate}}</mat-label>
                                         <mat-select
                                             [(ngModel)]="studentAddForGroupAssignModel.studentMaster.maritalStatus"
@@ -359,7 +358,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'countryOfBirth'|translate}}</mat-label>
                                         <mat-select [formControl]="countryOfBirthCtrl"
                                             [(ngModel)]="studentAddForGroupAssignModel.studentMaster.countryOfBirth"
@@ -379,7 +378,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'nationality'|translate}}</mat-label>
                                         <mat-select [formControl]="nationalityCtrl"
                                             [(ngModel)]="studentAddForGroupAssignModel.studentMaster.nationality"
@@ -399,7 +398,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'firstLanguage'|translate}}</mat-label>
                                         <mat-select
                                             [(ngModel)]="studentAddForGroupAssignModel.studentMaster.firstLanguageId"
@@ -412,7 +411,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'secondLanguage'|translate}}</mat-label>
                                         <mat-select
                                             [(ngModel)]="studentAddForGroupAssignModel.studentMaster.secondLanguageId"
@@ -425,7 +424,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'thirdLanguage'|translate}}</mat-label>
                                         <mat-select
                                             [(ngModel)]="studentAddForGroupAssignModel.studentMaster.thirdLanguageId"
@@ -568,7 +567,7 @@
                             <h4 class="text-primary pt-4 pb-2">{{'schoolInformation'|translate}}</h4>
                             <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0 mb-2">
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'enrollmentCalendar'|translate}}</mat-label>
                                         <mat-select #calendarId="ngModel" name="enrollment_calendar"
                                             [(ngModel)]="studentEnrollmentForGroupAssignModel.studentEnrollments.calenderId">
@@ -581,7 +580,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'rollingRetentionOption'|translate}}</mat-label>
                                         <mat-select #rollingOption="ngModel" name="rolling_retention_option"
                                             [(ngModel)]="studentEnrollmentForGroupAssignModel.studentEnrollments.rollingOption">
@@ -596,7 +595,7 @@
                                 </li>
                                 <li
                                     *ngIf="studentEnrollmentForGroupAssignModel.studentEnrollments.rollingOption=='Enrol to another school'">
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary"
+                                    <mat-form-field class="w-full" appearance="outline" color="primary"
                                         floatLabel="never">
                                         <mat-label>{{'transferToSchool'|translate}}</mat-label>
                                         <ng-container *ngIf="schoolList.length > 0">
@@ -619,7 +618,7 @@
 
 
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'section'|translate}}</mat-label>
                                         <mat-select [(ngModel)]="studentEnrollmentForGroupAssignModel.sectionId"
                                             name="sectionId">
@@ -634,7 +633,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'estimatedGraduationDate'|translate}}</mat-label>
                                         <input name="estimatedGradDate"
                                             [(ngModel)]="studentEnrollmentForGroupAssignModel.estimatedGradDate"
@@ -645,7 +644,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'gradeLevel'|translate}}</mat-label>
                                         <mat-select
                                             [(ngModel)]="studentEnrollmentForGroupAssignModel.studentEnrollments.gradeId"
@@ -658,7 +657,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'enrollmentDate'|translate}}</mat-label>
                                         <input name="enrollmentDate"
                                             [(ngModel)]="studentEnrollmentForGroupAssignModel.studentEnrollments.enrollmentDate"
@@ -699,7 +698,7 @@
                             <ul
                                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-0">
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'primaryCarePhysician'|translate}}</mat-label>
                                         <input name="primaryCarePhysician"
                                             [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.primaryCarePhysician"
@@ -707,7 +706,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'primaryCarePhysicianPhone'|translate}}</mat-label>
                                         <input name="primaryCarePhysicianPhone"
                                             [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.primaryCarePhysicianPhone"
@@ -718,7 +717,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'insuranceCompany'|translate}}</mat-label>
                                         <input name="insuranceCompany"
                                             [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.insuranceCompany"
@@ -726,7 +725,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'insuranceCompanyPhone'|translate}}</mat-label>
                                         <input name="insuranceCompanyPhone"
                                             [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.insuranceCompanyPhone"
@@ -737,7 +736,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'preferredMedicalFacility'|translate}}</mat-label>
                                         <input name="medicalFacility"
                                             [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.preferredMedicalFacility"
@@ -745,7 +744,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'preferredMedicalFacilityPhone'|translate}}</mat-label>
                                         <input name="medicalFacilityPhone"
                                             [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.preferredMedicalFacilityPhone"
@@ -756,7 +755,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'dentist'|translate}}</mat-label>
                                         <input name="dentist"
                                             [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.dentistName"
@@ -764,7 +763,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'dentistsPhone'|translate}}</mat-label>
                                         <input name="dentistPhone"
                                             [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.dentistPhone"
@@ -775,7 +774,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'vision'|translate}}</mat-label>
                                         <input name="vision"
                                             [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.visionName"
@@ -783,7 +782,7 @@
                                     </mat-form-field>
                                 </li>
                                 <li>
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'visionProvidersPhone'|translate}}</mat-label>
                                         <input name="visionPhone"
                                             [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.visionProviderPhone"

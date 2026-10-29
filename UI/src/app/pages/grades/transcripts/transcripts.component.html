@@ -1,6 +1,6 @@
 <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 <vex-page-layout>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16">
         <vex-secondary-toolbar current="{{ 'transcripts'}}" class="w-full">
             <vex-breadcrumbs [crumbs]="['grades']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -54,20 +54,19 @@
                         <!-- <mat-error *ngIf="historicalGradeError">{{'pleaseSelectAtLeastOneHistoricalGradeLevel'|translate}}</mat-error> -->
                     </div>
                     <div class="card mb-8">
-                        <div class="bg-white px-6 py-2 border-b sticky left-0" fxLayout="row"
-                            fxLayoutAlign="start center">
+                        <div class="bg-white px-6 py-2 border-b sticky left-0">
                             <div class="lg:flex w-full justify-between">
                                 <div class="flex items-center">
                                     <!-- <input matInput class="px-4 py-3 border-0 outline-none w-full bg-transparent"
                                 appearance="outline" color="primary" placeholder="Search..." type="search" name="searchStudents">
-                            <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
+                            <button class="ml-4" mat-icon-button type="button">
                                 <mat-icon>{{ icSearch }}</mat-icon>
                             </button> -->
                                     <input [formControl]="searchCtrl"
                                         class="py-3 border-0 outline-none w-full bg-transparent table-search"
                                         appearance="outline" color="primary" placeholder="Search..." type="search"
                                         name="search">
-                                    <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button
+                                    <button *ngIf="!loading" class="ml-4" mat-icon-button
                                         type="button">
                                         <mat-icon>{{ icSearch }}</mat-icon>
                                     </button>

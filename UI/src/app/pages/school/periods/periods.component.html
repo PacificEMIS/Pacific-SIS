@@ -1,6 +1,6 @@
 <div class="mb-2 lg:flex w-full lg:flex-wrap">
     <div class="mb-6 lg:w-3/12 lg:pr-4" *ngIf="blockCount > 1">
-        <mat-card class="w-full p-0" fxFlex="auto">
+        <mat-card class="w-full p-0">
             <div class="py-4">
                 <h4 class="px-gutter mb-4 font-bold">{{'blockRotationDays'|translate}}</h4>
                 <hr />
@@ -35,7 +35,7 @@
     </div>
 
     <div [ngClass]="(blockCount > 1)?'lg:w-9/12 lg:pl-4':'flex-1' ">
-        <mat-card class="w-full p-0 mb-4" fxFlex="auto">
+        <mat-card class="w-full p-0 mb-4">
             <div *ngIf="2 > blockCount" class="flex items-center mx-6 py-4">
                 <h4>{{'showingPeriodsForAllDays' | translate}}</h4>
                 <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" mat-raised-button type="button"
@@ -45,10 +45,9 @@
                 </button>
             </div>
             <hr />
-            <div class="bg-white border-b sticky left-0 px-4" fxLayout="row" fxLayoutAlign="start center">
+            <div class="bg-white border-b sticky left-0 px-4">
                 <div class="md:flex w-full justify-between">
-                    <div class="py-2" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
-                        fxLayoutAlign="start center">
+                    <div class="py-2">
 
                         <div class="flex">
                             <input matInput [(ngModel)]="searchKey" (keyup)="applyFilter()"
@@ -63,17 +62,17 @@
                     </div>
 
                     <hr class="-mx-4 block md:hidden"/>
-                    <div fxFlex="200px" class="pt-2 pb-2 md:pb-0">
+                    <div class="pt-2 pb-2 md:pb-0">
                         <a (click)="exportPeriodListToExcel()" class="cursor-pointer inline-block align-middle"
                             matTooltip="{{'exportToExcel' | translate}}">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
-                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
+                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" mat-icon-button
                             matTooltip="{{'filterColumns' | translate}}" type="button">
                             <mat-icon>{{ icFilterList }}</mat-icon>
                         </button>
 
-                        <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" fxFlex="none" mat-raised-button
+                        <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" mat-raised-button
                             type="button" (click)='goToAddPeriod()'>
                             <mat-icon class="ml-0 md:mr-2">{{ icAdd }}</mat-icon>
                             <span class="hidden md:inline-block">{{'addNewPeriod'|translate}}</span>
@@ -131,7 +130,7 @@
                         <mat-header-cell *matHeaderCellDef class="justify-center text-center">
                             {{'lengthInMinutes'|translate}}
                         </mat-header-cell>
-                        <mat-cell *matCellDef="let element" class="justify-center  text-center">
+                        <mat-cell *matCellDef="let element" class="justify-center text-center">
                             {{element.length}}
                         </mat-cell>
                     </ng-container>
@@ -140,18 +139,18 @@
                         <mat-header-cell *matHeaderCellDef class="justify-center text-center">
                             {{'calculateAttendance'|translate}}
                         </mat-header-cell>
-                        <mat-cell *matCellDef="let element" class="justify-center  text-center">
+                        <mat-cell *matCellDef="let element" class="justify-center text-center">
                             {{element.calculateAttendance? 'Yes': 'No'}}
                         </mat-cell>
                     </ng-container>
 
                     <ng-container matColumnDef="action">
-                        <mat-header-cell *matHeaderCellDef class="justify-center  text-center">
+                        <mat-header-cell *matHeaderCellDef class="justify-center text-center">
                             <ng-container *ngIf="this.defaultValuesService.checkAcademicYear()">
                                 {{'action'|translate}}
                             </ng-container>
                         </mat-header-cell>
-                        <mat-cell *matCellDef="let element" class="justify-center  text-center">
+                        <mat-cell *matCellDef="let element" class="justify-center text-center">
                             <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="editPeriod(element)" matTooltip="{{'editInfo' | translate}}"
                                 class="mx-1 cursor-pointer">
                                 <mat-icon>{{ icEdit }}</mat-icon>
@@ -197,7 +196,7 @@
                 </button>
             </mat-menu>
         </mat-card>
-        <mat-card *ngIf="blockPeriodForHalfDayFullDayModel?.block?.blockId" class="">
+        <mat-card *ngIf="blockPeriodForHalfDayFullDayModel?.block?.blockId">
             <h4 class="text-blue mb-2">{{ 'setFullDayAndHalfDayMinutes' | translate }}</h4>
             <div *ngIf="viewSetMinutes">
                 <ul class="grid sm:grid-cols-3 col-gap-8 row-gap-6 md:row-gap-10 mb-2">

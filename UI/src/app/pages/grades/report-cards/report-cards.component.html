@@ -1,7 +1,7 @@
 <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 
 <vex-page-layout>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16">
         <vex-secondary-toolbar current="{{ 'reportCards' }}" class="w-full">
             <vex-breadcrumbs [crumbs]="['grades']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -85,8 +85,7 @@
                     <div class="card mb-8">
                         <h4 class="px-6 py-4 text-primary font-medium">{{ "selectstudents" | translate }}</h4>
                         <mat-divider></mat-divider>
-                        <div class="bg-white px-6 py-2 border-b sticky left-0" fxLayout="row"
-                            fxLayoutAlign="start center">
+                        <div class="bg-white px-6 py-2 border-b sticky left-0">
                             <div class="lg:flex w-full justify-between">
                                 <div class="flex items-center">
                                     <input class="py-3 border-0 outline-none w-full bg-transparent table-search"
@@ -177,7 +176,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card " *ngIf="pdfData">
+                <div class="card" *ngIf="pdfData">
                     <div class="p-4">
                         <a class="cursor-pointer" (click)="backToList()">
                             <mat-icon color="primary" class="ml-2 mr-4 align-middle">west</mat-icon>
@@ -632,16 +631,14 @@
                             </td>
                             <td width="33.33%">
                                 <p class="long-line m-auto"></p>
-                                <p class="text-center
-                                            sign"><b>{{'principalsSignature'|translate}}</b></p>
+                                <p class="text-center sign"><b>{{'principalsSignature'|translate}}</b></p>
                                 <p class="text-center">
                                     <b>Date:</b>&nbsp;<span class="small-line"></span>
                                 </p>
                             </td>
                             <td width="33.33%">
                                 <p class="long-line ml-auto"></p>
-                                <p class="text-center
-                                            sign"><b>{{'parentGuardiansSignature'|translate}}</b></p>
+                                <p class="text-center sign"><b>{{'parentGuardiansSignature'|translate}}</b></p>
                                 <p class="text-center">
                                     <b>{{'date'|translate}}:</b>&nbsp;<span class="small-line"></span>
                                 </p>
@@ -1024,15 +1021,15 @@
                                                 <td>
                                                     <p *ngFor="let grade of student?.gradeList | slice:0:(student?.gradeList?.length % 2 === 0 ? halfLengthOfGradeList : halfLengthOfGradeList)">
                                                         <span class="inline-block">{{grade?.title}}</span>
-                                                        <span class="inline-block ">{{grade?.breakoffData}}</span>
-                                                        <span class="inline-block ">{{grade?.unweightedGpValue}}</span>
+                                                        <span class="inline-block">{{grade?.breakoffData}}</span>
+                                                        <span class="inline-block">{{grade?.unweightedGpValue}}</span>
                                                     </p>
                                                 </td>
                                                 <td>
                                                     <p *ngFor="let grade of student?.gradeList | slice:(student?.gradeList?.length % 2 === 0 ? halfLengthOfGradeList : halfLengthOfGradeList)">
-                                                        <span class="inline-block ">{{grade?.title}}</span>
+                                                        <span class="inline-block">{{grade?.title}}</span>
                                                         <span class="inline-block">{{grade?.breakoffData}}</span>
-                                                        <span class="inline-block ">{{grade?.unweightedGpValue}}</span>
+                                                        <span class="inline-block">{{grade?.unweightedGpValue}}</span>
                                                     </p>
                                                 </td>
                                             </tr>

@@ -1,6 +1,6 @@
 <!-- Add absences -->
 <vex-page-layout>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16 fx-column fx-align-center-start">
         <vex-secondary-toolbar current="{{'enterOverrideAttendance'|translate}}" class="w-full">
             <vex-breadcrumbs [crumbs]="['attendance']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -80,7 +80,7 @@
             </div>
         </div>
         <div class="card overflow-auto">
-            <div class="bg-white px-6 py-2 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+            <div class="bg-white px-6 py-2 border-b sticky left-0 fx-row fx-align-start-center">
                 <div class="lg:flex w-full justify-between">
                     <div class="flex items-center">
                         <input [formControl]="searchCtrl"

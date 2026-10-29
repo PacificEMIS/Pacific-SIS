@@ -1,6 +1,6 @@
 <vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
 <vex-page-layout>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16">
         <vex-secondary-toolbar current="{{'notices'}}" class="w-full">
             <vex-breadcrumbs [crumbs]="['school','notices']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -9,7 +9,7 @@
     <div class="-mt-6 w-full" vexContainer>
         <mat-drawer-container class="bg-transparent -mt-16 px-gutter" vexContainer>
             <mat-card class="mb-5">
-                <div class="flex items-center pl-0" fxLayout="row" fxLayoutAlign="center center">
+                <div class="flex items-center pl-0">
                     <div class="flex-auto">
                         <mat-button-toggle-group (click)="showRecords(group.value)" #group="matButtonToggleGroup" name="fontStyle" color="primary">
                             <mat-button-toggle value="current" checked>{{'current' | translate}}</mat-button-toggle>

@@ -7,7 +7,7 @@
         </button>
     </div>
     <mat-card-content>
-        <div @stagger fxLayout="column">
+        <div class="fx-column" @stagger>
             <h4 class="text-primary pt-6 pb-2">{{'identificationInformation'|translate}}</h4>
             <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
                 <li>
@@ -90,12 +90,12 @@
             <h4 class="text-primary pt-8 pb-2">{{'associatedStudents'|translate}}</h4>
             <div class="md:grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 md:col-gap-8 md:row-gap-2">
                 <div class="border border-solid rounded mb-4" *ngFor="let student of studentInfo">
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
-                        <div class="relative cursor-pointer py-4 pl-4" fxFlex="none" (click)='openViewDetails(student)'>
+                    <div class="fx-row fx-align-start-center fx-gap-16">
+                        <div class="relative cursor-pointer py-4 pl-4 fx-none" (click)='openViewDetails(student)'>
                             <img src="{{student.studentPhoto !== null && student.studentPhoto !== '' ? 'data:image/png;base64,'+ student.studentPhoto : 'assets/img/default-person.jpg'}}"
                                 class="avatar" alt="Student photo">
                         </div>
-                        <div class="overflow-hidden cursor-pointer py-2" fxFlex="auto"
+                        <div class="overflow-hidden cursor-pointer py-2 fx-auto"
                             (click)='openViewDetails(student)'>
                             <div class="subheading-2 leading-snug text-primary">{{student.firstGivenName+'
                                 '+student.middleName+' '+student.lastFamilyName | EmtyValueCheckPipe}}</div>
@@ -103,7 +103,7 @@
                                 EmtyValueCheckPipe}}</span> <span class="dot-separator"></span> <span matTooltip="{{'schoolName' | translate}}">{{student.schoolName |
                                 EmtyValueCheckPipe}}</span></div>
                         </div>
-                        <div fxFlex="none" fxLayout="column" fxLayoutAlign="center end" class="pr-3">
+                        <div class="pr-3 fx-none fx-column fx-align-center-end">
                             <div class="flex items-center">
                                 <span class="custody mr-3" *ngIf="student.isCustodian;else noCustody"><img
                                         src="../../../../assets/img/icons/mother.svg" matTooltip="{{'custodyOfStudent' | translate}}"
@@ -136,13 +136,13 @@
         <h3>{{'generalInformation'|translate}}</h3>
         <mat-card-content>
             <form (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate>
-                <div @stagger fxLayout="column">
+                <div class="fx-column" @stagger>
                     <h4 class="text-primary pt-6 pb-2">{{'identificationInformation'|translate}}</h4>
                     <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
                         <li>
                             <div class="md:flex w-full">
-                                <div class="w-full md:w-1/2 md:pr-4">
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <div class="w-full md:w-1/2 md:pr-4 fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'salutation'|translate}}</mat-label>
 
                                         <mat-select #salutation="ngModel"
@@ -155,8 +155,8 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-                                <div class="w-full md:w-1/2 md:pl-4">
-                                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                <div class="w-full md:w-1/2 md:pl-4 fx-parent">
+                                    <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                         <mat-label>{{'suffix'|translate}}</mat-label>
                                         <mat-select [(ngModel)]="addParentInfoModel.parentInfo.suffix" name="suffix"
                                             #suffix="ngModel">
@@ -169,8 +169,8 @@
                                 </div>
                             </div>
                         </li>
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                 <mat-label>{{'firstGivenName'|translate}}</mat-label>
                                 <input [(ngModel)]="addParentInfoModel.parentInfo.firstname" type="text"
                                     name="firstname" #firstname="ngModel" matInput required>
@@ -178,15 +178,15 @@
                                     {{'firstGivenNameIsRequired'|translate}}</mat-error>
                             </mat-form-field>
                         </li>
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                 <mat-label>{{'middleName'|translate}}</mat-label>
                                 <input [(ngModel)]="addParentInfoModel.parentInfo.middlename" type="text"
                                     name="middlename" #middlename="ngModel" matInput>
                             </mat-form-field>
                         </li>
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                 <mat-label>{{'lastFamilyName'|translate}}</mat-label>
                                 <input [(ngModel)]="addParentInfoModel.parentInfo.lastname" type="text" name="lastname"
                                     #lastname="ngModel" matInput required>
@@ -194,8 +194,8 @@
                                     {{'lastGivenNameIsRequired'|translate}}</mat-error>
                             </mat-form-field>
                         </li>
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                 <mat-label>{{'userProfile'|translate}}</mat-label>
                                 <mat-select [(ngModel)]="addParentInfoModel.parentInfo.userProfile" name="userProfile"
                                     #userProfile="ngModel">
@@ -211,8 +211,8 @@
 
                     <h4 class="text-primary pt-6 pb-2">{{'contactInformation'|translate}}</h4>
                     <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                 <mat-label>{{'personalEmail'|translate}}</mat-label>
                                 <input [(ngModel)]="addParentInfoModel.parentInfo.personalEmail" appEmailvalidator
                                     #personalEmail="ngModel" type="text" name="personalEmail" matInput>
@@ -221,8 +221,8 @@
                                 </mat-error>
                             </mat-form-field>
                         </li>
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                 <mat-label>{{'workEmail'|translate}}</mat-label>
                                 <input [(ngModel)]="addParentInfoModel.parentInfo.workEmail" appEmailvalidator
                                     #workEmail="ngModel" type="text" name="workEmail" matInput>
@@ -231,8 +231,8 @@
                                 </mat-error>
                             </mat-form-field>
                         </li>
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                 <mat-label>{{'homePhone'|translate}}</mat-label>
                                 <input [(ngModel)]="addParentInfoModel.parentInfo.homePhone" maxlength="20" minlength="10"
                                     #homePhone="ngModel" type="text" name="homePhone" matInput>
@@ -242,8 +242,8 @@
                                         {{'minLengthTelephoneNumber'|translate}}</mat-error>
                             </mat-form-field>
                         </li>
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                 <mat-label>{{'mobilePhone'|translate}}</mat-label>
                                 <input [(ngModel)]="addParentInfoModel.parentInfo.mobile" maxlength="20" minlength="10"
                                     #mobile="ngModel" type="text" name="mobile" matInput>
@@ -254,8 +254,8 @@
                                     {{'minLengthTelephoneNumber'|translate}}</mat-error>
                             </mat-form-field>
                         </li>
-                        <li>
-                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <li class="fx-parent">
+                            <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                 <mat-label>{{'workPhone'|translate}}</mat-label>
                                 <input [(ngModel)]="addParentInfoModel.parentInfo.workPhone" maxlength="20" minlength="10"
                                     #workPhone="ngModel" type="text" name="workPhone" matInput>
@@ -275,8 +275,8 @@
                     <div *ngIf="isPortalUser">
                         <h4 class="text-primary pt-3 pb-2">{{'accessInformation'|translate}}</h4>
                         <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
-                            <li>
-                                <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <li class="fx-parent">
+                                <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                     <mat-label>{{'loginEmailAddress'|translate}}</mat-label>
                                     <input [formControl]="loginEmail" [(ngModel)]="addParentInfoModel.parentInfo.loginEmail" type="text"
                                         name="loginEmail" maxlength="150" matInput required>

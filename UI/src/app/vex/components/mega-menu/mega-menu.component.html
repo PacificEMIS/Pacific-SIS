@@ -1,8 +1,8 @@
-<div *ngIf="items>0" [ngClass.gt-sm]="['mr-6']" class="card overflow-auto" fxLayout="row" fxLayout.lt-md="column">
-  <div class="p-gutter" fxFlex="400px" fxFlex.lt-md="auto">
+<div *ngIf="items>0" class="card overflow-auto fx-row fx-lt-md-column fx-gt-sm-mr-6">
+  <div class="p-gutter fx-400 fx-lt-md-auto">
     <!-- <h3 class="body-2 m-0">FEATURES</h3> -->
 
-    <div class="mt-4" gdColumns="1fr 1fr 1fr" gdGap="16px">
+    <div class="mt-4 gd-cols-3 gd-gap-16">
       <ng-container *ngFor="let feature of features">
         <a (click)="close(); schoolService.setSchoolId(undefined); defaultValueService.setSchoolID(undefined)"
         *ngIf="feature?.isActive"
@@ -17,10 +17,10 @@
     </div>
   </div>
 
-  <!-- <div class="p-gutter" fxFlex="350px" fxFlex.lt-md="auto">
+  <!-- <div class="p-gutter fx-350 fx-lt-md-auto">
     <h3 class="body-2 m-0">PAGES</h3>
 
-    <div class="mt-6" gdColumns="1fr 1fr" gdGap="16px 48px">
+    <div class="mt-6 gd-cols-2 gd-gap-16-48">
       <a (click)="close()"
          *ngFor="let page of pages"
          [routerLink]="page.route"

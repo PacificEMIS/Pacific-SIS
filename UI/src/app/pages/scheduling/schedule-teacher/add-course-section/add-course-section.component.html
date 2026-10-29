@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto">
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto">
         {{ "searchSelectCourseSections" | translate }}
     </h2>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
@@ -8,7 +8,7 @@
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
 
-<mat-dialog-content fxLayout="column">
+<mat-dialog-content class="fx-column">
     <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-6">
         <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
@@ -141,7 +141,7 @@
         </mat-paginator>
     </div>
 </mat-dialog-content>
-<mat-dialog-actions *ngIf="courseSectionList?.data?.length>0" fxLayout="row" fxLayoutAlign="end center" class="py-0 mb-2">
+<mat-dialog-actions *ngIf="courseSectionList?.data?.length>0" class="py-0 mb-2 fx-row fx-align-end-center">
     <button color="primary" mat-raised-button type="submit" (click)="selectedCourseSection()">
         {{ 'selectCourseSections' | translate }}
     </button>

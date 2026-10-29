@@ -13,7 +13,7 @@
 </div>
 <mat-divider class="-mx-6 text-border"></mat-divider>
 
-<mat-dialog-content fxLayout="column" >
+<mat-dialog-content class="fx-column">
     <ul class="md:grid md:grid-cols-2 col-gap-8 mt-6">
         <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
@@ -233,7 +233,7 @@
 
 </mat-dialog-content> 
 
-<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+<mat-dialog-actions class="py-6 fx-row fx-align-end-center">
   <strong><mat-error *ngIf="calendarError">{{'invalidSeatCapacity' | translate}}</mat-error></strong>
   <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
   <button color="primary" mat-raised-button *ngIf="this.defaultValuesService.checkAcademicYear()" type="submit">{{courseSectionActionButtonTitle | translate}}</button>

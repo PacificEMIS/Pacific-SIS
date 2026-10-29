@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbsComponent } from './breadcrumbs.component';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { TranslateModule } from '@ngx-translate/core';
 @NgModule({
@@ -11,7 +10,6 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     RouterModule,
     MatIconModule,
-    FlexLayoutModule,
     TranslateModule
   ],
   declarations: [BreadcrumbsComponent, BreadcrumbComponent],

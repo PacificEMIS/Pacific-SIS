@@ -1,27 +1,26 @@
 
-    <div class="bg-white h-16 border-b sticky left-0 px-4" fxLayout="row" fxLayoutAlign="start center">
+    <div class="bg-white h-16 border-b sticky left-0 px-4">
         <div class="flex w-full justify-between">
-            <div class="py-3" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
-                fxLayoutAlign="start center">
+            <div class="py-3">
 
                 <div class="flex">
                     <input class="px-2 py-3 border-0 outline-none w-full bg-transparent" placeholder="Search..."
                         type="search">
-                    <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
+                    <button class="ml-4" mat-icon-button type="button">
                         <mat-icon>{{ icSearch }}</mat-icon>
                     </button>
                 </div>
             </div>
 
 
-            <div fxFlex="200px" class="pt-3">
+            <div class="pt-3">
                 <a routerLink="" class="cursor-pointer inline-block align-middle"
                     matTooltip="{{'exportToExcel' | translate}}"><img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24"></a>
-                <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
+                <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" mat-icon-button
                     matTooltip="{{'filterColumns' | translate}}" type="button">
                     <mat-icon>{{ icFilterList }}</mat-icon>
                 </button>
-                <button color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button" (click)='goToAddPeriod()'>
+                <button color="primary" class="ml-4" mat-raised-button type="button" (click)='goToAddPeriod()'>
                     <mat-icon class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2">{{ icAdd }}</mat-icon>
                     <span>{{'addNewPeriod'|translate}}</span>
                 </button>

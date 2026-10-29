@@ -231,7 +231,7 @@
         <!-- Start Generate Report -->
 
         <div class="card">
-            <div class="bg-white px-4 py-2 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+            <div class="bg-white px-4 py-2 border-b sticky left-0">
                 <div class="md:flex w-full justify-between items-center">
                     <h4 class="text-primary font-semibold">{{generateCourseSectionList?.length}} {{(generateCourseSectionList?.length>1?'courseSectionsAnd':'courseSectionAnd') | translate}} {{totalStudentCount}} {{(totalStudentCount>1?'studentsFound':'studentFound') | translate}}.</h4>
                     <div class="py-2 md:pt-2 items-center">
@@ -243,7 +243,7 @@
             </div>
             <div class="generate-list" *ngFor="let courseSection of generateCourseSectionList">
                 <div class="flex justify-between p-4 pr-0">
-                    <div class="">
+                    <div>
                         <h4 class="text-green font-bold text-xl"><span class="mr-2 text-black">{{'courseSection' | translate}} :</span>{{courseSection?.courseSectionName}}</h4>
                         <p class="flex items-center">
                             <strong class="mr-1">{{'course' | translate }} :</strong> <span>{{courseSection?.courseTitle}}</span><span class="inline-block w-1 h-1 rounded-full bg-gray mx-4"></span>

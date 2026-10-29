@@ -1,6 +1,6 @@
-<div class="bg-white px-6 md:h-16 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+<div class="bg-white px-6 md:h-16 border-b sticky left-0">
     <div class="md:flex w-full justify-between items-center">
-        <div fxFlex.lt-md="auto" fxHide.xs fxLayout="row" fxLayoutAlign="start center">
+        <div>
             <div class="flex items-center">
                 <input [formControl]="searchCtrl" class="py-3 border-0 outline-none w-full bg-transparent table-search"
                     placeholder="Search..." type="search">
@@ -11,7 +11,7 @@
                 </button>
                 <a (click)="showAdvanceSearch()" [class.disabled]="totalCount == null"
                     [class.text-gray-light]="totalCount == null" [class.text-primary]="totalCount != null"
-                    class=" cursor-pointer ml-3" *ngIf="parentComponent === 'staffInfo' || parentComponent === 'takeAttendence' || parentComponent === 'gradebookGrades' || parentComponent === 'inputEffortGrade' || parentComponent === 'inputFinalGrade' || parentComponent === 'missingAttendance'">
+                    class="cursor-pointer ml-3" *ngIf="parentComponent === 'staffInfo' || parentComponent === 'takeAttendence' || parentComponent === 'gradebookGrades' || parentComponent === 'inputEffortGrade' || parentComponent === 'inputFinalGrade' || parentComponent === 'missingAttendance'">
                     <mat-icon aria-hidden="false" class="md:mr-2 align-middle">tune</mat-icon><span
                         class="hidden md:inline-block">{{'advanceSearch'
                         | translate}}</span>
@@ -22,11 +22,11 @@
         <hr class="md:hidden -mx-6">
 
 
-        <div fxFlex.lt-md="200px" class="py-2" *ngIf="parentComponent === 'staffInfo' || parentComponent === 'takeAttendence'">
+        <div class="py-2" *ngIf="parentComponent === 'staffInfo' || parentComponent === 'takeAttendence'">
             <a (click)="exportStaffListToExcel()" class="cursor-pointer inline-block align-middle"
                 matTooltip="{{'exportToExcel' | translate}}"><img src="assets/img/microsoft_office_excel.svg"
                     alt="Excel Icon" width="24"></a>
-            <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
+            <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" mat-icon-button
                 matTooltip="{{'filterColumns' | translate}}" type="button" *ngIf="parentComponent === 'staffInfo' || parentComponent === 'takeAttendence'">
                 <mat-icon>{{ icFilterList }}</mat-icon>
             </button>
@@ -62,14 +62,14 @@
 
             <!-- Show this block if there are already saved filters -->
             <button *ngIf="searchFilterListViewModel?.searchFilterList?.length > 0 && showLoadFilter && !showSaveFilter && parentComponent === 'staffInfo'"
-                [matMenuTriggerFor]="loadfilter" fxFlex="none" mat-stroked-button type="button"
+                [matMenuTriggerFor]="loadfilter" mat-stroked-button type="button"
                 class="inline-block align-middle ml-4">
                 <span>{{'loadFilter' | translate}}</span>
                 <mat-icon>arrow_drop_down</mat-icon>
             </button>
 
             <button *ngIf="permissions.add && this.defaultValuesService.checkAcademicYear() && parentComponent === 'staffInfo'" color="primary"
-                class="ml-4 rounded-r-none" fxFlex="none" mat-raised-button type="button" (click)='goToAdd()'>
+                class="ml-4 rounded-r-none" mat-raised-button type="button" (click)='goToAdd()'>
                 <mat-icon class="md:mr-2">{{ icAdd }}</mat-icon>
                 <span class="hidden md:inline-block">{{'addNewStaff' | translate }}</span>
             </button>

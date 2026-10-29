@@ -34,3 +34,9 @@ table {
   text-align: center;
   font-style: italic;
 }
+
+// the template's root element carried fxFlex, so flex-layout made this host a flex container
+:host {
+  display: flex !important;
+  box-sizing: border-box !important;
+}

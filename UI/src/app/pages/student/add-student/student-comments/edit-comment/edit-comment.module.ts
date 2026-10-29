@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { EditCommentComponent } from './edit-comment.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -20,7 +19,6 @@ import { QuillModule } from 'ngx-quill';
     CommonModule,
     MatDialogModule,
     MatIconModule,
-    FlexLayoutModule,
     MatInputModule,
     MatDividerModule,
     ReactiveFormsModule,

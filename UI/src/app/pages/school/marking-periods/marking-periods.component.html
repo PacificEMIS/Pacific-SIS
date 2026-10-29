@@ -1,5 +1,5 @@
 <vex-page-layout>
-    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+    <vex-page-layout-header class="pb-16">
         <vex-secondary-toolbar current="{{'markingPeriod'}}" class="w-full">
             <vex-breadcrumbs [crumbs]="['schoolInfo','markingPeriod']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
@@ -10,7 +10,7 @@
     <div class="md:flex -mt-16 mx-2" [ngClass]="viewDetailsModal===1?'showing-details':''" *ngIf="list.length > 0 ; else noData">
         <div class="w-full md:w-6/12 lg:w-5/12 px-4">
                 <mat-card @stagger class="w-full">
-                    <div class="flex items-center pl-0" fxLayout="row" fxLayoutAlign="center center">
+                    <div class="flex items-center pl-0">
                         <h6 class="flex-auto">{{'markingPeriodsList' | translate}}</h6>
                         <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" (click)="openAddNew()" type="button" color="primary" mat-raised-button><mat-icon class="ltr:-ml-1 rtl:-mr-1 rtl:ml-2 ic-inline" inline>{{ icAdd }}</mat-icon>
                             <span class="hidden md:inline-block">{{'addNew'| translate}}</span></button>
@@ -51,8 +51,8 @@
                 </mat-card>
                     </div>
         <div class="marking-period-details md:w-6/12 lg:w-7/12 px-4">
-            <mat-card @fadeInUp class="w-full pt-2" fxFlex="auto">
-                <div class="flex items-center mb-2" fxLayout="row" fxLayoutAlign="center center">
+            <mat-card @fadeInUp class="w-full pt-2">
+                <div class="flex items-center mb-2">
                     <h3 class="flex-auto" *ngIf="viewFirstChild != undefined">{{viewFirstChild.title}}</h3>
                     <div>
                     <button [matMenuTriggerFor]="addMenu" *ngIf="(permissions?.edit || permissions?.delete) && this.defaultValuesService.checkAcademicYear()" mat-icon-button type="button">
@@ -82,19 +82,19 @@
                                     <mat-icon class="inline-block align-middle">check_circle</mat-icon> {{'graded' | translate}}
                                 </div>
                                 <ng-template #doesnotGrades>
-                                    <mat-icon class="inline-block align-middle text-gray-light">cancel</mat-icon> <span class="ml-1 mr-6  text-gray-light">{{'graded' | translate}}</span>
+                                    <mat-icon class="inline-block align-middle text-gray-light">cancel</mat-icon> <span class="ml-1 mr-6 text-gray-light">{{'graded' | translate}}</span>
                                 </ng-template>
                                 <div *ngIf="doesExam;else doesnotExam" class="mr-6">
                                     <mat-icon class="inline-block align-middle">check_circle</mat-icon> {{'exam' | translate}}
                                 </div>
                                 <ng-template #doesnotExam>
-                                    <mat-icon class="inline-block align-middle text-gray-light">cancel</mat-icon><span class="ml-1 mr-6  text-gray-light">{{'exam' | translate}}</span>                               
+                                    <mat-icon class="inline-block align-middle text-gray-light">cancel</mat-icon><span class="ml-1 mr-6 text-gray-light">{{'exam' | translate}}</span>                               
                                 </ng-template>
                                 <div *ngIf="doesComments;else doesnotComments" class="mr-6">
                                     <mat-icon class="inline-block align-middle">check_circle</mat-icon> {{'comments' | translate}}
                                 </div>
                                 <ng-template #doesnotComments>
-                                    <mat-icon class="inline-block align-middle text-gray-light">cancel</mat-icon><span class="ml-1 mr-6  text-gray-light">{{'comments' | translate}}</span>                               
+                                    <mat-icon class="inline-block align-middle text-gray-light">cancel</mat-icon><span class="ml-1 mr-6 text-gray-light">{{'comments' | translate}}</span>                               
                                 </ng-template>
                             </div>
                         </div>

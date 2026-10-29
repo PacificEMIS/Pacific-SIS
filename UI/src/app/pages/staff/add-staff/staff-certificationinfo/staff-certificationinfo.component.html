@@ -1,5 +1,5 @@
 <mat-card class="w-full pb-0">
-    <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+    <div class="flex items-center fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'certificationInformation' | translate}}</h3>
         <button *ngIf="permissions.add" mat-raised-button color="primary" (click)='openAddNew()'><mat-icon>{{ icAdd }}</mat-icon><span class="hidden sm:inline-block ml-2">{{'addNewCertification' |translate}}</span></button>
     </div>

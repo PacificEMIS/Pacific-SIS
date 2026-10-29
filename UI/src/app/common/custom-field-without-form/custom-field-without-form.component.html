@@ -1,7 +1,7 @@
 <!--School Module-->
 <div *ngIf="schoolDetailsForViewAndEdit?.schoolMaster?.fieldsCategory && module =='School'">
     <form #school="ngForm">
-    <div @stagger fxLayout="column"
+    <div @stagger
         *ngIf="schoolCustomFields?.length > 0">
         <hr class="-mx-4 my-6">
         <!-- <div > -->
@@ -125,7 +125,7 @@
 
 <div *ngIf="studentAddModel?.fieldsCategoryList && module =='Student'">
     <form #student="ngForm">
-    <div class="py-6" @stagger fxLayout="column"
+    <div class="py-6" @stagger
         *ngIf="studentCustomFields?.length > 0">
         <hr class="-mx-4 my-6">
         <ul *ngIf="studentCreateMode !== schoolCreate.VIEW" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-0" >
@@ -245,7 +245,7 @@
 <!--Start Staff Module-->
 <div *ngIf="staffAddModel?.fieldsCategoryList && module === 'Staff'">
     <form #staff="ngForm">
-        <div class="py-6" @stagger fxLayout="column"
+        <div class="py-6" @stagger
         *ngIf="staffCustomFields?.length > 0">
         <hr class="-mx-4 my-6">
         <ul *ngIf="staffCreateMode === schoolCreate.EDIT || staffCreateMode === schoolCreate.ADD" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 col-gap-8 md:row-gap-0">

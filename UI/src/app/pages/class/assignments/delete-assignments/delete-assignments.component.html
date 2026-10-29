@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0 text-warn" fxFlex="auto">
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 text-warn fx-auto">
         {{ "areYouSure" | translate }}
     </h2>
 </div>
@@ -10,7 +10,7 @@
         <p  class="text-lg mb-6">{{data.message}}</p>
     </ng-template>
 </mat-dialog-content>
-<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="pb-4">
+<mat-dialog-actions class="pb-4 fx-row fx-align-end-center">
     <button mat-flat-button mat-dialog-close>{{ 'no' | translate }}</button>
     <button color="primary" (click)="confirmDeletion()" mat-flat-button type="submit" class="text-white ml-2">{{ 'yes' |translate }}</button>
 </mat-dialog-actions>

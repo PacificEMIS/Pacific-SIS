@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto">
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto">
         {{ gradeTitle | translate }}
     </h2>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
@@ -28,7 +28,7 @@
     </ul>
 </mat-dialog-content>
 
-<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-4">
+<mat-dialog-actions class="py-4 fx-row fx-align-end-center">
     <button mat-flat-button mat-dialog-close type="button">{{ 'cancel' | translate }}</button>
     <button color="primary" (click)="submit()" mat-raised-button type="submit">{{ buttonType |
         translate }}</button>

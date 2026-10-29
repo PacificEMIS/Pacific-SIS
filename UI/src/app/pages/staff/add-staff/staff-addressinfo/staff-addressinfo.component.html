@@ -7,7 +7,7 @@
             <h3 class="mb-6">{{'addressAndContact'|translate}}</h3>
         </div>
         <mat-card-content class="mb-0">
-            <div @stagger fxLayout="column">
+            <div class="fx-column" @stagger>
                 <h4 class="text-primary pb-2">{{'personalContactInformation'|translate}}</h4>
                 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
                     <li>
@@ -42,8 +42,8 @@
                                     {{'minLengthTelephoneNumber'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'personalEmail'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.personalEmail" [disabled]="isReadOnly" appEmailvalidator
                                 #personalEmail="ngModel" name="personalEmail" matInput>
@@ -52,8 +52,8 @@
                             </mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'schoolEmail'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.schoolEmail" [disabled]="isReadOnly" appEmailvalidator
                                 #schoolEmail="ngModel" name="schoolEmail" matInput>
@@ -62,32 +62,32 @@
                             </mat-error>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'twitter'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.twitter" [disabled]="isReadOnly" name="twitter" matInput>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'facebook'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.facebook" [disabled]="isReadOnly" name="facebook" matInput>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'instagram'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.instagram" [disabled]="isReadOnly" name="instagram" matInput>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'youtube'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.youtube" [disabled]="isReadOnly" name="youtube" matInput>
                         </mat-form-field>
                     </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'linkedIn'|translate}}</mat-label>
                             <input [(ngModel)]="staffAddModel.staffMaster.linkedin" [disabled]="isReadOnly" name="linkedin" matInput>
                         </mat-form-field>
@@ -153,8 +153,8 @@
                     </li>
 
 
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                    <li class="fx-parent">
+                        <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'busNo'|translate}}</mat-label>
                             <input  name="busNo" [disabled]="isReadOnly" [(ngModel)]="staffAddModel.staffMaster.busNo" matInput>
                         </mat-form-field>
@@ -311,7 +311,7 @@
 
 <!--Staff Address View -->
 <mat-card class="w-full" *ngIf="staffCreateMode == staffCreate.VIEW">
-    <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+    <div class="flex items-center fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'addressAndContact' | translate}}</h3>
         <button mat-raised-button *ngIf="permissions.edit" (click)="editAddressContactInfo()" color="primary">
             <mat-icon class="md:mr-2">{{ icEdit }}</mat-icon> <span class="hidden md:inline-block">{{'editInformation' |translate}}</span>

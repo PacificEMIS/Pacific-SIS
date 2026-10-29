@@ -1,6 +1,6 @@
 <vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title class="m-0">
-    <h2 class="headline mb-4 float-left" fxFlex="auto">
+<div mat-dialog-title class="m-0">
+    <h2 class="headline mb-4 float-left">
         {{ "copySchool" | translate }}
     </h2>
     <button class="text-secondary float-right mb-4" mat-dialog-close mat-icon-button type="button">
@@ -8,11 +8,11 @@
     </button>
 </div>
 <mat-divider class="-mx-6 text-border clear-both my-4"></mat-divider>
-<mat-dialog-content fxLayout="column">
+<mat-dialog-content>
     <h4 class="mb-2">{{ 'areYouSureYouWantToCopyTheDataFrom' | translate }} <b>{{fromSchoolName}}</b> {{
         'toAnewSchool'|translate }}</h4>
 
-    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+    <mat-form-field class="w-full" appearance="outline" color="primary">
         <mat-label>{{'newSchoolName'|translate}}</mat-label>
         <input cdkFocusInitial class="name-scroll" #newSchoolName="ngModel" [(ngModel)]="copySchoolModel.schoolMaster.schoolName"
             name="newSchoolName" matInput required>

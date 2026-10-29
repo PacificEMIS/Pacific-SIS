@@ -1,12 +1,12 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title class="mb-4">
-    <h2 class="headline m-0" fxFlex="auto">{{data?.firstGivenName+' '+data?.lastFamilyName}}</h2>
+<div mat-dialog-title class="mb-4 fx-row fx-align-start-center">
+    <h2 class="headline m-0 fx-auto">{{data?.firstGivenName+' '+data?.lastFamilyName}}</h2>
     <button class="text-secondary" (click)="close()" mat-icon-button type="button">
         <mat-icon>{{ icClose }}</mat-icon>
     </button>
 
 </div>
 <mat-divider class="-mx-6 mb-6"></mat-divider>
-<mat-dialog-content fxLayout="column">
+<mat-dialog-content class="fx-column">
     <div>
         <ul class="grid grid-cols-6 col-gap-6 mb-2 px-4">
             <li class="font-semibold">{{ 'period' | translate }}</li>

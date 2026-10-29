@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
-    <h2 class="headline m-0" fxFlex="auto">
+<div class="fx-row fx-align-start-center" mat-dialog-title>
+    <h2 class="headline m-0 fx-auto">
         {{ editMode?("updateAssigmentType" | translate):('addNewAssigmentType'|translate)}}
     </h2>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
@@ -38,7 +38,7 @@
     </ul>
 
 </mat-dialog-content>
-<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="pb-4">
+<mat-dialog-actions class="pb-4 fx-row fx-align-end-center">
     <button mat-flat-button mat-dialog-close>{{ 'cancel' | translate }}</button>
     <button color="primary" mat-flat-button type="submit" class="text-white ml-2">{{ editMode?('update' |translate):('submit'| translate) }}</button>
 </mat-dialog-actions>

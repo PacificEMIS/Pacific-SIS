@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { ClassRoutingModule } from './class-routing.module';
 import { ClassComponent } from './class.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
@@ -58,7 +57,6 @@ import { MatNativeDateModule } from '@angular/material/core';
   imports: [
     CommonModule,
     ClassRoutingModule,
-    FlexLayoutModule,
     MatIconModule,
     ClipboardModule,
     MatTooltipModule,

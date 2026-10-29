@@ -23,7 +23,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { CalendarModule as AngularCalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { CourseSectionModule } from './course-section/course-section.module';
 import { CloneCourseSectionsModule } from './clone-course-sections/clone-course-sections.module';
 
@@ -57,8 +56,7 @@ import { CloneCourseSectionsModule } from './clone-course-sections/clone-course-
     MatTooltipModule,
     MatSlideToggleModule,
     MatTableModule,
-    MatPaginatorModule,
-    FlexLayoutModule
+    MatPaginatorModule
   ]
 })
 export class CourseManagerModule { }

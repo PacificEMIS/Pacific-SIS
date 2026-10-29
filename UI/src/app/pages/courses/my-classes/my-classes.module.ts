@@ -4,7 +4,6 @@ import { MyClassesRoutingModule } from './my-classes-routing.module';
 import { MyClassesComponent } from './my-classes.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModuleModule } from '../../shared-module/shared-module.module';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
 import { ContainerModule } from '@vex/directives/container/container.module';
@@ -34,7 +33,6 @@ import { MatDividerModule } from '@angular/material/divider';
     FormsModule,
     ReactiveFormsModule,
     SharedModuleModule,
-    FlexLayoutModule,
     TranslateModule,
     ContainerModule,
     PageLayoutModule,
