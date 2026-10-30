@@ -37,7 +37,7 @@ import { SchoolAddViewModel } from 'src/app/models/school-master.model';
 import { SuccessCopySchoolComponent } from './success-copy-school/success-copy-school.component';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { SchoolService } from 'src/app/services/school.service';
-import { NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { FieldsCategoryListView, FieldsCategoryModel } from 'src/app/models/fields-category.model';
 import { CustomFieldService } from 'src/app/services/custom-field.service';
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
@@ -118,7 +118,7 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.router.events.pipe(takeUntil(this.destroySubject$)).pipe(
-      filter((event: RouterEvent) => event instanceof NavigationEnd)
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((res) => {
      this.checkInitialState(res.url);
     });

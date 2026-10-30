@@ -116,7 +116,7 @@ $vex-dark-theme-static: map-merge($vex-dark-theme, (primary: $vex-primary-static
 // Material 15 legacy theming for the Vex CSS-variable palette. The legacy all-themes mixin cannot
 // be used: the legacy button theme reaches the MDC button theme (for the datepicker's buttons),
 // which does Sass colour math and rejects palette entries such as rgba(var(--color-primary), 1).
-// So the component themes are listed explicitly, and the button theme alone gets $theme-static,
+// So the component themes are listed explicitly, and the themes that do that get $theme-static,
 // the same theme with static palettes equal to the CSS variables of _style-default.scss.
 @mixin vex-legacy-component-themes($theme, $theme-static) {
   @include mat.legacy-button-theme($theme-static);
@@ -144,7 +144,8 @@ $vex-dark-theme-static: map-merge($vex-dark-theme, (primary: $vex-primary-static
   @include mat.badge-theme($theme);
   @include mat.bottom-sheet-theme($theme);
   @include mat.button-toggle-theme($theme);
-  @include mat.datepicker-theme($theme);
+  // Material 16: the datepicker theme does colour math on the palette as well.
+  @include mat.datepicker-theme($theme-static);
   @include mat.divider-theme($theme);
   @include mat.expansion-theme($theme);
   @include mat.grid-list-theme($theme);

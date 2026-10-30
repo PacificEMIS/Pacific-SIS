@@ -48,7 +48,7 @@ import { DefaultValuesService } from '../default-values.service';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { PageRolesPermission } from '../page-roles-permissions.service';
-import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ConstantPool } from '@angular/compiler';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -131,7 +131,7 @@ export class CustomFieldComponent implements OnInit, OnDestroy {
     // });
 
     this.router.events.pipe(takeUntil(this.destroySubject$)).pipe(
-      filter((event: RouterEvent) => event instanceof NavigationEnd)
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe(() => {
      this.checkRouteAndinitilisedData();
     //  this.checkInitialState();

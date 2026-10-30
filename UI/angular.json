@@ -48,7 +48,9 @@
               "lodash.memoize",
               "lodash.throttle",
               "angular-calendar/date-adapters/date-fns",
-              "moment"
+              "moment",
+              "quill",
+              "luxon"
             ],
             "vendorChunk": true,
             "extractLicenses": false,

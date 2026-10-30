@@ -47,8 +47,8 @@ The first Super Administrator of a tenant is created at registration (`UserContr
 ## Prerequisites
 
 - [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
-- [Node.js](https://nodejs.org/) **v14.21.3 (LTS)** — use [nvm](https://github.com/nvm-sh/nvm) (Linux/macOS) or [nvm-windows](https://github.com/coreybutler/nvm-windows) to manage versions; newer Node versions have known build errors with this codebase
-- Angular CLI 10: `npm install -g @angular/cli@10`
+- [Node.js](https://nodejs.org/) **v16.20.2** (the version in `UI/.nvmrc`; Angular 16 needs 16.14 or 18.10 and later) — use [nvm](https://github.com/nvm-sh/nvm) (Linux/macOS) or [nvm-windows](https://github.com/coreybutler/nvm-windows) to manage versions
+- Angular CLI: not needed globally, the UI scripts use the project's own `node_modules/@angular/cli`
 - MySQL 8.x
 - VS Code with [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
 
@@ -163,7 +163,7 @@ dotnet run --project API/opensis.backgroundjob/opensis.backgroundjob.csproj
 
 ### 6. Run the UI
 
-> **Node.js version matters.** Use Node.js v14.21.3. Newer versions have build errors with this codebase. If you use nvm: `nvm use 14.21.3` (or `nvm install 14.21.3` first).
+> **Node.js version matters.** Use the version in `UI/.nvmrc` (16.20.2 at the moment; it rises with the Angular version). If you use nvm: `nvm use 16.20.2` (or `nvm install 16.20.2` first). `UI/.npmrc` sets `legacy-peer-deps`, which npm 7 and later need for some of the older UI libraries.
 
 ```bash
 cd UI

@@ -41,7 +41,7 @@ import { LoaderService } from '../../../services/loader.service';
 import { ModuleIdentifier } from '../../../enums/module-identifier.enum';
 import { RolePermissionListViewModel } from '../../../models/roll-based-access.model';
 import { CryptoService } from '../../../services/Crypto.service';
-import { NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { CommonService } from '../../../services/common.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -165,7 +165,7 @@ export class AddStaffComponent implements OnInit, OnDestroy {
 
 
     this.router.events.pipe(takeUntil(this.destroySubject$)).pipe(
-      filter((event: RouterEvent) => event instanceof NavigationEnd)
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((res) => {
      this.checkInitialState();
     });

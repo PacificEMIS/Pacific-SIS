@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { RolePermissionListViewModel } from '../models/roll-based-access.model';
 import { CryptoService } from '../services/Crypto.service';
@@ -8,7 +8,7 @@ import { DefaultValuesService } from './default-values.service';
 @Injectable({
   providedIn: 'root'
 })
-export class RolePermissionGuard implements CanActivate {
+export class RolePermissionGuard  {
   constructor(private defaultValueService:DefaultValuesService,private router: Router){}
 
   canActivate(route: ActivatedRouteSnapshot,state: RouterStateSnapshot):boolean {

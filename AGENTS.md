@@ -174,7 +174,7 @@ Deployment is managed via Ansible from a separate systems-tools repository (see 
 
 ## UI Node.js Version Requirement
 
-The Angular 10 frontend requires **Node.js v14.21.3**. Newer Node versions produce build errors. Use nvm to pin the version when working on the UI.
+The frontend requires the Node.js version in `UI/.nvmrc` (**v16.20.2** since the Angular 16 step; it rises with the Angular version). Use nvm to pin it when working on the UI. `UI/.npmrc` sets `legacy-peer-deps` for npm 7 and later.
 
 ---
 

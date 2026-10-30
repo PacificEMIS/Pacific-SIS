@@ -1,11 +1,11 @@
 import { LocationStrategy } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { Router, CanActivate} from '@angular/router';
+import { Router } from '@angular/router';
 
 import { LoginService } from '../services/login.service';
 
 @Injectable({ providedIn: 'root' })
-export class AuthGuard implements CanActivate {
+export class AuthGuard  {
     constructor(
         private router: Router,
         private loginService: LoginService,

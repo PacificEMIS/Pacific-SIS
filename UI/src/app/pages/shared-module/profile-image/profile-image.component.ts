@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ViewChild, TemplateRef, Input, OnDestroy, OnChanges } from '@angular/core';
-import { ImageCroppedEvent, base64ToFile } from 'ngx-image-cropper';
+import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig } from '@angular/material/legacy-dialog';
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';

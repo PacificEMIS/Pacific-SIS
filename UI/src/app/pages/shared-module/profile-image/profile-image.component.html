@@ -9,7 +9,7 @@
     <mat-dialog-content class="fx-column">
       <div class="flex justify-around">
         <div>
-          <image-cropper (imageCropped)="imageCropped($event)" [imageChangedEvent]="imageChangedEvent" format="png"
+          <image-cropper (imageCropped)="imageCropped($event)" [imageChangedEvent]="imageChangedEvent" format="png" output="base64"
             [maintainAspectRatio]="true" [aspectRatio]="1/1" (imageLoaded)="imageLoaded()" [resizeToWidth]="256"
             (cropperReady)="cropperReady()" [onlyScaleDown]="false" (loadImageFailed)="loadImageFailed()" style="padding: 0 !important;">
           </image-cropper>
