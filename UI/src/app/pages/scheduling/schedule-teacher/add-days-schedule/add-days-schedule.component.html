@@ -15,7 +15,7 @@
 <p class="font-medium py-4 text-lg"><span class="text-green">Schedule Type</span> : Fixed Scheduling</p>
 <mat-divider class="-mx-6 text-border"></mat-divider>
 
-    <ul class="grid sm:grid-cols-2 sm:col-gap-6 row-gap-6 sm:row-gap-8 my-6">
+    <ul class="grid sm:grid-cols-2 sm:gap-x-6 gap-y-6 sm:gap-y-8 my-6">
         <li>
             <label class="text-sm leading-5 text-gray">{{'room' | translate}}</label>
             <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">
@@ -109,7 +109,7 @@
               <mat-icon>{{ icClose }}</mat-icon>
           </button>
         </div>
-          <ul class="md:grid md:grid-cols-2 col-gap-8 mt-3 md:row-gap-10">
+          <ul class="md:grid md:grid-cols-2 gap-x-8 mt-3 md:gap-y-10">
               <li>
                   <label class="text-sm leading-5 text-gray">{{'date' | translate}}</label>
                   <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{classdate | date}}</p>
@@ -171,7 +171,7 @@
 
 <ng-container *ngIf="!data.fromTeacherSchedule">
     <mat-divider></mat-divider>
-    <ul class="grid grid-cols-1 md:grid-cols-2 col-gap-4 row-gap-6 lg:row-gap-0 mt-6">
+    <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6 lg:gap-y-0 mt-6">
         <li>
             <label class="text-sm leading-5 text-gray">{{'modifiedBy' | translate}}</label>
             <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2"><span class="text-primary">{{scheduleDetails.updatedBy?scheduleDetails.updatedBy:scheduleDetails.createdBy}}</span>

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { UsCommonCoreStandardsComponent } from './us-common-core-standards.component';
 
@@ -6,7 +6,7 @@ describe('UsCommonCoreStandardsComponent', () => {
   let component: UsCommonCoreStandardsComponent;
   let fixture: ComponentFixture<UsCommonCoreStandardsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ UsCommonCoreStandardsComponent ]
     })

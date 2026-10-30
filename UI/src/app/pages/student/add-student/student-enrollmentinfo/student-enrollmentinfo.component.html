@@ -5,7 +5,7 @@
 
             <div class="fx-column" @stagger>
                 <h4 class="text-primary pt-6 pb-2">{{'schoolInformation'|translate}}</h4>
-                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-8 gap-y-0">
                     <li class="fx-parent">
                         <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'enrollmentCalendar'|translate}}</mat-label>
@@ -116,7 +116,7 @@
                         <div class="flex flex-wrap w-full -mx-4">
                             <div class="w-11/12 ">
                                 <div class="ml-8">
-                                    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                                    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-8 gap-y-0">
                                         <li class="fx-parent">
                                             <mat-form-field class="w-full fx-auto" appearance="outline"
                                                 color="primary" floatLabel="never">
@@ -200,7 +200,7 @@
                                             </mat-form-field>
                                         </li>
                                     </ul>
-                                    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0"
+                                    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-8 gap-y-0"
                                         *ngIf="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentId!=null">
                                         <li class="fx-parent">
                                             <mat-form-field class="w-full fx-auto" appearance="outline"
@@ -334,7 +334,7 @@
     <mat-card-content>
 
         <div class="pt-6">
-            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
+            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10">
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'enrollmentCalendar' | translate}}</label>
                     <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{calendarNameInViewMode}}</p>
@@ -519,7 +519,7 @@
                                     </mat-expansion-panel-header>
                                     <div class="border-t -mx-6 px-2 pt-3">
                                         <ul
-                                            class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-10 mt-2 mx-2">
+                                            class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-8 gap-y-10 mt-2 mx-2">
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'gradeLevel' |
                                                     translate}}</label>

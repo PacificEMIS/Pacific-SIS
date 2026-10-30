@@ -68,7 +68,7 @@
             </mat-checkbox>
         </div>
 
-        <ul class="md:grid md:grid-cols-3 md:col-gap-10 md:row-gap-3 visibleToProfile-scroll"  [hidden]="membercount==0">
+        <ul class="md:grid md:grid-cols-3 md:gap-x-10 md:gap-y-3 visibleToProfile-scroll"  [hidden]="membercount==0">
             <li *ngFor="let member of getAllMembersList.getAllMemberList">
                 
                 <mat-checkbox [checked]="memberArray.indexOf(member.membershipId) != -1" (click)="selectChildren($event,member.membershipId)" color="primary">

@@ -20,7 +20,7 @@
     </mat-form-field>
 
     <h4 class="text-primary font-semibold">{{ 'school' | translate }}</h4>
-    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+    <ul class="grid grid-cols-1 md:grid-cols-3 gap-x-4 mt-2">
         <li class="mb-2" *ngFor="let schoolField of schoolFieldList">
             <mat-slide-toggle [(ngModel)]="copySchoolModel[schoolField.value]" color="primary"
                 (change)="onChange(schoolField.value, $event)">
@@ -32,7 +32,7 @@
     <mat-divider class="-mx-6 my-4"></mat-divider>
 
     <h4 class="text-primary font-semibold">{{ 'student' | translate }}</h4>
-    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+    <ul class="grid grid-cols-1 md:grid-cols-3 gap-x-4 mt-2">
         <li class="mb-2" *ngFor="let studentField of studentFieldList">
             <mat-slide-toggle [(ngModel)]="copySchoolModel[studentField.value]" color="primary"
                 (change)="onChange(studentField.value, $event)">
@@ -44,7 +44,7 @@
     <mat-divider class="-mx-6 my-4"></mat-divider>
 
     <h4 class="text-primary font-semibold">{{ 'staff' | translate }}</h4>
-    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+    <ul class="grid grid-cols-1 md:grid-cols-3 gap-x-4 mt-2">
         <li class="mb-2" *ngFor="let staffField of staffFieldList">
             <mat-slide-toggle [(ngModel)]="copySchoolModel[staffField.value]" color="primary"
                 (change)="onChange(staffField.value, $event)">
@@ -56,7 +56,7 @@
     <mat-divider class="-mx-6 my-4"></mat-divider>
 
     <h4 class="text-primary font-semibold">{{ 'course' | translate }}</h4>
-    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+    <ul class="grid grid-cols-1 md:grid-cols-3 gap-x-4 mt-2">
         <li class="mb-2" *ngFor="let courseField of courseFieldList">
             <mat-slide-toggle [(ngModel)]="copySchoolModel[courseField.value]" color="primary"
                 (change)="onChange(courseField.value, $event)">
@@ -68,7 +68,7 @@
     <mat-divider class="-mx-6 my-4"></mat-divider>
 
     <h4 class="text-primary font-semibold">{{ 'attendance' | translate }}</h4>
-    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+    <ul class="grid grid-cols-1 md:grid-cols-3 gap-x-4 mt-2">
         <li class="mb-2" *ngFor="let attendanceField of attendanceFieldList">
             <mat-slide-toggle [(ngModel)]="copySchoolModel[attendanceField.value]" color="primary"
                 (change)="onChange(attendanceField.value, $event)">
@@ -80,7 +80,7 @@
     <mat-divider class="-mx-6 my-4"></mat-divider>
 
     <h4 class="text-primary font-semibold">{{ 'grades' | translate }}</h4>
-    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+    <ul class="grid grid-cols-1 md:grid-cols-3 gap-x-4 mt-2">
         <li class="mb-2" *ngFor="let gradeField of gradeFieldList">
             <mat-slide-toggle [(ngModel)]="copySchoolModel[gradeField.value]" color="primary"
                 (change)="onChange(gradeField.value, $event)">
@@ -92,7 +92,7 @@
     <mat-divider class="-mx-6 my-4"></mat-divider>
 
     <h4 class="text-primary font-semibold">{{ 'administration' | translate }}</h4>
-    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+    <ul class="grid grid-cols-1 md:grid-cols-3 gap-x-4 mt-2">
         <li class="mb-2" *ngFor="let adminField of adminFieldList">
             <mat-slide-toggle [(ngModel)]="copySchoolModel[adminField.value]" color="primary"
                 (change)="onChange(adminField.value, $event)">
@@ -104,7 +104,7 @@
     <mat-divider class="-mx-6 my-4"></mat-divider>
 
     <h4 class="text-primary font-semibold">{{ 'listOfValues' | translate }}</h4>
-    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+    <ul class="grid grid-cols-1 md:grid-cols-3 gap-x-4 mt-2">
         <li class="mb-2" *ngFor="let listOfValuesField of listOfValuesFieldList">
             <mat-slide-toggle [(ngModel)]="copySchoolModel[listOfValuesField.value]" color="primary"
                 (change)="onChange(listOfValuesField.value, $event)">

@@ -17,7 +17,7 @@
                 {{ 'dueDateDefaultsToToday' | translate }}</mat-checkbox>
         </li>
     </ul>
-    <div class="grid grid-cols-1 lg:grid-cols-2 justify-between col-gap-8 row-gap-4 mb-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 justify-between gap-x-8 gap-y-4 mb-4">
         <div>
             <h5 class="font-semibold mb-2">{{ 'scoreRounding' | translate }}</h5>
             <mat-radio-group [(ngModel)]="gradebookConfigurationAddViewModel.gradebookConfiguration.scoreRounding"
@@ -47,7 +47,7 @@
             </mat-radio-group>
         </div>
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 justify-between col-gap-8 row-gap-0 mb-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 justify-between gap-x-8 gap-y-0 mb-4">
         <div>
             <h5 class="font-semibold mb-2">{{ 'allowedMaximumPercentInAnomalousGrades' | translate }}</h5>
             <ul>
@@ -79,7 +79,7 @@
         <h5 class="font-semibold mb-2">{{selectedCourseSection?.courseTitle}} -
             {{selectedCourseSection?.courseSectionName}}</h5>
         <div class="mx-4 mb-10">
-            <div class="grid grid-cols-2 md:grid-cols-4 justify-between col-gap-8 row-gap-0 mb-2">
+            <div class="grid grid-cols-2 md:grid-cols-4 justify-between gap-x-8 gap-y-0 mb-2">
                 <ul
                     *ngFor="let grade of gradebookConfigurationAddViewModel?.gradebookConfiguration?.gradebookConfigurationGradescale">
                     <li>
@@ -96,7 +96,7 @@
     <p class="text-gray font-medium mb-6">{{ 'totalMustBe100ForEachMarkingPeriod' | translate }}</p>
     <div>
         <ul *ngFor="let progressPeriod of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods; let i= index"
-            class="grid grid-cols-2 md:grid-cols-4 justify-between col-gap-8 row-gap-0 mb-2">
+            class="grid grid-cols-2 md:grid-cols-4 justify-between gap-x-8 gap-y-0 mb-2">
             <li class="col-span-2 md:col-span-1 flex flex-col align-middle w-full">
                 <p class="font-semibold mt-2">{{ progressPeriod.title}}</p>
                 <p *ngIf="checkConfiguration('progressPeriods', i)" class="text-warn mb-2">{{ 'totalNot100' | translate }}</p>
@@ -116,7 +116,7 @@
         </ul>
 
         <!-- <ul *ngFor="let quater of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter; let i= index"
-            class="grid grid-cols-2 md:grid-cols-4 justify-between col-gap-8 row-gap-0 mb-2">
+            class="grid grid-cols-2 md:grid-cols-4 justify-between gap-x-8 gap-y-0 mb-2">
             <li class="col-span-2 md:col-span-1 flex flex-col align-middle w-full">
                 <p class="font-semibold mt-2">{{ quater.title}}</p>
                 <p *ngIf="checkConfiguration('quater', i)" class="text-warn mb-2">{{ 'totalNot100' | translate }}</p>
@@ -138,7 +138,7 @@
         <ng-container
             *ngFor="let quater of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter; let i=index">
             <ul *ngIf="quater?.qtrMarkingPeriodId && !quater?.prgrsprdMarkingPeriodId"
-                class="grid grid-cols-2 md:grid-cols-4 justify-between col-gap-8 row-gap-0 mb-2">
+                class="grid grid-cols-2 md:grid-cols-4 justify-between gap-x-8 gap-y-0 mb-2">
                 <li class="col-span-2 md:col-span-1 flex flex-col w-full align-middle">
                     <p class="font-semibold mt-2">{{ quater.title }}</p>
                     <p *ngIf="checkConfiguration('quater', i)" class="text-warn mb-2">{{ 'totalNot100' | translate }}</p>
@@ -173,7 +173,7 @@
         <ng-container
             *ngFor="let semester of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationSemester; let i=index">
             <ul *ngIf="semester?.smstrMarkingPeriodId && !semester?.qtrMarkingPeriodId"
-                class="grid grid-cols-2 md:grid-cols-4 justify-between col-gap-8 row-gap-0 mb-2">
+                class="grid grid-cols-2 md:grid-cols-4 justify-between gap-x-8 gap-y-0 mb-2">
                 <li class="col-span-2 md:col-span-1 flex flex-col w-full align-middle">
                     <p class="font-semibold mt-2">{{ semester.title }}</p>
                     <p *ngIf="checkConfiguration('semester', i)" class="text-warn mb-2">{{ 'totalNot100' | translate }}</p>
@@ -208,7 +208,7 @@
             *ngFor="let year of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationYear; let i=index">
 
             <ul *ngIf="year?.yrMarkingPeriodId && !year?.smstrMarkingPeriodId"
-                class="grid grid-cols-2 md:grid-cols-4 justify-between col-gap-8 row-gap-0 mb-4">
+                class="grid grid-cols-2 md:grid-cols-4 justify-between gap-x-8 gap-y-0 mb-4">
                 <li class="col-span-2 md:col-span-1 flex flex-col w-full align-middle">
                     <p class="font-semibold mt-2">{{ year.title }}</p>
                     <p *ngIf="checkConfiguration('year', i)" class="text-warn mb-2">{{ 'totalNot100' | translate }}</p>

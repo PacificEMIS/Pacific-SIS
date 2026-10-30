@@ -2,7 +2,7 @@
 
     <div class="fx-column" @stagger>
         <h4 class="text-blue pt-6 pb-2">{{'identificationInformation'|translate}}</h4>
-        <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
+        <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'studentName' | translate}}</label>
                 <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{studentViewDetails?.studentMaster.firstGivenName}}{{studentViewDetails?.studentMaster.middleName ? ' ' + studentViewDetails?.studentMaster.middleName : ''}} {{studentViewDetails?.studentMaster.lastFamilyName}}</p>
@@ -58,7 +58,7 @@
         <hr class="-mx-4 mt-6">
 
         <h4 class="text-blue pt-6 pb-2">{{'demographicInformation'|translate}}</h4>
-        <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
+        <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'dateOfBirth' | translate}}</label>
                 <p *ngIf="studentViewDetails?.studentMaster.dob !== null"
@@ -111,7 +111,7 @@
 
 
         <!-- <h3 class="text-blue pt-6 pb-2 px-2">{{'schoolInformation'|translate}}</h3>
-        <ul class="grid grid-cols-3 col-gap-8 row-gap-10 my-2 mx-2">
+        <ul class="grid grid-cols-3 gap-x-8 gap-y-10 my-2 mx-2">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'section' | translate}}</label>
                 <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{nameOfMiscValues?.sectionName}}</p>
@@ -188,7 +188,7 @@
         <hr class="-mx-4 mt-6">
 
         <h4 class="text-blue pt-6 pb-2">{{'accessInformation'|translate}}</h4>
-        <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
+        <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'loginEmailAddress' | translate}}</label>
                 <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{studentViewDetails?.studentMaster.studentPortalId |EmtyValueCheckPipe }}</p>

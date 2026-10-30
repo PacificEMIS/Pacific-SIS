@@ -75,7 +75,7 @@
   }
 
   &.vex-style-default {
-    --sidenav-item-background-active: theme('backgroundColor.primary.default');
+    --sidenav-item-background-active: theme('backgroundColor.primary.DEFAULT');
     --sidenav-item-color-active: theme('textColor.primary-contrast');
     --sidenav-item-dropdown-color-hover: var(--text-color);
     --sidenav-item-icon-color-active: theme('textColor.primary-contrast');

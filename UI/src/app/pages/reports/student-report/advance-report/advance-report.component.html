@@ -145,33 +145,33 @@
                     <h4 class="text-primary mb-2 font-medium">{{'selectFieldsToGenerateReport' | translate }}</h4>
                     <mat-divider class="-mx-4 pb-4"></mat-divider>
                     <p class="font-medium mb-4">{{'identificationInformation' | translate }}</p>
-                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                    <ul class="grid md:grid-cols-3 gap-y-3 mb-8">
                         <li *ngFor="let field of fieldsDetailsArray?.identificationInformation"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
                         <li *ngFor="let field of generateStudentList[0]?.studentListForReport[0]?.fieldsCategoryList[0]?.customFields"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.title)" class="align-middle mr-2"></mat-slide-toggle>{{field?.title}}</li>
                     </ul>
 
                     <p class="font-medium mb-4">{{'demographicInformation' | translate }}</p>
-                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                    <ul class="grid md:grid-cols-3 gap-y-3 mb-8">
                         <li *ngFor="let field of fieldsDetailsArray?.demographicInformation"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
                     </ul>
 
                     <p class="font-medium mb-4">{{'alertInformation' | translate }}</p>
-                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                    <ul class="grid md:grid-cols-3 gap-y-3 mb-8">
                         <li *ngFor="let field of fieldsDetailsArray?.alertInformation"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
                     </ul>
 
                     <p class="font-medium mb-4">{{'medicalNotes' | translate }}</p>
-                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                    <ul class="grid md:grid-cols-3 gap-y-3 mb-8">
                         <li *ngFor="let field of fieldsDetailsArray?.medicalNotes"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
                     </ul>
 
                     <p class="font-medium mb-4">{{'immunizationPhysicalRecord' | translate }}</p>
-                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                    <ul class="grid md:grid-cols-3 gap-y-3 mb-8">
                         <li *ngFor="let field of fieldsDetailsArray?.immunizationPhysicalRecord"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
                     </ul>
 
                     <p class="font-medium mb-4">{{'nurseVisitRecord' | translate }}</p>
-                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                    <ul class="grid md:grid-cols-3 gap-y-3 mb-8">
                         <li *ngFor="let field of fieldsDetailsArray?.nurseVisitRecord"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
                     </ul>
 
@@ -187,7 +187,7 @@
                                 </ng-container>
                             </ng-container>
                             <div class="section-divider"><div class="w-10 h-10 bg-white rounded-full align-middle text-center m-auto relative text-gray text-base">{{'or' | translate }}</div></div>
-                            <ul class="grid grid-cols-2 row-gap-3 mb-8">
+                            <ul class="grid grid-cols-2 gap-y-3 mb-8">
                                 <ng-container *ngFor="let field of fieldsDetailsArray?.addressContact; let i = index;">
                                     <li *ngIf="i > 0"><mat-slide-toggle color="primary" class="align-middle mr-2" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property, false, 'addressContact')"></mat-slide-toggle>{{field?.label | translate }}</li>
                                 </ng-container>
@@ -206,7 +206,7 @@
                                 </ng-container>
                             </ng-container>
                             <div class="section-divider"><div class="w-10 h-10 bg-white rounded-full align-middle text-center m-auto relative text-gray text-base">{{'or' | translate }}</div></div>
-                            <ul class="grid grid-cols-2 row-gap-3 mb-8">
+                            <ul class="grid grid-cols-2 gap-y-3 mb-8">
                                 <ng-container *ngFor="let field of fieldsDetailsArray?.studentMailingAddress; let i = index;">
                                     <li *ngIf="i > 0"><mat-slide-toggle color="primary" class="align-middle mr-2" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property, false, 'studentMailingAddress')"></mat-slide-toggle>{{field?.label | translate }}</li>
                                 </ng-container>
@@ -219,7 +219,7 @@
                             <mat-icon class="mr-2 align-bottom">{{ icContactPhone }}</mat-icon>{{'personalContactInformation' | translate }}
                         </div>
                         <div class="w-2/3">
-                            <ul class="grid grid-cols-2 row-gap-3 mb-8">
+                            <ul class="grid grid-cols-2 gap-y-3 mb-8">
                         <li *ngFor="let field of fieldsDetailsArray?.personalContactInformation"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
                             </ul>
                         </div>

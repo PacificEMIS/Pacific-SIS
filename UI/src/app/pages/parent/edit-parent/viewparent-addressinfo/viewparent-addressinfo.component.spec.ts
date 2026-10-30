@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ViewparentAddressinfoComponent } from './viewparent-addressinfo.component';
 
@@ -6,7 +6,7 @@ describe('ViewparentAddressinfoComponent', () => {
   let component: ViewparentAddressinfoComponent;
   let fixture: ComponentFixture<ViewparentAddressinfoComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ViewparentAddressinfoComponent ]
     })

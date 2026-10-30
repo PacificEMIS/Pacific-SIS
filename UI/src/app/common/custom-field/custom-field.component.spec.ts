@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CustomFieldComponent } from './custom-field.component';
 
@@ -6,7 +6,7 @@ describe('CustomFieldComponent', () => {
   let component: CustomFieldComponent;
   let fixture: ComponentFixture<CustomFieldComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CustomFieldComponent ]
     })

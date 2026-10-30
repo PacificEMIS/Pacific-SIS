@@ -1,5 +1,5 @@
 <div class="overview-content md:w-9/12 m-auto card px-4 py-4">
-    <ul class="grid lg:grid-cols-3 grid-cols-2 col-gap-6 row-gap-6 mb-6">
+    <ul class="grid lg:grid-cols-3 grid-cols-2 gap-x-6 gap-y-6 mb-6">
         <li>
             <label class="text-sm leading-5 text-gray">{{'courseSectionName' | translate}}</label>
             <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{selectedCourseSection.courseSectionName}}</p>
@@ -76,7 +76,7 @@
         </p>
     </div>
     <mat-divider *ngIf="singleCourseSection?.courseSection?.useStandards || singleCourseSection?.courseSection?.onlineClassRoom" class="-mx-4 my-4"></mat-divider>
-    <ul class="grid lg:grid-cols-3 grid-cols-2 col-gap-6 row-gap-6">
+    <ul class="grid lg:grid-cols-3 grid-cols-2 gap-x-6 gap-y-6">
         <li *ngIf="singleCourseSection?.courseSection?.useStandards">
             <label class="text-sm leading-5 text-gray">{{'standardGradeScale' | translate}}</label>
             <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{singleCourseSection?.standardGradeScaleName|EmtyValueCheckPipe}}</p>
@@ -118,7 +118,7 @@
                 </p>
             </div>
             <div *ngIf="showPasswordInput">
-                <div class="grid grid-cols-3 col-gap-4">
+                <div class="grid grid-cols-3 gap-x-4">
                     <mat-form-field class="col-span-2 w-full mb-0 mr-4" appearance="outline" color="primary">
                         <mat-label>{{ "onlineClassroomPassword" | translate }}</mat-label>
                         <input matInput [(ngModel)]="singleCourseSection.courseSection.onlineClassroomPassword">
@@ -133,7 +133,7 @@
     <mat-divider class="-mx-4 my-4"></mat-divider>
     <div>
         <h4 class="text-green font-semibold mb-2 text-lg">{{ 'duration' | translate }}</h4>
-        <ul class="grid md:grid-cols-2 col-gap-6 row-gap-6 mb-6">
+        <ul class="grid md:grid-cols-2 gap-x-6 gap-y-6 mb-6">
             <li>
                 <div *ngIf="singleCourseSection?.courseSection?.durationBasedOnPeriod; else anoter" >
                     <label class="text-sm leading-5 text-gray">{{'markingPeriod' | translate}}</label>
@@ -186,7 +186,7 @@
             <span class="text-green">{{ 'scheduleType' | translate }}</span> : {{ selectedCourseSection?.scheduleType | translate }}
         </h4>
             
-        <ul class="grid lg:grid-cols-3 grid-cols-2 col-gap-6 row-gap-6 mb-6">
+        <ul class="grid lg:grid-cols-3 grid-cols-2 gap-x-6 gap-y-6 mb-6">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'room' | translate}}</label>
                 <p *ngIf="singleCourseSection?.courseFixedSchedule!=null" 

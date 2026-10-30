@@ -6,7 +6,7 @@
 
             <div class="fx-column" @stagger>
                 <h4 class="text-blue pt-6 pb-2">{{'homeAddress'|translate}}</h4>
-                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-8 gap-y-0">
                     <li class="fx-parent">
                         <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                             <mat-label>{{'streetAddress1'|translate}}</mat-label>
@@ -95,7 +95,7 @@
             </div>
             <p *ngIf="addParentInfoModel?.parentInfo?.parentAddress[0]?.studentAddressSame" class="mb-6"><span class="same-as-home-address">{{'sameAsStudentsHomeAddress' |translate}}</span></p>
             <p *ngIf="!addParentInfoModel?.parentInfo?.parentAddress[0]?.studentAddressSame" class="mb-6"><span class="different-from-home-address">{{'differentFromStudentsHomeAddress' |translate}}</span></p>
-            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
+            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10">
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'streetAddress1' | translate}}</label>
                     <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{addParentInfoModel.parentInfo.parentAddress[0].addressLineOne| EmtyValueCheckPipe}}</p>

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CommonToiletTypeComponent } from './common-toilet-type.component';
 
@@ -6,7 +6,7 @@ describe('CommonToiletTypeComponent', () => {
   let component: CommonToiletTypeComponent;
   let fixture: ComponentFixture<CommonToiletTypeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CommonToiletTypeComponent ]
     })

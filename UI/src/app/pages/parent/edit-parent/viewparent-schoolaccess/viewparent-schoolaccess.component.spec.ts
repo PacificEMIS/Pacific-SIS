@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ViewparentSchoolaccessComponent } from './viewparent-schoolaccess.component';
 
@@ -6,7 +6,7 @@ describe('ViewparentSchoolaccessComponent', () => {
   let component: ViewparentSchoolaccessComponent;
   let fixture: ComponentFixture<ViewparentSchoolaccessComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ViewparentSchoolaccessComponent ]
     })

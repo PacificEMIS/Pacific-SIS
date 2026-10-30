@@ -8,7 +8,7 @@
     </div>
     <mat-divider class="-mx-6 text-border"></mat-divider>
     <mat-dialog-content>
-        <ul class="grid grid-cols-2 col-gap-8 row-gap-10 mt-6">
+        <ul class="grid grid-cols-2 gap-x-8 gap-y-10 mt-6">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'fullName' | translate}}</label>
                 <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{(viewData.salutation?viewData.salutation+' ':'')+viewData.firstname+' '+(viewData.middlename?viewData.middlename+' ':'')+viewData.lastname+(viewData.suffix?' '+viewData.suffix:'')}}</p>
@@ -52,7 +52,7 @@
         </ul>
         
         <h6 class="text-primary mt-10 mb-3">{{'address' | translate}}</h6>
-        <ul class="grid grid-cols-2 col-gap-8 row-gap-10">
+        <ul class="grid grid-cols-2 gap-x-8 gap-y-10">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'streetAddress1' | translate}}</label>
                 <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.parentAddress.addressLineOne | EmtyValueCheckPipe}}</p>
@@ -385,7 +385,7 @@
                                 <mat-checkbox color="primary" [(ngModel)]="associateStudent.isCustodian" name="isCustodian" #isCustodian="ngModel">{{'custody' | translate}}</mat-checkbox>
                             </div>
                         </div>
-                        <ul class="grid grid-cols-2 col-gap-8 row-gap-8 mt-6">
+                        <ul class="grid grid-cols-2 gap-x-8 gap-y-8 mt-6">
                             <li>
                                 <label class="text-sm leading-5 text-gray">{{'fullName' | translate}}</label>
                                 <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{singleParentInfo.firstname+' '+singleParentInfo.lastname}}</p>
@@ -477,7 +477,7 @@
                                 </mat-expansion-panel-header>
                                 <div class="border-t -mx-6">
                                     <div class="mx-6">
-                                        <ul class="grid grid-cols-2 col-gap-8 row-gap-8 mt-6">
+                                        <ul class="grid grid-cols-2 gap-x-8 gap-y-8 mt-6">
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'fullName' | translate}}</label>
                                                 <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{multipleParent.firstname+' '+multipleParent.lastname}}</p>

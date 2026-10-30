@@ -5,7 +5,7 @@
         *ngIf="schoolCustomFields?.length > 0">
         <hr class="-mx-4 my-6">
         <!-- <div > -->
-            <ul *ngIf="schoolCreateMode==schoolCreate.EDIT" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+            <ul *ngIf="schoolCreateMode==schoolCreate.EDIT" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-8 gap-y-0">
                 <li *ngFor="let customField of schoolCustomFields; let index = index"
                     [ngSwitch]="customField.type">
                     <div *ngSwitchCase="'Checkbox'">
@@ -102,7 +102,7 @@
             </ul>
         <!-- </div> -->
 
-        <ul *ngIf="schoolCreateMode==schoolCreate.VIEW" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
+        <ul *ngIf="schoolCreateMode==schoolCreate.VIEW" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10">
             <li
                 *ngFor="let customField of schoolCustomFields; let index = index">
                 <label class="text-sm leading-5 text-gray">{{customField.title}}</label>
@@ -128,7 +128,7 @@
     <div class="py-6" @stagger
         *ngIf="studentCustomFields?.length > 0">
         <hr class="-mx-4 my-6">
-        <ul *ngIf="studentCreateMode !== schoolCreate.VIEW" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-0" >
+        <ul *ngIf="studentCreateMode !== schoolCreate.VIEW" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-0" >
                 <li *ngFor="let customField of studentCustomFields; let index = index"
                     [ngSwitch]="customField.type">
                     <div *ngSwitchCase="'Checkbox'">
@@ -224,7 +224,7 @@
                 </li>
         </ul>
 
-        <ul *ngIf="studentCreateMode === schoolCreate.VIEW" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
+        <ul *ngIf="studentCreateMode === schoolCreate.VIEW" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10">
             <li
                 *ngFor="let customField of studentCustomFields; let index = index">
                 <label class="text-sm leading-5 text-gray">{{customField.title}}</label>
@@ -248,7 +248,7 @@
         <div class="py-6" @stagger
         *ngIf="staffCustomFields?.length > 0">
         <hr class="-mx-4 my-6">
-        <ul *ngIf="staffCreateMode === schoolCreate.EDIT || staffCreateMode === schoolCreate.ADD" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 col-gap-8 md:row-gap-0">
+        <ul *ngIf="staffCreateMode === schoolCreate.EDIT || staffCreateMode === schoolCreate.ADD" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-x-8 md:gap-y-0">
                 <li *ngFor="let customField of staffCustomFields; let index = index"
                     [ngSwitch]="customField.type">
                     <div *ngSwitchCase="'Checkbox'">
@@ -342,7 +342,7 @@
                 </li>
         </ul>
 
-        <ul *ngIf="staffCreateMode==schoolCreate.VIEW" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
+        <ul *ngIf="staffCreateMode==schoolCreate.VIEW" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10">
             <li
                 *ngFor="let customField of staffCustomFields; let index = index">
                 <label class="text-sm leading-5 text-gray">{{customField.title}}</label>

@@ -16,7 +16,7 @@
                                 [routerLink]="submenu.path">{{submenu.title | translate}}</a>
                         </h4>
                     </div>
-                    <ul class="md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:col-gap-8 mt-4">
+                    <ul class="md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-x-8 mt-4">
                         <ng-container *ngIf="submenu.permissionSubcategory?.length>0 && submenu.rolePermission[0].canView">
                             <ng-container *ngFor="let option of submenu.permissionSubcategory;let index=index">
                                 <li>

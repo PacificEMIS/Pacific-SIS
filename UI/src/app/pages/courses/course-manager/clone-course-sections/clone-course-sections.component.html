@@ -49,7 +49,7 @@
                     <tr *ngFor="let row of result.results">
                         <td>{{row.courseTitle}}</td>
                         <td>{{row.courseSectionName}}</td>
-                        <td class="whitespace-no-wrap">
+                        <td class="whitespace-nowrap">
                             <span *ngIf="row.cloned" class="flex items-center text-green">
                                 <mat-icon class="mr-1">{{ icCheck }}</mat-icon>{{'cloneStatusCloned' | translate}}
                             </span>

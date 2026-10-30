@@ -9,7 +9,7 @@
     <mat-card-content>
         <div class="fx-column" @stagger>
             <h4 class="text-primary pt-6 pb-2">{{'identificationInformation'|translate}}</h4>
-            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
+            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10">
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'Name' | translate}}</label>
                     <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{parentInfo?.firstname+''+(parentInfo?.middlename?' '+parentInfo?.middlename+' ':'')+' '+parentInfo?.lastname}}</p>
@@ -24,7 +24,7 @@
 
 
             <h4 class="text-primary pt-6 pb-2">{{'contactInformation'|translate}}</h4>
-            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
+            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10">
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'homePhone' | translate}}</label>
                     <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{parentInfo.homePhone | EmtyValueCheckPipe}}</p>
@@ -48,7 +48,7 @@
             <hr class="-mx-4 mt-6">
 
             <h4 class="text-primary pt-6 pb-2">{{'accessInformation'|translate}}</h4>
-            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
+            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10">
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'loginEmailAddress' | translate}}</label>
                     <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{parentInfo.loginEmail | EmtyValueCheckPipe}}</p>
@@ -88,7 +88,7 @@
             <hr class="-mx-4 mt-6">
 
             <h4 class="text-primary pt-8 pb-2">{{'associatedStudents'|translate}}</h4>
-            <div class="md:grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 md:col-gap-8 md:row-gap-2">
+            <div class="md:grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 md:gap-x-8 md:gap-y-2">
                 <div class="border border-solid rounded mb-4" *ngFor="let student of studentInfo">
                     <div class="fx-row fx-align-start-center fx-gap-16">
                         <div class="relative cursor-pointer py-4 pl-4 fx-none" (click)='openViewDetails(student)'>
@@ -138,7 +138,7 @@
             <form (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate>
                 <div class="fx-column" @stagger>
                     <h4 class="text-primary pt-6 pb-2">{{'identificationInformation'|translate}}</h4>
-                    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-8 gap-y-0">
                         <li>
                             <div class="md:flex w-full">
                                 <div class="w-full md:w-1/2 md:pr-4 fx-parent">
@@ -210,7 +210,7 @@
                     <hr class="-mx-4">
 
                     <h4 class="text-primary pt-6 pb-2">{{'contactInformation'|translate}}</h4>
-                    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-8 gap-y-0">
                         <li class="fx-parent">
                             <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                 <mat-label>{{'personalEmail'|translate}}</mat-label>
@@ -274,7 +274,7 @@
                     </div>
                     <div *ngIf="isPortalUser">
                         <h4 class="text-primary pt-3 pb-2">{{'accessInformation'|translate}}</h4>
-                        <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                        <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-8 gap-y-0">
                             <li class="fx-parent">
                                 <mat-form-field class="w-full fx-auto" appearance="outline" color="primary">
                                     <mat-label>{{'loginEmailAddress'|translate}}</mat-label>
@@ -300,7 +300,7 @@
                         </ul>
                     </div>
                     <hr class="-mx-4 my-4">
-                    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-8 gap-y-0">
                         <li>
                             <mat-checkbox name="activeDeactiveUser" [checked]="addParentInfoModel?.parentInfo.isActive===false"
                                 (change)="activateUser($event.checked)" color="primary">

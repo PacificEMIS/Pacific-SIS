@@ -14,7 +14,7 @@
 <mat-divider class="-mx-6 text-border"></mat-divider>
 
 <mat-dialog-content class="fx-column">
-    <ul class="md:grid md:grid-cols-2 col-gap-8 mt-6">
+    <ul class="md:grid md:grid-cols-2 gap-x-8 mt-6">
         <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'courseSectionName' | translate}}</mat-label>
@@ -163,7 +163,7 @@
         Please Select Duration.
     </mat-error>
     <div *ngIf="form.value.durationType=='1'">
-        <ul class="md:grid md:grid-cols-2 col-gap-8 mt-3">
+        <ul class="md:grid md:grid-cols-2 gap-x-8 mt-3">
             <li>
                 <mat-form-field class="w-full" appearance="outline" color="primary">
                     <mat-label>{{'markingPeriod' | translate}}</mat-label>
@@ -178,7 +178,7 @@
         </ul>
     </div>
     <div *ngIf="form.value.durationType=='2'">
-        <ul class="md:grid md:grid-cols-2 col-gap-8 mt-3">
+        <ul class="md:grid md:grid-cols-2 gap-x-8 mt-3">
             <li >
                 <mat-form-field class="w-full" appearance="outline" color="primary" >
                     <mat-label>{{'startDate' | translate}}</mat-label>

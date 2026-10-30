@@ -2,7 +2,7 @@
 
 <div class="card">
     <ng-container *ngIf="this.defaultValuesService.getUserMembershipType() === this.profile.Teacher || this.defaultValuesService.getUserMembershipType() === this.profile.HomeroomTeacher">
-        <ul class="grid grid-cols-1 md:grid-cols-4 col-gap-6 row-gap-2 px-6 py-4">
+        <ul class="grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-2 px-6 py-4">
             <li>
                 <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                     <mat-label>{{ "subject" | translate }}</mat-label>

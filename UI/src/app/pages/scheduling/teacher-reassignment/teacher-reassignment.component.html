@@ -91,13 +91,13 @@
                                         <mat-checkbox color="primary" [disabled]="course.conflictCourseSection" [checked]="course.checked && !course.conflictCourseSection"
                                         (change)="singleSelectionBasedOnTeacher($event.checked,index)"></mat-checkbox>
                                     </td>
-                                    <td [ngClass]="course.conflictCourseSection?'text-warn':''"><div class="whitespace-no-wrap">{{course.courseTitle}}</div></td>
-                                    <td [ngClass]="course.conflictCourseSection?'text-warn':''"><div class="whitespace-no-wrap">{{course.courseSectionName}}</div></td>
-                                    <td [ngClass]="course.conflictCourseSection?'text-warn':''"><div class="whitespace-no-wrap">{{course.markingPeriodTitle}}</div></td>
-                                    <td [ngClass]="course.conflictCourseSection?'text-warn':''"><div class="whitespace-no-wrap">{{course.durationStartDate | date:'mediumDate'}}</div></td>
-                                    <td [ngClass]="course.conflictCourseSection?'text-warn':''"><div class="whitespace-no-wrap">{{course.durationEndDate | date:'mediumDate'}}</div></td>
+                                    <td [ngClass]="course.conflictCourseSection?'text-warn':''"><div class="whitespace-nowrap">{{course.courseTitle}}</div></td>
+                                    <td [ngClass]="course.conflictCourseSection?'text-warn':''"><div class="whitespace-nowrap">{{course.courseSectionName}}</div></td>
+                                    <td [ngClass]="course.conflictCourseSection?'text-warn':''"><div class="whitespace-nowrap">{{course.markingPeriodTitle}}</div></td>
+                                    <td [ngClass]="course.conflictCourseSection?'text-warn':''"><div class="whitespace-nowrap">{{course.durationStartDate | date:'mediumDate'}}</div></td>
+                                    <td [ngClass]="course.conflictCourseSection?'text-warn':''"><div class="whitespace-nowrap">{{course.durationEndDate | date:'mediumDate'}}</div></td>
                                     <td>
-                                        <div class="whitespace-no-wrap">
+                                        <div class="whitespace-nowrap">
                                         <ng-container
                                             *ngIf="course.scheduleType=='Fixed Schedule' || course.scheduleType=='Variable Schedule';else otherSchedule">
                                             <ng-container *ngFor="let day of course.weekDays.split('').sort()">
@@ -117,7 +117,7 @@
                                         </ng-template>
                                     </td>
                                     <td>
-                                        <div class="whitespace-no-wrap">
+                                        <div class="whitespace-nowrap">
                                         <ng-container *ngFor="let staff of course?.scheduledStaff?.split('|')">
                                         <button [matTooltip]="staff"
                                             aria-label="Button that displays a tooltip when focused or hovered over"

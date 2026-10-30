@@ -110,7 +110,7 @@ textarea.mat-input-element {
 }
 
 .uppercase > * > .mat-sort-header-button {
-  @apply uppercase;
+  text-transform: uppercase;
 }
 
 .mat-card-image {

@@ -8,7 +8,7 @@
 <mat-divider class="-mx-6 mb-6"></mat-divider>
 <mat-dialog-content class="fx-column">
     <div>
-        <ul class="grid grid-cols-6 col-gap-6 mb-2 px-4">
+        <ul class="grid grid-cols-6 gap-x-6 mb-2 px-4">
             <li class="font-semibold">{{ 'period' | translate }}</li>
             <li class="font-semibold">{{ 'courseSection' | translate }}</li>
             <li class="font-semibold col-span-2">{{ 'attendanceCode' | translate }}</li>
@@ -17,7 +17,7 @@
         </ul>
         <div class="border border-gray-light rounded px-4 py-2 mb-4"
             *ngFor="let record of studentAttendance; let index= index">
-            <ul class="grid grid-cols-6 col-gap-6">
+            <ul class="grid grid-cols-6 gap-x-6">
                 <li class="flex items-center">{{record?.blockPeriod?.periodTitle}}</li>
                 <li class="flex items-center">{{record?.studentCoursesectionSchedule?.courseSectionName}}</li>
                 <li class="col-span-2 flex items-center">

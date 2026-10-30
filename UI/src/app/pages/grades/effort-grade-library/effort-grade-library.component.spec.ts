@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { EffortGradeLibraryComponent } from './effort-grade-library.component';
 
@@ -6,7 +6,7 @@ describe('EffortGradeLibraryComponent', () => {
   let component: EffortGradeLibraryComponent;
   let fixture: ComponentFixture<EffortGradeLibraryComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ EffortGradeLibraryComponent ]
     })

@@ -20,7 +20,7 @@
         <!-- Start Select Students -->
         <div class="card px-6 py-4 mb-6">
             <h4 class="text-primary mb-2 font-semibold">{{ 'includeOnGradeList' | translate }}</h4>
-            <ul class="grid md:grid-cols-4 row-gap-3 mb-6">
+            <ul class="grid md:grid-cols-4 gap-y-3 mb-6">
                 <li><mat-slide-toggle color="primary" [(ngModel)]="getStudentFinalGradeReportModel.teacher" class="align-middle mr-2"></mat-slide-toggle>{{'teacher' | translate }}</li>
                 <li><mat-slide-toggle color="primary" [(ngModel)]="getStudentFinalGradeReportModel.comments" class="align-middle mr-2"></mat-slide-toggle>{{'comments' | translate }}</li>
                 <li><mat-slide-toggle color="primary" [(ngModel)]="getStudentFinalGradeReportModel.parcentage" class="align-middle mr-2"></mat-slide-toggle>{{'percents' | translate }}</li>

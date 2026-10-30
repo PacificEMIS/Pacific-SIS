@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { EditparentSchoolaccessComponent } from './editparent-schoolaccess.component';
 
@@ -6,7 +6,7 @@ describe('EditparentSchoolaccessComponent', () => {
   let component: EditparentSchoolaccessComponent;
   let fixture: ComponentFixture<EditparentSchoolaccessComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ EditparentSchoolaccessComponent ]
     })

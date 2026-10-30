@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { EditEffortGradeScaleComponent } from './edit-effort-grade-scale.component';
 
@@ -6,7 +6,7 @@ describe('EditEffortGradeScaleComponent', () => {
   let component: EditEffortGradeScaleComponent;
   let fixture: ComponentFixture<EditEffortGradeScaleComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ EditEffortGradeScaleComponent ]
     })

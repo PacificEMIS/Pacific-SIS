@@ -275,7 +275,7 @@
                         <div *ngSwitchCase="'generalInfo'" class="px-4">
                             <h4 class="text-primary pt-4 pb-2">{{'identificationInformation'|translate}}</h4>
                             <ul
-                                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-0">
+                                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-0">
                                 <li>
                                     <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'districtId'|translate}}</mat-label>
@@ -298,7 +298,7 @@
 
                             <h4 class="text-primary pt-4 pb-2">{{'demographicInformation'|translate}}</h4>
                             <ul
-                                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-0">
+                                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-0">
                                 <li>
                                     <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'dateOfBirth'|translate}}</mat-label>
@@ -442,7 +442,7 @@
 
 
                             <ul
-                                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-0 mt-6">
+                                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-0 mt-6">
                                 <!-- <vex-custom-field-without-form [schoolDetailsForViewAndEdit]="studentAddForGroupAssignModel" [module]="'Student'"
                             [categoryId]="0" [studentCreateMode]="studentCreateMode"></vex-custom-field-without-form> -->
                                 <li *ngFor="let customField of studentCustomFields; let index = index"
@@ -565,7 +565,7 @@
 
                         <div *ngSwitchCase="'enrollmentInfo'" class="px-4 pb-10">
                             <h4 class="text-primary pt-4 pb-2">{{'schoolInformation'|translate}}</h4>
-                            <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0 mb-2">
+                            <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-8 gap-y-0 mb-2">
                                 <li>
                                     <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'enrollmentCalendar'|translate}}</mat-label>
@@ -667,7 +667,7 @@
                                     </mat-form-field>
                                 </li>
                             </ul>
-                            <ul class="grid grid-cols-1 col-gap-8 row-gap-0">
+                            <ul class="grid grid-cols-1 gap-x-8 gap-y-0">
                                 <li>
                                     <mat-checkbox name="eligibility504"
                                         [(ngModel)]="studentEnrollmentForGroupAssignModel.eligibility504"
@@ -696,7 +696,7 @@
                         <div *ngSwitchCase="'medicalInfo'" class="px-4">
                             <h4 class="text-primary pt-4 pb-2">{{'providerInformation'|translate}}</h4>
                             <ul
-                                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-0">
+                                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-0">
                                 <li>
                                     <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'primaryCarePhysician'|translate}}</mat-label>

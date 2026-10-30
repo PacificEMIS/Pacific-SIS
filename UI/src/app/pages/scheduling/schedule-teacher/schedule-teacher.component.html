@@ -124,7 +124,7 @@
                                     <td [ngClass]="courseSection.conflictCourseSection?'text-warn':''">
                                         {{courseSection.durationEndDate|date:'mediumDate'}}</td>
                                     <td>
-                                        <div class="whitespace-no-wrap">
+                                        <div class="whitespace-nowrap">
                                         <ng-container
                                             *ngIf="courseSection.scheduleType=='Fixed Schedule' || courseSection.scheduleType=='Variable Schedule';else otherSchedule">
                                             <ng-container *ngFor="let day of courseSection.weekDays.split('').sort()">

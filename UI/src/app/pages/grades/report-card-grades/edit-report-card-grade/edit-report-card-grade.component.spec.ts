@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { EditReportCardGradeComponent } from './edit-report-card-grade.component';
 
@@ -6,7 +6,7 @@ describe('EditPeriodComponent', () => {
   let component: EditReportCardGradeComponent;
   let fixture: ComponentFixture<EditReportCardGradeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ EditReportCardGradeComponent ]
     })

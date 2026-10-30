@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ParentFieldsCategoryComponent } from './parent-fields-category.component';
 
@@ -6,7 +6,7 @@ describe('ParentFieldsCategoryComponent', () => {
   let component: ParentFieldsCategoryComponent;
   let fixture: ComponentFixture<ParentFieldsCategoryComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ParentFieldsCategoryComponent ]
     })
