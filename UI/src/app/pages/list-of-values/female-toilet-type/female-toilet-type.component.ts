@@ -24,20 +24,20 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { Router} from '@angular/router';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { EditFemaleToiletTypeComponent } from './edit-female-toilet-type/edit-female-toilet-type.component';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { MatSort } from '@angular/material/sort';
 import { LoaderService } from './../../../services/loader.service';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import { LovList, LovAddView, LoVSortOrderValuesModel, UpdateLovSortingModel } from '../../../models/lov.model';
 import { CommonService } from './../../../services/common.service';
-import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator, MatLegacyPaginatorIntl as MatPaginatorIntl } from '@angular/material/legacy-paginator';
 import { ExcelService } from '../../../services/excel.service';
 import { SharedFunction } from '../../shared/shared-function';
 import { RolePermissionListViewModel, RolePermissionViewModel } from 'src/app/models/roll-based-access.model';

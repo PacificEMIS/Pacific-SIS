@@ -27,17 +27,17 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator, MatLegacyPaginatorIntl as MatPaginatorIntl } from '@angular/material/legacy-paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { UntypedFormControl, NgForm } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { RolePermissionListViewModel, RolePermissionViewModel } from '../../models/roll-based-access.model';
 import { RollBasedAccessService } from '../../services/roll-based-access.service';
 import { CryptoService } from '../../services/Crypto.service';
@@ -61,7 +61,7 @@ import { ScheduleStudentListViewModel } from '../../models/student-schedule.mode
 import { ProfilesTypes } from '../../enums/profiles.enum';
 import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 import { SharedFunction } from '../shared/shared-function';
-import { MatCheckbox } from '@angular/material/checkbox';
+import { MatLegacyCheckbox as MatCheckbox } from '@angular/material/legacy-checkbox';
 
 
 @Component({

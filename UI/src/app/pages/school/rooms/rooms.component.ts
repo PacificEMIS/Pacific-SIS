@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { EditRoomComponent } from '../rooms/edit-room/edit-room.component';
@@ -32,11 +32,11 @@ import { RoomDetailsComponent } from '../rooms/room-details/room-details.compone
 
 import { RoomAddView, RoomListViewModel } from '../../../models/room.model';
 import { RoomService } from '../../../services/room.service';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { MatSort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import { LoaderService } from '../../../services/loader.service';
 import { ExcelService } from '../../../services/excel.service';

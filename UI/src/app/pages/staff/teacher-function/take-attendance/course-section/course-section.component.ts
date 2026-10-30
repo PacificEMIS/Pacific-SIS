@@ -32,7 +32,7 @@ import { Router } from '@angular/router';
 import { Subject } from "rxjs";
 import { StudentAttendanceService } from "../../../../../services/student-attendance.service";
 import { SearchCourseSectionForStudentAttendance } from "../../../../../models/take-attendance-list.model";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
 import { GetAllCourseListModel } from "../../../../../models/course-manager.model";
 import { scheduleType } from "../../../../../enums/takeAttendanceList.enum";
 import { days } from "../../../../../common/static-data";

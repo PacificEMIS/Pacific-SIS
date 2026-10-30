@@ -25,11 +25,11 @@ All rights reserved.
 
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
-import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatLegacyPaginator as MatPaginator, MatLegacyPaginatorIntl as MatPaginatorIntl } from "@angular/material/legacy-paginator";
+import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
 import { MatSort } from "@angular/material/sort";
-import { MatTableDataSource } from "@angular/material/table";
+import { MatLegacyTableDataSource as MatTableDataSource } from "@angular/material/legacy-table";
 import { TranslateService } from "@ngx-translate/core";
 import { debounceTime, distinctUntilChanged, timeout } from "rxjs/operators";
 import { DefaultValuesService } from "../../../common/default-values.service";

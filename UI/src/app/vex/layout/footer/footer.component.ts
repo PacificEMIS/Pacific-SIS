@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 import { CommonService } from "../../../services/common.service";
 import { ReleaseNumberAddViewModel } from "../../../models/release-number-model";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
 import { SchoolService } from "../../../services/school.service";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";

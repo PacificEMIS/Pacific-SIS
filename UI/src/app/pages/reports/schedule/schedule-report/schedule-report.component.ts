@@ -5,7 +5,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CourseManagerService } from 'src/app/services/course-manager.service';
 import { GetAllCourseListModel } from 'src/app/models/course-manager.model';
 import { CommonService } from 'src/app/services/common.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { LoaderService } from 'src/app/services/loader.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';

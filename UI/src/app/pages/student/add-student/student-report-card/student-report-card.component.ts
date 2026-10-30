@@ -24,14 +24,14 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { AddCommentsComponent } from './add-comments/add-comments.component';
 import { AddTeacherCommentsComponent } from './add-teacher-comments/add-teacher-comments.component';
 import { AddReportCardPdf } from 'src/app/models/report-card.model';
 import { GetMarkingPeriodByCourseSectionModel, GetMarkingPeriodTitleListModel } from 'src/app/models/marking-period.model';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { StudentService } from 'src/app/services/student.service';
 import { ReportCardService } from 'src/app/services/report-card.service';
 import { Router } from '@angular/router';

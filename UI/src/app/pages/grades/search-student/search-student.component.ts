@@ -28,7 +28,7 @@ import { NgForm } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { CountryModel } from '../../../../app/models/country.model';
 import { LanguageModel } from '../../../../app/models/language.model';
 import { StudentListModel, StudentMasterSearchModel } from '../../../../app/models/student.model';

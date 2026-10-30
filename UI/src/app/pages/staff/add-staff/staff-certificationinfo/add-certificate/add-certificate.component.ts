@@ -25,11 +25,11 @@ All rights reserved.
 
 import { StaffService } from '../../../../../services/staff.service';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { ControlContainer, UntypedFormBuilder, UntypedFormGroup, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import {WashInfoEnum} from '../../../../../enums/wash-info.enum'
 import { TranslateService } from '@ngx-translate/core';
 import { StaffCertificateModel } from '../../../../../models/staff.model';

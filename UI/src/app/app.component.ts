@@ -46,7 +46,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from './services/common.service';
 import { UserIdleService } from 'angular-user-idle';
 import { SessionExpireAlertComponent } from '@vex/layout/session-expire/session-expire-alert/session-expire-alert.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { DefaultValuesService } from './common/default-values.service';
 import { UserViewModel } from './models/user.model';
 import { SessionService } from '@vex/services/session.service';

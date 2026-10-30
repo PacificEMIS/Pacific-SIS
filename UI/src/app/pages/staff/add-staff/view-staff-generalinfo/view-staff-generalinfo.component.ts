@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Input, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { ResetPasswordComponent } from '../../../../pages/shared-module/reset-password/reset-password.component';

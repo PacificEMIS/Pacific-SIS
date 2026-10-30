@@ -27,7 +27,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ManageSubjectsComponent } from './manage-subjects/manage-subjects.component';
 import { ManageProgramsComponent } from './manage-programs/manage-programs.component';
 import { EditCourseComponent } from './edit-course/edit-course.component';
@@ -35,7 +35,7 @@ import { EditCourseSectionComponent } from './edit-course-section/edit-course-se
 import { CloneCourseSectionsComponent } from './clone-course-sections/clone-course-sections.component';
 import {GetAllCourseListModel,AddCourseModel,GetAllProgramModel,GetAllSubjectModel, CourseListFilterModel} from '../../../models/course-manager.model';
 import {CourseManagerService} from '../../../services/course-manager.service';
-import {MatSnackBar} from  '@angular/material/snack-bar';
+import {MatLegacySnackBar as MatSnackBar} from  '@angular/material/legacy-snack-bar';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import {GradeLevelService} from '../../../services/grade-level.service';
 import {GetAllGradeLevelsModel } from '../../../models/grade-level.model';

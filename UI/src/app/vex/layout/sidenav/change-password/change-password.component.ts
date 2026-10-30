@@ -4,10 +4,10 @@ import { MatPasswordStrengthComponent } from "@angular-material-extensions/passw
 import { ChangePasswordViewModel } from '../../../../models/common.model';
 import { CommonService } from '../../../../services/common.service';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { SharedFunction } from '../../../../pages/shared/shared-function';
 import { DefaultValuesService } from '../../../../common/default-values.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 
 @Component({
   selector: 'vex-change-password',

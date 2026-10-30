@@ -47,7 +47,8 @@
               "lodash.debounce",
               "lodash.memoize",
               "lodash.throttle",
-              "angular-calendar/date-adapters/date-fns"
+              "angular-calendar/date-adapters/date-fns",
+              "moment"
             ],
             "vendorChunk": true,
             "extractLicenses": false,

@@ -13,12 +13,12 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 
 import {MatNativeDateModule} from '@angular/material/core';
-import {MatDialogModule} from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import {MatLegacyDialogModule as MatDialogModule} from '@angular/material/legacy-dialog';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
+import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { QuillModule } from 'ngx-quill';
 import { JwtHelperService, JWT_OPTIONS  } from '@auth0/angular-jwt';
 import { LoaderInterceptor } from './services/loader.interceptor';
@@ -29,7 +29,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angul
 import { CalendarModule as AngularCalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { UserIdleModule } from 'angular-user-idle';
-import { NgxMaskModule } from 'ngx-mask'
+import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import {enableProdMode} from '@angular/core';
 import { DatePipe } from '@angular/common';
 export function createTranslateLoader(http: HttpClient) {
@@ -40,7 +40,7 @@ export function createTranslateLoader(http: HttpClient) {
     declarations: [AppComponent],
     imports: [
         BrowserModule,
-        NgxMaskModule.forRoot(),
+        NgxMaskDirective, NgxMaskPipe,
         AngularCalendarModule.forRoot({
             provide: DateAdapter,
             useFactory: adapterFactory
@@ -88,7 +88,9 @@ export function createTranslateLoader(http: HttpClient) {
             }
         })
     ],
-    providers: [{
+    providers: [
+        provideNgxMask(),
+        {
             provide: HTTP_INTERCEPTORS,
             useClass: ErrorIntercept,
             multi: true

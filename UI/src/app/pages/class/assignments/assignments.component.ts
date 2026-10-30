@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { AddAssignmentComponent } from "./add-assignment/add-assignment.component";
 import { CreateAssignmentComponent } from "./create-assignment/create-assignment.component";
 import { DeleteAssignmentsComponent } from "./delete-assignments/delete-assignments.component";
@@ -37,7 +37,7 @@ import {
 } from "../../../models/staff-portal-assignment.model";
 import { DefaultValuesService } from "../../../common/default-values.service";
 import { DasboardService } from "../../../services/dasboard.service";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
 import { ConfirmDialogComponent } from "../../shared-module/confirm-dialog/confirm-dialog.component";
 import { ViewAssignmentDetailsComponent } from "./view-assignment-details/view-assignment-details.component";
 import { StaffPortalAssignmentService } from "../../../services/staff-portal-assignment.service";

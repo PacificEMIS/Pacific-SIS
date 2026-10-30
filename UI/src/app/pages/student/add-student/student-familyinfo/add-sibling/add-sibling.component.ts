@@ -24,18 +24,18 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { UntypedFormBuilder, NgForm, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { StudentSiblingAssociation, StudentSiblingSearch } from '../../../../../models/student.model';
 import { StudentService } from '../../../../../services/student.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { AssociateStudent, AddParentInfoModel } from '../../../../../models/parent-info.model';
 import { relationShip } from '../../../../../enums/studentAdd.enum';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { ParentInfoService } from '../../../../../services/parent-info.service';
 import { GetAllGradeLevelsModel } from '../../../../../models/grade-level.model';
 import { GradeLevelService } from '../../../../../services/grade-level.service';

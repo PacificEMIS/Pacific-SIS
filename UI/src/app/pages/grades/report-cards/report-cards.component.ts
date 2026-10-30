@@ -24,19 +24,19 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { StudentDetails } from '../../../models/student-details.model';
 import { StudentListModel } from "../../../../app/models/student.model";
 import { StudentService } from "../../../../app/services/student.service";
-import { MatTableDataSource } from "@angular/material/table";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatLegacyTableDataSource as MatTableDataSource } from "@angular/material/legacy-table";
+import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
 import { MarkingPeriodService } from "../../../../app/services/marking-period.service";
 import { GetMarkingPeriodByCourseSectionModel, GetMarkingPeriodTitleListModel } from "src/app/models/marking-period.model";
 import { AddReportCardPdf } from "../../../../app/models/report-card.model";
 import { ReportCardService } from "../../../../app/services/report-card.service";
-import { MatCheckbox } from "@angular/material/checkbox";
+import { MatLegacyCheckbox as MatCheckbox } from "@angular/material/legacy-checkbox";
 import { SearchFilter, SearchFilterAddViewModel, SearchFilterListViewModel } from "src/app/models/search-filter.model";
 import { CommonService } from "../../../../app/services/common.service";
 import { ConfirmDialogComponent } from "../../shared-module/confirm-dialog/confirm-dialog.component";
@@ -45,7 +45,7 @@ import { stagger40ms } from "@vex/animations/stagger.animation";
 import { fadeInRight400ms } from "@vex/animations/fade-in-right.animation";
 import { UntypedFormControl } from "@angular/forms";
 import { MatSort } from "@angular/material/sort";
-import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
+import { MatLegacyPaginator as MatPaginator, MatLegacyPaginatorIntl as MatPaginatorIntl } from "@angular/material/legacy-paginator";
 import { LoaderService } from "../../../../app/services/loader.service";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { DefaultValuesService } from "../../../../app/common/default-values.service";

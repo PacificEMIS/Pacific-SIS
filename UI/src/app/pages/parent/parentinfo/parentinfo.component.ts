@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { Router } from '@angular/router';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
@@ -32,9 +32,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { ParentInfoService } from '../../../services/parent-info.service';
 import { filterParams, GetAllParentModel, GetAllParentResponseModel, ParentAdvanceSearchModel, ParentList } from "../../../models/parent-info.model";
 import { LoaderService } from '../../../services/loader.service';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { StudentService } from '../../../services/student.service';
-import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator, MatLegacyPaginatorIntl as MatPaginatorIntl } from '@angular/material/legacy-paginator';
 import { MatSort } from '@angular/material/sort';
 import { ExcelService } from '../../../services/excel.service';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -49,7 +49,7 @@ import { ModuleIdentifier } from '../../../enums/module-identifier.enum';
 import { ImageCropperService } from '../../../services/image-cropper.service';
 import { SchoolCreate } from '../../../enums/school-create.enum';
 import { DataEditInfoComponent } from '../../shared-module/data-edit-info/data-edit-info.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 
 @Component({
   selector: 'vex-parentinfo',

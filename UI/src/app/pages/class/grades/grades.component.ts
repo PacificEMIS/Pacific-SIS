@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { AfterViewInit, Component, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { DefaultValuesService } from "src/app/common/default-values.service";
 

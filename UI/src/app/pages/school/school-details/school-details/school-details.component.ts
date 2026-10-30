@@ -28,16 +28,16 @@ import { HttpClient } from 'selenium-webdriver/http';
 import { SchoolService } from '../../../../services/school.service';
 import { GetAllSchoolModel,AllSchoolListModel } from '../../../../models/get-all-school.model';
 
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { Router} from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions } from '@angular/material/form-field';
+import { MAT_LEGACY_FORM_FIELD_DEFAULT_OPTIONS as MAT_FORM_FIELD_DEFAULT_OPTIONS, MatLegacyFormFieldDefaultOptions as MatFormFieldDefaultOptions } from '@angular/material/legacy-form-field';
 import { stagger40ms } from '@vex/animations/stagger.animation';
-import { MatSelectChange } from '@angular/material/select';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatLegacySelectChange as MatSelectChange } from '@angular/material/legacy-select';
+import { MatLegacyPaginator as MatPaginator, LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { LoaderService } from '../../../../services/loader.service';
 import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -54,7 +54,7 @@ import { CommonService } from '../../../../services/common.service';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../../models/roll-based-access.model';
 import { DataEditInfoComponent } from 'src/app/pages/shared-module/data-edit-info/data-edit-info.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SchoolCreate } from 'src/app/enums/school-create.enum';
 
 @Component({

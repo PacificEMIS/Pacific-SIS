@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { CommonService } from 'src/app/services/common.service';
 import { RemoveStaffCourseSectionSchedule, ScheduledStaffForCourseSection } from '../../../../../models/course-section.model';
 import { CourseSectionService } from '../../../../../services/course-section.service';

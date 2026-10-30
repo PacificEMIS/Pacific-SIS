@@ -24,15 +24,15 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatCheckbox } from '@angular/material/checkbox';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatLegacyCheckbox as MatCheckbox } from '@angular/material/legacy-checkbox';
 import { StudentDetails } from '../../../../models/student-details.model';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { StudentService } from '../../../../services/student.service';
 import { SectionService } from '../../../../services/section.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { CommonService } from '../../../../services/common.service';
 import { LoginService } from '../../../../services/login.service';
 import { takeUntil } from 'rxjs/operators';
@@ -44,8 +44,8 @@ import { SearchFilterAddViewModel } from '../../../../models/search-filter.model
 import { GetAllSectionModel } from '../../../../models/section.model';
 import { GetAllGradeLevelsModel } from '../../../../models/grade-level.model';
 import { GradeLevelService } from '../../../../services/grade-level.service';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { MatSort } from '@angular/material/sort';
 import { LoaderService } from '../../../../services/loader.service';
 import { SelectionModel } from '@angular/cdk/collections';

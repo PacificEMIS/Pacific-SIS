@@ -24,13 +24,13 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { EditMarkingPeriodComponent } from '../marking-periods/edit-marking-period/edit-marking-period.component';
 import { MarkingPeriodService } from '../../../services/marking-period.service';
 import { MarkingPeriodListModel } from '../../../models/marking-period.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { MarkingPeriodAddModel, SemesterAddModel, QuarterAddModel, ProgressPeriodAddModel } from '../../../models/marking-period.model';
 import { SharedFunction } from '../../shared/shared-function';
 import { TranslateService } from '@ngx-translate/core';

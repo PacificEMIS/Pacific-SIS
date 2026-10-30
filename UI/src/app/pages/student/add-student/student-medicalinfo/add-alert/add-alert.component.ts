@@ -29,8 +29,8 @@ import { StudentService } from 'src/app/services/student.service';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { ValidationService } from '../../../../shared/validation.service';
 import { AddEditStudentMedicalAlertModel } from '../../../../../models/student.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from '../../../../../common/default-values.service';
 

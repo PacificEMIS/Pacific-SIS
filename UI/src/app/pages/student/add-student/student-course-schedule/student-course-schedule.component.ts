@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { AddAssignCourseComponent } from "./add-assign-course/add-assign-course.component";
 
@@ -40,7 +40,7 @@ import {
   ScheduledStudentDropModel,
   StudentCoursesectionSchedule,
 } from "../../../../models/student-schedule.model";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
 import { StudentService } from "../../../../services/student.service";
 import { GetMarkingPeriodTitleListModel } from "../../../../models/marking-period.model";
 import { MarkingPeriodService } from "../../../../services/marking-period.service";

@@ -25,12 +25,12 @@ All rights reserved.
 
 import { AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { EditCourseSectionComponent } from '../edit-course-section/edit-course-section.component';
 import { CloneCourseSectionsComponent } from '../clone-course-sections/clone-course-sections.component';
 import { CourseSectionService } from '../../../../services/course-section.service';
 import { CourseSectionAddViewModel, CourseSectionDataTransferModel, GetAllCourseSectionModel } from '../../../../models/course-section.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { LoaderService } from '../../../../services/loader.service';
 import { takeUntil } from 'rxjs/operators';
 import { CalendarEvent, CalendarMonthViewBeforeRenderEvent, CalendarView } from 'angular-calendar';

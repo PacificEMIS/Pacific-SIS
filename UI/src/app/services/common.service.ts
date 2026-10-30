@@ -15,10 +15,10 @@ import { BehaviorSubject, fromEvent, merge, Observable, Observer } from 'rxjs';
 import { LoginService } from './login.service';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 @Injectable({
   providedIn: 'root'
 })

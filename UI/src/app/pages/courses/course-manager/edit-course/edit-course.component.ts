@@ -24,28 +24,28 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit ,Inject,ViewChild} from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { UntypedFormBuilder, NgForm, Validators ,UntypedFormGroup} from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms,stagger40ms } from '@vex/animations/stagger.animation';
 import {AddCourseModel,GetAllProgramModel,GetAllSubjectModel,GetAllCourseListModel,CourseStandardModel, SubjectModel, ProgramsModel} from '../../../../models/course-manager.model';
 import {CourseManagerService} from '../../../../services/course-manager.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import {GradeLevelService} from '../../../../services/grade-level.service';
 import {GetAllGradeLevelsModel } from '../../../../models/grade-level.model';
 import {MassUpdateProgramModel,MassUpdateSubjectModel} from '../../../../models/course-manager.model';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { GetAllSchoolSpecificListModel, GradeStandardSubjectCourseListModel, SchoolSpecificStandarModel, StandardView } from '../../../../models/grades.model';
 import { GradesService } from '../../../../services/grades.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { LoaderService } from 'src/app/services/loader.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MatCheckbox } from '@angular/material/checkbox';
+import { MatLegacyCheckbox as MatCheckbox } from '@angular/material/legacy-checkbox';
 @Component({
   selector: 'vex-edit-course',
   templateUrl: './edit-course.component.html',

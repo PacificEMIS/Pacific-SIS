@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { RoomListViewModel } from '../../../../../models/room.model';
 import { BlockListViewModel } from '../../../../../models/school-period.model';
 import { RoomService } from '../../../../../services/room.service';

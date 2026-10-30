@@ -33,7 +33,7 @@ import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { CheckStaffInternalIdViewModel, StaffAddModel } from '../../../../models/staff.model';
 import { LanguageModel } from '../../../../models/language.model';
 import { ethnicity, gender, maritalStatus, race, salutation, suffix } from '../../../../enums/studentAdd.enum';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { CommonService } from '../../../../services/common.service';
 import { LoginService } from '../../../../services/login.service';
 import { SharedFunction } from '../../../../pages/shared/shared-function';
@@ -53,7 +53,7 @@ import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } fro
 import { RollBasedAccessService } from '../../../../services/roll-based-access.service';
 import { CryptoService } from '../../../../services/Crypto.service';
 import { Router } from '@angular/router';
-import { MatSelect } from '@angular/material/select';
+import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { ActiveDeactiveUserModel } from 'src/app/models/common.model';

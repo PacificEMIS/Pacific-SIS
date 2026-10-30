@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit } from "@angular/core";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from "@angular/material/legacy-dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { StudentAttendanceService } from "../../../../services/student-attendance.service";
 import { DefaultValuesService } from "../../../../common/default-values.service";
@@ -32,7 +32,7 @@ import { GetAllAttendanceCodeModel } from "../../../../models/attendance-code.mo
 import { AddUpdateStudentAttendanceModelFor360, StudentAttendanceHistoryViewModel, StudentAttendanceModelFor360, StudentUpdateCommentsModel } from "../../../../models/take-attendance-list.model";
 import { AttendanceCodeService } from "../../../../services/attendance-code.service";
 import { CommonService } from "../../../../services/common.service";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { ProfilesTypes } from "src/app/enums/profiles.enum";

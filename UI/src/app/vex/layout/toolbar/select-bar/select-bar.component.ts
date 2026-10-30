@@ -11,7 +11,7 @@ import { DasboardService } from '../../../../services/dasboard.service';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 import { SchoolAddViewModel } from '../../../../models/school-master.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import * as moment from "moment";
 import { ImpersonateServices } from 'src/app/services/impersonate.service';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';

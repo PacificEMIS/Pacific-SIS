@@ -29,14 +29,14 @@ import { StudentListByDateRangeModel, StudentListModel } from 'src/app/models/st
 import { StudentInfoReportModel } from 'src/app/models/student-info-report.model';
 import { StudentService } from 'src/app/services/student.service';
 import { CommonService } from 'src/app/services/common.service';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { LoaderService } from 'src/app/services/loader.service';
 import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
-import { MatCheckbox } from '@angular/material/checkbox';
+import { MatLegacyPaginator as MatPaginator, MatLegacyPaginatorIntl as MatPaginatorIntl } from '@angular/material/legacy-paginator';
+import { MatLegacyCheckbox as MatCheckbox } from '@angular/material/legacy-checkbox';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';

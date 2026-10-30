@@ -30,7 +30,7 @@ import { GetStaffModel } from '../../../models/staff.model';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { StaffPortalService } from '../../../services/staff-portal.service';
 import { CommonService } from 'src/app/services/common.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { ScheduledCourseSectionViewModel } from '../../../models/dashboard.model';
 import { DatePipe } from "@angular/common";
 import { Subject } from 'rxjs';

@@ -27,7 +27,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { StaffAddModel } from '../../../../models/staff.model';
 import { stagger60ms } from '@vex/animations/stagger.animation';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { StaffService } from 'src/app/services/staff.service';
 
 @Component({

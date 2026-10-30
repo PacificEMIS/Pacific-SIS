@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm, ControlContainer } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { SchoolAddViewModel } from '../../models/school-master.model';
 import { SchoolCreate } from '../../../../src/app/enums/school-create.enum';
 import { CustomFieldListViewModel, CustomFieldModel } from '../../models/custom-field.model';

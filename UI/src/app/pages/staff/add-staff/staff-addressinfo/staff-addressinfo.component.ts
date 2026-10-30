@@ -33,7 +33,7 @@ import { CountryModel } from '../../../../models/country.model';
 import { StaffAddModel } from '../../../../models/staff.model';
 import { LanguageModel } from '../../../../models/language.model';
 import { TranslateService } from '@ngx-translate/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { StaffService } from '../../../../services/staff.service';
 import { CommonService } from '../../../../services/common.service';
 import { LoginService } from '../../../../services/login.service';
@@ -48,7 +48,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ReplaySubject, Subject } from 'rxjs';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../../models/roll-based-access.model';
 import { RollBasedAccessService } from '../../../../services/roll-based-access.service';
-import { MatSelect } from '@angular/material/select';
+import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { AddGradeCommentsComponent } from '../add-grade-comments/add-grade-comments.component';
 import { GetMarkingPeriodTitleListModel } from 'src/app/models/marking-period.model';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { CommonService } from 'src/app/services/common.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { AllScheduledCourseSectionForStaffModel } from 'src/app/models/teacher-schedule.model';
 import { TeacherScheduleService } from 'src/app/services/teacher-schedule.service';
 import { debounceTime, distinctUntilChanged, map, takeUntil } from 'rxjs/operators';

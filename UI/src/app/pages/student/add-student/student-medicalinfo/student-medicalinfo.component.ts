@@ -47,7 +47,7 @@ import {
   StudentAddModel,
   StudentMedicalInfoListModel } from '../../../../models/student.model';
 import { StudentService } from '../../../../services/student.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { GetAllParentInfoModel, ViewParentInfoModel } from '../../../../models/parent-info.model';
 import { ParentInfoService } from '../../../../services/parent-info.service';
 import { ImageCropperService } from '../../../../services/image-cropper.service';
@@ -59,12 +59,12 @@ import {
 } from '../../../../models/roll-based-access.model';
 import { CryptoService } from '../../../../services/Crypto.service';
 import { DefaultValuesService } from '../../../../common/default-values.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { AddAlertComponent } from './add-alert/add-alert.component';
 import { AddMedicalComponent } from './add-medical/add-medical.component';
 import { AddImmunizationComponent } from './add-immunization/add-immunization.component';
 import { AddNurseVisitComponent } from './add-nurse-visit/add-nurse-visit.component';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
 import { ConfirmDialogComponent } from 'src/app/pages/shared-module/confirm-dialog/confirm-dialog.component';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { CommonService } from '../../../../services/common.service';

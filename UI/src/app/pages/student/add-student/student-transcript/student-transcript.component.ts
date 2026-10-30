@@ -25,14 +25,14 @@ All rights reserved.
 
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { MatTableDataSource } from "@angular/material/table";
+import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
+import { MatLegacyTableDataSource as MatTableDataSource } from "@angular/material/legacy-table";
 import { UntypedFormControl } from "@angular/forms";
-import { MatPaginator } from "@angular/material/paginator";
+import { MatLegacyPaginator as MatPaginator } from "@angular/material/legacy-paginator";
 import { MatSort } from "@angular/material/sort";
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from "rxjs/operators";
 import { forkJoin, Subject } from "rxjs";
-import { MatCheckbox } from "@angular/material/checkbox";
+import { MatLegacyCheckbox as MatCheckbox } from "@angular/material/legacy-checkbox";
 import { fadeInUp400ms } from "@vex/animations/fade-in-up.animation";
 import { stagger40ms } from "@vex/animations/stagger.animation";
 import { fadeInRight400ms } from "@vex/animations/fade-in-right.animation";

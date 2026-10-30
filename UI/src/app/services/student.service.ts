@@ -26,7 +26,7 @@ import { DefaultValuesService } from '../common/default-values.service';
 import { SchoolCreate } from '../enums/school-create.enum';
 import { AddEditStudentMedicalAlertModel, AddEditStudentMedicalImmunizationModel, AddEditStudentMedicalNoteModel, AddEditStudentMedicalNurseVisitModel } from '../models/student.model';
 import { PageRolesPermission } from '../common/page-roles-permissions.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'

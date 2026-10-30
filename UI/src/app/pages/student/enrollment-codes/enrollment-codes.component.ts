@@ -24,14 +24,14 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { Router } from '@angular/router';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
 import { MatSort } from '@angular/material/sort';
 import { LoaderService } from '../../../services/loader.service';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { EditEnrollmentCodeComponent } from '../enrollment-codes/edit-enrollment-code/edit-enrollment-code.component';
 import { EnrollmentCodesService } from '../../../services/enrollment-codes.service';
 import { EnrollmentCodeAddView, EnrollmentCodeListView } from '../../../models/enrollment-code.model';

@@ -25,8 +25,8 @@ All rights reserved.
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { OnlySchoolListModel } from 'src/app/models/get-all-school.model';
 import { SchoolMasterModel } from 'src/app/models/school-master.model';

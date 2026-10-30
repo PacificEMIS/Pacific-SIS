@@ -24,12 +24,12 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { AttendanceCodeService } from '../../../../services/attendance-code.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { AttendanceCodeCategoryModel } from '../../../../models/attendance-code.model';
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from "src/app/common/default-values.service";

@@ -29,7 +29,7 @@ import { StudentAddModel } from '../../../../models/student.model';
 import { SharedFunction } from '../../../shared/shared-function';
 import { TranslateService } from '@ngx-translate/core';
 import { stagger60ms } from '@vex/animations/stagger.animation';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ResetPasswordComponent } from '../../../../pages/shared-module/reset-password/reset-password.component';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';

@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { BlockListViewModel } from '../../../../../models/school-period.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { SchoolPeriodService } from '../../../../../services/school-period.service';
 import { RoomService } from '../../../../../services/room.service';
 import { RoomListViewModel } from '../../../../../models/room.model';

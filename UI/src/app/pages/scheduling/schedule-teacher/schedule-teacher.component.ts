@@ -24,14 +24,14 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { AddTeacherComponent } from './add-teacher/add-teacher.component';
 import { AddCourseSectionComponent } from './add-course-section/add-course-section.component';
 import { TranslateService } from '@ngx-translate/core';
 import { AddDaysScheduleComponent } from './add-days-schedule/add-days-schedule.component';
 import { TeacherScheduleService } from '../../../services/teacher-schedule.service';
 import { CourseSectionList, StaffScheduleView, StaffScheduleViewModel } from '../../../models/teacher-schedule.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { GetMarkingPeriodTitleListModel } from '../../../models/marking-period.model';
 import { MarkingPeriodService } from '../../../services/marking-period.service';
 import { LoaderService } from '../../../services/loader.service';

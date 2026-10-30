@@ -1,3 +1,4 @@
+@use '@angular/material' as mat;
 @import "@angular/material/theming";
 @import "./partials/_mixins.scss";
 
@@ -95,3 +96,62 @@ $vex-dark-theme: (
   background: map_merge($mat-dark-theme-background, $vex-dark-theme-background),
 ) !default;
 
+// Static copies of the palettes for Material mixins that do Sass colour math (see
+// vex-legacy-component-themes). The values equal the CSS variables in _style-default.scss,
+// which are defined once and never changed at runtime.
+@function vex-static-palette($color, $contrast) {
+  @return mat-palette((
+    100: rgba($color, 0.1),
+    500: $color,
+    700: $color,
+    contrast: (100: $contrast, 500: $contrast, 700: $contrast)
+  ));
+}
+$vex-primary-static: vex-static-palette(rgb(12, 62, 138), rgb(255, 255, 255));
+$vex-accent-static: vex-static-palette(rgb(255, 64, 129), rgb(255, 255, 255));
+$vex-warn-static: vex-static-palette(rgb(244, 67, 54), rgb(255, 255, 255));
+$vex-theme-static: map-merge($vex-theme, (primary: $vex-primary-static, accent: $vex-accent-static, warn: $vex-warn-static));
+$vex-dark-theme-static: map-merge($vex-dark-theme, (primary: $vex-primary-static, accent: $vex-accent-static, warn: $vex-warn-static));
+
+// Material 15 legacy theming for the Vex CSS-variable palette. The legacy all-themes mixin cannot
+// be used: the legacy button theme reaches the MDC button theme (for the datepicker's buttons),
+// which does Sass colour math and rejects palette entries such as rgba(var(--color-primary), 1).
+// So the component themes are listed explicitly, and the button theme alone gets $theme-static,
+// the same theme with static palettes equal to the CSS variables of _style-default.scss.
+@mixin vex-legacy-component-themes($theme, $theme-static) {
+  @include mat.legacy-button-theme($theme-static);
+  @include mat.legacy-core-theme($theme);
+  @include mat.legacy-card-theme($theme);
+  @include mat.legacy-progress-bar-theme($theme);
+  @include mat.legacy-progress-spinner-theme($theme);
+  @include mat.legacy-tooltip-theme($theme);
+  @include mat.legacy-input-theme($theme);
+  @include mat.legacy-form-field-theme($theme);
+  @include mat.legacy-select-theme($theme);
+  @include mat.legacy-checkbox-theme($theme);
+  @include mat.legacy-autocomplete-theme($theme);
+  @include mat.legacy-dialog-theme($theme);
+  @include mat.legacy-chips-theme($theme);
+  @include mat.legacy-slide-toggle-theme($theme);
+  @include mat.legacy-radio-theme($theme);
+  @include mat.legacy-slider-theme($theme);
+  @include mat.legacy-menu-theme($theme);
+  @include mat.legacy-list-theme($theme);
+  @include mat.legacy-paginator-theme($theme);
+  @include mat.legacy-tabs-theme($theme);
+  @include mat.legacy-snack-bar-theme($theme);
+  @include mat.legacy-table-theme($theme);
+  @include mat.badge-theme($theme);
+  @include mat.bottom-sheet-theme($theme);
+  @include mat.button-toggle-theme($theme);
+  @include mat.datepicker-theme($theme);
+  @include mat.divider-theme($theme);
+  @include mat.expansion-theme($theme);
+  @include mat.grid-list-theme($theme);
+  @include mat.icon-theme($theme);
+  @include mat.sidenav-theme($theme);
+  @include mat.stepper-theme($theme);
+  @include mat.sort-theme($theme);
+  @include mat.toolbar-theme($theme);
+  @include mat.tree-theme($theme);
+}

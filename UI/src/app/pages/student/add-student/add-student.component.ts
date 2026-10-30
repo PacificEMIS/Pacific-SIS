@@ -33,7 +33,7 @@ import {
 import { Subject } from "rxjs";
 import { fadeInRight400ms } from "@vex/animations/fade-in-right.animation";
 import { ImageCropperService } from "src/app/services/image-cropper.service";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
 import { stagger60ms } from "@vex/animations/stagger.animation";
 import { fadeInUp400ms } from "@vex/animations/fade-in-up.animation";
 import { StudentService } from "../../../services/student.service";

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { AddCourseModel, CourseCatelogViewModel, CourseWithCourseSectionDetailsViewModel, GetAllCourseListModel, GetAllSubjectModel } from '../../../models/course-manager.model';

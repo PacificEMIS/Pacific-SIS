@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
@@ -35,16 +35,16 @@ import { GetAllSubjectModel } from '../../../../models/course-manager.model';
 import { GetAllStaffModel, StaffListModel, StaffMasterModel, StaffMasterSearchModel } from '../../../../models/staff.model';
 import { MembershipService } from '../../../../services/membership.service';
 import { GetAllMembersList } from '../../../../models/membership.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { StaffService } from '../../../../services/staff.service';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { LoaderService } from '../../../../services/loader.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { LanguageModel } from '../../../../models/language.model';
 import { LoginService } from '../../../../services/login.service';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyCheckbox as MatCheckbox } from '@angular/material/legacy-checkbox';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonLOV } from '../../../shared-module/lov/common-lov';

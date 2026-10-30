@@ -24,13 +24,13 @@ All rights reserved.
 ***********************************************************************************/
 
 import { ChangeDetectionStrategy, AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { EditNoticeComponent } from '../notices/edit-notice/edit-notice.component';
 import { NoticeService } from '../../../services/notice.service';
 import { NoticeListViewModel } from '../../../models/notice.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { MembershipService } from '../../../services/membership.service';
 import { GetAllMembersList } from '../../../models/membership.model';

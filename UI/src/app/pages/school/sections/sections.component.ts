@@ -24,17 +24,17 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit,Input,ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { EditSectionComponent } from '../sections/edit-section/edit-section.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { GetAllSectionModel,SectionAddModel} from 'src/app/models/section.model';
 import { LoaderService } from '../../../services/loader.service';
 import { SectionService } from '../../../services/section.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import { CryptoService } from 'src/app/services/Crypto.service';
@@ -46,7 +46,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { LoVSortOrderValuesModel, UpdateLovSortingModel } from 'src/app/models/lov.model';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 @Component({
   selector: 'vex-sections',
   templateUrl: './sections.component.html',

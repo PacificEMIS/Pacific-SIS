@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { classColor } from 'src/app/common/static-data';
 import { ScheduledCourseSectionViewModel } from 'src/app/models/dashboard.model';

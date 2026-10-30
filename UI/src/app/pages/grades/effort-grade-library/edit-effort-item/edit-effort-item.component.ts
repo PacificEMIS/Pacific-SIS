@@ -25,8 +25,8 @@ All rights reserved.
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { EffortGradeLibraryCategoryItemAddViewModel } from '../../../../models/grades.model';
 import { GradesService } from '../../../../services/grades.service';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';

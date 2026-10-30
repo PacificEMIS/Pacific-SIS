@@ -25,17 +25,17 @@ All rights reserved.
 
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { CourseManagerService } from 'src/app/services/course-manager.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { LoaderService } from 'src/app/services/loader.service';
 import { CourseSectionService } from 'src/app/services/course-section.service';
 import { CommonService } from 'src/app/services/common.service';
 import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel, SearchCourseSectionViewModelForGroupDelete } from 'src/app/models/course-manager.model';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { GetMarkingPeriodTitleListModel, MarkingPeriodTitleList } from 'src/app/models/marking-period.model';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';

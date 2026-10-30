@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { GenerateApiKeyComponent } from './generate-api-key/generate-api-key.component';
 import { Router } from '@angular/router';
@@ -7,7 +7,7 @@ import { KeysGenerateService } from './service/keys-generate.service';
 import { ApiKeyService } from 'src/app/services/api-key.service';
 import { GenerateApiKeyModel, GetApiKeyModel, UpdateApiKeyModel } from 'src/app/models/api-key.model';
 import { CommonService } from 'src/app/services/common.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import { LoaderService } from 'src/app/services/loader.service';

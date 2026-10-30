@@ -1,3 +1,4 @@
+@use '@angular/material' as mat;
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @import "@angular/material/theming";
@@ -16,12 +17,18 @@
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat-core($config);
+// Material 15: the import-API mixins now theme the new MDC components, which need Sass colours
+// and reject the Vex CSS-variable palette. The app uses the legacy components (see the
+// legacy-* imports), so the legacy core, typography and component themes are included (the
+// component themes through vex-legacy-component-themes in _var.scss).
+@include mat.legacy-core();
+@include mat.all-legacy-component-typographies($config);
+@include mat.legacy-typography-hierarchy($config);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($vex-theme);
+@include vex-legacy-component-themes($vex-theme, $vex-theme-static);
 
 // Partials
 @import "partials/horizontal";

@@ -34,7 +34,7 @@ import { CalendarListModel, GetCalendarAndHolidayListModel } from '../../../../m
 import { CalendarService } from '../../../../services/calendar.service';
 import { StudentEnrollmentDetails, StudentEnrollmentModel, StudentEnrollmentSchoolListModel } from '../../../../models/student.model';
 import { StudentService } from '../../../../services/student.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { EnrollmentCodeListView } from '../../../../models/enrollment-code.model';
 import { Router } from '@angular/router';
 import { SharedFunction } from '../../../shared/shared-function';
@@ -47,7 +47,7 @@ import { Subject } from 'rxjs';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ConfirmDialogComponent } from 'src/app/pages/shared-module/confirm-dialog/confirm-dialog.component';
 import { Module } from 'src/app/enums/module.enum';
 @Component({

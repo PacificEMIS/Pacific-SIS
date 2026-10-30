@@ -6,7 +6,7 @@ import { GelAllGradeEquivalencyModel } from 'src/app/models/grade-level.model';
 import { GradeLevelService } from 'src/app/services/grade-level.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { takeUntil } from 'rxjs/operators';
 import { LoaderService } from 'src/app/services/loader.service';
 import { Subject } from 'rxjs';

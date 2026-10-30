@@ -26,7 +26,7 @@ All rights reserved.
 import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MAT_DATE_FORMATS } from "@angular/material/core";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { TranslateService } from "@ngx-translate/core";
 import * as _moment from 'moment';
 import { fadeInRight400ms } from "@vex/animations/fade-in-right.animation";
@@ -40,7 +40,7 @@ import { ScheduleStudentListViewModel } from "../../../models/student-schedule.m
 import { AddUpdateStudentAttendanceModel, GetAllStudentAttendanceListModel, StudentAttendanceModel } from "../../../models/take-attendance-list.model";
 import { StudentAttendanceService } from "../../../services/student-attendance.service";
 import { Router } from "@angular/router";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
 import { StudentScheduleService } from "../../../services/student-schedule.service";
 import { AttendanceCodeService } from "../../../services/attendance-code.service";
 import { SharedFunction } from "../../shared/shared-function";

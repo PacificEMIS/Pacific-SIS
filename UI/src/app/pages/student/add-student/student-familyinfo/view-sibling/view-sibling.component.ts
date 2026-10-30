@@ -24,12 +24,12 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { ParentInfoService } from '../../../../../services/parent-info.service';
 import { AddParentInfoModel } from '../../../../../models/parent-info.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { CountryModel } from '../../../../../models/country.model';
 import { CommonService } from '../../../../../services/common.service';
 import { takeUntil } from 'rxjs/operators';

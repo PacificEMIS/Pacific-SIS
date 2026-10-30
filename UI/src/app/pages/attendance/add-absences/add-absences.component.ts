@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { MatDatepicker, MatDatepickerInputEvent } from "@angular/material/datepicker";
 import { StudentAttendanceService } from "../../../services/student-attendance.service";
@@ -34,12 +34,12 @@ import { CourseSectionList } from "../../../models/teacher-schedule.model";
 import { AttendanceCodeService } from "../../../services/attendance-code.service";
 import { AttendanceCodeCategoryModel, AttendanceCodeModel, GetAllAttendanceCategoriesListModel, GetAllAttendanceCodeModel } from "../../../models/attendance-code.model";
 import { StudentScheduleService } from "../../../services/student-schedule.service";
-import { MatTableDataSource } from "@angular/material/table";
-import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
+import { MatLegacyTableDataSource as MatTableDataSource } from "@angular/material/legacy-table";
+import { MatLegacyPaginator as MatPaginator, MatLegacyPaginatorIntl as MatPaginatorIntl } from "@angular/material/legacy-paginator";
 import { ScheduleStudentForView, ScheduleStudentListViewModel } from "../../../models/student-schedule.model";
 import { SelectionModel } from "@angular/cdk/collections";
-import { MatCheckbox } from "@angular/material/checkbox";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatLegacyCheckbox as MatCheckbox } from "@angular/material/legacy-checkbox";
+import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
 import { LoaderService } from "../../../services/loader.service";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";

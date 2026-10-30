@@ -25,15 +25,15 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, AfterViewInit, Inject, ViewChild, Input, OnDestroy} from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { UntypedFormBuilder, UntypedFormControl, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { ParentInfoService } from '../../../../../services/parent-info.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { Router } from '@angular/router';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA} from '@angular/material/legacy-dialog';
 import { AddParentInfoModel, ParentInfoList, AssociateStudent } from '../../../../../models/parent-info.model';
 import { salutation, suffix , relationShip, userProfile, Custody} from '../../../../../enums/studentAdd.enum';
 import { CountryModel } from '../../../../../models/country.model';
@@ -44,7 +44,7 @@ import { CommonLOV } from '../../../../shared-module/lov/common-lov';
 import { take, takeUntil } from 'rxjs/operators';
 import { ReplaySubject, Subject } from 'rxjs';
 import { DefaultValuesService } from '../../../../../common/default-values.service';
-import { MatSelect } from '@angular/material/select';
+import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 
 @Component({
   selector: 'vex-edit-contact',

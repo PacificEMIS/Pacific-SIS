@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core";
-import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from "@angular/material/legacy-dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { fadeInUp400ms } from "@vex/animations/fade-in-up.animation";
 import { stagger60ms } from "@vex/animations/stagger.animation";

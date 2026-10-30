@@ -28,7 +28,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CalendarEvent, CalendarMonthViewBeforeRenderEvent, CalendarView } from 'angular-calendar';
 import { DasboardService } from '../../../services/dasboard.service';
 import { DashboardViewModel, ScheduledCourseSectionViewModel } from '../../../models/dashboard.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { Observable, Subject } from 'rxjs';
 import { CalendarEventModel } from 'src/app/models/calendar-event.model';
 import { CalendarModel } from 'src/app/models/calendar.model';

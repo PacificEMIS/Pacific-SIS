@@ -24,8 +24,8 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input ,ViewChild, OnDestroy } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { Router} from '@angular/router';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
@@ -35,7 +35,7 @@ import { CryptoService } from 'src/app/services/Crypto.service';
 import { RolePermissionListViewModel, RolePermissionViewModel } from 'src/app/models/roll-based-access.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../models/roll-based-access.model';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { GetAllSchoolSpecificListModel, GradeStandardSubjectCourseListModel, SchoolSpecificStandarModel , AddUsStandardData} from '../../../models/grades.model';
 import { GradesService } from '../../../services/grades.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -44,7 +44,7 @@ import { GradeLevelService } from '../../../services/grade-level.service';
 import { GetAllGradeLevelsModel } from '../../../models/grade-level.model';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { MatSort } from '@angular/material/sort';
-import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator, MatLegacyPaginatorIntl as MatPaginatorIntl } from '@angular/material/legacy-paginator';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { ExcelService } from '../../../services/excel.service';
 import { LoaderService } from "src/app/services/loader.service";

@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { SharedFunction } from '../../../../src/app/pages/shared/shared-function';
 import { FieldsCategoryListView, FieldsCategoryModel } from '../../models/fields-category.model';
 import { CustomFieldService } from '../../../../src/app/services/custom-field.service';
