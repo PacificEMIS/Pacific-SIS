@@ -9,15 +9,14 @@ import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
-  declarations: [MegaMenuComponent],
-  imports: [
-    MatIconModule,
-    CommonModule,
-    MatButtonModule,
-    RouterModule,
-    TranslateModule
-  ],
-  exports: [MegaMenuComponent],
-  entryComponents: [MegaMenuComponent]
+    declarations: [MegaMenuComponent],
+    imports: [
+        MatIconModule,
+        CommonModule,
+        MatButtonModule,
+        RouterModule,
+        TranslateModule
+    ],
+    exports: [MegaMenuComponent]
 })
 export class MegaMenuModule { }

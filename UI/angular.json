@@ -40,7 +40,9 @@
             "scripts": [],
             "allowedCommonJsDependencies": [
               "crypto-js",
-              "xlsx"
+              "xlsx",
+              "core-js",
+              "angular-calendar/date-adapters/date-fns"
             ],
             "vendorChunk": true,
             "extractLicenses": false,

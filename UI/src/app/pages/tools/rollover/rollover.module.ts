@@ -23,27 +23,26 @@ import { SharedModuleModule } from '../../shared-module/shared-module.module';
 
 
 @NgModule({
-  declarations: [RolloverComponent, RolloverSummaryDialogComponent],
-  imports: [
-    CommonModule,
-    RolloverRoutingModule,
-    MatIconModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatCardModule,
-    SecondaryToolbarModule,
-    BreadcrumbsModule,
-    PageLayoutModule,
-    ContainerModule,
-    MatMenuModule,
-    TranslateModule,
-    MatInputModule,
-    FormsModule,
-    MatDividerModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    SharedModuleModule
-  ],
-  entryComponents: [RolloverSummaryDialogComponent]
+    declarations: [RolloverComponent, RolloverSummaryDialogComponent],
+    imports: [
+        CommonModule,
+        RolloverRoutingModule,
+        MatIconModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatCardModule,
+        SecondaryToolbarModule,
+        BreadcrumbsModule,
+        PageLayoutModule,
+        ContainerModule,
+        MatMenuModule,
+        TranslateModule,
+        MatInputModule,
+        FormsModule,
+        MatDividerModule,
+        MatDatepickerModule,
+        MatDialogModule,
+        SharedModuleModule
+    ]
 })
 export class RolloverModule { }

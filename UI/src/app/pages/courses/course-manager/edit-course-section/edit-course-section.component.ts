@@ -45,7 +45,6 @@ import { GetAllMarkingPeriodTitle, GetMarkingPeriodTitleListModel } from '../../
 import { MarkingPeriodService } from '../../../../services/marking-period.service';
 import { CourseSectionService } from '../../../../services/course-section.service';
 import { SharedFunction } from '../../../shared/shared-function';
-import { isNull } from 'util';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DecimalPipe } from '@angular/common';

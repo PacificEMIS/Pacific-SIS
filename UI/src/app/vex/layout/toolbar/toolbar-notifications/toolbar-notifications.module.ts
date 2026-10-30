@@ -13,20 +13,19 @@ import { ToolbarNotificationsDropdownComponent } from './toolbar-notifications-d
 
 
 @NgModule({
-  declarations: [ToolbarNotificationsComponent, ToolbarNotificationsDropdownComponent],
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    PopoverModule,
-    MatTabsModule,
-    MatMenuModule,
-    RelativeDateTimeModule,
-    RouterModule,
-    MatRippleModule
-  ],
-  exports: [ToolbarNotificationsComponent],
-  entryComponents: [ToolbarNotificationsDropdownComponent]
+    declarations: [ToolbarNotificationsComponent, ToolbarNotificationsDropdownComponent],
+    imports: [
+        CommonModule,
+        MatButtonModule,
+        MatIconModule,
+        PopoverModule,
+        MatTabsModule,
+        MatMenuModule,
+        RelativeDateTimeModule,
+        RouterModule,
+        MatRippleModule
+    ],
+    exports: [ToolbarNotificationsComponent]
 })
 export class ToolbarNotificationsModule {
 }

@@ -20,7 +20,10 @@ encrypt(value){
     const keys = environment.encryptionKey;
     const salt = CryptoJS.lib.WordArray.random(16); const key = CryptoJS.PBKDF2(keys, salt, {
     keySize: keySize/32,
-    iterations: 100
+    iterations: 100,
+    // The API derives the same key with Rfc2898DeriveBytes, which is PBKDF2-SHA1; crypto-js 4.2
+    // changed its default hasher to SHA256, so the hasher is pinned here.
+    hasher: CryptoJS.algo.SHA1
     }); const iv = CryptoJS.lib.WordArray.random(128/8);
     let encrypted = CryptoJS.AES.encrypt(value, key, {
     iv: iv,

@@ -26,35 +26,34 @@ import {SharedModuleModule} from '../../shared-module/shared-module.module';
 import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
-  declarations: [CalendarComponent, CalendarEditComponent],
-  imports: [
-    CommonModule,
-    AngularCalendarModule.forRoot({
-      provide: DateAdapter,
-      useFactory: adapterFactory
-    }),
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-    SecondaryToolbarModule,
-    BreadcrumbsModule,
-    ScrollbarModule,
-    MatSnackBarModule,
-    MatInputModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    ReactiveFormsModule,
-    PageLayoutModule,
-    MatNativeDateModule,
-    ContainerModule,
-    MatMenuModule,
-    TranslateModule,
-    CalendarRoutingModule,
-    SharedModuleModule,
-    MatTableModule
-  ],
-  entryComponents: [CalendarEditComponent]
+    declarations: [CalendarComponent, CalendarEditComponent],
+    imports: [
+        CommonModule,
+        AngularCalendarModule.forRoot({
+            provide: DateAdapter,
+            useFactory: adapterFactory
+        }),
+        MatDialogModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule,
+        SecondaryToolbarModule,
+        BreadcrumbsModule,
+        ScrollbarModule,
+        MatSnackBarModule,
+        MatInputModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        ReactiveFormsModule,
+        PageLayoutModule,
+        MatNativeDateModule,
+        ContainerModule,
+        MatMenuModule,
+        TranslateModule,
+        CalendarRoutingModule,
+        SharedModuleModule,
+        MatTableModule
+    ]
 })
 export class CalendarModule {
 }
