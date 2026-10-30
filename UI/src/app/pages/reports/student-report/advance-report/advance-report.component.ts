@@ -21,7 +21,7 @@ import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 import * as moment from 'moment';
 import { LanguageModel } from 'src/app/models/language.model';
-import { Subject } from 'rxjs/internal/Subject';
+import { Subject } from 'rxjs';
 import { LoginService } from 'src/app/services/login.service';
 
 

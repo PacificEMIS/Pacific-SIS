@@ -1,0 +1,10 @@
+# Browsers the production bundle targets. Angular 12 still supports IE 11 only as an opt-in
+# and Angular 13 drops it, so it is excluded here; without this file browserslist's own
+# defaults pulled it in and the build emitted a second ES5 bundle set.
+last 1 Chrome version
+last 1 Firefox version
+last 2 Edge major versions
+last 2 Safari major versions
+last 2 iOS major versions
+Firefox ESR
+not IE 11

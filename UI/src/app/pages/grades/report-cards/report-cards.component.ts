@@ -52,7 +52,6 @@ import { DefaultValuesService } from "../../../../app/common/default-values.serv
 import { Permissions } from "../../../models/roll-based-access.model";
 import { PageRolesPermission } from "../../../common/page-roles-permissions.service";
 import { reportCardType } from "../../../common/static-data";
-import * as html2pdf from 'html2pdf.js';
 import { ScheduleStudentListViewModel } from "src/app/models/student-schedule.model";
 import { StudentScheduleService } from "src/app/services/student-schedule.service";
 import { ProfilesTypes } from "src/app/enums/profiles.enum";
