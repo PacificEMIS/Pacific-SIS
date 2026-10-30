@@ -174,7 +174,7 @@ Deployment is managed via Ansible from a separate systems-tools repository (see 
 
 ## UI Node.js Version Requirement
 
-The frontend requires the Node.js version in `UI/.nvmrc` (**v16.20.2** since the Angular 16 step; it rises with the Angular version). Use nvm to pin it when working on the UI. `UI/.npmrc` sets `legacy-peer-deps` for npm 7 and later.
+The frontend requires the Node.js version in `UI/.nvmrc` (**v20.19.4** since the Angular 17 step; it rises with the Angular version). Use nvm to pin it when working on the UI. `UI/.npmrc` sets `legacy-peer-deps` for npm 7 and later.
 
 ---
 

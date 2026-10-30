@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -12,7 +12,6 @@ import { AvailableTenantViewModel } from '../../../models/available-tenant';
   selector: 'vex-forgot-password',
   templateUrl: './forgot-password.component.html',
   styleUrls: ['../login/login.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     fadeInUp400ms
   ]

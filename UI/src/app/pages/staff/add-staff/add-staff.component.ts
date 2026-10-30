@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
@@ -48,7 +48,6 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { Module } from 'src/app/enums/module.enum';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'vex-add-staff',
   templateUrl: './add-staff.component.html',
   styleUrls: ['./add-staff.component.scss'],

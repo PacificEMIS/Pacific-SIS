@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { ChangeDetectionStrategy, AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -45,7 +45,6 @@ import { DefaultValuesService } from '../../../common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'vex-notices',
   templateUrl: './notices.component.html',
   styleUrls: ['./notices.component.scss'],

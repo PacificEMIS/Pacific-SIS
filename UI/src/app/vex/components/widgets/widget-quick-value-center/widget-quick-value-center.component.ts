@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { scaleInOutAnimation } from '../../../animations/scale-in-out.animation';
 
 @Component({
   selector: 'vex-widget-quick-value-center',
   templateUrl: './widget-quick-value-center.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [scaleInOutAnimation]
 })
 export class WidgetQuickValueCenterComponent implements OnInit {

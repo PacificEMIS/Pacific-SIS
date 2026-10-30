@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
@@ -13,7 +13,6 @@ import { AvailableTenantViewModel } from '../../../models/available-tenant';
   selector: 'vex-reset-password',
   templateUrl: './reset-password.component.html',
   styleUrls: ['../login/login.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     fadeInUp400ms
   ]

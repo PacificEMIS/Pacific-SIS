@@ -88,18 +88,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "vex:build"
+            "buildTarget": "vex:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "vex:build:production"
+              "buildTarget": "vex:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "vex:build"
+            "buildTarget": "vex:build"
           }
         },
         "test": {

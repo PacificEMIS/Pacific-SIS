@@ -24,7 +24,7 @@
                             class="font-semibold">{{comment?.membership?.profile}}</span> {{
                         'commentedOn' |
                         translate }} <span class="font-semibold">{{ comment?.commentTimestamp | date:'longDate'}}</span>
-                        @ <span class="font-semibold">{{comment?.commentTimestamp | date:'shortTime'}}</span>
+                        &#64; <span class="font-semibold">{{comment?.commentTimestamp | date:'shortTime'}}</span>
                         <span mat-raised-button matTooltip="{{'administrator' | translate}}"
                             aria-label="Button that displays a tooltip when focused or hovered over"
                             [matTooltipPosition]="'above'" class="cursor-pointer">
@@ -51,7 +51,7 @@
                             comment?.membership?.profile : defaultValuesService.getuserMembershipName()}}</span> {{
                         'commentedOn' |
                         translate }} <span class="font-semibold">{{ comment?.commentTimestamp | date:'longDate'}}</span>
-                        @ <span class="font-semibold">{{comment?.commentTimestamp | date:'shortTime'}}</span>
+                        &#64; <span class="font-semibold">{{comment?.commentTimestamp | date:'shortTime'}}</span>
                         <span mat-raised-button matTooltip="{{'teacher' | translate}}"
                             aria-label="Button that displays a tooltip when focused or hovered over"
                             [matTooltipPosition]="'above'" class="cursor-pointer">

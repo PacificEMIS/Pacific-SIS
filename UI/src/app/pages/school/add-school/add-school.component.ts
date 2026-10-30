@@ -46,7 +46,6 @@ import { Module } from 'src/app/enums/module.enum';
 import { SchoolCreate } from 'src/app/enums/school-create.enum';
 
 @Component({
-  // changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'vex-add-school',
   templateUrl: './add-school.component.html',
   styleUrls: ['./add-school.component.scss'],

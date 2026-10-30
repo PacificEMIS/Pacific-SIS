@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MatPasswordStrengthComponent } from "@angular-material-extensions/password-strength";
 import { ChangePasswordViewModel } from '../../../../models/common.model';
@@ -14,7 +14,6 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangePasswordComponent implements OnInit {
   icClose = 'close';

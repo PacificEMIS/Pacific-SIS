@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { EditCourseSectionComponent } from '../edit-course-section/edit-course-section.component';
@@ -46,7 +46,6 @@ import { PageRolesPermission } from '../../../../common/page-roles-permissions.s
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'vex-course-section',
   templateUrl: './course-section.component.html',
   styleUrls: ['./course-section.component.scss'],

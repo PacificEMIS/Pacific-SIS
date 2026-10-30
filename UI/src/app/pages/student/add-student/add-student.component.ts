@@ -24,7 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import {
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnDestroy,
@@ -54,7 +53,6 @@ import { PageRolesPermission } from "../../../common/page-roles-permissions.serv
 import { Module } from "src/app/enums/module.enum";
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: "vex-add-student",
   templateUrl: "./add-student.component.html",
   styleUrls: ["./add-student.component.scss"],

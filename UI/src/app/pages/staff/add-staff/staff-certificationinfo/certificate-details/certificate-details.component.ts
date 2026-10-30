@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -32,7 +32,6 @@ import { stagger60ms } from '@vex/animations/stagger.animation';
   selector: 'vex-certificate-details',
   templateUrl: './certificate-details.component.html',
   styleUrls: ['./certificate-details.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     stagger60ms,
     fadeInUp400ms

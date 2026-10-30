@@ -47,7 +47,7 @@
                             <p class="talk-bubble-text text-gray"><span
                                     class="font-semibold">{{comment?.membership?.profile ? comment?.membership?.profile : defaultValuesService.getuserMembershipName()}}</span> {{
                                 'commentedOn' |
-                                translate }} <span class="font-semibold">{{comment.commentTimestamp| date:'longDate'}}</span> @ <span
+                                translate }} <span class="font-semibold">{{comment.commentTimestamp| date:'longDate'}}</span> &#64; <span
                                     class="font-semibold">{{comment.commentTimestamp | date:'shortTime'}}</span>
                                 <span mat-raised-button matTooltip="{{'teacher' | translate}}"
                                     aria-label="Button that displays a tooltip when focused or hovered over"
@@ -65,7 +65,7 @@
                             </div>
                             <p class="talk-bubble-text text-gray"><span class="font-semibold">{{comment?.membership?.profile ? comment?.membership?.profile : defaultValuesService.getuserMembershipName()}}</span> {{
                                 'commentedOn' |
-                                translate }} <span class="font-semibold">{{comment.commentTimestamp| date:'longDate'}}</span> @ <span
+                                translate }} <span class="font-semibold">{{comment.commentTimestamp| date:'longDate'}}</span> &#64; <span
                                     class="font-semibold">{{comment.commentTimestamp | date:'shortTime'}}</span>
                                 <span mat-raised-button matTooltip="{{'administrator' | translate}}"
                                     aria-label="Button that displays a tooltip when focused or hovered over"
@@ -94,7 +94,7 @@
                         </div>
                         <p class="talk-bubble-text text-gray"><span class="font-semibold">{{history?.userName}}</span> {{
                             'tookAttendanceOn' |
-                            translate }} <span class="font-semibold">{{history?.modificationTimestamp| date:'longDate'}}</span> @ <span
+                            translate }} <span class="font-semibold">{{history?.modificationTimestamp| date:'longDate'}}</span> &#64; <span
                                 class="font-semibold">{{history?.modificationTimestamp | date:'shortTime'}}</span>
                             <span mat-raised-button matTooltip="{{'teacher' | translate}}" *ngIf="history?.profileType=='Teacher' || history?.profileType=='Homeroom Teacher'"
                                 aria-label="Button that displays a tooltip when focused or hovered over"
