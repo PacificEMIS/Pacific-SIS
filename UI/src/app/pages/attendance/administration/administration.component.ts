@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -77,7 +77,7 @@ export class AdministrationComponent implements OnInit {
   pageNumber: number;
   pageSize: number;
   loading: boolean = false;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   filterJsonParams;
   showAdvanceSearchPanel: boolean = false;
   allStudentlist: MatTableDataSource<any> = new MatTableDataSource<any>();
@@ -111,7 +111,7 @@ export class AdministrationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.studentAttendanceService.isSubmitted.subscribe(res => {
       if (res) this.getAllStudentAttendanceListForAdministration();
     });

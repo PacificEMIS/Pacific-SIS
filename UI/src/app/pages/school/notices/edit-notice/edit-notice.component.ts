@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { EditorChangeContent, EditorChangeSelection } from 'ngx-quill';
@@ -75,7 +75,7 @@ export class EditNoticeComponent implements OnInit {
   body: string = null;
   noticeAddViewModel = new NoticeAddViewModel();
   memberArray: number[] = [];
-  form: FormGroup;
+  form: UntypedFormGroup;
   membercount: number;
   loading: boolean = false;
   schoolVisibility = false;
@@ -89,7 +89,7 @@ export class EditNoticeComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<EditNoticeComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
-              private router: Router, private Activeroute: ActivatedRoute, private fb: FormBuilder,
+              private router: Router, private Activeroute: ActivatedRoute, private fb: UntypedFormBuilder,
               private noticeService: NoticeService, private membershipService: MembershipService,
               public translateService: TranslateService, private snackbar: MatSnackBar,
               private commonFunction: SharedFunction,

@@ -39,7 +39,7 @@ import { fadeInUp400ms } from "@vex/animations/fade-in-up.animation";
 import { stagger40ms } from "@vex/animations/stagger.animation";
 import { fadeInRight400ms } from "@vex/animations/fade-in-right.animation";
 import { MatPaginator } from "@angular/material/paginator";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { CommonService } from "src/app/services/common.service";
 
 import { DefaultValuesService } from "src/app/common/default-values.service";
@@ -67,7 +67,7 @@ export class MissingAttendanceDetailsComponent implements OnInit ,AfterViewInit,
   missingAttendanceDateList = [];
   searchKeyword: string;
   pageNumber: number;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   columns = [
     { label: 'date', property: 'date', type: 'text', visible: true },
@@ -95,7 +95,7 @@ export class MissingAttendanceDetailsComponent implements OnInit ,AfterViewInit,
   }
 
   ngOnInit(): void {
-this.searchCtrl= new FormControl();
+this.searchCtrl= new UntypedFormControl();
     this.getMissingAttendanceList();
   }
 

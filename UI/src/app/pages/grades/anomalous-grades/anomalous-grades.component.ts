@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
@@ -27,7 +27,7 @@ export class AnomalousGradesComponent implements OnInit, AfterViewInit, OnDestro
 
   icSearch = 'search';
   loading = false;
-  searchCtrl = new FormControl();
+  searchCtrl = new UntypedFormControl();
   includeInactive = false;
 
   displayedColumns = ['studentName', 'studentInternalId', 'courseSection', 'assignmentType', 'assignment', 'status', 'marks', 'comment'];

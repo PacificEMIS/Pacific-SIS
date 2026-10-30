@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormControl, NgForm } from '@angular/forms';
+import { UntypedFormControl, NgForm } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { MatSelect } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -63,14 +63,14 @@ export class SearchStudentComponent implements OnInit {
   searchAllSchool: boolean;
   inactiveStudents = false;
   profiles=ProfilesTypes;
-  countryCtrl: FormControl = new FormControl();
-  countryFilterCtrl: FormControl = new FormControl();
+  countryCtrl: UntypedFormControl = new UntypedFormControl();
+  countryFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
-  nationalityCtrl: FormControl = new FormControl();
-  nationalityFilterCtrl: FormControl = new FormControl();
+  nationalityCtrl: UntypedFormControl = new UntypedFormControl();
+  nationalityFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredNationality: ReplaySubject<any> = new ReplaySubject<any>(1);
-  cobCtrl: FormControl = new FormControl();
-  cobFilterCtrl: FormControl = new FormControl();
+  cobCtrl: UntypedFormControl = new UntypedFormControl();
+  cobFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredCOB: ReplaySubject<any> = new ReplaySubject<any>(1);
   @ViewChild('singleSelect') singleSelect: MatSelect;
   protected _onDestroy = new Subject<void>();

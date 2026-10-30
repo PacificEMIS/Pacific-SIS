@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Input, OnDestroy, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -85,12 +85,12 @@ export class StaffAddressinfoComponent implements OnInit, AfterViewInit, OnDestr
   cloneStaffAddModel;
   destroySubject$: Subject<void> = new Subject();
   protected _onDestroy = new Subject<void>();
-  homeAddressCountryCtrl: FormControl = new FormControl();
-  homeAddressCountryFilterCtrl: FormControl = new FormControl();
+  homeAddressCountryCtrl: UntypedFormControl = new UntypedFormControl();
+  homeAddressCountryFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredHomeAddressCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
   @ViewChild('singleSelect') singleSelect: MatSelect;
-  mailingAddressCountryCtrl: FormControl = new FormControl();
-  mailingAddressCountryFilterCtrl: FormControl = new FormControl();
+  mailingAddressCountryCtrl: UntypedFormControl = new UntypedFormControl();
+  mailingAddressCountryFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredMailingAddressCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
   permissions: Permissions;
   isReadOnly: boolean;

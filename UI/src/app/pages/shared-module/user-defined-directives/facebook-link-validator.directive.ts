@@ -1,5 +1,5 @@
 import { Directive } from '@angular/core';
-import { FormControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
+import { UntypedFormControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 
 @Directive({
   selector: '[appFacebookLinkValidator]',
@@ -18,12 +18,12 @@ export class FacebookLinkValidatorDirective implements Validator {
     this.validator = this.facebookValidator();
   }
 
-  validate(c: FormControl) {
+  validate(c: UntypedFormControl) {
     return this.validator(c);
   }
 
   facebookValidator(): ValidatorFn {
-    return (control: FormControl) => {
+    return (control: UntypedFormControl) => {
       if (control.value) {
         let isValid = /(?:(?:http|https):\/\/)?(?:www.)?facebook.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[?\w\-]*\/)?(?:profile.php\?id=(?=\d.*))?([\w\-]*)?/.test(control.value);
         if (isValid) {

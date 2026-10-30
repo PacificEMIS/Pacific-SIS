@@ -1,5 +1,5 @@
 import { Directive } from '@angular/core';
-import { Validator, NG_VALIDATORS, ValidatorFn, FormControl } from '@angular/forms';
+import { Validator, NG_VALIDATORS, ValidatorFn, UntypedFormControl } from '@angular/forms';
 
 @Directive({
   selector: '[appPhonevalidator]',
@@ -18,12 +18,12 @@ export class PhonevalidatorDirective implements Validator {
     this.validator = this.phoneValidator();
   }
 
-  validate(c: FormControl) {
+  validate(c: UntypedFormControl) {
     return this.validator(c);
   }
 
   phoneValidator(): ValidatorFn {
-    return (control: FormControl) => {
+    return (control: UntypedFormControl) => {
       if (control.value) {
         let isValid = /^(\+\d{1,3}[- ]?)?\d{10}$/.test(control.value);
         if (isValid) {

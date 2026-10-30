@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit, Optional } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { EditSchoolSpecificStandardComponent } from "src/app/pages/grades/school-specific-standards/edit-school-specific-standard/edit-school-specific-standard.component";
@@ -42,7 +42,7 @@ import { StaffPortalAssignmentService } from "../../../../services/staff-portal-
 export class AddAssignmentComponent implements OnInit {
   icClose = 'close';
   markingPeriodId:number;
-  form: FormGroup;
+  form: UntypedFormGroup;
   courseSectionId: number;
   isWeightedSection: boolean;
   editMode: boolean = false;
@@ -56,7 +56,7 @@ export class AddAssignmentComponent implements OnInit {
     private dashboardService: DasboardService,
     private defaultValueService: DefaultValuesService,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private commonService: CommonService,
   ) {
     this.isWeightedSection= this.data.isWeightedSection;

@@ -28,7 +28,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SchoolPeriodService } from '../../../../services/school-period.service';
 import { ValidationService } from '../../../shared/validation.service';
@@ -52,7 +52,7 @@ export const dateTimeCustomFormats = {
 })
 export class EditPeriodComponent implements OnInit {
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   buttonType: string;
   periodHeaderTitle: string;
   currentBlockId: number = null;
@@ -63,7 +63,7 @@ export class EditPeriodComponent implements OnInit {
     public translateService: TranslateService,
     public defaultValuesService: DefaultValuesService,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: MatSnackBar,
     private schoolPeriodService: SchoolPeriodService,
     private commonService: CommonService,

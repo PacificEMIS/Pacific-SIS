@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ViewChild, Output, Input, EventEmitter, OnDestroy, OnChanges, SimpleChanges, AfterViewInit } from '@angular/core';
-import { FormControl, NgForm } from '@angular/forms';
+import { UntypedFormControl, NgForm } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
@@ -60,8 +60,8 @@ export class ParentAdvancedSearchComponent implements OnInit, AfterViewInit, OnD
   countryListArr = [];
   advanceSearchParams: filterParams[] = []
   @Output() searchValue = new EventEmitter<any>();
-  countryCtrl: FormControl = new FormControl();
-  countryFilterCtrl: FormControl = new FormControl();
+  countryCtrl: UntypedFormControl = new UntypedFormControl();
+  countryFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
   @ViewChild('singleSelect') singleSelect: MatSelect;
   protected _onDestroy = new Subject<void>();

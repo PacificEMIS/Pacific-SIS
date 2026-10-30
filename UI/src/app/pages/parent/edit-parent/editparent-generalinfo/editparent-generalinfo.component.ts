@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy, AfterViewInit } from '@angular/core';
-import { FormBuilder, FormControl, NgForm, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormControl, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -99,7 +99,7 @@ export class EditparentGeneralinfoComponent implements OnInit,AfterViewInit, OnD
   parentPortalId;
   cloneLoginEmailAddress;
   isUser: boolean = false;
-  loginEmail: FormControl;
+  loginEmail: UntypedFormControl;
   addParentInfoModel: AddParentInfoModel = new AddParentInfoModel();
   duplicateAddParentInfoModel: AddParentInfoModel = new AddParentInfoModel();
   activeDeactiveUserModel: ActiveDeactiveUserModel = new ActiveDeactiveUserModel();
@@ -146,7 +146,7 @@ export class EditparentGeneralinfoComponent implements OnInit,AfterViewInit, OnD
   }
 
   ngOnInit(): void {
-    this.loginEmail = new FormControl('', Validators.required);
+    this.loginEmail = new UntypedFormControl('', Validators.required);
     this.parentInfoService.parentCreatedMode.subscribe((res)=>{
       this.parentCreateMode = res;
     });

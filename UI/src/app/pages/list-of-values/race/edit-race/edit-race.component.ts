@@ -28,7 +28,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from '../../../../services/common.service';
 import { LovAddView } from '../../../../models/lov.model';
@@ -46,7 +46,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 export class EditRaceComponent implements OnInit {
   icClose = 'close';
   raceAddViewModel: LovAddView = new LovAddView();
-  form: FormGroup;
+  form: UntypedFormGroup;
   editMode = false;
   raceTitle: string;
 
@@ -54,7 +54,7 @@ export class EditRaceComponent implements OnInit {
     private dialogRef: MatDialogRef<EditRaceComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public translateService: TranslateService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
     private defaultValuesService: DefaultValuesService) {

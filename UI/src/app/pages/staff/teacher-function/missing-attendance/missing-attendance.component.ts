@@ -38,7 +38,7 @@ import { SharedFunction } from "../../../shared/shared-function";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { Router } from "@angular/router";
 import { ExcelService } from "src/app/services/excel.service";
 import { DefaultValuesService } from "src/app/common/default-values.service";
@@ -78,7 +78,7 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
   searchKeyword: string;
   staffList: MatTableDataSource<any>;
   pageNumber: number;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   inactiveStaff: boolean = false;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
@@ -103,7 +103,7 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
     });
   }
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.getStaffListByDateRange();
 
   }

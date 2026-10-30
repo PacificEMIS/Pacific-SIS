@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -64,7 +64,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EditSchoolFieldsComponent implements OnInit {
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   customFieldTitle;
   buttonType;
   checkSearchRecord: number = 0;
@@ -76,7 +76,7 @@ export class EditSchoolFieldsComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<EditSchoolFieldsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: MatSnackBar,
     private customFieldService: CustomFieldService,
     private commonService: CommonService,

@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { AddGradeComponent } from './add-grade/add-grade.component';
 import { ValidationService } from '../../shared/validation.service';
@@ -73,7 +73,7 @@ export class StandardGradesComponent implements OnInit, OnDestroy {
   icAdd = 'add';
   effortCategoryTitle: string;
   addCategory = false;
-  form: FormGroup;
+  form: UntypedFormGroup;
   buttonType: string;
   icSearch = 'search';
   icFilterList = 'filter_list';
@@ -102,7 +102,7 @@ export class StandardGradesComponent implements OnInit, OnDestroy {
 
   constructor(public translateService: TranslateService,
     private dialog: MatDialog,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private gradesService: GradesService,
     private snackbar: MatSnackBar,
     private loaderService: LoaderService,

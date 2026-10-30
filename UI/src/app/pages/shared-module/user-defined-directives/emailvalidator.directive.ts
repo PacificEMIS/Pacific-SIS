@@ -1,5 +1,5 @@
 import { Directive } from '@angular/core';
-import { Validator, NG_VALIDATORS, ValidatorFn, FormControl } from '@angular/forms';
+import { Validator, NG_VALIDATORS, ValidatorFn, UntypedFormControl } from '@angular/forms';
 
 @Directive({
   selector: '[appEmailvalidator]',
@@ -18,12 +18,12 @@ export class EmailvalidatorDirective implements Validator {
     this.validator = this.emailValidator();
   }
 
-  validate(c: FormControl) {
+  validate(c: UntypedFormControl) {
     return this.validator(c);
   }
 
   emailValidator(): ValidatorFn {
-    return (control: FormControl) => {
+    return (control: UntypedFormControl) => {
       if (control.value) {
         let isValid = /^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/.test(control.value);
         if (isValid) {

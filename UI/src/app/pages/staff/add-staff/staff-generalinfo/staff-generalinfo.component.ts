@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ChangeDetectorRef, ViewChild, Input, ComponentFactoryResolver, ElementRef, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -112,31 +112,31 @@ export class StaffGeneralinfoComponent implements OnInit {
   pageStatus: string;
   staffPortalId: string;
   protected _onDestroy = new Subject<void>();
-  nationalityCtrl: FormControl = new FormControl();
-  nationalityFilterCtrl: FormControl = new FormControl();
-  firstLanguageFilterCtrl:FormControl=new FormControl();
-  secondLanguageFilterCtrl:FormControl=new FormControl();
-  thirdLanguageFilterCtrl:FormControl=new FormControl();  
+  nationalityCtrl: UntypedFormControl = new UntypedFormControl();
+  nationalityFilterCtrl: UntypedFormControl = new UntypedFormControl();
+  firstLanguageFilterCtrl:UntypedFormControl=new UntypedFormControl();
+  secondLanguageFilterCtrl:UntypedFormControl=new UntypedFormControl();
+  thirdLanguageFilterCtrl:UntypedFormControl=new UntypedFormControl();  
   public filteredFirstLanguage: ReplaySubject<any> = new ReplaySubject<any>(1);
   public filteredSecondLanguage: ReplaySubject<any> = new ReplaySubject<any>(1);
   public filteredThirdLanguage: ReplaySubject<any> = new ReplaySubject<any>(1);
   public filteredNationality: ReplaySubject<any> = new ReplaySubject<any>(1);
   @ViewChild('singleSelect') singleSelect: MatSelect;
-  countryOfBirthCtrl: FormControl = new FormControl();
-  countryOfBirthFilterCtrl: FormControl = new FormControl();
+  countryOfBirthCtrl: UntypedFormControl = new UntypedFormControl();
+  countryOfBirthFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredcountryOfBirth: ReplaySubject<any> = new ReplaySubject<any>(1);
   isUser :boolean= false;
   isStaffInternalId :boolean= false;
   showDisabilityDescription: boolean = false;
-  internalId:FormControl;
-  loginEmail:FormControl;
+  internalId:UntypedFormControl;
+  loginEmail:UntypedFormControl;
   today = new Date();
   cloneStaffAddModel;
   permissions: Permissions;
   isReadOnly: boolean;
   customValid = false;
 
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
               private el: ElementRef,
               public translateService: TranslateService,
               private snackbar: MatSnackBar,
@@ -198,8 +198,8 @@ export class StaffGeneralinfoComponent implements OnInit {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
 
 
-    this.internalId = new FormControl('', Validators.required);
-    this.loginEmail = new FormControl('', Validators.required);
+    this.internalId = new UntypedFormControl('', Validators.required);
+    this.loginEmail = new UntypedFormControl('', Validators.required);
     if (this.staffCreateMode == this.staffCreate.ADD) {
       // if(this.addPermission===false){
       //   this.router.navigate(['/'])

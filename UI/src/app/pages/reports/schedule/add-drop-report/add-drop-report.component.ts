@@ -36,7 +36,7 @@ import { GetScheduledAddDropReportModel, filterParams } from 'src/app/models/rep
 import { MatTableDataSource } from '@angular/material/table';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import * as moment from 'moment';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -63,7 +63,7 @@ export class AddDropReportComponent implements OnInit, AfterViewInit, OnDestroy 
   today: Date = new Date();
   destroySubject$: Subject<void> = new Subject();
   loading: boolean;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   filterParams: filterParams[] = [];
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
@@ -110,7 +110,7 @@ export class AddDropReportComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnInit(): void {
     this.getScheduledAddDropReportModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.generateReportScheduleList();
   }
 

@@ -32,7 +32,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder, NgForm } from '@angular/forms';
+import { UntypedFormBuilder, NgForm } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -113,7 +113,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
   permissions: Permissions;
   customValid=false;
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public translateService: TranslateService,
     private studentService: StudentService,
     private snackbar: MatSnackBar,

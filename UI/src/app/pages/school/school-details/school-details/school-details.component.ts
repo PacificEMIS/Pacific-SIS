@@ -39,7 +39,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { LoaderService } from '../../../../services/loader.service';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { SchoolAddViewModel } from '../../../../models/school-master.model';
 import { ImageCropperService } from '../../../../services/image-cropper.service';
@@ -81,7 +81,7 @@ export class SchoolDetailsComponent implements OnInit,OnDestroy {
   totalCount:number=0;
   pageNumber:number;
   pageSize:number;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   addPermission: boolean= false;
   icMoreVert = 'more_vert';
   icAdd = 'add';
@@ -124,7 +124,7 @@ export class SchoolDetailsComponent implements OnInit,OnDestroy {
 }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.permissions = this.pageRolePermission.checkPageRolePermission("/school/schoolinfo/generalinfo", null, true);
   }
   ngAfterViewInit() {

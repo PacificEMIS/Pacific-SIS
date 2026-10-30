@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { SchoolService } from '../../../../services/school.service';
@@ -30,14 +30,14 @@ export class SelectBarComponent implements OnInit {
   profiles= ProfilesTypes;
   checkForAnyNewSchool: boolean = false;
   nullValueForDropdown="Please Select";
-  schoolCtrl: FormControl;
+  schoolCtrl: UntypedFormControl;
   schoolControl = 0;
   /** control for the selected Year */
-  public academicYearsCtrl: FormControl = new FormControl();
+  public academicYearsCtrl: UntypedFormControl = new UntypedFormControl();
   filteredSchoolsForDrop;
   /** control for the selected Part */
-  public periodCtrl: FormControl = new FormControl();
-  schoolFilterCtrl: FormControl;
+  public periodCtrl: UntypedFormControl = new UntypedFormControl();
+  schoolFilterCtrl: UntypedFormControl;
 
   /** list of schools filtered by search keyword */
   public filteredSchools: ReplaySubject<AllSchoolListModel[]> = new ReplaySubject<AllSchoolListModel[]>(1);
@@ -97,8 +97,8 @@ export class SelectBarComponent implements OnInit {
         this.schools = data.getSchoolForView;
         this.defaultValuesService.setSchoolCount((data?.getSchoolForView?.length)?.toString());
         /** control for the selected School */
-        this.schoolCtrl = new FormControl();
-        this.schoolFilterCtrl = new FormControl();
+        this.schoolCtrl = new UntypedFormControl();
+        this.schoolFilterCtrl = new UntypedFormControl();
         // set initial selection
         // this.schoolCtrl.setValue(+this.defaultValuesService.getSchoolID() ? +this.defaultValuesService.getSchoolID() : this.schools[0]);
         const index = this.schools.findIndex((x) => {

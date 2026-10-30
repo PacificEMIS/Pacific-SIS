@@ -25,7 +25,7 @@ All rights reserved.
 
 import { LovAddView } from '../../../../models/lov.model';
 import { CommonService } from './../../../../services/common.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Component,Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -45,7 +45,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EditCommonToiletTypeComponent implements OnInit {
   icClose = 'close';
-  form:FormGroup;
+  form:UntypedFormGroup;
   commonToiletTypeTitle: string;
   lovAddView:LovAddView=new LovAddView();
   buttonType:string;
@@ -56,7 +56,7 @@ export class EditCommonToiletTypeComponent implements OnInit {
     private snackbar:MatSnackBar,
     private commonService:CommonService,
     private defaultValuesService: DefaultValuesService,
-    fb:FormBuilder
+    fb:UntypedFormBuilder
     ) {
       this.form=fb.group({
         id:[0],

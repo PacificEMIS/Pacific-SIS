@@ -8,7 +8,7 @@ import { LoaderService } from 'src/app/services/loader.service';
 import { StudentListByDateRangeModel, StudentListModel } from 'src/app/models/student.model';
 import { Permissions } from "../../../../models/roll-based-access.model";
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -73,7 +73,7 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
   markingPeriodList: any[];
   searchCount: any;
   searchValue: any;
-  searchCtrl = new FormControl();
+  searchCtrl = new UntypedFormControl();
   showAdvanceSearchPanel: boolean = false;
   searchFilter: any;
   toggleValues;
@@ -127,7 +127,7 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
 
     // this.getAllMarkingPeriodList();
     this.getAllStudentList();
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
 
 
     // this.loaderService.isLoading.subscribe((val) => {

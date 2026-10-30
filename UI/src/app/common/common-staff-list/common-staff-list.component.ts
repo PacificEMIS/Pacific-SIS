@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
@@ -55,7 +55,7 @@ export class CommonStaffListComponent implements OnInit {
   permissions: Permissions;
   loading: boolean;
   pageInit = 1;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   icAdd = 'add';
   searchFilterAddViewModel: SearchFilterAddViewModel = new SearchFilterAddViewModel();
   searchFilterListViewModel: SearchFilterListViewModel = new SearchFilterListViewModel();
@@ -142,7 +142,7 @@ export class CommonStaffListComponent implements OnInit {
     })
 
     this.callStaffList();
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.permissions = this.pageRolePermissions.checkPageRolePermission()
     if (this.parentComponent === "staffList")
       this.getAllSearchFilter();

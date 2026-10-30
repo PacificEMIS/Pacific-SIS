@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LovAddView } from '../../../../models/lov.model';
@@ -45,7 +45,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EditCommonToiletAccessibilityComponent implements OnInit {
   icClose = 'close';
-  form:FormGroup
+  form:UntypedFormGroup
   editmod;
   commonToiletAccessibilityTitle: string;
   buttonType: string;
@@ -56,7 +56,7 @@ export class EditCommonToiletAccessibilityComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data:any,
     private snackbar:MatSnackBar,
     private commonService:CommonService,
-    fb:FormBuilder,
+    fb:UntypedFormBuilder,
     private defaultValuesService: DefaultValuesService
     ) { 
       this.editmod=data.mod

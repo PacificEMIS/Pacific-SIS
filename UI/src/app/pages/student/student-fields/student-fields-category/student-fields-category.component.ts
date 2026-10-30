@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -47,7 +47,7 @@ import { CommonService } from 'src/app/services/common.service';
 })
 export class StudentFieldsCategoryComponent implements OnInit {
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   FieldCategoryTitle: string;
   buttonType: string;
   checkSearchRecord: number = 0;
@@ -56,7 +56,7 @@ export class StudentFieldsCategoryComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<StudentFieldsCategoryComponent>,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private snackbar: MatSnackBar,
     private defaultValuesService: DefaultValuesService,

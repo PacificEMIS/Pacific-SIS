@@ -30,7 +30,7 @@ import { stagger60ms } from '@vex/animations/stagger.animation';
 import {GetAllProgramModel,AddProgramModel,UpdateProgramModel,MassUpdateProgramModel,DeleteProgramModel,ProgramsModel} from '../../../../models/course-manager.model';
 import {CourseManagerService} from '../../../../services/course-manager.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import { FormBuilder, NgForm, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, NgForm, UntypedFormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -55,7 +55,7 @@ export class ManageProgramsComponent implements OnInit {
   icDelete = 'delete';
   icAdd = 'add';
   programList=[];
-  form: FormGroup;
+  form: UntypedFormGroup;
   f: NgForm;
   update: NgForm;
   editMode=false;
@@ -74,7 +74,7 @@ export class ManageProgramsComponent implements OnInit {
     private dialogRef: MatDialogRef<ManageProgramsComponent>,
     private courseManager:CourseManagerService,
     private snackbar: MatSnackBar,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public defaultValuesService: DefaultValuesService,
     public translateService:TranslateService,
     private dialog: MatDialog,

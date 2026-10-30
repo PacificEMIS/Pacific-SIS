@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EffortGradeLibraryCategoryItemAddViewModel } from '../../../../models/grades.model';
@@ -46,7 +46,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EditEffortItemComponent implements OnInit {
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   effortGradeLibraryCategoryItemAddViewModel:EffortGradeLibraryCategoryItemAddViewModel=new EffortGradeLibraryCategoryItemAddViewModel()
   effortCategoryId: number;
   effortCategoryItemTitle: string;
@@ -54,7 +54,7 @@ export class EditEffortItemComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<EditEffortItemComponent>, 
-    private fb: FormBuilder, 
+    private fb: UntypedFormBuilder, 
     @Inject(MAT_DIALOG_DATA) public data:any,
     private snackbar:MatSnackBar,
     private gradesService:GradesService,

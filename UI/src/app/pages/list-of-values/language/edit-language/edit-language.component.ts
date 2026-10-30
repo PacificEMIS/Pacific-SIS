@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, OnInit,Inject } from '@angular/core';
 import { MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder,FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder,UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import {LanguageAddModel} from '../../../../models/language.model';
@@ -48,7 +48,7 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 export class EditLanguageComponent implements OnInit {
   icClose = 'close';
   languageModel = new LanguageAddModel();
-  form: FormGroup;
+  form: UntypedFormGroup;
   languageModalTitle="addLanguage";
   languageModalActionTitle="submit";
   constructor(
@@ -56,7 +56,7 @@ export class EditLanguageComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data:any,
     private snackbar:MatSnackBar,
     private commonService:CommonService,
-    fb:FormBuilder,
+    fb:UntypedFormBuilder,
      private defaultValuesService: DefaultValuesService
     ) {
       this.form=fb.group({

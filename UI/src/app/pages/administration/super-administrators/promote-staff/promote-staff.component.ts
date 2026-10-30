@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
@@ -49,7 +49,7 @@ import { SuperAdministratorService } from 'src/app/services/super-administrator.
 })
 export class PromoteStaffComponent implements OnInit, OnDestroy {
   icClose = 'close';
-  searchCtrl = new FormControl('');
+  searchCtrl = new UntypedFormControl('');
   candidates: SuperAdministratorCandidateModel[] = [];
   selected: SuperAdministratorCandidateModel = null;
   searched = false;

@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, OnInit,Inject } from '@angular/core';
 import { MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder,FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder,UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import {LovAddView} from '../../../../models/lov.model';
@@ -46,7 +46,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 export class EditSchoolClassificationComponent implements OnInit {
   icClose = 'close';
   lovModel = new LovAddView();
-  form: FormGroup;
+  form: UntypedFormGroup;
   classificationModalTitle:string;
   classificationModalActionTitle:string;
   editMode = false;
@@ -54,7 +54,7 @@ export class EditSchoolClassificationComponent implements OnInit {
     private dialogRef: MatDialogRef<EditSchoolClassificationComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public translateService: TranslateService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
     private defaultValuesService: DefaultValuesService) {

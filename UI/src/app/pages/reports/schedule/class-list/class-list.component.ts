@@ -39,7 +39,7 @@ import { BlockListViewModel } from 'src/app/models/school-period.model';
 import { SchoolPeriodService } from 'src/app/services/school-period.service';
 import { GetAllCourseListModel } from 'src/app/models/course-manager.model';
 import { CourseManagerService } from 'src/app/services/course-manager.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { LoaderService } from 'src/app/services/loader.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -119,7 +119,7 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
   courseList = []
   subjectList = []
   classListsClone=[];
-  form:FormGroup;
+  form:UntypedFormGroup;
   getAllStaff: GetAllStaffModel = new GetAllStaffModel();
   blockListViewModel: BlockListViewModel = new BlockListViewModel();
   getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel();
@@ -209,7 +209,7 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
        public defaultValuesService: DefaultValuesService,
        private schoolPeriodService: SchoolPeriodService,
        private courseManager: CourseManagerService,
-       private fb: FormBuilder,
+       private fb: UntypedFormBuilder,
        private loaderService: LoaderService,
        private reportService: ReportService,
        private excelService: ExcelService

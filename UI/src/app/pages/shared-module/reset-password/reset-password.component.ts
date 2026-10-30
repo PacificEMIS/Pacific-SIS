@@ -26,7 +26,7 @@ All rights reserved.
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from 'src/app/services/common.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ValidationService } from '../../shared/validation.service';
 import { ResetPasswordModel } from 'src/app/models/common.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -47,7 +47,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   icClose = 'close';
   icVisibility = 'visibility';
   icVisibilityOff = 'visibility_off';
-  form: FormGroup;
+  form: UntypedFormGroup;
   resetPasswordModel: ResetPasswordModel = new ResetPasswordModel();
   inputType = 'password';
   cnfInputType = 'password';
@@ -57,7 +57,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   constructor(public translateService: TranslateService,
     private commonService: CommonService,
     private snackbar: MatSnackBar,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private cd: ChangeDetectorRef,
     private loaderService: LoaderService,
     private commonFunction: SharedFunction,

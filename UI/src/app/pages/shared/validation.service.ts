@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 @Injectable({
   providedIn: 'root'
 })
@@ -53,7 +53,7 @@ export class ValidationService {
   }
   static dateComparisonValidator(from: string, to: string) {
    
-    return (group: FormGroup): {[key: string]: any} => {
+    return (group: UntypedFormGroup): {[key: string]: any} => {
       let f = group.controls[from];
       let t = group.controls[to];
       if (f.value > t.value) 
@@ -134,7 +134,7 @@ export class ValidationService {
   }
   
   static mustMatch(controlName: string, matchingControlName: string) {
-    return (formGroup: FormGroup) => {
+    return (formGroup: UntypedFormGroup) => {
       const control = formGroup.controls[controlName];
       const matchingControl = formGroup.controls[matchingControlName];
 

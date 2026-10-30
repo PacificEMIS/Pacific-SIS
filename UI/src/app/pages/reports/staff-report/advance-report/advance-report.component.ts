@@ -7,7 +7,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import moment from 'moment';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { LoaderService } from 'src/app/services/loader.service';
 import { MatSort } from '@angular/material/sort';
 import { debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/operators';
@@ -79,7 +79,7 @@ export class AdvanceReportComponent implements OnInit {
   totalCount: number = 0;
   pageNumber: number;
   pageSize: number;
-  searchCtrl = new FormControl();
+  searchCtrl = new UntypedFormControl();
   @ViewChild(MatSort) sort: MatSort
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild('selectedStaffPaginator') selectedStaffPaginator: MatPaginator;
@@ -198,7 +198,7 @@ export class AdvanceReportComponent implements OnInit {
   ngOnInit(): void {
     this.getAllStaffModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.callStaffList()
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
   }
 
   ngAfterViewInit() {

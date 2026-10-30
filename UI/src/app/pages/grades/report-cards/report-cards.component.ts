@@ -43,7 +43,7 @@ import { ConfirmDialogComponent } from "../../shared-module/confirm-dialog/confi
 import { fadeInUp400ms } from "@vex/animations/fade-in-up.animation";
 import { stagger40ms } from "@vex/animations/stagger.animation";
 import { fadeInRight400ms } from "@vex/animations/fade-in-right.animation";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { MatSort } from "@angular/material/sort";
 import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { LoaderService } from "../../../../app/services/loader.service";
@@ -93,7 +93,7 @@ export class ReportCardsComponent implements OnInit {
   searchFilterListViewModel: SearchFilterListViewModel = new SearchFilterListViewModel();
   toggleValues: any;
   searchValue: any;
-  searchCtrl = new FormControl();
+  searchCtrl = new UntypedFormControl();
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   markingPeriodError: boolean;

@@ -25,7 +25,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -76,13 +76,13 @@ export class EditparentAddressinfoComponent implements OnInit, AfterViewInit, On
   parentInfo;
   moduleIdentifier = ModuleIdentifier;
   mapUrl: string;
-  countryCtrl: FormControl = new FormControl();
-  countryFilterCtrl: FormControl = new FormControl();
+  countryCtrl: UntypedFormControl = new UntypedFormControl();
+  countryFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
   @ViewChild('singleSelect') singleSelect: MatSelect;
   protected _onDestroy = new Subject<void>();
   permissions: Permissions;
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
               private snackbar: MatSnackBar,
               public translateService: TranslateService,
               private commonService: CommonService,

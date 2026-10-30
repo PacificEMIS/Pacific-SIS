@@ -37,7 +37,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ExcelService } from '../../../services/excel.service';
 import { LoaderService } from '../../../services/loader.service';
@@ -84,7 +84,7 @@ export class HonorRollSetupComponent implements OnInit,AfterViewInit {
   getHonorRollModel:GetHonorRollModel=new GetHonorRollModel();
   pageNumber: number;
   pageSize: number;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   totalCount: any;
   editPermission = false;
   deletePermission = false;
@@ -183,7 +183,7 @@ export class HonorRollSetupComponent implements OnInit,AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.searchCtrl=new FormControl();
+    this.searchCtrl=new UntypedFormControl();
     this.getAllHonorRollList();
     this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/settings/grade-settings/honor-roll-setup')
   }

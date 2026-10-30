@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, NgForm, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, NgForm, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MatDialog } from '@angular/material/dialog';
@@ -56,7 +56,7 @@ import { SharedFunction } from '../../../../../pages/shared/shared-function';
 export class AddSiblingComponent implements OnInit {
   icClose = 'close';
   icBack = 'arrow_back';
-  form: FormGroup;
+  form: UntypedFormGroup;
   associateStudents: NgForm;
   studentSiblingSearch: StudentSiblingSearch = new StudentSiblingSearch();
   getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
@@ -72,7 +72,7 @@ export class AddSiblingComponent implements OnInit {
   gradeLevelArr;
   lovList: LovList = new LovList();
   constructor(private dialogRef: MatDialogRef<AddSiblingComponent>,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private studentService: StudentService,
     private snackbar: MatSnackBar,
     private parentInfoService: ParentInfoService,

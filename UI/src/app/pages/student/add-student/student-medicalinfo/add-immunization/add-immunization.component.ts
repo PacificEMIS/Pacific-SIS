@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { AddEditStudentMedicalImmunizationModel } from 'src/app/models/student.model';
 import { StudentService } from '../../../../../services/student.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -42,7 +42,7 @@ import { DefaultValuesService } from '../../../../../common/default-values.servi
 export class AddImmunizationComponent implements OnInit {
 
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   editMode;
   immunizationTitle;
   buttonType;
@@ -53,7 +53,7 @@ export class AddImmunizationComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private snackbar: MatSnackBar,
     public translateService: TranslateService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private studentService: StudentService,
     private sharedFunction: SharedFunction,
     private commonService: CommonService,

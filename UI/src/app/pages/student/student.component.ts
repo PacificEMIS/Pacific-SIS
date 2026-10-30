@@ -33,7 +33,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormControl, NgForm } from '@angular/forms';
+import { UntypedFormControl, NgForm } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
@@ -96,7 +96,7 @@ export class StudentComponent implements OnInit, OnDestroy {
   totalCount: number = 0;
   pageNumber: number;
   pageSize: number;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   icMoreVert = 'more_vert';
   icAdd = 'add';
   icSearch = 'search';
@@ -206,7 +206,7 @@ export class StudentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.staffMembershipType = this.defaultValuesService.getUserMembershipType();
     this.permissions = this.pageRolePermission.checkPageRolePermission('/school/students/student-generalinfo')
     this.getAllSearchFilter();

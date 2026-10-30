@@ -38,7 +38,7 @@ import { GradeScaleListView, GetAllSchoolSpecificListModel } from '../../../../m
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BlockedSchedulingCourseSectionAddModel, CourseCalendarSchedule, CourseSection, OutputEmitDataFormat, CourseVariableSchedule, CourseSectionAddViewModel, FixedSchedulingCourseSectionAddModel, VariableSchedulingCourseSectionAddModel, CourseVariableScheduleListModel, GetAllCourseStandardForCourseSectionModel } from '../../../../models/course-section.model';
 
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormControl } from '@angular/forms';
 import { AttendanceCodeService } from '../../../../services/attendance-code.service';
 import { GetAllAttendanceCategoriesListModel } from '../../../../models/attendance-code.model';
 import { GetAllMarkingPeriodTitle, GetMarkingPeriodTitleListModel } from '../../../../models/marking-period.model';
@@ -78,7 +78,7 @@ export class EditCourseSectionComponent implements OnInit {
   addCalendarDay = 0;
   selectedDate;
   attendanceCategoryList = [];
-  form: FormGroup;
+  form: UntypedFormGroup;
   calendarListModel: CalendarListModel = new CalendarListModel();
   gradeScaleListView: GradeScaleListView = new GradeScaleListView();
   courseSection: CourseSection = new CourseSection();
@@ -130,7 +130,7 @@ export class EditCourseSectionComponent implements OnInit {
     private calendarService: CalendarService,
     private snackbar: MatSnackBar,
     private gradesService: GradesService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private courseSectionService: CourseSectionService,
     private attendanceCodeService: AttendanceCodeService,
     private markingPeriodService: MarkingPeriodService,

@@ -5,7 +5,7 @@ import { SchoolService } from 'src/app/services/school.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { LoaderService } from 'src/app/services/loader.service';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -33,7 +33,7 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
   today: Date = new Date();
   destroySubject$: Subject<void> = new Subject();
   loading: boolean;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   totalCount: number;
   pageNumber: number;
   pageSize: number;
@@ -71,7 +71,7 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
   ngOnInit(): void {
     this.getAllSchoolModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.callAllSchool();
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
   }
 
   ngAfterViewInit() {

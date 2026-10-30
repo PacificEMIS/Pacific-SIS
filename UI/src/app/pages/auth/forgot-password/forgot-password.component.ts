@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { ForgotPasswordModel } from '../../../models/user.model';
@@ -19,7 +19,7 @@ import { AvailableTenantViewModel } from '../../../models/available-tenant';
 })
 export class ForgotPasswordComponent implements OnInit {
 
-  form: FormGroup;
+  form: UntypedFormGroup;
   loading = false;
   submitted = false;
   tenantPhoto: string;
@@ -27,7 +27,7 @@ export class ForgotPasswordComponent implements OnInit {
   tenantFooter: string;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private cd: ChangeDetectorRef,
     private snackbar: MatSnackBar,
     private loginService: LoginService,

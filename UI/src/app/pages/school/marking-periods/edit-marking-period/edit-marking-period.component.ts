@@ -28,7 +28,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MarkingPeriodAddModel, SemesterAddModel, QuarterAddModel, ProgressPeriodAddModel } from '../../../../models/marking-period.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MarkingPeriodService } from '../../../../services/marking-period.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -61,7 +61,7 @@ export class EditMarkingPeriodComponent implements OnInit {
 
   icClose = 'close';
   markingPeriodLevel;
-  form: FormGroup;
+  form: UntypedFormGroup;
   isEdit;
   doesGrades = false;
   markingPeriodAddModel: MarkingPeriodAddModel = new MarkingPeriodAddModel();
@@ -91,7 +91,7 @@ export class EditMarkingPeriodComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<EditMarkingPeriodComponent>,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private markingPeriodService: MarkingPeriodService,
     private snackbar: MatSnackBar,
     private commonFunction: SharedFunction,

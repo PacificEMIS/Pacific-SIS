@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { RoomAddView } from '../../../../models/room.model';
@@ -50,13 +50,13 @@ export class EditRoomComponent implements OnInit {
   icClose = 'close';
   roomAddViewModel:RoomAddView= new RoomAddView();
   roomStoreViewModel:RoomAddView= new RoomAddView();
-    form:FormGroup;
+    form:UntypedFormGroup;
     editMode=false;
 
   constructor(
     private dialogRef: MatDialogRef<EditRoomComponent>, 
     @Inject(MAT_DIALOG_DATA) public data:any,
-    private fb: FormBuilder, 
+    private fb: UntypedFormBuilder, 
     private snackbar:MatSnackBar,
     private roomService:RoomService,
     private commonService: CommonService,

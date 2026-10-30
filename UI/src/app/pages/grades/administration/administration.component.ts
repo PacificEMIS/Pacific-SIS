@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
@@ -54,7 +54,7 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
   updateStudentReportCardGradesModel: ResponseStudentReportCardGradesModel = new ResponseStudentReportCardGradesModel();
   gradeScaleListView: GradeScaleListView = new GradeScaleListView();
   advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
-  histSearchCtrl: FormControl;
+  histSearchCtrl: UntypedFormControl;
   histTotalCount: number;
   histPageNumber: number;
   histPageSize: number;
@@ -63,7 +63,7 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
   histFilterJsonParams;
   histToggleValues: any = null;
   histSearchValue: any = null;
-  reportSearchCtrl: FormControl;
+  reportSearchCtrl: UntypedFormControl;
   reportTotalCount: number;
   reportPageNumber: number;
   reportPageSize: number;
@@ -110,11 +110,11 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
 
   ngOnInit(): void {
     this.getAllStudentListForFinalGradeModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
-    this.histSearchCtrl = new FormControl();
+    this.histSearchCtrl = new UntypedFormControl();
     this.getAllStudentListForFinalGrade();
     this.getAllMarkingPeriodList();
     this.fullAcademicYear = this.defaultValuesService.getFullAcademicYear();
-    this.reportSearchCtrl = new FormControl();
+    this.reportSearchCtrl = new UntypedFormControl();
    
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -87,7 +87,7 @@ export class ProgressReportComponent implements OnInit {
   selectedStudents = []
   studentModelList: MatTableDataSource<any>;
   loading: boolean;
-  searchCtrl = new FormControl();
+  searchCtrl = new UntypedFormControl();
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
   showAdvanceSearchPanel: boolean = false;
@@ -158,7 +158,7 @@ export class ProgressReportComponent implements OnInit {
       this.getAllStudentList();
     }
     
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
   }
 
   ngAfterViewInit(): void {

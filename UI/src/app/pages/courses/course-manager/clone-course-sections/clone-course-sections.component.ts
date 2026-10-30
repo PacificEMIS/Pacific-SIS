@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -27,7 +27,7 @@ export class CloneCourseSectionsComponent implements OnInit {
   icSkip = 'remove_circle_outline';
   icWarning = 'warning';
 
-  form: FormGroup;
+  form: UntypedFormGroup;
   loading = false;
   academicYears: { academyYear: number; year: string }[] = [];
   currentYear: number;
@@ -39,7 +39,7 @@ export class CloneCourseSectionsComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<CloneCourseSectionsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { courseId?: number; courseTitle?: string },
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private courseManager: CourseManagerService,
     private markingPeriodService: MarkingPeriodService,
     private snackbar: MatSnackBar,

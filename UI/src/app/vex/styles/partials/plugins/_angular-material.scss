@@ -128,3 +128,11 @@ textarea.mat-input-element {
   color: rgba(var(--palette-foreground-hint-text), 0.38);
 }
 */
+
+// Material 14 gave .mat-icon overflow: hidden. Several templates enlarge an icon's font-size
+// beyond the 24px box (mega menu 32px, marking periods 60px, text-3xl/4xl utilities) and relied
+// on the glyph overflowing, so the earlier behaviour is restored here. Material's own rule is a
+// component style injected after this stylesheet, hence the extra specificity.
+mat-icon.mat-icon {
+  overflow: visible;
+}

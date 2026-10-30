@@ -41,7 +41,12 @@
             "allowedCommonJsDependencies": [
               "crypto-js",
               "xlsx",
+              "file-saver",
               "core-js",
+              "can-use-dom",
+              "lodash.debounce",
+              "lodash.memoize",
+              "lodash.throttle",
               "angular-calendar/date-adapters/date-fns"
             ],
             "vendorChunk": true,
@@ -135,9 +140,10 @@
       }
     }
   },
-  "defaultProject": "vex",
   "cli": {
     "analytics": false,
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

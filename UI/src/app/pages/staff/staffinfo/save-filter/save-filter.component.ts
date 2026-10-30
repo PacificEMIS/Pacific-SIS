@@ -28,7 +28,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonService } from '../../../../services/common.service';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { SearchFilterAddViewModel } from '../../../../models/search-filter.model';
 import { ValidationService } from '../../../../pages/shared/validation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -42,14 +42,14 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 export class SaveFilterComponent implements OnInit {
 
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   searchFilterAddViewModel: SearchFilterAddViewModel = new SearchFilterAddViewModel();
 
   constructor(private dialogRef: MatDialogRef<SaveFilterComponent>,
     private defaultValuesService: DefaultValuesService, 
     private commonService: CommonService,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: MatSnackBar) {
     this.form = fb.group({
       filterId: [0],

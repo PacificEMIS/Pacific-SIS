@@ -39,7 +39,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { GetAllSchoolSpecificListModel, GradeStandardSubjectCourseListModel, SchoolSpecificStandarModel , AddUsStandardData} from '../../../models/grades.model';
 import { GradesService } from '../../../services/grades.service';
 import { CommonService } from 'src/app/services/common.service';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { GradeLevelService } from '../../../services/grade-level.service';
 import { GetAllGradeLevelsModel } from '../../../models/grade-level.model';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -98,8 +98,8 @@ export class UsCommonCoreStandardsComponent implements OnInit {
   totalCount;
   pageNumber;
   pageSize;
-  searchCtrl: FormControl;
-  form: FormGroup;
+  searchCtrl: UntypedFormControl;
+  form: UntypedFormGroup;
   gradeLevelList: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
   subjectList: GradeStandardSubjectCourseListModel = new GradeStandardSubjectCourseListModel();
   courseList: GradeStandardSubjectCourseListModel = new GradeStandardSubjectCourseListModel();
@@ -113,7 +113,7 @@ export class UsCommonCoreStandardsComponent implements OnInit {
               private gradesService:GradesService,
               private commonService: CommonService,
               private snackbar: MatSnackBar,
-              private fb: FormBuilder,
+              private fb: UntypedFormBuilder,
               private gradeLevelService: GradeLevelService, 
               private defaultValuesService: DefaultValuesService,
               private excelService:ExcelService,
@@ -131,7 +131,7 @@ export class UsCommonCoreStandardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.permisisons = this.pageRolePermissions.checkPageRolePermission('/school/settings/grade-settings/standard-grades-setup') 
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.form = this.fb.group({
       subject:['all',[Validators.required]],
       course:['all',[Validators.required]],

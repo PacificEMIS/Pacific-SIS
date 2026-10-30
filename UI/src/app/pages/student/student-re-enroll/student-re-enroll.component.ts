@@ -34,7 +34,7 @@ import { StudentEnrollmentModel, StudentEnrollmentSchoolListModel, StudentListMo
 import { StudentService } from '../../../services/student.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormControl, NgForm } from '@angular/forms';
+import { UntypedFormControl, NgForm } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { EnrollmentCodeListView } from '../../../models/enrollment-code.model';
@@ -90,7 +90,7 @@ export class StudentReEnrollComponent implements OnInit {
   gradeLevelTitle: string;
   enrollmentCode: number;
   enrollmentDate: Date=new Date();
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   showAdvanceSearchPanel: boolean = false;
   getAllStudent: StudentListModel = new StudentListModel();
   studentReenrollList: MatTableDataSource<any>;
@@ -161,7 +161,7 @@ export class StudentReEnrollComponent implements OnInit {
     this.permissions = this.pageRolePermissions.checkPageRolePermission()
     this.reenrollSchoolId = this.defaultValuesService.getSchoolID();
     this.getAllStudent.schoolId = this.defaultValuesService.getSchoolID();
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.searchForReEnrollStudent();
     this.getAllSchoolListWithGradeLevelsAndEnrollCodes();
     this.schoolYearStartDate = this.defaultValuesService.getFullYearStartDate();

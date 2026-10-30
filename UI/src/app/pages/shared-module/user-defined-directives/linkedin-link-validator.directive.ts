@@ -1,5 +1,5 @@
 import { Directive } from '@angular/core';
-import { FormControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
+import { UntypedFormControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 
 @Directive({
   selector: '[appLinkedinLinkValidator]',
@@ -18,12 +18,12 @@ export class LinkedinLinkValidatorDirective implements Validator {
     this.validator = this.linkedinValidator();
   }
 
-  validate(c: FormControl) {
+  validate(c: UntypedFormControl) {
     return this.validator(c);
   }
 
   linkedinValidator(): ValidatorFn {
-    return (control: FormControl) => {
+    return (control: UntypedFormControl) => {
       if (control.value) {
         let isValid = /^https:\/\/[a-z]{2,3}\.linkedin\.com\/.*$/.test(control.value);
         if (isValid) {

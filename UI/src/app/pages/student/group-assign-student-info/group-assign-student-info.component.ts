@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ControlContainer, FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { ControlContainer, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, NgForm, Validators } from '@angular/forms';
 import { AddEditStudentMedicalProviderForGroupAssignModel, StudentAddForGroupAssignModel, StudentDocumentAddForGroupAssignModel, StudentEnrollmentForGroupAssignModel, StudentEnrollmentSchoolListModel, StudentListModel } from 'src/app/models/student.model';
 import { StudentService } from '../../../services/student.service';
 import { MatTableDataSource } from '@angular/material/table';
@@ -88,7 +88,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
 
   icRemoveCircle = 'remove_circle';
   currentTab: string = 'generalInfo';
-  form: FormGroup;
+  form: UntypedFormGroup;
   groupAssignStudents = true;
   showSelectedStudent = false;
   isShow = false;
@@ -107,7 +107,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
   @ViewChild(MatSort) sort: MatSort;
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
 
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   showAdvanceSearchPanel: boolean = false;
   filterJsonParams;
   showSaveFilter: boolean = false;
@@ -138,9 +138,9 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
   loading: boolean;
   studentAddForGroupAssignModel: StudentAddForGroupAssignModel = new StudentAddForGroupAssignModel();
   today = new Date();
-  nationalityFilterCtrl: FormControl = new FormControl();
+  nationalityFilterCtrl: UntypedFormControl = new UntypedFormControl();
   protected _onDestroy = new Subject<void>();
-  countryOfBirthFilterCtrl: FormControl = new FormControl();
+  countryOfBirthFilterCtrl: UntypedFormControl = new UntypedFormControl();
   countryListArr = [];
   public filteredNationality: ReplaySubject<any> = new ReplaySubject<any>(1);
   public filteredcountryOfBirth: ReplaySubject<any> = new ReplaySubject<any>(1);
@@ -176,8 +176,8 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
   salutationList = [];
   maritalStatusList = [];
   ethnicityList = [];
-  countryOfBirthCtrl: FormControl = new FormControl();
-  nationalityCtrl: FormControl = new FormControl();
+  countryOfBirthCtrl: UntypedFormControl = new UntypedFormControl();
+  nationalityCtrl: UntypedFormControl = new UntypedFormControl();
   fieldsCategory = [];
   studentCustomFields=[];
   studentMedicalCustomFields=[];
@@ -196,7 +196,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
     private loginService: LoginService,
     private calendarService: CalendarService,
     private sectionService: SectionService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private commonLOV: CommonLOV,
     private commonFunction: SharedFunction,
     private imageCropperService: ImageCropperService,
@@ -234,7 +234,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.commonLOV.getLovByName('Gender').pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       this.genderList = res;
     });

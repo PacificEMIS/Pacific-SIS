@@ -39,7 +39,7 @@ import {MatSnackBar} from  '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import {GradeLevelService} from '../../../services/grade-level.service';
 import {GetAllGradeLevelsModel } from '../../../models/grade-level.model';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../models/roll-based-access.model';
 import { CryptoService } from '../../../services/Crypto.service';
 import { LoaderService } from '../../../services/loader.service';
@@ -95,8 +95,8 @@ export class CourseManagerComponent implements OnInit {
   gradeStandardSubjectList:GradeStandardSubjectCourseListModel=new GradeStandardSubjectCourseListModel();
   gradeStandardCourseList:GradeStandardSubjectCourseListModel=new GradeStandardSubjectCourseListModel();
   courseList=[];
-  searchCtrl: FormControl;
-  form:FormGroup;
+  searchCtrl: UntypedFormControl;
+  form:UntypedFormGroup;
   filterCourseList=[];
   filterCourseCount=0;
   globalFilterCourseList=[];
@@ -148,7 +148,7 @@ export class CourseManagerComponent implements OnInit {
     private gradeLevelService: GradeLevelService,
     private courseManager: CourseManagerService,
     private snackbar: MatSnackBar,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public defaultValuesService: DefaultValuesService,
     private pageRolePermissions: PageRolesPermission,
     private loaderService: LoaderService,
@@ -164,7 +164,7 @@ export class CourseManagerComponent implements OnInit {
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/course-manager')
 
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.form = this.fb.group({
       subject:['all',[Validators.required]],
       program:['all',[Validators.required]],

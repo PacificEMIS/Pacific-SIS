@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input, ViewChild, ChangeDetectorRef, OnDestroy, EventEmitter, Output, AfterViewInit, ElementRef } from '@angular/core';
-import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -101,16 +101,16 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
   maritalStatusList = [];
   countryModel: CountryModel = new CountryModel();
   destroySubject$: Subject<void> = new Subject();
-  form: FormGroup;
-  nationalityCtrl: FormControl = new FormControl();
-  nationalityFilterCtrl: FormControl = new FormControl();
+  form: UntypedFormGroup;
+  nationalityCtrl: UntypedFormControl = new UntypedFormControl();
+  nationalityFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredNationality: ReplaySubject<any> = new ReplaySubject<any>(1);
   @ViewChild('singleSelect') singleSelect: MatSelect;
-  countryOfBirthCtrl: FormControl = new FormControl();
-  countryOfBirthFilterCtrl: FormControl = new FormControl();
-  firstLanguageFilterCtrl:FormControl=new FormControl();
-  secondLanguageFilterCtrl:FormControl=new FormControl();
-  thirdLanguageFilterCtrl:FormControl=new FormControl();  
+  countryOfBirthCtrl: UntypedFormControl = new UntypedFormControl();
+  countryOfBirthFilterCtrl: UntypedFormControl = new UntypedFormControl();
+  firstLanguageFilterCtrl:UntypedFormControl=new UntypedFormControl();
+  secondLanguageFilterCtrl:UntypedFormControl=new UntypedFormControl();
+  thirdLanguageFilterCtrl:UntypedFormControl=new UntypedFormControl();  
   public filteredcountryOfBirth: ReplaySubject<any> = new ReplaySubject<any>(1);
   public filteredFirstLanguage: ReplaySubject<any> = new ReplaySubject<any>(1);
   public filteredSecondLanguage: ReplaySubject<any> = new ReplaySubject<any>(1);
@@ -137,8 +137,8 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
   hidePasswordAccess = false;
   hideAccess = false;
   fieldDisabled = false;
-  internalId: FormControl;
-  loginEmail: FormControl;
+  internalId: UntypedFormControl;
+  loginEmail: UntypedFormControl;
   today = new Date();
   cloneStudentModel;
   permissions: Permissions = new Permissions();
@@ -191,8 +191,8 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
     // })
     this.permissions = this.pageRolePermission.checkPageRolePermission();
 
-    this.internalId = new FormControl('');
-    this.loginEmail = new FormControl('', Validators.required);
+    this.internalId = new UntypedFormControl('');
+    this.loginEmail = new UntypedFormControl('', Validators.required);
     if (this.studentCreateMode === this.studentCreate.ADD) {
 
       this.initializeDropdownsInAddMode();

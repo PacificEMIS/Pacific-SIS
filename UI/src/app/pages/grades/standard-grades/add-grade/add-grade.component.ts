@@ -26,7 +26,7 @@ All rights reserved.
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { GradeAddViewModel } from 'src/app/models/grades.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GradesService } from 'src/app/services/grades.service';
@@ -49,7 +49,7 @@ export class AddGradeComponent implements OnInit {
 
   icClose = 'close';
   gradeAddViewModel: GradeAddViewModel = new GradeAddViewModel();
-  form: FormGroup;
+  form: UntypedFormGroup;
   gradeTitle: string;
   buttonType: string;
   gradeScaleId: number;
@@ -57,7 +57,7 @@ export class AddGradeComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<AddGradeComponent>,
     public translateService: TranslateService,
     private defaultValuesService: DefaultValuesService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: MatSnackBar,
     private gradesService: GradesService,
     private commonService: CommonService,

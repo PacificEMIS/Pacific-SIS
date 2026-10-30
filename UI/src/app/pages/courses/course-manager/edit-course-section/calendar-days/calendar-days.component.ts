@@ -34,7 +34,7 @@ import {
   addDays, endOfMonth,
   isSameDay, isSameMonth, addHours
 } from 'date-fns';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { BlockedSchedulingCourseSectionAddModel, CalendarSchedulingCourseSectionAddModel, CourseCalendarSchedule, CourseSectionAddViewModel, DeleteCourseSectionSchedule, OutputEmitDataFormat } from '../../../../../models/course-section.model';
 import { SchoolPeriodService } from '../../../../../services/school-period.service';
 import { BlockListViewModel } from '../../../../../models/school-period.model';
@@ -123,7 +123,7 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
   showMarkingPeriodError: boolean = false;
   isThisComponent:boolean;
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private schoolPeriodService: SchoolPeriodService,
     private roomService: RoomService,
     private courseSectionService: CourseSectionService,

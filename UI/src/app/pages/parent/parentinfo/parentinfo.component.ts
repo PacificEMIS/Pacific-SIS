@@ -41,7 +41,7 @@ import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { Permissions, RolePermissionListViewModel } from '../../../models/roll-based-access.model';
 import { CryptoService } from '../../../services/Crypto.service';
 import { CommonService } from '../../../services/common.service';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
@@ -92,7 +92,7 @@ export class ParentinfoComponent implements OnInit, OnDestroy {
   permissionListViewModel:RolePermissionListViewModel = new RolePermissionListViewModel();
   pageNumber:number;
   pageSize:number;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   isFromAdvancedSearch: boolean = false;
   // categories=[
   //   {
@@ -153,7 +153,7 @@ export class ParentinfoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
   }
 
   ngAfterViewInit() {

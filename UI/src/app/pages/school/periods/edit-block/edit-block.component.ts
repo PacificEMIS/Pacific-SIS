@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
@@ -46,13 +46,13 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EditBlockComponent implements OnInit {
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   blockHeaderTitle: string;
   buttonType: string;
   blockAddViewModel: BlockAddViewModel = new BlockAddViewModel();
 
   constructor(private dialogRef: MatDialogRef<EditBlockComponent>, public translateService: TranslateService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private snackbar: MatSnackBar,
     private schoolPeriodService: SchoolPeriodService,

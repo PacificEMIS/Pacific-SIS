@@ -32,7 +32,7 @@ import { AddGradebookGradeByAssignmentTypeModel, AddGradebookGradeModel, ViewGra
 import { CommonService } from "src/app/services/common.service";
 import { DefaultValuesService } from "src/app/common/default-values.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { ExcelService } from "src/app/services/excel.service";
 import { DatePipe } from "@angular/common";
@@ -59,8 +59,8 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
   assignmentListByAssignmentType;
   addGradebookGradeModel: AddGradebookGradeModel =  new AddGradebookGradeModel();
   addGradebookGradeByAssignmentTypeModel: AddGradebookGradeByAssignmentTypeModel = new AddGradebookGradeByAssignmentTypeModel();
-  searchCtrl: FormControl;
-  searchCtrlForAssignmentType: FormControl;
+  searchCtrl: UntypedFormControl;
+  searchCtrlForAssignmentType: UntypedFormControl;
   studentListForGenerateExcel: any[];
   loading: boolean;
   destroySubject$: Subject<void> = new Subject();
@@ -95,8 +95,8 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
-    this.searchCtrlForAssignmentType = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
+    this.searchCtrlForAssignmentType = new UntypedFormControl();
    
     this.currentTab = "gradebook";
     this.currentComponent = "gradebookGrade";

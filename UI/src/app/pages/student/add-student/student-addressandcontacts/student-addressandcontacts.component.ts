@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
-import { FormControl, NgForm, Validators } from '@angular/forms';
+import { UntypedFormControl, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -81,12 +81,12 @@ export class StudentAddressandcontactsComponent implements OnInit, OnDestroy, Af
   actionButtonTitle = 'submit';
   cloneStudentAddModel;
   protected _onDestroy = new Subject<void>();
-  homeAddressCountryCtrl: FormControl = new FormControl();
-  homeAddressCountryFilterCtrl: FormControl = new FormControl();
+  homeAddressCountryCtrl: UntypedFormControl = new UntypedFormControl();
+  homeAddressCountryFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredHomeAddressCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
   @ViewChild('singleSelect') singleSelect: MatSelect;
-  mailingAddressCountryCtrl: FormControl = new FormControl();
-  mailingAddressCountryFilterCtrl: FormControl = new FormControl();
+  mailingAddressCountryCtrl: UntypedFormControl = new UntypedFormControl();
+  mailingAddressCountryFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredMailingAddressCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
   permissions: Permissions;
   constructor(

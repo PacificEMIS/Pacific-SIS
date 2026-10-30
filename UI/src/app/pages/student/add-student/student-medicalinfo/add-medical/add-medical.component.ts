@@ -26,7 +26,7 @@ All rights reserved.
 import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { StudentService } from '../../../../../services/student.service';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { AddEditStudentMedicalNoteModel } from '../../../../../models/student.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -42,7 +42,7 @@ import { DefaultValuesService } from '../../../../../common/default-values.servi
 export class AddMedicalComponent implements OnInit {
 
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   addEditStudentMedicalNoteModel: AddEditStudentMedicalNoteModel = new AddEditStudentMedicalNoteModel();
   buttonType: string;
   editMode: boolean;
@@ -53,7 +53,7 @@ export class AddMedicalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private snackbar: MatSnackBar,
     public translateService: TranslateService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private studentService: StudentService,
     private sharedFunction: SharedFunction,
     private commonService: CommonService,

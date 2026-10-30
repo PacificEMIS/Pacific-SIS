@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
@@ -33,7 +33,7 @@ export class AbsenceSummaryDetailsComponent implements OnInit {
   studentDetails: any;
   blockListViewModel: BlockListViewModel = new BlockListViewModel();
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   totalCount: number = 0;
   pageSize: number;
   allAttendence: MatTableDataSource<any>;

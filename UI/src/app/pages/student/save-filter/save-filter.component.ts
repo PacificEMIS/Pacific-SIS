@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -45,7 +45,7 @@ import { DefaultValuesService } from '../../../common/default-values.service';
 })
 export class SaveFilterComponent implements OnInit {
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   searchFilterAddViewModel: SearchFilterAddViewModel = new SearchFilterAddViewModel();
 
 
@@ -53,7 +53,7 @@ export class SaveFilterComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<SaveFilterComponent>,
     private commonService: CommonService,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: MatSnackBar,
     private defaultValuesService: DefaultValuesService) {
     this.form = fb.group({

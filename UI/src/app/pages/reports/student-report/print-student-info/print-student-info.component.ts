@@ -33,7 +33,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { LoaderService } from 'src/app/services/loader.service';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -78,7 +78,7 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
   selectedStudents = []
   studentModelList: MatTableDataSource<any>;
   loading: boolean;
-  searchCtrl = new FormControl();
+  searchCtrl = new UntypedFormControl();
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
   showAdvanceSearchPanel: boolean = false;
@@ -122,7 +122,7 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.getAllStudentList();
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
   }
 
   ngAfterViewInit(): void {

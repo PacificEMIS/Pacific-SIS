@@ -1,5 +1,5 @@
 import { Directive } from '@angular/core';
-import { Validator, NG_VALIDATORS, ValidatorFn, FormControl } from '@angular/forms';
+import { Validator, NG_VALIDATORS, ValidatorFn, UntypedFormControl } from '@angular/forms';
 
 @Directive({
   selector: '[appYoutubeLinkValidator]',
@@ -18,12 +18,12 @@ export class youtubeLinkValidatorDirective implements Validator {
     this.validator = this.youtubeValidator();
   }
 
-  validate(c: FormControl) {
+  validate(c: UntypedFormControl) {
     return this.validator(c);
   }
 
   youtubeValidator(): ValidatorFn {
-    return (control: FormControl) => {
+    return (control: UntypedFormControl) => {
       if (control.value) {
         let isValid = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/.test(control.value);
         if (isValid) {

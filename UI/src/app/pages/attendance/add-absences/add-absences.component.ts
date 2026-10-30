@@ -43,7 +43,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { LoaderService } from "../../../services/loader.service";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
-import { FormControl, NgForm } from "@angular/forms";
+import { UntypedFormControl, NgForm } from "@angular/forms";
 import { stagger40ms, stagger60ms } from "@vex/animations/stagger.animation";
 import { fadeInUp400ms } from "@vex/animations/fade-in-up.animation";
 import { fadeInRight400ms } from "@vex/animations/fade-in-right.animation";
@@ -88,7 +88,7 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
   loading: boolean;
   myHolidayFilter;
   disabledAdvancedSearch = false;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   durationStartDate: string;
   durationEndDate: string;
   attendanceCategoryModel: AttendanceCodeCategoryModel = new AttendanceCodeCategoryModel();
@@ -198,7 +198,7 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
 
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.courseSectionListForAttendanceAdministration();
     this.getAllAttendanceCategory();
   }

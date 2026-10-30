@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -83,7 +83,7 @@ export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
   destroySubject$: Subject<void> = new Subject();
   loading: boolean;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   filterParams: filterParams[] = [];
   showAdvanceSearchPanel: boolean = false;
   searchCount;
@@ -126,7 +126,7 @@ export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.getHonorRollReportModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.getHonorRollReport();
   }
 

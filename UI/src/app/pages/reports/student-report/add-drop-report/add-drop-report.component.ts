@@ -36,7 +36,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { LoaderService } from 'src/app/services/loader.service';
 import { MatPaginator } from '@angular/material/paginator';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ExcelService } from 'src/app/services/excel.service';
 import * as moment from 'moment';
 import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
@@ -63,7 +63,7 @@ export class AddDropReportComponent implements OnInit, OnDestroy, AfterViewInit 
   pageNumber: number;
   pageSize: number;
   today: Date = new Date();
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   filterParams: filterParams[] = [];
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
@@ -112,7 +112,7 @@ export class AddDropReportComponent implements OnInit, OnDestroy, AfterViewInit 
 
   ngOnInit(): void {
     this.getStudentAddDropReportModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.getStudentAddDropReport();
   }
 

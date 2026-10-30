@@ -12,7 +12,7 @@ import { TeacherScheduleService } from 'src/app/services/teacher-schedule.servic
 import { debounceTime, distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { FinalGradeService } from 'src/app/services/final-grade.service';
 import { Router } from '@angular/router';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { AddGradebookGradeByAssignmentTypeModel, AddGradebookGradeModel, ViewGradebookGradeByAssignmentTypeModel, ViewGradebookGradeModel } from 'src/app/models/gradebook-grades.model';
 import { GradeBookConfigurationService } from 'src/app/services/gradebook-configuration.service';
 import { ExcelService } from 'src/app/services/excel.service';
@@ -37,8 +37,8 @@ export class GradebookGradeListComponent implements OnInit {
   getMarkingPeriodTitleListModel: GetMarkingPeriodTitleListModel = new GetMarkingPeriodTitleListModel();
   allScheduledCourseSectionBasedOnTeacher: AllScheduledCourseSectionForStaffModel = new AllScheduledCourseSectionForStaffModel();
   staffDetails;
-  searchCtrl: FormControl;
-  searchCtrlForAssignmentType: FormControl;
+  searchCtrl: UntypedFormControl;
+  searchCtrlForAssignmentType: UntypedFormControl;
   gradeData: any;
   classGrade: boolean = true;
   assignmentTypeDetails: any;
@@ -87,8 +87,8 @@ export class GradebookGradeListComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentComponent = "gradebookGrade";
-    this.searchCtrl = new FormControl();
-    this.searchCtrlForAssignmentType = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
+    this.searchCtrlForAssignmentType = new UntypedFormControl();
     this.getAllScheduledCourseSectionBasedOnTeacher();
   }
 

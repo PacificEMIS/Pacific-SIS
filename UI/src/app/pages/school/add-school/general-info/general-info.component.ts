@@ -25,7 +25,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input, ViewChild, AfterViewInit, OnDestroy, ElementRef } from '@angular/core';
-import { FormControl, NgForm, Validators } from '@angular/forms';
+import { UntypedFormControl, NgForm, Validators } from '@angular/forms';
 import { CheckSchoolInternalIdViewModel, SchoolAddViewModel } from '../../../../models/school-master.model';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -123,10 +123,10 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedLowGradeLevelIndex: number;
   selectedHighGradeLevelIndex: number;
   // formActionButtonTitle = 'submit';
-  internalId: FormControl;
+  internalId: UntypedFormControl;
   cloneSchool: string;
-  countryCtrl: FormControl = new FormControl('', [Validators.required]);
-  countryFilterCtrl: FormControl = new FormControl();
+  countryCtrl: UntypedFormControl = new UntypedFormControl('', [Validators.required]);
+  countryFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
   @ViewChild('singleSelect') singleSelect: MatSelect;
   protected _onDestroy = new Subject<void>();
@@ -148,7 +148,7 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
     public rollBasedAccessService: RollBasedAccessService,
     private cryptoService: CryptoService
   ) {
-    this.internalId = new FormControl('', Validators.required);
+    this.internalId = new UntypedFormControl('', Validators.required);
 
     // this.schoolCreateMode = this.router.getCurrentNavigation().extras?.state ? this.router.getCurrentNavigation().extras.state.type : SchoolCreate.ADD;
     //translateService.use('en');

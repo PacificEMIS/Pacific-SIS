@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -46,14 +46,14 @@ export class AddSuperAdministratorComponent implements OnInit {
   icClose = 'close';
   icVisibility = 'visibility';
   icVisibilityOff = 'visibility_off';
-  form: FormGroup;
+  form: UntypedFormGroup;
   inputType = 'password';
   visible = false;
   saving = false;
 
   constructor(
     private dialogRef: MatDialogRef<AddSuperAdministratorComponent>,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private superAdministratorService: SuperAdministratorService,
     private defaultValuesService: DefaultValuesService,
     private commonService: CommonService,

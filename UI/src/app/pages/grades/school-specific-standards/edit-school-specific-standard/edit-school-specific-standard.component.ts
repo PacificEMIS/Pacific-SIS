@@ -32,7 +32,7 @@ import { GradeLevelService } from '../../../../services/grade-level.service';
 import { LoaderService } from '../../../../services/loader.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CheckStandardRefNoModel, GradeStandardSubjectCourseListModel, SchoolSpecificStandarModel } from '../../../../models/grades.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { GradesService } from '../../../../services/grades.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -60,7 +60,7 @@ export class EditSchoolSpecificStandardComponent implements OnInit, OnDestroy{
   subjectList:GradeStandardSubjectCourseListModel=new GradeStandardSubjectCourseListModel();
   courseList:GradeStandardSubjectCourseListModel=new GradeStandardSubjectCourseListModel();
   standardRefNoModel:CheckStandardRefNoModel=new CheckStandardRefNoModel();
-  form:FormGroup;
+  form:UntypedFormGroup;
   editMode:boolean;
   editDetails;
   modalActionButton="submit"
@@ -74,7 +74,7 @@ export class EditSchoolSpecificStandardComponent implements OnInit, OnDestroy{
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
     private gradeLevelService: GradeLevelService,
     private snackbar: MatSnackBar,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private gradesService:GradesService,
     private loaderService: LoaderService,
     private commonService: CommonService,

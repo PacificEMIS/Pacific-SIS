@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -55,7 +55,7 @@ export class AddCourseComponent implements OnInit,OnDestroy {
     private courseManagerService:CourseManagerService,
     private loaderService:LoaderService,
     private snackbar: MatSnackBar,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private commonService: CommonService,
     private defaultValuesService: DefaultValuesService,
     @Inject(MAT_DIALOG_DATA) public data
@@ -68,7 +68,7 @@ export class AddCourseComponent implements OnInit,OnDestroy {
       this.loading = val;
     });
   }
-  form:FormGroup;
+  form:UntypedFormGroup;
 
   ngOnInit(): void {
    

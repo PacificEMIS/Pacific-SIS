@@ -34,7 +34,7 @@ import { stagger60ms } from '@vex/animations/stagger.animation';
 import { LoaderService } from 'src/app/services/loader.service';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { ExcelService } from '../../../services/excel.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -74,7 +74,7 @@ export class StudentsComponent implements OnInit, AfterViewInit {
   pageNumber: number;
   pageSize: number;
   loading: boolean;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   showInactiveStudents:boolean= false;
   getAllStudent: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
   allStudentlist: MatTableDataSource<any> = new MatTableDataSource<any>();
@@ -88,7 +88,7 @@ export class StudentsComponent implements OnInit, AfterViewInit {
   ];
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.searchScheduledStudentForGroupDrop();
   }
   ngAfterViewInit() {

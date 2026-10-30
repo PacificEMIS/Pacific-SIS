@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CalendarEvent } from 'angular-calendar';
 
@@ -43,7 +43,7 @@ export class CalendarEditComponent implements OnInit {
 
   constructor(private dialogRef: MatDialogRef<CalendarEditComponent>,
               @Inject(MAT_DIALOG_DATA) public event: CalendarEvent<any>,
-              private fb: FormBuilder) {
+              private fb: UntypedFormBuilder) {
   }
 
   ngOnInit() {

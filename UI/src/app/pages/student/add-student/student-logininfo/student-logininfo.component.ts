@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -45,13 +45,13 @@ export class StudentLogininfoComponent implements OnInit {
   StudentCreate = SchoolCreate;
   @Input() studentCreateMode: SchoolCreate;
   icEdit = 'edit';
-  form: FormGroup;
+  form: UntypedFormGroup;
   icVisibility = 'visibility';
   icVisibilityOff = 'visibility_off';
   inputType = 'password';
   visible = false;
 
-  constructor(private fb: FormBuilder, private cd: ChangeDetectorRef) { }
+  constructor(private fb: UntypedFormBuilder, private cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
 

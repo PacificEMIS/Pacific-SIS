@@ -6,7 +6,7 @@ import { GetAccessLogInfoModel } from "../../../models/get-access-log.model";
 import { CommonService } from "../../../services/common.service";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { FormControl} from "@angular/forms";
+import { UntypedFormControl} from "@angular/forms";
 import { DatePipe } from "@angular/common";
 import {
   debounceTime,
@@ -67,7 +67,7 @@ export class AccessLogComponent implements OnInit, OnDestroy {
   pageNumber: number;
   pageSize: number;
   accessLog: MatTableDataSource<any>;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   filterParams: any;
   // displayedColumns: string[] = [
   //   "loginTime",
@@ -111,7 +111,7 @@ export class AccessLogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
   }
 
   //from date should not be greater than to date

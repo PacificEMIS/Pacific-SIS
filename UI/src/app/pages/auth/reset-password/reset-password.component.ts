@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -20,7 +20,7 @@ import { AvailableTenantViewModel } from '../../../models/available-tenant';
 })
 export class ResetPasswordComponent implements OnInit {
 
-  form: FormGroup;
+  form: UntypedFormGroup;
   loading = false;
   resetToken: string;
   success = false;
@@ -37,7 +37,7 @@ export class ResetPasswordComponent implements OnInit {
   tenantFooter: string;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private cd: ChangeDetectorRef,
     private route: ActivatedRoute,
     private snackbar: MatSnackBar,

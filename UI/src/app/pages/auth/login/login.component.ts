@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -57,7 +57,7 @@ import { CatalogDbService } from 'src/app/services/catalog-db.service';
 })
 export class LoginComponent implements OnInit {
 
-  form: FormGroup;
+  form: UntypedFormGroup;
   private date = new Date();
   time: Observable<Date> = timer(0, 1000).pipe(map(() => new Date()));
   inputType = 'password';
@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private router: Router,
     private Activeroute: ActivatedRoute,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private cd: ChangeDetectorRef,
     private snackbar: MatSnackBar,
     private loginService: LoginService,

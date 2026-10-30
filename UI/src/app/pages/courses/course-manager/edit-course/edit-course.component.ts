@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, OnInit ,Inject,ViewChild} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, NgForm, Validators ,FormGroup} from '@angular/forms';
+import { UntypedFormBuilder, NgForm, Validators ,UntypedFormGroup} from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms,stagger40ms } from '@vex/animations/stagger.animation';
 import {AddCourseModel,GetAllProgramModel,GetAllSubjectModel,GetAllCourseListModel,CourseStandardModel, SubjectModel, ProgramsModel} from '../../../../models/course-manager.model';
@@ -99,7 +99,7 @@ export class EditCourseComponent implements OnInit {
   addSubjectMode=false;
   gStdSubjectList;
   gStdCourseList;
-  form:FormGroup;
+  form:UntypedFormGroup;
   schoolSpecificList=[];
   schoolSpecificListCount=0;
   checkedStandardList=[];
@@ -126,7 +126,7 @@ export class EditCourseComponent implements OnInit {
     private courseManager: CourseManagerService,
     private snackbar: MatSnackBar,
     private dialog: MatDialog,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private gradeLevelService: GradeLevelService,
     public defaultValuesService: DefaultValuesService,
     private gradesService: GradesService,

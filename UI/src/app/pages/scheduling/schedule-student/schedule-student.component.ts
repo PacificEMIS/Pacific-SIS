@@ -53,7 +53,7 @@ import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from '.
 import { GetMarkingPeriodTitleListModel } from '../../../models/marking-period.model';
 import { weeks } from 'src/app/common/static-data';
 import { uniqueColors } from "../../../common/static-data";
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import * as _moment from 'moment';
@@ -114,7 +114,7 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
   scheduleReport: MatTableDataSource<any>;
   displayedColumns: string[];
   permissions: Permissions;
-  date = new FormControl(moment());
+  date = new UntypedFormControl(moment());
   weekArray = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   tableData: string[];
   constructor(private dialog: MatDialog, public translateService: TranslateService,

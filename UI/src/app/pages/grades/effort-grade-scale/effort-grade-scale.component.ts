@@ -31,7 +31,7 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { EditEffortGradeScaleComponent } from './edit-effort-grade-scale/edit-effort-grade-scale.component';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { EffortGradeScaleModel, GetAllEffortGradeScaleListModel, UpdateEffortGradeScaleSortOrderModel } from '../../../models/grades.model';
@@ -77,7 +77,7 @@ export class EffortGradeScaleComponent implements OnInit,OnDestroy {
   ];
   effortGradeScaleModelList: MatTableDataSource<any>;
   loading: boolean;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   getEffortGradeScaleList: GetAllEffortGradeScaleListModel = new GetAllEffortGradeScaleListModel();
   totalCount: number = 0;
   pageNumber: number;
@@ -115,7 +115,7 @@ export class EffortGradeScaleComponent implements OnInit,OnDestroy {
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/settings/grade-settings/effort-grade-setup')
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
   }
 
   ngAfterViewInit() {

@@ -9,7 +9,7 @@ import { LoaderService } from 'src/app/services/loader.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { IdentificationInformation } from 'src/app/enums/identificationInformation.enum';
 import { ReportService } from '../../../../services/report.service';
@@ -103,7 +103,7 @@ export class AdvanceReportComponent implements OnInit, OnDestroy {
   listOfStudents = [];
   selectedStudents = [];
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
-  searchCtrl = new FormControl();
+  searchCtrl = new UntypedFormControl();
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild('selectedStudentPaginator') selectedStudentPaginator: MatPaginator;
 
@@ -245,7 +245,7 @@ export class AdvanceReportComponent implements OnInit, OnDestroy {
     this.GetAllLanguage();
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.getAllStudentList();
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
   }
 
   ngAfterViewInit(): void {

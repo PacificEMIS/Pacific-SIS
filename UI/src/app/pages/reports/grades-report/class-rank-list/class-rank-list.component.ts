@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -40,7 +40,7 @@ export class ClassRankListComponent implements OnInit {
   displayedColumns: string[] = ['studentName', 'studentId', 'alternateId', 'grade', 'section', 'gpa', 'unweightedGpa', 'weightedGpa', 'classRank'];
   studentList;
   gradeLevelList: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
-  filterForm!: FormGroup;
+  filterForm!: UntypedFormGroup;
   selectedGradeId;
   destroySubject$: Subject<void> = new Subject();
   loading: boolean;
@@ -61,7 +61,7 @@ export class ClassRankListComponent implements OnInit {
     private gradeLevelService: GradeLevelService,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private reportService: ReportService,
     private defaultService: DefaultValuesService,
     private loaderService: LoaderService,

@@ -44,7 +44,7 @@ import { GetUnassociatedStudentListByCourseSectionModel, ScheduledStudentDeleteM
 import { Permissions } from '../../../models/roll-based-access.model';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
@@ -81,7 +81,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   totalCount: number = 0;
   pageNumber: number;
   pageSize: number;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   isVisible: boolean = false;
   isStaffVisible: boolean = false;
   isGroupDelete: boolean = false;
@@ -139,7 +139,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
     this.isSuperAdmin = this.defaultService.getUserMembershipType() === ProfilesTypes.SuperAdmin;
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.getAllCourse();
     this.getAllSubjectList();
     this.getAllProgramList();
@@ -186,7 +186,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.defaultService.checkAcademicYear() && (this?.subjectList?.length > 0 && this.courseList?.length > 0 )) {
       this.studentDetails = new MatTableDataSource([]);
       this.scheduleStudentListViewModel = new GetUnassociatedStudentListByCourseSectionModel();
-      this.searchCtrl = new FormControl();
+      this.searchCtrl = new UntypedFormControl();
       this.searchInStudentList();
       this.listOfStudents = [];
       this.selectedStudents = [];

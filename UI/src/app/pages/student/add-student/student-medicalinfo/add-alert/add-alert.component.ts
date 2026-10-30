@@ -26,7 +26,7 @@ All rights reserved.
 import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { StudentService } from 'src/app/services/student.service';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { ValidationService } from '../../../../shared/validation.service';
 import { AddEditStudentMedicalAlertModel } from '../../../../../models/student.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -42,7 +42,7 @@ import { DefaultValuesService } from '../../../../../common/default-values.servi
 export class AddAlertComponent implements OnInit {
 
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   addEditStudentMedicalAlertModel: AddEditStudentMedicalAlertModel = new AddEditStudentMedicalAlertModel();
   editMode;
   alertTitle;
@@ -51,7 +51,7 @@ export class AddAlertComponent implements OnInit {
     private dialogRef: MatDialogRef<AddAlertComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public translateService: TranslateService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: MatSnackBar,
     private studentService: StudentService,
     private commonService: CommonService,

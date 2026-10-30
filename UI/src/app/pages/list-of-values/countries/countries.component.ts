@@ -46,7 +46,7 @@ import { CryptoService } from '../../../services/Crypto.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
@@ -77,7 +77,7 @@ export class CountriesComponent implements OnInit, AfterViewInit {
   icFilterList = 'filter_list';
   loading;  
   countryAddModel = new CountryAddModel();
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   totalCount: number;
   pageNumber: number;
   pageSize: number;
@@ -115,7 +115,7 @@ export class CountriesComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/settings/lov-settings/countries')
   }
 

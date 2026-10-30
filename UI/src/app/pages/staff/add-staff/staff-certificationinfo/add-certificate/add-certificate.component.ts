@@ -26,7 +26,7 @@ All rights reserved.
 import { StaffService } from '../../../../../services/staff.service';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ControlContainer, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { ControlContainer, UntypedFormBuilder, UntypedFormGroup, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -54,7 +54,7 @@ import { SchoolCreate } from 'src/app/enums/school-create.enum';
 export class AddCertificateComponent implements OnInit, OnDestroy {
   icClose = 'close';
   icWarning = 'warning';
-  form:FormGroup;
+  form:UntypedFormGroup;
   staffCertificateTitle: string;
   primaryCertificationStatusEnum=Object.keys(WashInfoEnum)
   staffCertificateModel:StaffCertificateModel= new StaffCertificateModel();
@@ -72,7 +72,7 @@ export class AddCertificateComponent implements OnInit, OnDestroy {
     (
       private dialogRef: MatDialogRef<AddCertificateComponent>, 
       @Inject(MAT_DIALOG_DATA) public data:any,
-      private fb: FormBuilder,
+      private fb: UntypedFormBuilder,
       private snackbar:MatSnackBar,
       private staffService:StaffService,
       private commonFunction: SharedFunction,

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepicker } from '@angular/material/datepicker';
@@ -42,9 +42,9 @@ export const MY_FORMATS = {
 export class AddHistoricalMarkingPeriodsComponent implements OnInit {
   historyTitle: string;
   icClose = 'close';
-  date = new FormControl(moment());
+  date = new UntypedFormControl(moment());
   historicalMarkingPeriodAddViewModel: HistoricalMarkingPeriodAddViewModel = new HistoricalMarkingPeriodAddViewModel();
-  form: FormGroup;
+  form: UntypedFormGroup;
   editMode: boolean;
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,
     private historicalMarkingPeriodService: HistoricalMarkingPeriodService,
@@ -53,7 +53,7 @@ export class AddHistoricalMarkingPeriodsComponent implements OnInit {
     private dialogRef: MatDialogRef<AddHistoricalMarkingPeriodsComponent>,
     private commonService: CommonService,
     private snackbar: MatSnackBar,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
     this.form = fb.group({
       histMarkingPeriodId: [0],
       title: ['', [Validators.required]],
@@ -68,7 +68,7 @@ export class AddHistoricalMarkingPeriodsComponent implements OnInit {
     else {
       this.editMode = true;
       this.historyTitle = "editHistoricalMarkingPeriod";
-      this.date = new FormControl(moment(data.gradePostDate));
+      this.date = new UntypedFormControl(moment(data.gradePostDate));
       this.historicalMarkingPeriodAddViewModel.historicalMarkingPeriod = data;
       this.form.controls.histMarkingPeriodId.patchValue(data.histMarkingPeriodId);
       this.form.controls.gradePostDate.patchValue(data.gradePostDate);

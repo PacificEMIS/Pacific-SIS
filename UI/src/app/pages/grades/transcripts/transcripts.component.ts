@@ -31,7 +31,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { StudentListModel } from '../../../models/student.model';
 import { StudentService } from "../../../services/student.service";
 import { MatTableDataSource } from "@angular/material/table";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from "rxjs/operators";
@@ -83,7 +83,7 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
   pageSize: number;
   searchValue;
   searchCount;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   getAllGradeLevels: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
   getAllStudent: StudentListModel = new StudentListModel();
   studentList: MatTableDataSource<any>;
@@ -137,7 +137,7 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.callAllStudent();
     this.getAllGradeLevel();
     this.permissions = this.pageRolePermissions.checkPageRolePermission();

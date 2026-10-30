@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatPasswordStrengthComponent } from "@angular-material-extensions/password-strength";
 import { ChangePasswordViewModel } from '../../../../models/common.model';
 import { CommonService } from '../../../../services/common.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedFunction } from '../../../../pages/shared/shared-function';
 import { DefaultValuesService } from '../../../../common/default-values.service';
@@ -22,7 +22,7 @@ export class ChangePasswordComponent implements OnInit {
   icVisibilityOff = 'visibility_off';
   changePasswordViewModel: ChangePasswordViewModel = new ChangePasswordViewModel();
   inputType = 'password';
-  form: FormGroup;
+  form: UntypedFormGroup;
 
   constructor(public translateService: TranslateService,
     private commonService: CommonService,
@@ -31,7 +31,7 @@ export class ChangePasswordComponent implements OnInit {
     private dialog: MatDialog,
     private cd: ChangeDetectorRef,
     private defaultValuesService: DefaultValuesService,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
     // translateService.use("en");
     this.form = fb.group({
       currentPasswordHash: [''],

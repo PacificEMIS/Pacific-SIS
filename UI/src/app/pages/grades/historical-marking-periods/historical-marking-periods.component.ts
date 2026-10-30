@@ -9,7 +9,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HistoricalMarkingPeriodAddViewModel, HistoricalMarkingPeriodListModel } from 'src/app/models/historical-marking-period.model';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { LoaderService } from 'src/app/services/loader.service';
 import { ExcelService } from 'src/app/services/excel.service';
@@ -32,7 +32,7 @@ export class HistoricalMarkingPeriodsComponent implements OnInit {
   pageNumber: number;
   pageSize: number;
   loading: boolean;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   historicalMarkingPeriodAddViewModel: HistoricalMarkingPeriodAddViewModel = new HistoricalMarkingPeriodAddViewModel();
   markingPeriodList: MatTableDataSource<any> = new MatTableDataSource<any>();
   columns = [
@@ -65,7 +65,7 @@ export class HistoricalMarkingPeriodsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.getAllMerkingPeriodList();
   }
 

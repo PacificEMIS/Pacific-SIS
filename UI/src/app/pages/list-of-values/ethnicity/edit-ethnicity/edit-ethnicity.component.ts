@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LovAddView } from '../../../../models/lov.model';
@@ -46,14 +46,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 export class EditEthnicityComponent implements OnInit {
   icClose = 'close';
   ethnicityAddViewModel: LovAddView = new LovAddView();
-  form: FormGroup;
+  form: UntypedFormGroup;
   editMode = false;
   raceTitle: string;
   
   constructor(private dialogRef: MatDialogRef<EditEthnicityComponent>,
     public translateService: TranslateService,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
      private defaultValuesService: DefaultValuesService) {

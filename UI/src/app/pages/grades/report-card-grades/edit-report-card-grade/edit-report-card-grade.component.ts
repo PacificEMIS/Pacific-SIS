@@ -28,7 +28,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { GradeAddViewModel } from '../../../../models/grades.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GradesService } from 'src/app/services/grades.service';
 import { ValidationService } from 'src/app/pages/shared/validation.service';
@@ -47,14 +47,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 export class EditReportCardGradeComponent implements OnInit {
   icClose = 'close';
   gradeAddViewModel: GradeAddViewModel = new GradeAddViewModel();
-  form: FormGroup;
+  form: UntypedFormGroup;
   gradeTitle: string;
   buttonType: string;
   gradeScaleId: number;
 
   constructor(
     private dialogRef: MatDialogRef<EditReportCardGradeComponent>,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private snackbar: MatSnackBar,
     private gradesService: GradesService,

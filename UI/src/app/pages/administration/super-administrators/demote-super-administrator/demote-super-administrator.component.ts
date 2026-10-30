@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -48,7 +48,7 @@ import { SuperAdministratorService } from 'src/app/services/super-administrator.
 })
 export class DemoteSuperAdministratorComponent implements OnInit {
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   schools: SchoolMasterModel[] = [];
   profileTypes = ['School Administrator', 'Admin Assistant', 'Teacher', 'Homeroom Teacher'];
   saving = false;
@@ -56,7 +56,7 @@ export class DemoteSuperAdministratorComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<DemoteSuperAdministratorComponent>,
     @Inject(MAT_DIALOG_DATA) public data: SuperAdministratorModel,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private superAdministratorService: SuperAdministratorService,
     private schoolService: SchoolService,
     private defaultValuesService: DefaultValuesService,

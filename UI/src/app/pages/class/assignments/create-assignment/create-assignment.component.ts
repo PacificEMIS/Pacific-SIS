@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
@@ -42,7 +42,7 @@ import { SharedFunction } from '../../../shared/shared-function';
 export class CreateAssignmentComponent implements OnInit {
 
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   assignmentTypes = [];
   editMode: boolean = false;
   editDetails;
@@ -51,7 +51,7 @@ export class CreateAssignmentComponent implements OnInit {
   markingPeriodStartDate: string;
   markingPeriodEndDate: string;
   constructor(private dialogRef: MatDialogRef<CreateAssignmentComponent>,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: MatSnackBar,
     private assignmentService: StaffPortalAssignmentService,
     private defaultService: DefaultValuesService,

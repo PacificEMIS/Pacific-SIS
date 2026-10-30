@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { AfterViewInit, Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
@@ -53,7 +53,7 @@ export class ScheduledStudentsComponent implements OnInit, AfterViewInit{
   @ViewChild(MatPaginator) paginator: MatPaginator;
   studentDetails: MatTableDataSource<ScheduleStudentForView>;
   getAllStudent: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   loading:boolean;
   constructor(
     private studentScheduleService: StudentScheduleService,
@@ -76,7 +76,7 @@ export class ScheduledStudentsComponent implements OnInit, AfterViewInit{
   }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
 
   }

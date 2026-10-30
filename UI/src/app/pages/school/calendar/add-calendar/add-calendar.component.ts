@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { GetAllMembersList } from 'src/app/models/membership.model';
@@ -62,7 +62,7 @@ export class AddCalendarComponent implements OnInit {
   membercount: number;
   memberArray: number[] = [];
   @Output() afterClosed = new EventEmitter<boolean>();
-  form: FormGroup;
+  form: UntypedFormGroup;
   icClose = 'close';
   weeks: Weeks[] = [
     { name: 'sunday', id: 0 },
@@ -75,7 +75,7 @@ export class AddCalendarComponent implements OnInit {
   ];
   constructor(
     private dialogRef: MatDialogRef<AddCalendarComponent>,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private membershipService: MembershipService,
     private commonFunction: SharedFunction,
     private calendarService: CalendarService,

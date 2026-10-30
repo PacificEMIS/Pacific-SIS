@@ -28,7 +28,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from 'src/app/services/common.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -72,7 +72,7 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
   advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   isFromAdvancedSearch: boolean = false;
   studentModelList: MatTableDataSource<any>;
-  searchCtrl = new FormControl();
+  searchCtrl = new UntypedFormControl();
   icPrint = 'print';
   icListAlt = 'list_alt';
   icSchool = 'school';
@@ -156,7 +156,7 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.studentInfoReportModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.getStudentEnrollmentWithDate();
   }
 

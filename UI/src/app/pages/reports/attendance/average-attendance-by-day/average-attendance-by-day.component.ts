@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
@@ -67,7 +67,7 @@ export class AverageAttendanceByDayComponent implements OnInit, AfterViewInit {
 
   destroySubject$: Subject<void> = new Subject();
   loading: boolean;
-  searchCtrl = new FormControl();
+  searchCtrl = new UntypedFormControl();
   selectedReportBy: any;
   averageAttendanceByDayTable: MatTableDataSource<any>;
   averageAttendanceByDay: any;
@@ -107,7 +107,7 @@ export class AverageAttendanceByDayComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
   }
 
   ngAfterViewInit(): void {

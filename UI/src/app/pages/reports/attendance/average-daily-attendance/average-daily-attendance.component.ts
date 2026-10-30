@@ -9,7 +9,7 @@ import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { MarkingPeriodListModel } from 'src/app/models/marking-period.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { LoaderService } from 'src/app/services/loader.service';
 import { Subject } from 'rxjs';
@@ -31,7 +31,7 @@ export class AverageDailyAttendanceComponent implements OnInit {
   averageDailyAttendance: any;
   averageDailyAttendanceTable: MatTableDataSource<any>;
   totalCount: number;
-  searchCtrl = new FormControl();
+  searchCtrl = new UntypedFormControl();
   selectOptions: any = [
     {
       title: 'This School Year',
@@ -97,7 +97,7 @@ export class AverageDailyAttendanceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
   }
 
   ngAfterViewInit(): void {

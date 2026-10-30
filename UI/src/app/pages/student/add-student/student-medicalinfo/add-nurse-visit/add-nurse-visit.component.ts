@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StudentService } from '../../../../../services/student.service';
@@ -44,7 +44,7 @@ export class AddNurseVisitComponent implements OnInit {
 
   icClose = 'close';
   icSchedule = 'schedule';
-  form: FormGroup;
+  form: UntypedFormGroup;
   addEditStudentMedicalNurseVisitModel: AddEditStudentMedicalNurseVisitModel = new AddEditStudentMedicalNurseVisitModel();
   editMode: boolean;
   buttonType: string;
@@ -55,7 +55,7 @@ export class AddNurseVisitComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private snackbar: MatSnackBar,
     private studentService: StudentService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public translateService: TranslateService,
     private sharedFunction: SharedFunction,
     private commonService: CommonService,

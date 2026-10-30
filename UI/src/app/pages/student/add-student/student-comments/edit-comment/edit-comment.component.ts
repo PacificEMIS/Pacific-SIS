@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
@@ -48,7 +48,7 @@ import { CommonService } from 'src/app/services/common.service';
 export class EditCommentComponent implements OnInit {
 
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   body: string = null;
   commentTitle: string;
   buttonType: string;
@@ -57,7 +57,7 @@ export class EditCommentComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<EditCommentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: MatSnackBar,
     private studentService: StudentService,
     private defaultValuesService: DefaultValuesService,

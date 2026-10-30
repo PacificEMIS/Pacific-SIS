@@ -40,7 +40,7 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ExcelService } from '../../../services/excel.service';
 import { ValidationService } from '../../shared/validation.service';
@@ -87,7 +87,7 @@ export class EffortGradeLibraryComponent implements OnInit {
   effortCategoriesList = [];
   currentEffortCategoryId;
   effortItemList: MatTableDataSource<any>;
-  form: FormGroup
+  form: UntypedFormGroup
   buttonType: string;
   effortCategoryTitle: string;
   editPermission = false;
@@ -104,7 +104,7 @@ export class EffortGradeLibraryComponent implements OnInit {
     public translateService: TranslateService,
     private snackbar: MatSnackBar,
     private gradesService: GradesService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private loaderService: LoaderService,
     private excelService: ExcelService,
     private pageRolePermissions: PageRolesPermission,

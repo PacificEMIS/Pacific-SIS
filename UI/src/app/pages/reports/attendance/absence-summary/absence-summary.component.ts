@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
@@ -63,7 +63,7 @@ export class AbsenceSummaryComponent implements OnInit, AfterViewInit, OnDestroy
   blockListViewModel: BlockListViewModel = new BlockListViewModel();
   scheduledCourseSectionModel: ScheduledCourseSectionsForStaffModel = new ScheduledCourseSectionsForStaffModel();
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   totalCount: number = 0;
   pageSize: number;
   allAttendence: MatTableDataSource<any>;
@@ -160,7 +160,7 @@ export class AbsenceSummaryComponent implements OnInit, AfterViewInit, OnDestroy
   ngOnInit(): void {
     // this.getStudentAbsenceReportModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.getStudentAbsenceReportModel.pageSize = 10;
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
 
     
     if(this.membershipType === this.profiles.Teacher || this.membershipType === this.profiles.HomeroomTeacher){

@@ -31,7 +31,7 @@ import { SharedFunction } from 'src/app/pages/shared/shared-function';
 import { AttendanceCodeService } from 'src/app/services/attendance-code.service';
 import { MatPaginator } from "@angular/material/paginator";
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { CommonService } from 'src/app/services/common.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -66,7 +66,7 @@ export class AttendanceReportComponent implements OnInit {
   getStudentAttendanceReportExportModel: GetStudentAttendanceReportExport = new GetStudentAttendanceReportExport();
   displayedColumns: string[] = ['date', 'studentName', 'studentId', 'grade', 'periodAttendanceStatus'];
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   totalCount: number = 0;
   pageSize: number;
   allAttendence: MatTableDataSource<any>;
@@ -125,7 +125,7 @@ export class AttendanceReportComponent implements OnInit {
 
   ngOnInit(): void {
     this.getStudentAttendanceReportModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
   }
   ngAfterViewInit() {
     this.searchCtrl.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe((term) => {

@@ -27,7 +27,7 @@ import { Component, OnInit, EventEmitter, Output, Input, ViewChild, OnDestroy } 
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
+import { UntypedFormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
 import { WashInfoEnum } from '../../../../enums/wash-info.enum';
 import { SchoolAddViewModel } from '../../../../models/school-master.model';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -67,7 +67,7 @@ export class WashInfoComponent implements OnInit,OnDestroy {
   icEdit = 'edit';
   // schoolDetailsForViewAndEdit;
   categoryId;
-  form: FormGroup;
+  form: UntypedFormGroup;
   washinfo = WashInfoEnum;
   @ViewChild('f') currentForm: NgForm;
   f: NgForm;

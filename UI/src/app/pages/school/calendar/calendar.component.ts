@@ -32,7 +32,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CalendarEditComponent } from './calendar-edit/calendar-edit.component';
 import { AddCalendarComponent } from './add-calendar/add-calendar.component';
 import { AddEventComponent } from './add-event/add-event.component';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { CalendarService } from '../../../services/calendar.service';
 import { CalendarAddViewModel, CalendarBellScheduleModel, CalendarBellScheduleViewModel, CalendarListModel, CalendarModel } from '../../../models/calendar.model';
 import { GetAllMembersList } from '../../../models/membership.model';
@@ -105,7 +105,7 @@ export class CalendarComponent implements OnInit {
   icWarning = 'warning';
   events$: Observable<CalendarEvent<{ calendar: CalendarEventModel }>[]>;
   refresh: Subject<any> = new Subject();
-  calendarFrom: FormControl;
+  calendarFrom: UntypedFormControl;
   cssClass: string;
   loading: boolean;
   permissions: Permissions;

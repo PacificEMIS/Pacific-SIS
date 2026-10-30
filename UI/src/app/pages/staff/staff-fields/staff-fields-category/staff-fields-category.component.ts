@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -46,7 +46,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class StaffFieldsCategoryComponent implements OnInit {
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   FieldCategoryTitle: string;
   buttonType: string;
   checkSearchRecord: number = 0;
@@ -55,7 +55,7 @@ export class StaffFieldsCategoryComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<StaffFieldsCategoryComponent>,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA) public data:any,
     private snackbar:MatSnackBar,
     private customFieldService:CustomFieldService,

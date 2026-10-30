@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { SectionAddModel } from '../../../../models/section.model';
@@ -48,14 +48,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 export class EditSectionComponent implements OnInit {
 
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   sectionAddModel: SectionAddModel = new SectionAddModel();
   getAllSection: GetAllSectionModel = new GetAllSectionModel();
   sectionModalTitle = "addSection";
   ssectionModalActionTitle = "submit";
   isEdit = false;
   constructor(
-    private dialogRef: MatDialogRef<EditSectionComponent>, private fb: FormBuilder,
+    private dialogRef: MatDialogRef<EditSectionComponent>, private fb: UntypedFormBuilder,
     private sectionService: SectionService,
     private snackbar: MatSnackBar,
     private router: Router,

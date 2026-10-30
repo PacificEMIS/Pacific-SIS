@@ -26,7 +26,7 @@ All rights reserved.
 
 import { Component, OnInit, AfterViewInit, Inject, ViewChild, Input, OnDestroy} from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormControl, NgForm, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
@@ -95,15 +95,15 @@ export class EditContactComponent implements OnInit,AfterViewInit, OnDestroy {
   studentDetailsForViewAndEditDataDetails;
   parentAddress = [];
   destroySubject$: Subject<void> = new Subject();
-  countryCtrl: FormControl = new FormControl('',[Validators.required]);
-  countryFilterCtrl: FormControl = new FormControl();
+  countryCtrl: UntypedFormControl = new UntypedFormControl('',[Validators.required]);
+  countryFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
   @ViewChild('singleSelect') singleSelect: MatSelect;
   protected _onDestroy = new Subject<void>();
 
   constructor(
       private dialogRef: MatDialogRef<EditContactComponent>,
-      private fb: FormBuilder,
+      private fb: UntypedFormBuilder,
       public translateService: TranslateService,
       private parentInfoService: ParentInfoService,
       private snackbar: MatSnackBar,

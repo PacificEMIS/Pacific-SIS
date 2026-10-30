@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { AttendanceCodeService } from '../../../../services/attendance-code.service';
@@ -44,7 +44,7 @@ import { DefaultValuesService } from "src/app/common/default-values.service";
 })
 export class AttendanceCategoryComponent implements OnInit {
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   attendanceCategoryModel:AttendanceCodeCategoryModel=new AttendanceCodeCategoryModel();
   editMode:boolean=false;
   editDetails;
@@ -54,7 +54,7 @@ export class AttendanceCategoryComponent implements OnInit {
     private dialogRef: MatDialogRef<AttendanceCategoryComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
     private attendanceCodeService:AttendanceCodeService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
     private defaultValuesService: DefaultValuesService

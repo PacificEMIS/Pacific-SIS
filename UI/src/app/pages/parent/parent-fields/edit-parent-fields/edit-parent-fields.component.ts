@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -48,7 +48,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EditParentFieldsComponent implements OnInit {
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   customFieldTitle;
   buttonType;
   fieldCategoryModule=FieldCategoryModuleEnum
@@ -59,7 +59,7 @@ export class EditParentFieldsComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<EditParentFieldsComponent>, 
-    private fb: FormBuilder, 
+    private fb: UntypedFormBuilder, 
     @Inject(MAT_DIALOG_DATA) public data:any,
     private snackbar:MatSnackBar,
     private customFieldService:CustomFieldService,

@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit,AfterViewInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HonorRollAddViewModel } from '../../../../models/grades.model';
@@ -46,7 +46,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EditHonorRollComponent implements OnInit,AfterViewInit {
   icClose = 'close';
-  form:FormGroup
+  form:UntypedFormGroup
   editmod;
   honorRollAddViewModel:HonorRollAddViewModel=new HonorRollAddViewModel()
   honorRollTitle: string;
@@ -59,7 +59,7 @@ export class EditHonorRollComponent implements OnInit,AfterViewInit {
     private gradesService:GradesService,
     private commonService: CommonService,
     private defaultValuesService: DefaultValuesService,
-    fb:FormBuilder
+    fb:UntypedFormBuilder
     ) { 
       this.editmod=data.mod
       this.form= fb.group({

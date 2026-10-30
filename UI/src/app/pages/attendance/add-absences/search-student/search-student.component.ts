@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, AfterViewInit, ViewChild, Output, EventEmitter, OnDestroy, Input } from '@angular/core';
-import { FormControl, NgForm } from '@angular/forms';
+import { UntypedFormControl, NgForm } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
@@ -91,14 +91,14 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
   searchAllSchool: boolean;
   inactiveStudents = false;
 
-  countryCtrl: FormControl = new FormControl();
-  countryFilterCtrl: FormControl = new FormControl();
+  countryCtrl: UntypedFormControl = new UntypedFormControl();
+  countryFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
-  nationalityCtrl: FormControl = new FormControl();
-  nationalityFilterCtrl: FormControl = new FormControl();
+  nationalityCtrl: UntypedFormControl = new UntypedFormControl();
+  nationalityFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredNationality: ReplaySubject<any> = new ReplaySubject<any>(1);
-  cobCtrl: FormControl = new FormControl();
-  cobFilterCtrl: FormControl = new FormControl();
+  cobCtrl: UntypedFormControl = new UntypedFormControl();
+  cobFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredCOB: ReplaySubject<any> = new ReplaySubject<any>(1);
   @ViewChild('singleSelect') singleSelect: MatSelect;
   protected _onDestroy = new Subject<void>();

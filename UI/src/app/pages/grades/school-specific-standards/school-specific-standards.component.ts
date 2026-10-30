@@ -36,7 +36,7 @@ import { GradesService } from '../../../services/grades.service';
 import { GetAllSchoolSpecificListModel, GradeStandardSubjectCourseListModel, SchoolSpecificStandarModel } from '../../../models/grades.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -90,13 +90,13 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
   gradeLevelList: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
   subjectList: GradeStandardSubjectCourseListModel = new GradeStandardSubjectCourseListModel();
   courseList: GradeStandardSubjectCourseListModel = new GradeStandardSubjectCourseListModel();
-  form: FormGroup;
+  form: UntypedFormGroup;
   loading: boolean;
   schoolSpecificList: MatTableDataSource<any>;
   totalCount;
   pageNumber;
   pageSize;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   updateExistingData=false;
   destroySubject$: Subject<void> = new Subject();
   editPermission = false;
@@ -116,7 +116,7 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
     private snackbar: MatSnackBar,
     private loaderService: LoaderService,
     private excelService:ExcelService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private gradeLevelService: GradeLevelService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
@@ -132,7 +132,7 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.form = this.fb.group({
       subject:['all',[Validators.required]],
       course:['all',[Validators.required]],

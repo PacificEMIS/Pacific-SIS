@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { GetAllMembersList } from '../../../../models/membership.model';
@@ -95,7 +95,7 @@ export class AddEventComponent implements OnInit {
   icDelete = 'delete';
   icMoreVertical = 'more_vert';
   icDone = 'done';
-  form: FormGroup;
+  form: UntypedFormGroup;
   permissions: Permissions;
   profiles = ProfilesTypes
   constructor(
@@ -109,7 +109,7 @@ export class AddEventComponent implements OnInit {
     private calendarService: CalendarService,
     private pageRolePermissions: PageRolesPermission,
     private calendarEventService: CalendarEventService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
     private el: ElementRef,

@@ -31,7 +31,7 @@ import { GetAllStaffModel } from '../../../../models/staff.model';
 import { AllCourseSectionView } from '../../../../models/course-manager.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -67,7 +67,7 @@ export class MissingAttendanceListComponent implements OnInit, AfterViewInit, On
   missingAttendanceDateList = [];
   searchKeyword: string;
   pageNumber: number;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   columns = [
     { label: 'date', property: 'date', type: 'text', visible: true },
@@ -87,7 +87,7 @@ export class MissingAttendanceListComponent implements OnInit, AfterViewInit, On
   }
 
   ngOnInit(): void {
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.missingAttendanceListForCourseSection();
   }
 

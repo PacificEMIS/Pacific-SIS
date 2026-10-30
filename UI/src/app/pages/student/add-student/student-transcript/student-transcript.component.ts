@@ -27,7 +27,7 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } fr
 import { TranslateService } from "@ngx-translate/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from "rxjs/operators";
@@ -92,7 +92,7 @@ export class StudentTranscriptComponent implements OnInit {
   pageSize: number;
   searchValue;
   searchCount;
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   getAllGradeLevels: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
   getAllStudent: StudentListModel = new StudentListModel();
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;

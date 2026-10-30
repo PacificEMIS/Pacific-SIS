@@ -25,7 +25,7 @@ All rights reserved.
 
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { UntypedFormBuilder, FormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import {AddGradeLevelModel, GelAllGradeEquivalencyModel} from '../../../../models/grade-level.model';
@@ -46,7 +46,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EditGradeLevelsComponent implements OnInit {
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   addGradeLevelData:AddGradeLevelModel = new AddGradeLevelModel();
   updateGradeLevelData:AddGradeLevelModel = new AddGradeLevelModel();
   getGradeEquivalencyList:GelAllGradeEquivalencyModel = new GelAllGradeEquivalencyModel();
@@ -60,7 +60,7 @@ export class EditGradeLevelsComponent implements OnInit {
   nextGradeIdInString:string;
   constructor(private dialogRef: MatDialogRef<EditGradeLevelsComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
-     private fb: FormBuilder,
+     private fb: UntypedFormBuilder,
      private gradeLevelService:GradeLevelService,
     private commonService: CommonService,
      private snackbar: MatSnackBar,

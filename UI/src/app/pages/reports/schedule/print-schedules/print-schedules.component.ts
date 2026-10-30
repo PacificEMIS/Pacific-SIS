@@ -28,7 +28,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { StudentListModel } from 'src/app/models/student.model';
 import { ScheduleStudentListViewModel } from 'src/app/models/student-schedule.model';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -78,7 +78,7 @@ export class PrintSchedulesComponent implements OnInit, AfterViewInit, OnDestroy
   markingPeriodListModel: MarkingPeriodListModel = new MarkingPeriodListModel();
   getPrintScheduleReportModel: GetPrintScheduleReportModel = new GetPrintScheduleReportModel();
   advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
-  searchCtrl: FormControl;
+  searchCtrl: UntypedFormControl;
   loading: boolean;
   destroySubject$: Subject<void> = new Subject();
   selectedReportBy;
@@ -128,7 +128,7 @@ export class PrintSchedulesComponent implements OnInit, AfterViewInit, OnDestroy
   ngOnInit(): void {
     this.getAllStudentModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.scheduleStudentListViewModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.getMarkingPeriod();
     this.callAllStudent();
   }

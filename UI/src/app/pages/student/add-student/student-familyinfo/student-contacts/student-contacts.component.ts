@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, FormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -76,14 +76,14 @@ export class StudentContactsComponent implements OnInit {
   countryModel: CountryModel = new CountryModel();
   permissions: Permissions;
   countryListArr: any[];
-  countryCtrl: FormControl = new FormControl('', [Validators.required]);
+  countryCtrl: UntypedFormControl = new UntypedFormControl('', [Validators.required]);
   public filteredCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
   data: any;
   mode: string;
   viewData: any;
   disableAddButtonFlag:boolean = false;
   constructor(
-    private fb: FormBuilder, private dialog: MatDialog,
+    private fb: UntypedFormBuilder, private dialog: MatDialog,
     public translateService: TranslateService,
     public parentInfoService: ParentInfoService,
     private cryptoService: CryptoService,

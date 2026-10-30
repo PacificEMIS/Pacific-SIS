@@ -46,7 +46,7 @@ import { CryptoService } from '../../../services/Crypto.service';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
@@ -79,7 +79,7 @@ export class LanguageComponent implements OnInit, AfterViewInit {
   icImpersonate = 'account_circle';
   icFilterList = 'filter_list';
   loading;  
-  searchCtrl: FormControl
+  searchCtrl: UntypedFormControl
   totalCount: number;
   pageNumber: number;
   pageSize: number;
@@ -118,7 +118,7 @@ export class LanguageComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void { 
-    this.searchCtrl = new FormControl();
+    this.searchCtrl = new UntypedFormControl();
     this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/settings/lov-settings/language')
    }
 

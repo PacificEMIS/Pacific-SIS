@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, ElementRef, Inject, OnInit, Optional } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -45,14 +45,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EditEffortGradeScaleComponent implements OnInit {
   icClose = 'close';
-  form: FormGroup;
+  form: UntypedFormGroup;
   editMode:boolean;
   effortGradeScaleModel:EffortGradeScaleModel=new EffortGradeScaleModel();
   modalDialogTitle="addNewEffortGradeScale";
   modalActionButton="submit";
   gradeScaleDetailsForEdit;
   constructor(private dialogRef: MatDialogRef<EditEffortGradeScaleComponent>,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
     private gradesService:GradesService,
     private snackbar: MatSnackBar,
