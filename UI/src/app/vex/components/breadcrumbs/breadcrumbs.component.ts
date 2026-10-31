@@ -9,23 +9,31 @@ import { ProfilesTypes } from 'src/app/enums/profiles.enum';
     template: `
     <div class="flex items-center">
       <vex-breadcrumb>
-        <a *ngIf="membershipType === profiles.SuperAdmin || membershipType === profiles.SchoolAdmin || membershipType === profiles.AdminAssitant" [routerLink]="['/school/dashboards']">
-          <mat-icon style="font-size: 20px">home</mat-icon>
-        </a>
-        <a *ngIf="membershipType === profiles.Teacher || membershipType === profiles.HomeroomTeacher" [routerLink]="['/school/teacher/dashboards']">
-          <mat-icon style="font-size: 20px">home</mat-icon>
-        </a>
+        @if (membershipType === profiles.SuperAdmin || membershipType === profiles.SchoolAdmin || membershipType === profiles.AdminAssitant) {
+          <a [routerLink]="['/school/dashboards']">
+            <mat-icon style="font-size: 20px">home</mat-icon>
+          </a>
+        }
+        @if (membershipType === profiles.Teacher || membershipType === profiles.HomeroomTeacher) {
+          <a [routerLink]="['/school/teacher/dashboards']">
+            <mat-icon style="font-size: 20px">home</mat-icon>
+          </a>
+        }
       </vex-breadcrumb>
-      <ng-container *ngFor="let crumb of crumbs;let last=last; trackBy: trackByValue">
+      @for (crumb of crumbs; track trackByValue($index, crumb); let last = $last) {
         <div class="w-1 h-1 bg-gray rounded-full ltr:mr-2 rtl:ml-2"></div>
         <vex-breadcrumb>
-        <div *ngIf="last"><a>{{ crumb |translate }}</a></div>
-        <div *ngIf="!last"><a [routerLink]="crumb === 'schoolInfo' ? ['/school/schoolinfo/generalinfo'] : path" [state]="{type: 2}">{{ crumb |translate }}</a></div>
+          @if (last) {
+            <div><a>{{ crumb |translate }}</a></div>
+          }
+          @if (!last) {
+            <div><a [routerLink]="crumb === 'schoolInfo' ? ['/school/schoolinfo/generalinfo'] : path" [state]="{type: 2}">{{ crumb |translate }}</a></div>
+          }
         </vex-breadcrumb>
-      </ng-container>
- 
+      }
+    
     </div>
-  `,
+    `,
     standalone: false
 })
 export class BreadcrumbsComponent implements OnInit {
