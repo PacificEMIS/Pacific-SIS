@@ -71,8 +71,8 @@ module.exports = {
         DEFAULT: 'rgb(var(--color-primary))',
       },
       blue: {
-        light: 'rgba(23,99,179, .5)',
-        DEFAULT: 'rgb(23,99,179)',
+        light: 'rgba(17, 74, 143, .5)',
+        DEFAULT: 'rgb(17, 74, 143)',
       },
       accent: {
         light: 'rgba(var(--color-accent), .1)',

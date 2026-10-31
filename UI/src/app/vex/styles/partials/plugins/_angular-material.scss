@@ -1,21 +1,5 @@
-.mat-mdc-icon-button .mat-mdc-button-wrapper > *,
-.mat-menu-item .mat-icon,
-.mat-button .mat-icon {
-  vertical-align: middle !important;
-}
-
-/*
-TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
-*/
-/*
-TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
-*/
-.mat-form-field-suffix, .mat-form-field-prefix {
-  .mat-mdc-icon-button .mat-icon {
-    font-size: inherit;
-  }
-}
-
+// Fixes and defaults for the Material components in this application (the Vex-era overrides of
+// legacy component internals were removed with the re-theme).
 .mat-mdc-table {
   mat-row,
   mat-header-row,
@@ -27,138 +11,23 @@ TODO(mdc-migration): The following rule targets internal classes of form-field t
   }
 }
 
-.mat-mdc-form-field {
-  margin-bottom: 4px;
-}
-
-.mat-primary.mat-mdc-form-field {
-  /*
-TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
-*/
-  .mat-form-field-prefix,
-  .mat-form-field-suffix {
-    transition: var(--trans-ease-out);
-  }
-  /*
-TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
-*/
-  &.mat-focused .mat-form-field-prefix,
-  &.mat-focused .mat-form-field-suffix {
-    @apply text-primary;
-  }
-}
-
-.mat-mdc-form-field.mat-form-field-invalid {
-  /*
-TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
-*/
-  &.mat-focused .mat-form-field-prefix,
-  &.mat-focused .mat-form-field-suffix {
-    @apply text-red;
-  }
-}
-
 .mat-mdc-table .mat-mdc-cell,
-.mat-table .mat-mdc-header-cell {
+.mat-mdc-table .mat-mdc-header-cell {
   box-sizing: content-box;
   padding-left: var(--padding-12);
   padding-right: var(--padding-12);
   white-space: nowrap;
 }
 
-/*
-TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
-*/
-.mat-paginator-page-size-select.mat-mdc-form-field .mat-form-field-flex {
-  padding-top: 0;
+.mat-mdc-form-field {
+  margin-bottom: 4px;
 }
 
-.mat-mdc-menu-item ic-icon {
-  margin-inline-end: var(--padding-16);
-  vertical-align: middle;
-
-  > svg {
-    vertical-align: middle;
-  }
+.mat-mdc-icon-button .mat-mdc-button-wrapper > *,
+.mat-mdc-menu-item .mat-icon,
+.mat-mdc-button .mat-icon {
+  vertical-align: middle !important;
 }
-
-.mat-mdc-select-panel {
-  @apply text-base;
-}
-
-.mat-drawer-side {
-  border: 0;
-}
-
-textarea.mat-mdc-input-element {
-  @apply leading-normal;
-}
-
-.vex-flex-form-field {
-  /*
-TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
-*/
-  .mat-form-field-infix {
-    width: 50px;
-  }
-}
-
-.vex-dense-form-field {
-  margin-bottom: -1.34375em;
-
-  &.mat-form-field-appearance-outline {
-    /*
-TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
-*/
-    .mat-form-field-infix {
-      padding-top: 4px;
-    }
-  }
-}
-
-.vex-tabs {
-  /*
-TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.
-*/
-  .mat-tab-label.mat-tab-label-active {
-    opacity: 1;
-  }
-  /*
-TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.
-*/
-  .mat-mdc-tab-link.mat-tab-label-active {
-    opacity: 1;
-  }
-}
-
-.vex-tabs-dense {
-  /*
-TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.
-*/
-  .mat-tab-label {
-    min-width: 0;
-  }
-}
-
-.uppercase > * > .mat-sort-header-button {
-  text-transform: uppercase;
-}
-
-.mat-mdc-card-image {
-  max-width: none;
-}
-
-/*
-.mat-button-focus-overlay {
-  background: rgba(var(--palette-foreground-base), 1);
-}
-.mat-checkbox .mat-ripple-element {
-  background-color: rgb(var(--palette-foreground-base));
-}
-.mat-option.mat-option-disabled {
-  color: rgba(var(--palette-foreground-hint-text), 0.38);
-}
-*/
 
 // Material 14 gave .mat-icon overflow: hidden. Several templates enlarge an icon's font-size
 // beyond the 24px box (mega menu 32px, marking periods 60px, text-3xl/4xl utilities) and relied

@@ -1,0 +1,130 @@
+// Bridge from the Vex-era CSS variables, which the application's templates and component styles
+// still read (80 of them at the time of the re-theme), to the Pacific EMIS tokens defined in
+// styles.scss and Material's system tokens. Every value here is derived from an EMIS token or is a
+// plain spacing/size constant; nothing is Vex's own colour any more. Remove a variable here once the
+// last template that reads it is restyled (grep `var(--name)` under src/app).
+:root {
+  // spacing, as before
+  --padding-gutter: 1rem;
+  --padding: 1.5rem;
+  --padding-16: 1rem;
+  --padding-12: 0.75rem;
+  --padding-8: 0.5rem;
+  --padding-4: 0.25rem;
+  @media (min-width: 1024px) {
+    --padding-gutter: 1.5rem;
+  }
+
+  // brand colours as RGB triples: Tailwind's primary/accent/warn utilities and rgba(var(...)) uses
+  --color-primary: 17, 74, 143;             // --emis-blue #114a8f
+  --color-primary-contrast: 255, 255, 255;
+  --color-accent: 47, 105, 180;             // --emis-blue-light #2f69b4 (the SIS used a pink accent; EMIS has one blue)
+  --color-accent-contrast: 255, 255, 255;
+  --color-warn: 186, 26, 26;                // Material's M3 error on the azure theme
+  --color-warn-contrast: 255, 255, 255;
+
+  // type
+  --font: Roboto, 'Helvetica Neue', sans-serif;
+  --font-weight-medium: 500;
+  --font-caption: 400 12px/20px var(--font);
+  --font-body-1: 400 14px/20px var(--font);
+  --font-body-2: 500 14px/24px var(--font);
+  --font-subheading-1: 400 15px/24px var(--font);
+  --font-subheading-2: 400 16px/28px var(--font);
+  --font-headline: 400 24px/32px var(--font);
+  --font-title: 500 18px/26px var(--font);
+  --font-display-1: 400 34px/40px var(--font);
+  --font-display-2: 400 45px/48px var(--font);
+  --font-display-3: 400 56px/56px var(--font);
+  --font-display-4: 300 112px/112px var(--font);
+
+  // motion
+  --trans-ease-in-out-duration: 500ms;
+  --trans-ease-in-out-timing-function: cubic-bezier(0.35, 0, 0.25, 1);
+  --trans-ease-in-out: all var(--trans-ease-in-out-duration) var(--trans-ease-in-out-timing-function);
+  --trans-ease-out-duration: 400ms;
+  --trans-ease-out-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --trans-ease-out: all var(--trans-ease-out-duration) var(--trans-ease-out-timing-function);
+  --trans-ease-in-duration: 300ms;
+  --trans-ease-in-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+  --trans-ease-in: all var(--trans-ease-in-duration) var(--trans-ease-in-timing-function);
+  --trans-shadow-duration: 280ms;
+  --trans-shadow-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --trans-shadow: box-shadow var(--trans-shadow-duration) var(--trans-shadow-timing-function);
+
+  // text and surfaces, from the Material system tokens of the EMIS theme
+  --text-color: var(--mat-sys-on-surface);
+  --text-color-light: #ffffff;
+  --text-secondary: var(--mat-sys-on-surface-variant);
+  --text-secondary-light: rgba(255, 255, 255, 0.7);
+  --text-hint: var(--mat-sys-outline);
+  --text-hint-light: rgba(255, 255, 255, 0.5);
+  --foreground-divider: var(--mat-sys-outline-variant);
+  --background-base: var(--mat-sys-surface);
+  --background-card: var(--emis-tile-surface);
+  --background-app-bar: var(--mat-sys-surface-container);
+  --background-hover: var(--emis-light-grey);
+  --border-radius: 4px;
+
+  // elevation: Material's own levels
+  --elevation-default: var(--mat-sys-level2);
+  --elevation-z0: none;
+  --elevation-z1: var(--mat-sys-level1);
+  --elevation-z2: var(--mat-sys-level2);
+  --elevation-z3: var(--mat-sys-level2);
+  --elevation-z4: var(--mat-sys-level3);
+  --elevation-z5: var(--mat-sys-level3);
+  --elevation-z6: var(--mat-sys-level3);
+  --elevation-z7: var(--mat-sys-level4);
+  --elevation-z8: var(--mat-sys-level4);
+  --elevation-z9: var(--mat-sys-level4);
+  --elevation-z10: var(--mat-sys-level4);
+  --elevation-z11: var(--mat-sys-level4);
+  --elevation-z12: var(--mat-sys-level5);
+  --elevation-z13: var(--mat-sys-level5);
+  --elevation-z14: var(--mat-sys-level5);
+  --elevation-z15: var(--mat-sys-level5);
+  --elevation-z16: var(--mat-sys-level5);
+  --elevation-z17: var(--mat-sys-level5);
+  --elevation-z18: var(--mat-sys-level5);
+  --elevation-z19: var(--mat-sys-level5);
+  --elevation-z20: var(--mat-sys-level5);
+
+  // shell geometry, as EMIS: 280px menu, 64px rail, 64px toolbar
+  --sidenav-width: 280px;
+  --sidenav-collapsed-width: 64px;
+  --sidenav-background: var(--emis-blue);
+  --sidenav-color: white;
+  --sidenav-item-padding: var(--padding);
+  --sidenav-toolbar-background: transparent;
+  --sidenav-item-background-active: var(--emis-blue-dark);
+  --sidenav-item-color: #f1f6fc;
+  --sidenav-item-color-active: #ffffff;
+  --sidenav-item-icon-color: #b9cfea;
+  --sidenav-item-icon-color-active: #f1f6fc;
+  --sidenav-item-icon-gap: 10px;
+  --sidenav-item-icon-size: 22px;
+  --sidenav-item-border-color: transparent;
+  --sidenav-item-border-color-active: #7fe3d8;
+  --sidenav-item-dropdown-background: var(--emis-blue-dark);
+  --sidenav-item-dropdown-background-hover: rgba(255, 255, 255, 0.08);
+  --sidenav-item-dropdown-gap: 12px;
+  --toolbar-height: 64px;
+  --toolbar-background: var(--mat-sys-surface);
+  --toolbar-color: var(--mat-sys-on-surface);
+  --toolbar-icon-color: var(--emis-blue);
+  --secondary-toolbar-background: var(--emis-blue);
+  --secondary-toolbar-height: 54px;
+  --navigation-height: 64px;
+  --navigation-background: var(--mat-sys-surface);
+  --navigation-color: var(--mat-sys-on-surface-variant);
+  --footer-height: 40px;
+  --footer-z-index: 2;
+  --footer-background: var(--mat-sys-surface);
+  --footer-color: var(--mat-sys-on-surface-variant);
+  --footer-elevation: none;
+  --page-layout-header-height: 150px;
+  --page-layout-toolbar-height: 64px;
+  --blink-scrollbar-width: 12px;
+  --default-icon-size: 24px;
+}

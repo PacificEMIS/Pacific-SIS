@@ -1,53 +1,13 @@
-@use '@angular/material' as mat;
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
-
-// SCSS Variables
-@import "var";
-
-// Styles / CSS Variables
-@import "partials/styles/style-dark";
-@import "partials/styles/style-light";
-@import "partials/styles/style-default";
-
-// Mixins
-@import "partials/mixins";
-
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
-// Material core, typography (2018 level names mapped from the Vex levels in _var.scss) and the
-// component themes on the static palettes; see vex-m2-theme in _var.scss.
-@include mat.elevation-classes();
-@include mat.app-background();
-@include mat.all-component-typographies($config);
-@include mat.typography-hierarchy($config);
-
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include mat.all-component-themes($vex-theme-static);
-
-// Partials
+// The Vex-era layer that remains after the re-theme: no Material theme (styles.scss carries the
+// Pacific EMIS one), only the layout helpers and element defaults the templates still rely on.
+// Each partial is a candidate for removal once the screens that use it are restyled.
 @import "partials/horizontal";
-@import "partials/vertical";
 @import "partials/print";
 @import "partials/typography";
 @import "partials/overrides";
 @import "partials/scrollbar";
 @import "partials/plugins/angular-material";
 @import "partials/flex-layout";
-
-// Layouts
-@import "partials/layouts/layout-apollo";
-@import "partials/layouts/layout-ares";
-@import "partials/layouts/layout-hermes";
-@import "partials/layouts/layout-ikaros";
-@import "partials/layouts/layout-zeus";
-
-// Plus imports for other components in your app.
-
-/* You can add global styles to this file, and also import other style files */
 
 html {
   box-sizing: border-box;
@@ -58,7 +18,6 @@ html {
 
 body {
   height: 100%;
-  @include mat.m2-typography-level($config, body-2);
   @apply text-black leading-normal antialiased;
   font-feature-settings: 'kern';
 }

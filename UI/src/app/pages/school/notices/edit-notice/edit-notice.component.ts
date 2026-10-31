@@ -52,9 +52,7 @@ import { OnlySchoolListModel } from 'src/app/models/get-all-school.model';
 @Component({
     selector: 'vex-edit-notice',
     templateUrl: './edit-notice.component.html',
-    styleUrls: ['./edit-notice.component.scss',
-        '../../../../../../node_modules/quill/dist/quill.snow.css',
-        '../../../../vex/styles/partials/plugins/_quill.scss'],
+    styleUrls: ['./edit-notice.component.scss'],
     animations: [
         stagger60ms,
         fadeInUp400ms

@@ -16,6 +16,8 @@
   background: linear-gradient(to bottom,  #0c3e8a 0%,#00a0dd 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0c3e8a', endColorstr='#00a0dd',GradientType=0 ); /* IE6-9 */
   z-index: 9;
+  // Material 3 gives the drawer a fixed 360px; the menu inside sets its own width (280px, 64px folded)
+  width: auto;
 
   ::ng-deep .mat-drawer-inner-container {
     overflow: hidden;

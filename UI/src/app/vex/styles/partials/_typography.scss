@@ -1,82 +1,14 @@
-@use '@angular/material' as mat;
-// Typography
-
-/*
-  InterDynamicTracking takes the font size in points
-  or pixels and returns the compensating tracking in EM.
-  function InterDynamicTracking(fontSize) {
-    const a = -0.0223
-    const b = 0.185
-    const c = -0.1745;
-    // tracking = a + b * e ^ (c * fontSize)
-    return a + b * Math.pow(Math.E, c * fontSize)
-  }
-*/
-
-.display-4 {
-  @include mat.m2-typography-level($config, headline-1);
-}
-
-.display-3 {
-  @include mat.m2-typography-level($config, headline-2);
-}
-
-.display-2 {
-  @include mat.m2-typography-level($config, headline-3);
-}
-
-.display-1, h1 {
-  @include mat.m2-typography-level($config, headline-4);
-}
-
-.headline, h2 {
-  @include mat.m2-typography-level($config, headline-5);
-}
-
-.title, h3 {
-  @include mat.m2-typography-level($config, headline-6);
-}
-
-.subheading-2, h4 {
-  @include mat.m2-typography-level($config, subtitle-1);
-}
-
-.subheading-1, h5 {
-  @include mat.m2-typography-level($config, subtitle-2);
-}
-
-.body-2, h6 {
-  @include mat.m2-typography-level($config, body-1);
-}
-
-.body-1, p {
-  @include mat.m2-typography-level($config, body-2);
-}
-
-.caption {
-  @include mat.m2-typography-level($config, caption);
-}
-
-.text-xs {
-  letter-spacing: 0;
-}
-
-.text-sm {
-  letter-spacing: -0.009em;
-}
-
-.text-base {
-  letter-spacing: -0.011em;
-}
-
-.text-lg {
-  letter-spacing: -0.014em;
-}
-
-.text-2xl {
-  letter-spacing: -0.019em;
-}
-
-.text-3xl {
-  letter-spacing: -0.021em;
-}
+// The Vex typography classes the templates use (headline in 100 templates, title, subheading-*,
+// body-*, caption), on the Material 3 typescale tokens of the EMIS theme.
+.display-4 { font: var(--mat-sys-display-large); }
+.display-3 { font: var(--mat-sys-display-medium); }
+.display-2 { font: var(--mat-sys-display-small); }
+.display-1, h1 { font: var(--mat-sys-headline-medium); }
+.headline, h2 { font: var(--mat-sys-headline-small); }
+.title, h3 { font: var(--mat-sys-title-large); }
+.subheading-2, h4 { font: var(--mat-sys-title-medium); }
+.subheading-1, h5 { font: var(--mat-sys-title-small); }
+.body-2, h6 { font: var(--mat-sys-body-medium); font-weight: 500; }
+.body-1 { font: var(--mat-sys-body-medium); }
+.caption { font: var(--mat-sys-body-small); }
+h1, h2, h3, h4, h5, h6 { margin: 0 0 0.5em; }

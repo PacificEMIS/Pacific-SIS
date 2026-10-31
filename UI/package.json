@@ -26,6 +26,7 @@
     "@angular/router": "^22.2.4",
     "@auth0/angular-jwt": "~5.0.2",
     "@danielmoncada/angular-datetime-picker": "^22.0.0",
+    "@fontsource/roboto": "^5.3.0",
     "@ngneat/until-destroy": "^10.0.0",
     "@ngx-loading-bar/core": "^6.0.2",
     "@ngx-loading-bar/router": "^6.0.2",
