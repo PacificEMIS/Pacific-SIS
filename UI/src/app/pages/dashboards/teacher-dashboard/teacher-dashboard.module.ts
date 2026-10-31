@@ -8,6 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
 import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
 import { MatButtonModule } from '@angular/material/button';
+import { StatRowComponent, StatTileComponent } from 'src/app/shared/dashboard/stat-tile.component';
 import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module';
 import { ContainerModule } from '@vex/directives/container/container.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -31,6 +32,8 @@ import { SharedModuleModule } from '../../shared-module/shared-module.module';
     SecondaryToolbarModule,
     BreadcrumbsModule,
     MatButtonModule,
+    StatRowComponent,
+    StatTileComponent,
     PageLayoutModule,
     ContainerModule,
     TranslateModule,

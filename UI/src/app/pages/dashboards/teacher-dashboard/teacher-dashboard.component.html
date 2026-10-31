@@ -6,20 +6,18 @@
     </vex-page-layout-header>
     <vex-page-layout-content class="">
 
-        <div class="card px-6 py-4 border border-warn text-warn text-lg font-semibold bg-warn-light mb-4 cursor-pointer" *ngIf="scheduledCourseSectionViewModel?.missingAttendanceCount>0" (click)="goTeacherMissingAttendance()" >
-            <mat-icon class="align-middle mr-3">{{ icMissingAttendance }}</mat-icon>
-            {{scheduledCourseSectionViewModel.missingAttendanceCount}} {{
-            'missingAttendanceFound' | translate }}
-        </div>
+        <!-- Headline figures and the notifications, as the Pacific EMIS dashboards -->
+        <emis-stat-row class="mb-4">
+            <emis-stat-tile [label]="(allCourseFlag ? 'allClasses' : 'todaysClasses') | translate" [value]="classCount"></emis-stat-tile>
+            <emis-stat-tile *ngIf="scheduledCourseSectionViewModel?.missingAttendanceCount>0" [label]="'missingAttendanceFound' | translate"
+                [value]="scheduledCourseSectionViewModel.missingAttendanceCount" tone="bad" class="cursor-pointer"
+                (click)="goTeacherMissingAttendance()"></emis-stat-tile>
+        </emis-stat-row>
 
-        <div *ngIf="scheduledCourseSectionViewModel?.missingAttendanceCount>0" class="card px-6 py-4 border-2 border-blue mb-4">
-            <div class="text-blue relative">
-                <mat-icon class="align-middle mr-5">{{ icAssessment }}</mat-icon>
-                <mat-icon class="absolute text-warn ic-warning text-base">{{ icWarning }}</mat-icon>
-                <span class="text-lg font-medium">{{ 'notification' | translate }}</span>
-            </div>
-            <ul class="pl-6 md:pl-16 -mx-1" *ngFor="let notification of notificationsList">
-                <li class="list-disc mb-1">{{notification}}</li>
+        <div *ngIf="scheduledCourseSectionViewModel?.missingAttendanceCount>0 && notificationsList?.length" class="dash-message">
+            <mat-icon>{{ icAssessment }}</mat-icon>
+            <ul class="m-0 pl-4">
+                <li *ngFor="let notification of notificationsList">{{notification}}</li>
             </ul>
         </div>
 
