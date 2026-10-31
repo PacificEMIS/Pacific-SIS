@@ -57,7 +57,7 @@ html {
 
 body {
   height: 100%;
-  @include mat.typography-level($config, body-2);
+  @include mat.m2-typography-level($config, body-2);
   @apply text-black leading-normal antialiased;
   font-feature-settings: 'kern';
 }

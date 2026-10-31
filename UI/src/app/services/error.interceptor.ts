@@ -1,10 +1,4 @@
-import {
-    HttpEvent,
-    HttpHandler,
-    HttpRequest,
-    HttpErrorResponse,
-    HttpInterceptor
-} from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpRequest, HttpErrorResponse, HttpInterceptor } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { ResponseMessageService } from './response-message.service';

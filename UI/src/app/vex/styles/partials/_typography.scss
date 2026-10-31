@@ -14,47 +14,47 @@
 */
 
 .display-4 {
-  @include mat.typography-level($config, headline-1);
+  @include mat.m2-typography-level($config, headline-1);
 }
 
 .display-3 {
-  @include mat.typography-level($config, headline-2);
+  @include mat.m2-typography-level($config, headline-2);
 }
 
 .display-2 {
-  @include mat.typography-level($config, headline-3);
+  @include mat.m2-typography-level($config, headline-3);
 }
 
 .display-1, h1 {
-  @include mat.typography-level($config, headline-4);
+  @include mat.m2-typography-level($config, headline-4);
 }
 
 .headline, h2 {
-  @include mat.typography-level($config, headline-5);
+  @include mat.m2-typography-level($config, headline-5);
 }
 
 .title, h3 {
-  @include mat.typography-level($config, headline-6);
+  @include mat.m2-typography-level($config, headline-6);
 }
 
 .subheading-2, h4 {
-  @include mat.typography-level($config, subtitle-1);
+  @include mat.m2-typography-level($config, subtitle-1);
 }
 
 .subheading-1, h5 {
-  @include mat.typography-level($config, subtitle-2);
+  @include mat.m2-typography-level($config, subtitle-2);
 }
 
 .body-2, h6 {
-  @include mat.typography-level($config, body-1);
+  @include mat.m2-typography-level($config, body-1);
 }
 
 .body-1, p {
-  @include mat.typography-level($config, body-2);
+  @include mat.m2-typography-level($config, body-2);
 }
 
 .caption {
-  @include mat.typography-level($config, caption);
+  @include mat.m2-typography-level($config, caption);
 }
 
 .text-xs {

@@ -16,32 +16,26 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { NgxDropzoneModule } from 'ngx-dropzone';
-import {HttpClientModule} from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {SharedModuleModule} from '../../shared-module/shared-module.module'
 import { MatTooltipModule } from '@angular/material/tooltip';
-@NgModule({
-  declarations: [StaffDataImportComponent],
-  imports: [
-    CommonModule,
-    StaffDataImportRoutingModule,
-    SecondaryToolbarModule,
-    BreadcrumbsModule,
-    MatIconModule,
-    MatButtonModule,
-    PageLayoutModule,
-    ContainerModule,
-    TranslateModule,
-    MatDividerModule,
-    MatInputModule,
-    MatDialogModule,
-    MatSelectModule,
-    MatProgressSpinnerModule,
-    FormsModule,
-    NgxDropzoneModule,
-    HttpClientModule,
-    SharedModuleModule,
-    MatTooltipModule
-  ],
-  exports:[StaffDataImportComponent]
-})
+@NgModule({ declarations: [StaffDataImportComponent],
+    exports: [StaffDataImportComponent], imports: [CommonModule,
+        StaffDataImportRoutingModule,
+        SecondaryToolbarModule,
+        BreadcrumbsModule,
+        MatIconModule,
+        MatButtonModule,
+        PageLayoutModule,
+        ContainerModule,
+        TranslateModule,
+        MatDividerModule,
+        MatInputModule,
+        MatDialogModule,
+        MatSelectModule,
+        MatProgressSpinnerModule,
+        FormsModule,
+        NgxDropzoneModule,
+        SharedModuleModule,
+        MatTooltipModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class StaffDataImportModule { }

@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { VexModule } from '@vex/vex.module';
-import { HttpClientModule,HTTP_INTERCEPTORS} from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CustomLayoutModule } from './custom-layout/custom-layout.module';
 import { ErrorIntercept } from './services/error.interceptor';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -37,10 +37,9 @@ export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
  enableProdMode();
-@NgModule({
-    declarations: [AppComponent],
-    imports: [
-        BrowserModule,
+@NgModule({ declarations: [AppComponent],
+    bootstrap: [AppComponent],
+    exports: [], imports: [BrowserModule,
         NgxMaskDirective, NgxMaskPipe,
         AngularCalendarModule.forRoot({
             provide: DateAdapter,
@@ -48,7 +47,6 @@ export function createTranslateLoader(http: HttpClient) {
         }),
         AppRoutingModule,
         BrowserAnimationsModule,
-        HttpClientModule,
         MatInputModule,
         MatSelectModule,
         MatDatepickerModule,
@@ -61,7 +59,6 @@ export function createTranslateLoader(http: HttpClient) {
         // Vex
         VexModule,
         CustomLayoutModule,
-        HttpClientModule,
         QuillModule.forRoot({
             modules: {
                 toolbar: [
@@ -87,9 +84,7 @@ export function createTranslateLoader(http: HttpClient) {
                 useFactory: (createTranslateLoader),
                 deps: [HttpClient]
             }
-        })
-    ],
-    providers: [
+        })], providers: [
         // MDC slide toggles draw on/off icons inside the handle by default; the app never showed them.
         { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } },
         provideNgxMask(),
@@ -102,9 +97,7 @@ export function createTranslateLoader(http: HttpClient) {
         { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
         LoaderService,
         JwtHelperService,
-        ResponseMessageService, DatePipe
-    ],
-    bootstrap: [AppComponent],
-    exports: []
-})
+        ResponseMessageService, DatePipe,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }
