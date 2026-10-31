@@ -27,7 +27,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CourseSectionService } from '../../../services/course-section.service';
 import { ClassRoomURLInCourseSectionModel, CourseSectionAddViewModel, GetAllCourseSectionModel } from 'src/app/models/course-section.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({

@@ -24,12 +24,12 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { GetAllMembersList } from '../../../../models/membership.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CalendarEventAddViewModel, colors } from '../../../../models/calendar-event.model';
 import { CalendarEventService } from '../../../../services/calendar-event.service';
 import { CalendarService } from '../../../../services/calendar.service';
@@ -38,7 +38,7 @@ import * as moment from 'moment';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/confirm-dialog.component';
 import { SharedFunction } from '../../../shared/shared-function';
-import { MatLegacyCheckbox as MatCheckbox } from '@angular/material/legacy-checkbox';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { RollBasedAccessService } from '../../../../services/roll-based-access.service';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../../models/roll-based-access.model';
 import { CryptoService } from '../../../../services/Crypto.service';

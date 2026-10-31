@@ -24,17 +24,17 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router} from '@angular/router';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { EditCommonToiletAccessibilityComponent } from './edit-common-toilet-accessibility/edit-common-toilet-accessibility.component';
 import { LovAddView, LovList, LoVSortOrderValuesModel, UpdateLovSortingModel } from '../../../models/lov.model';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { MatLegacyPaginator as MatPaginator, MatLegacyPaginatorIntl as MatPaginatorIntl } from '@angular/material/legacy-paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { ExcelService } from '../../../services/excel.service';
 import { CommonService } from '../../../services/common.service';
 import { LoaderService } from '../../../services/loader.service';

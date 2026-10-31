@@ -24,11 +24,11 @@ All rights reserved.
 ***********************************************************************************/
 
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { AddCourseSectionComponent } from './add-course-section/add-course-section.component';
 import { StudentScheduleService } from 'src/app/services/student-schedule.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CourseManagerService } from 'src/app/services/course-manager.service';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -43,10 +43,10 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GetUnassociatedStudentListByCourseSectionModel, ScheduledStudentDeleteModel } from 'src/app/models/student-schedule.model';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatTableDataSource } from '@angular/material/table';
 import { UntypedFormControl } from '@angular/forms';
-import { MatLegacyPaginator as MatPaginator, MatLegacyPaginatorIntl as MatPaginatorIntl } from '@angular/material/legacy-paginator';
-import { MatLegacyCheckbox as MatCheckbox } from '@angular/material/legacy-checkbox';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import { RemoveStaffCourseSectionSchedule, ScheduledStaffForCourseSection } from 'src/app/models/course-section.model';
 import { CourseSectionService } from 'src/app/services/course-section.service';

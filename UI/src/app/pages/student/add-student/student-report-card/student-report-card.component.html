@@ -1,4 +1,4 @@
-<mat-card class="w-full mb-6">
+<mat-card appearance="outlined" class="w-full mb-6">
     <div class="">
         <div class="mb-4">
             <ul class="grid md:grid-cols-4 gap-x-4 gap-y-2">
@@ -56,7 +56,7 @@
     </div>
 </mat-card>
 
-<mat-card *ngIf="pdfData">
+<mat-card appearance="outlined" *ngIf="pdfData">
     <div class="card ">
         <ngx-doc-viewer [url]="'data:application/pdf;base64,' +  this.pdfData.reportCardPdf"  viewer="pdf"  style="width:100%;height:93vh;">
         </ngx-doc-viewer>

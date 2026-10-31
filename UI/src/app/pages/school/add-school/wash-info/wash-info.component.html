@@ -1,6 +1,6 @@
 <form (ngSubmit)="submit()" #f="ngForm" novalidate appInvalidControlScroll
     *ngIf="schoolCreateMode==schoolCreate.EDIT || schoolCreateMode==schoolCreate.ADD">
-    <mat-card @fadeInUp class="w-full">
+    <mat-card appearance="outlined" @fadeInUp class="w-full">
         <h3 class="font-medium">{{'washInformation'|translate}}</h3>
 
         <mat-card-content>
@@ -222,7 +222,7 @@
 
 
 
-<mat-card @fadeInUp class="w-full" *ngIf="schoolCreateMode == schoolCreate.VIEW">
+<mat-card appearance="outlined" @fadeInUp class="w-full" *ngIf="schoolCreateMode == schoolCreate.VIEW">
     <div class="flex items-center">
         <h3 class="flex-auto">{{'washInformation'|translate}}</h3>
         <button  *ngIf="permissions?.edit" mat-raised-button color="primary" (click)="editWashInfo()">

@@ -29,7 +29,7 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { StudentService } from '../../../../services/student.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from '../../../../services/common.service';
 import { StudentAddModel } from '../../../../models/student.model';
@@ -44,10 +44,10 @@ import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } fro
 import { CryptoService } from '../../../../services/Crypto.service';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { ReplaySubject, Subject } from 'rxjs';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
+import { MatSelect } from '@angular/material/select';
 import { takeUntil } from 'rxjs/operators';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/confirm-dialog.component';
 @Component({
   selector: 'vex-student-addressandcontacts',

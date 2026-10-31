@@ -1,7 +1,7 @@
 <form (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate
     *ngIf="studentCreateMode==studentCreate.EDIT || studentCreateMode==studentCreate.ADD">
 
-    <mat-card class="w-full">
+    <mat-card appearance="outlined" class="w-full">
             <h3 class="font-medium">{{'addressAndContact'|translate}}</h3>
         <mat-card-content>
 
@@ -253,7 +253,7 @@
     </mat-card>
 </form>
 
-<mat-card class="w-full" *ngIf="studentCreateMode == studentCreate.VIEW">
+<mat-card appearance="outlined" class="w-full" *ngIf="studentCreateMode == studentCreate.VIEW">
 
     <div class="flex items-center fx-row fx-align-center-center">
         <h3 class="font-medium flex-auto">{{'addressAndContact' | translate}}</h3>

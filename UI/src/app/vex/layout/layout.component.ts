@@ -9,14 +9,14 @@ import { checkRouterChildsData } from '../utils/check-router-childs-data';
 import { DOCUMENT } from '@angular/common';
 import { ConfigService } from '../services/config.service';
 import * as jwt_decode from 'jwt-decode';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { SessionExpireAlertComponent } from './session-expire/session-expire-alert/session-expire-alert.component';
 import { DefaultValuesService } from '../../common/default-values.service';
 import { interval, Subscription, timer } from 'rxjs';
 import { UserViewModel } from 'src/app/models/user.model';
 import { SessionService } from '../services/session.service';
 import { UserIdleService } from 'angular-user-idle';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from '../../services/common.service';
 
 @UntilDestroy()

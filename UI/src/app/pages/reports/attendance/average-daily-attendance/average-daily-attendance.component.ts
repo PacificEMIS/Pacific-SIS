@@ -7,8 +7,8 @@ import { AttendanceCodeService } from 'src/app/services/attendance-code.service'
 import { CommonService } from 'src/app/services/common.service';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { MarkingPeriodListModel } from 'src/app/models/marking-period.model';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { LoaderService } from 'src/app/services/loader.service';

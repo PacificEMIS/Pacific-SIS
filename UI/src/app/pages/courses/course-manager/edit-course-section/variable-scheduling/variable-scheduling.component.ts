@@ -27,7 +27,7 @@ import { Component, OnInit, ViewChild, Input, OnChanges, EventEmitter, Output, S
 import { weekDay } from '../../../../../enums/day.enum';
 import { SchoolPeriodService } from '../../../../../services/school-period.service';
 import { BlockListViewModel } from '../../../../../models/school-period.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { RoomService } from '../../../../../services/room.service';
 import { RoomListViewModel } from '../../../../../models/room.model';
 import { CourseVariableSchedule, OutputEmitDataFormat, CourseSectionAddViewModel, DeleteCourseSectionSchedule } from '../../../../../models/course-section.model';

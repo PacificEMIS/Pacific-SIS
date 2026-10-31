@@ -1,4 +1,4 @@
-<mat-card class="w-full fx-auto">
+<mat-card appearance="outlined" class="w-full fx-auto">
     <div class="flex items-center pb-4 fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'documents' | translate}}</h3>
         <button *ngIf="(membershipType === 'Teacher' || membershipType === 'Homeroom Teacher') && this.defaultValuesService.checkAcademicYear() && permissions?.add" mat-raised-button color="primary" (click)="toggleDisplayDiv()">

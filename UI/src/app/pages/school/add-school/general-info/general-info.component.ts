@@ -31,7 +31,7 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { SchoolService } from '../../../../services/school.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
@@ -58,11 +58,11 @@ import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } fro
 import { RollBasedAccessService } from '../../../../services/roll-based-access.service';
 import { Router } from '@angular/router';
 import { CryptoService } from '../../../../services/Crypto.service';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
+import { MatSelect } from '@angular/material/select';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { Module } from 'src/app/enums/module.enum';
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { CaptureDateComponent } from '../capture-date/capture-date.component';
 
 @Component({

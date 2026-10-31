@@ -1,6 +1,6 @@
 <form (ngSubmit)="submit()" #f="ngForm" appInvalidControlScroll
     *ngIf="studentCreateMode==studentCreate.EDIT || studentCreateMode==studentCreate.ADD">
-    <mat-card class="w-full">
+    <mat-card appearance="outlined" class="w-full">
         <h3 class="flex-auto h-9">{{'medicalInformation' | translate}}</h3>
         <mat-card-content class="mb-0">
             <div @stagger class="-mx-4 fx-column">
@@ -369,7 +369,7 @@
     </mat-card>
 </form>
 
-<mat-card class="w-full" *ngIf="studentCreateMode == studentCreate.VIEW">
+<mat-card appearance="outlined" class="w-full" *ngIf="studentCreateMode == studentCreate.VIEW">
 
     <div class="flex items-center mb-2 fx-row fx-align-center-center">
         <h3 class="flex-auto h-9">{{'medicalInformation' | translate}}</h3>

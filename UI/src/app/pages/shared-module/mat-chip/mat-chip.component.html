@@ -2,18 +2,17 @@
 <div class="w-full">
     <mat-form-field class="w-full mat-chips" appearance="outline" color="primary">
         <mat-label class="mb-2">{{ labelName|translate }}</mat-label>
-        <mat-chip-list #chipList aria-label="Fruit selection">
-            <mat-chip
-                *ngFor="let report of matChipList "
-                [selectable]="selectable" [removable]="removable"
+        <mat-chip-grid #chipList aria-label="Fruit selection">
+            <mat-chip-row
+                *ngFor="let report of matChipList " [removable]="removable"
                 (removed)="remove(report)">
                 {{report}}
                 <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-            </mat-chip>
+            </mat-chip-row>
             <input #fruitInput [(ngModel)]="chipModelList"
                 [matAutocomplete]="auto" [matChipInputFor]="chipList"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [disabled]="isReadOnly">
-        </mat-chip-list>
+        </mat-chip-grid>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
             <mat-option *ngFor="let list of matChipAutocompleteList" [value]="list[valueKey]">
                 {{list[titleKey]}}

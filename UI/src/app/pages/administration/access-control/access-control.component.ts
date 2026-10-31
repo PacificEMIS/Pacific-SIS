@@ -28,10 +28,10 @@ import { MatAccordion } from '@angular/material/expansion';
 import { RollBasedAccessService } from '../../../services/roll-based-access.service';
 import { RolePermissionListViewModel, RolePermissionViewModel, PermissionCategory, RolePermission, PermissionSubCategory, PermissionGroupListViewModel } from '../../../models/roll-based-access.model';
 import { NgForm } from '@angular/forms';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CryptoService } from '../../../services/Crypto.service';
 import { NavigationService } from '@vex/services/navigation.service';
-import { MatLegacySlideToggleChange as MatSlideToggleChange } from '@angular/material/legacy-slide-toggle';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 

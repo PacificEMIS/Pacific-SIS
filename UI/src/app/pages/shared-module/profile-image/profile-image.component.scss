@@ -26,7 +26,7 @@
     bottom: 0;
   }
 
-  ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
+  ::ng-deep .mat-mdc-progress-spinner circle, .mat-mdc-progress-spinner circle {
     stroke: #ffffff;
 }
 
@@ -49,7 +49,7 @@
 
 }
 
-.mat-dialog-actions{
+.mat-mdc-dialog-actions{
   display: block !important;
 }
 // ::ng-deep .cdk-overlay-container{

@@ -175,18 +175,17 @@
                 <div class="w-full">
                     <mat-form-field class="w-full mat-chips" appearance="outline" color="primary">
                         <mat-label class="mb-2">{{ "searchAndSelectPredefinedComments" | translate }}</mat-label>
-                        <mat-chip-list #chipList aria-label="Fruit selection" [disabled]="!canPostGrades()">
-                            <mat-chip
-                                *ngFor="let report of addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent]?.studentFinalGradeComments"
-                                [selectable]="selectable" [removable]="removable"
+                        <mat-chip-grid #chipList aria-label="Fruit selection" [disabled]="!canPostGrades()">
+                            <mat-chip-row
+                                *ngFor="let report of addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent]?.studentFinalGradeComments" [removable]="removable"
                                 (removed)="removeComment(report.courseCommentId)">
                                 {{report.comments}}
                                 <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                            </mat-chip>
+                            </mat-chip-row>
                             <input placeholder="Add Comments..." #fruitInput [(ngModel)]="studentFinalGradeComments"
                                 [matAutocomplete]="auto" [matChipInputFor]="chipList"
                                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
-                        </mat-chip-list>
+                        </mat-chip-grid>
                         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
                             <mat-option *ngFor="let report of reportCardComments" [value]="report">
                                 {{report.comments}}
@@ -195,7 +194,7 @@
                     </mat-form-field>
                     <!-- <div class="w-full p-0">
                             <mat-chip-list #chipList aria-label="Choose a date" (click)="picker.open()">
-                                <mat-chip *ngFor="let report of reportCardComments" [selectable]="false" [removable]="true"
+                                <mat-chip *ngFor="let report of reportCardComments" [removable]="true"
                                     (removed)="removeComment(removeComment(report.courseCommentId))">
                                     {{report.comments}}
                                     <mat-icon matChipRemove *ngIf="true">cancel</mat-icon>

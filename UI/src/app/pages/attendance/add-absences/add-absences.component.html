@@ -66,13 +66,13 @@
                                 </mat-form-field>
                             </div>
                             <div class="w-full p-0">
-                                <mat-chip-list #chipList aria-label="Choose a date" (click)="picker.open()">
-                                    <mat-chip *ngFor="let value of model" [selectable]="false" [removable]="true"
+                                <mat-chip-grid #chipList aria-label="Choose a date" (click)="picker.open()">
+                                    <mat-chip-row *ngFor="let value of model" [removable]="true"
                                         (removed)="remove(value)">
                                         {{ value | date }}
                                         <mat-icon matChipRemove *ngIf="true">cancel</mat-icon>
-                                    </mat-chip>
-                                </mat-chip-list>
+                                    </mat-chip-row>
+                                </mat-chip-grid>
                             </div>
                         </div>
                     </li>

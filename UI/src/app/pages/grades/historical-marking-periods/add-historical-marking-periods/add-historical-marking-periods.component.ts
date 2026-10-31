@@ -6,9 +6,9 @@ import { MatDatepicker } from '@angular/material/datepicker';
 import * as _moment from 'moment';
 import { default as _rollupMoment, Moment } from 'moment';
 import { HistoricalMarkingPeriodAddViewModel } from 'src/app/models/historical-marking-period.model';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
 import { HistoricalMarkingPeriodService } from 'src/app/services/historical-marking-period.service';
 import { SharedFunction } from '../../../../pages/shared/shared-function'

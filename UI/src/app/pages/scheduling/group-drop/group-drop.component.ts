@@ -24,22 +24,22 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { AddCourseSectionComponent } from './add-course-section/add-course-section.component';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { StudentScheduleService } from '../../../services/student-schedule.service';
 import { ScheduledStudentDropModel, ScheduleStudentForView, ScheduleStudentListViewModel } from '../../../models/student-schedule.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 import { SelectionModel } from '@angular/cdk/collections';
 import { LoaderService } from '../../../services/loader.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { SharedFunction } from '../../shared/shared-function';
-import { MatLegacyCheckbox as MatCheckbox } from '@angular/material/legacy-checkbox';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from '../../../services/common.service';

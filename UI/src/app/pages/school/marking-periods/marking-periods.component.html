@@ -9,7 +9,7 @@
 
     <div class="md:flex -mt-16 mx-2" [ngClass]="viewDetailsModal===1?'showing-details':''" *ngIf="list.length > 0 ; else noData">
         <div class="w-full md:w-6/12 lg:w-5/12 px-4">
-                <mat-card @stagger class="w-full">
+                <mat-card appearance="outlined" @stagger class="w-full">
                     <div class="flex items-center pl-0">
                         <h6 class="flex-auto">{{'markingPeriodsList' | translate}}</h6>
                         <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" (click)="openAddNew()" type="button" color="primary" mat-raised-button><mat-icon class="ltr:-ml-1 rtl:-mr-1 rtl:ml-2 ic-inline" inline>{{ icAdd }}</mat-icon>
@@ -51,7 +51,7 @@
                 </mat-card>
                     </div>
         <div class="marking-period-details md:w-6/12 lg:w-7/12 px-4">
-            <mat-card @fadeInUp class="w-full pt-2">
+            <mat-card appearance="outlined" @fadeInUp class="w-full pt-2">
                 <div class="flex items-center mb-2">
                     <h3 class="flex-auto" *ngIf="viewFirstChild != undefined">{{viewFirstChild.title}}</h3>
                     <div>

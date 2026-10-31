@@ -1,6 +1,6 @@
 <div class="mb-2 lg:flex w-full lg:flex-wrap">
     <div class="mb-6 lg:w-3/12 lg:pr-4" *ngIf="blockCount > 1">
-        <mat-card class="w-full p-0">
+        <mat-card appearance="outlined" class="w-full p-0">
             <div class="py-4">
                 <h4 class="px-gutter mb-4 font-bold">{{'blockRotationDays'|translate}}</h4>
                 <hr />
@@ -35,7 +35,7 @@
     </div>
 
     <div [ngClass]="(blockCount > 1)?'lg:w-9/12 lg:pl-4':'flex-1' ">
-        <mat-card class="w-full p-0 mb-4">
+        <mat-card appearance="outlined" class="w-full p-0 mb-4">
             <div *ngIf="2 > blockCount" class="flex items-center mx-6 py-4">
                 <h4>{{'showingPeriodsForAllDays' | translate}}</h4>
                 <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" mat-raised-button type="button"
@@ -196,7 +196,7 @@
                 </button>
             </mat-menu>
         </mat-card>
-        <mat-card *ngIf="blockPeriodForHalfDayFullDayModel?.block?.blockId">
+        <mat-card appearance="outlined" *ngIf="blockPeriodForHalfDayFullDayModel?.block?.blockId">
             <h4 class="text-blue mb-2">{{ 'setFullDayAndHalfDayMinutes' | translate }}</h4>
             <div *ngIf="viewSetMinutes">
                 <ul class="grid sm:grid-cols-3 gap-x-8 gap-y-6 md:gap-y-10 mb-2">

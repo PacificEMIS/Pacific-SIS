@@ -5,7 +5,7 @@ import { DatabaseBackupModel } from 'src/app/models/common.model';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { formatDate } from '@angular/common';
 import { LoaderService } from 'src/app/services/loader.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'vex-database-backup',

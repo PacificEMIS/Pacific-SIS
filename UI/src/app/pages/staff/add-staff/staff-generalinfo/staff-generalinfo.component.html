@@ -1,4 +1,4 @@
-<mat-card class="w-full" *ngIf="staffCreateMode == staffCreate.EDIT || staffCreateMode == staffCreate.ADD">
+<mat-card appearance="outlined" class="w-full" *ngIf="staffCreateMode == staffCreate.EDIT || staffCreateMode == staffCreate.ADD">
     <form (ngSubmit)="checkSubmitStaff()" #f="ngForm" novalidate appInvalidControlScroll>
         <h3 class="mb-6">{{'generalInformation'|translate}}</h3>
         <mat-card-content>
@@ -361,7 +361,7 @@
 
 
 <!--View-->
-<mat-card class="w-full" *ngIf="staffCreateMode == staffCreate.VIEW">
+<mat-card appearance="outlined" class="w-full" *ngIf="staffCreateMode == staffCreate.VIEW">
     <div class="flex items-center fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'generalInformation' | translate}}</h3>
         <button *ngIf="permissions.edit" mat-raised-button color="primary" (click)="editGeneralInfo()">

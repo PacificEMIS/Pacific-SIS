@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -7,7 +7,7 @@ import { RoutineView, RoutineViewEvent, RoutineViewModel } from '../../../models
 import { days, uniqueColors, weeks } from '../../../common/static-data';
 import { Transform24to12Pipe } from '../../shared-module/user-define-pipe/transform-24to12.pipe';
 import { CourseSectionViewModel, ScheduledCourseSectionsForStaffModel, ScheduledCourseSectionTableModel, ScheduleDetailsModel } from '../../../models/staff.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedFunction } from '../../shared/shared-function';
 import { MarkingPeriodService } from '../../../services/marking-period.service';
 import { StaffService } from '../../../services/staff.service';

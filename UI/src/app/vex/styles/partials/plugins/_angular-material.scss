@@ -1,62 +1,79 @@
-.mat-icon-button .mat-button-wrapper > *,
+.mat-mdc-icon-button .mat-mdc-button-wrapper > *,
 .mat-menu-item .mat-icon,
 .mat-button .mat-icon {
   vertical-align: middle !important;
 }
 
+/*
+TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
+*/
+/*
+TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
+*/
 .mat-form-field-suffix, .mat-form-field-prefix {
-  .mat-icon-button .mat-icon {
+  .mat-mdc-icon-button .mat-icon {
     font-size: inherit;
   }
 }
 
-.mat-table {
+.mat-mdc-table {
   mat-row,
   mat-header-row,
   mat-footer-row,
-  th.mat-header-cell,
-  td.mat-cell,
-  td.mat-footer-cell {
+  th.mat-mdc-header-cell,
+  td.mat-mdc-cell,
+  td.mat-mdc-footer-cell {
     border-bottom-color: var(--foreground-divider);
   }
 }
 
-.mat-form-field {
+.mat-mdc-form-field {
   margin-bottom: 4px;
 }
 
-.mat-primary.mat-form-field {
+.mat-primary.mat-mdc-form-field {
+  /*
+TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
+*/
   .mat-form-field-prefix,
   .mat-form-field-suffix {
     transition: var(--trans-ease-out);
   }
-
+  /*
+TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
+*/
   &.mat-focused .mat-form-field-prefix,
   &.mat-focused .mat-form-field-suffix {
     @apply text-primary;
   }
 }
 
-.mat-form-field.mat-form-field-invalid {
+.mat-mdc-form-field.mat-form-field-invalid {
+  /*
+TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
+*/
   &.mat-focused .mat-form-field-prefix,
   &.mat-focused .mat-form-field-suffix {
     @apply text-red;
   }
 }
 
-.mat-table .mat-cell,
-.mat-table .mat-header-cell {
+.mat-mdc-table .mat-mdc-cell,
+.mat-table .mat-mdc-header-cell {
   box-sizing: content-box;
   padding-left: var(--padding-12);
   padding-right: var(--padding-12);
   white-space: nowrap;
 }
 
-.mat-paginator-page-size-select.mat-form-field .mat-form-field-flex {
+/*
+TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
+*/
+.mat-paginator-page-size-select.mat-mdc-form-field .mat-form-field-flex {
   padding-top: 0;
 }
 
-.mat-menu-item ic-icon {
+.mat-mdc-menu-item ic-icon {
   margin-inline-end: var(--padding-16);
   vertical-align: middle;
 
@@ -65,7 +82,7 @@
   }
 }
 
-.mat-select-panel {
+.mat-mdc-select-panel {
   @apply text-base;
 }
 
@@ -73,11 +90,14 @@
   border: 0;
 }
 
-textarea.mat-input-element {
+textarea.mat-mdc-input-element {
   @apply leading-normal;
 }
 
 .vex-flex-form-field {
+  /*
+TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
+*/
   .mat-form-field-infix {
     width: 50px;
   }
@@ -87,6 +107,9 @@ textarea.mat-input-element {
   margin-bottom: -1.34375em;
 
   &.mat-form-field-appearance-outline {
+    /*
+TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.
+*/
     .mat-form-field-infix {
       padding-top: 4px;
     }
@@ -94,16 +117,24 @@ textarea.mat-input-element {
 }
 
 .vex-tabs {
+  /*
+TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.
+*/
   .mat-tab-label.mat-tab-label-active {
     opacity: 1;
   }
-
-  .mat-tab-link.mat-tab-label-active {
+  /*
+TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.
+*/
+  .mat-mdc-tab-link.mat-tab-label-active {
     opacity: 1;
   }
 }
 
 .vex-tabs-dense {
+  /*
+TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.
+*/
   .mat-tab-label {
     min-width: 0;
   }
@@ -113,7 +144,7 @@ textarea.mat-input-element {
   text-transform: uppercase;
 }
 
-.mat-card-image {
+.mat-mdc-card-image {
   max-width: none;
 }
 
@@ -135,4 +166,18 @@ textarea.mat-input-element {
 // component style injected after this stylesheet, hence the extra specificity.
 mat-icon.mat-icon {
   overflow: visible;
+}
+
+// Tailwind's preflight sets border-style: solid on every element. MDC's outlined form field gives all
+// four borders of the outline pieces a 1px width and relies on the left/right border-style staying
+// none, so the preflight made the notch edges visible as vertical lines beside the floating label.
+.mat-mdc-form-field .mdc-notched-outline__notch {
+  border-left-style: none;
+  border-right-style: none;
+}
+.mat-mdc-form-field .mdc-notched-outline__leading {
+  border-right-style: none;
+}
+.mat-mdc-form-field .mdc-notched-outline__trailing {
+  border-left-style: none;
 }

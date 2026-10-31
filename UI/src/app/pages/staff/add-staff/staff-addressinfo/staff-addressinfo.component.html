@@ -1,6 +1,6 @@
 <!--Staff Address Add and Edit-->
 
-<mat-card class="w-full" *ngIf="staffCreateMode == staffCreate.EDIT || staffCreateMode == staffCreate.ADD">
+<mat-card appearance="outlined" class="w-full" *ngIf="staffCreateMode == staffCreate.EDIT || staffCreateMode == staffCreate.ADD">
     <form (ngSubmit)="f.form.valid && checkSubmitAddress()" #f="ngForm" novalidate appInvalidControlScroll>
 
         <div>
@@ -310,7 +310,7 @@
 
 
 <!--Staff Address View -->
-<mat-card class="w-full" *ngIf="staffCreateMode == staffCreate.VIEW">
+<mat-card appearance="outlined" class="w-full" *ngIf="staffCreateMode == staffCreate.VIEW">
     <div class="flex items-center fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'addressAndContact' | translate}}</h3>
         <button mat-raised-button *ngIf="permissions.edit" (click)="editAddressContactInfo()" color="primary">

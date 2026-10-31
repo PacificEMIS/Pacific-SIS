@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
-import { MatLegacyCheckbox as MatCheckbox } from '@angular/material/legacy-checkbox';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { map } from 'rxjs/operators';
 import { StaffPortalAssignmentService } from '../../../../services/staff-portal-assignment.service';
 import { AllScheduledCourseSectionForStaffModel } from '../../../../models/teacher-schedule.model';

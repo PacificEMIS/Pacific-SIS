@@ -1,4 +1,4 @@
-<mat-card class="w-full" *ngIf="schoolCreateMode==schoolCreate.EDIT || schoolCreateMode==schoolCreate.ADD">
+<mat-card appearance="outlined" class="w-full" *ngIf="schoolCreateMode==schoolCreate.EDIT || schoolCreateMode==schoolCreate.ADD">
     <form (ngSubmit)="submit()" #f="ngForm" novalidate appInvalidControlScroll>
         <h3 class="font-medium">{{'generalInformation'|translate}}</h3>
         <mat-card-content>
@@ -488,7 +488,7 @@
         </mat-card-actions>
     </form>
 </mat-card>
-<mat-card @fadeInUp class="w-full" *ngIf="schoolCreateMode == schoolCreate.VIEW && schoolAddViewModel">
+<mat-card appearance="outlined" @fadeInUp class="w-full" *ngIf="schoolCreateMode == schoolCreate.VIEW && schoolAddViewModel">
     <div class="flex items-center">
         <h3 class="flex-auto font-medium">{{'generalInformation' | translate}}</h3>
         <button *ngIf="permissions?.edit" mat-raised-button color="primary" (click)="editGeneralInfo()"><mat-icon class="md:mr-1">{{ icEdit }}</mat-icon><span class="hidden md:inline-block">{{'editInformation' |translate}}</span></button>

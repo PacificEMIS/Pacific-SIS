@@ -25,8 +25,8 @@ All rights reserved.
 
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { SuperAdministratorAddModel } from 'src/app/models/super-administrator.model';
 import { CommonService } from 'src/app/services/common.service';

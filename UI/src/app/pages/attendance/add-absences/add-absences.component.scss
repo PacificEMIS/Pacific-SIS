@@ -1,8 +1,10 @@
 
-::ng-deep .mat-form-field .mat-form-field-wrapper{
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+::ng-deep .mat-mdc-form-field .mat-form-field-wrapper{
   padding-bottom: 0;
 }
 @media (max-width: 767.98px){
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
   .card ::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex .mat-form-field-infix {
     padding-top: 22px !important;
     width: auto;

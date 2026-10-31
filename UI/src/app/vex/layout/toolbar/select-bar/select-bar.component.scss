@@ -1,11 +1,17 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
-::ng-deep .mat-form-field-underline {
-  display: none;
-}
-
-::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex{
-    background-color: white !important;
+// The toolbar selects are MDC filled form fields drawn as plain text on the white toolbar: no fill
+// colour, no underline (the legacy rules hid .mat-form-field-underline and painted the flex white).
+::ng-deep .control-school .mat-mdc-form-field {
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: white;
+  }
+  .mdc-line-ripple {
+    display: none;
+  }
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
 }
 .toggle-school-control {
   display: none;
@@ -13,11 +19,10 @@
 
 @media (max-width: 767.98px) {
 
-  ::ng-deep .mat-form-field-appearance-fill {
-    .mat-form-field-flex {
+  ::ng-deep .control-school .mat-mdc-form-field {
+    .mat-mdc-form-field-flex {
       padding: 0 !important;
-
-      .mat-form-field-infix {
+      .mat-mdc-form-field-infix {
         padding: 0 !important;
       }
     }
@@ -25,14 +30,13 @@
   ::ng-deep .control-school {
     display: none;
 
-    .mat-form-field {
+    .mat-mdc-form-field {
       display: block;
 
-      .mat-select {
+      .mat-mdc-select {
         border: 1px solid rgba(0, 0, 0, 0.1);
         border-radius: 4px;
-
-        .mat-select-trigger {
+        .mat-mdc-select-trigger {
           display: flex;
           width: 100%;
           justify-content: space-between;

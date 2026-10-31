@@ -4,7 +4,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { GetAllCourseSectionModel } from 'src/app/models/course-section.model';
 import { CommonService } from 'src/app/services/common.service';
 import { CourseSectionService } from 'src/app/services/course-section.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ScheduleStudentListViewModel } from 'src/app/models/student-schedule.model';
 import { StudentScheduleService } from 'src/app/services/student-schedule.service';
 import { Router } from '@angular/router';

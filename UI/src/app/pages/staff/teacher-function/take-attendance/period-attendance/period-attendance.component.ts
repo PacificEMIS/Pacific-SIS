@@ -24,13 +24,13 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { StudentAttendanceService } from '../../../../../services/student-attendance.service';
 import { AddUpdateStudentAttendanceModel, GetAllStudentAttendanceListModel, StudentAttendanceModel } from '../../../../../models/take-attendance-list.model';
 import { AddCommentsComponent } from './add-comments/add-comments.component';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { StudentScheduleService } from '../../../../../services/student-schedule.service';
 import { GetAllAttendanceCodeModel } from '../../../../../models/attendance-code.model';
 import { AttendanceCodeService } from '../../../../../services/attendance-code.service';

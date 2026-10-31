@@ -161,6 +161,7 @@ textarea {
   }
 }
 
-::ng-deep .mat-chips.mat-form-field.mat-form-field-appearance-outline .mat-form-field-wrapper .mat-form-field-infix {
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+::ng-deep .mat-mdc-chips.mat-mdc-form-field.mat-form-field-appearance-outline .mat-form-field-wrapper .mat-form-field-infix {
 	padding-top: 1.2rem;
 }

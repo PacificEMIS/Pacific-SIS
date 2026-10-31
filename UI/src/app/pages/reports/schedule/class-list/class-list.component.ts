@@ -27,10 +27,10 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { TranslateService } from '@ngx-translate/core';
 import { ScheduleReportFilterModel, ScheduleReportFilterViewModel, ScheduleReportStaddAndCourseListFilterModel } from 'src/app/models/schedule-report-filter.model';
 import { StudentScheduleService } from 'src/app/services/student-schedule.service';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { MatLegacyCheckbox as MatCheckbox } from '@angular/material/legacy-checkbox';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { CommonService } from 'src/app/services/common.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { GetAllStaffModel } from 'src/app/models/staff.model';
 import { StaffService } from 'src/app/services/staff.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';

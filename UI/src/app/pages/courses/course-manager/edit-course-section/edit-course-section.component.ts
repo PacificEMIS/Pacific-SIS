@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, ComponentFactoryResolver, Inject, OnInit, Optional, Output, EventEmitter, ElementRef } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, Subject } from 'rxjs';
 import * as moment from 'moment';
 import { CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarMonthViewBeforeRenderEvent, CalendarMonthViewDay, CalendarView, DAYS_OF_WEEK } from 'angular-calendar';
@@ -35,7 +35,7 @@ import { CalendarService } from '../../../../services/calendar.service';
 import { CalendarListModel, CalendarModel } from '../../../../models/calendar.model';
 import { GradesService } from '../../../../services/grades.service';
 import { GradeScaleListView, GetAllSchoolSpecificListModel } from '../../../../models/grades.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { BlockedSchedulingCourseSectionAddModel, CourseCalendarSchedule, CourseSection, OutputEmitDataFormat, CourseVariableSchedule, CourseSectionAddViewModel, FixedSchedulingCourseSectionAddModel, VariableSchedulingCourseSectionAddModel, CourseVariableScheduleListModel, GetAllCourseStandardForCourseSectionModel } from '../../../../models/course-section.model';
 
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormControl } from '@angular/forms';

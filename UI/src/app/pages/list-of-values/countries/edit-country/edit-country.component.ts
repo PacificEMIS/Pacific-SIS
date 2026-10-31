@@ -24,13 +24,13 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit,Inject } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef,MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UntypedFormBuilder,UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import {CountryAddModel} from '../../../../models/country.model';
 import {CommonService} from '../../../../services/common.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({

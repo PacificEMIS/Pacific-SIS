@@ -28,7 +28,7 @@ import { UntypedFormControl, NgForm } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CountryModel } from '../../../../models/country.model';
 import { LanguageModel } from '../../../../models/language.model';
 import { StudentListModel, StudentMasterSearchModel } from '../../../../models/student.model';
@@ -41,7 +41,7 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 import { LoginService } from '../../../../services/login.service';
 import { SharedFunction } from '../../../shared/shared-function';
 import { GetAllSectionModel } from '../../../../models/section.model';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
+import { MatSelect } from '@angular/material/select';
 import { ScheduleStudentListViewModel } from '../../../../models/student-schedule.model';
 import { StudentScheduleService } from '../../../../services/student-schedule.service';
 import { ProfilesTypes } from '../../../../enums/profiles.enum';

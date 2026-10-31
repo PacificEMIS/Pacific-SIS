@@ -1,5 +1,6 @@
+@use '@angular/material' as mat;
 .vex-style-dark {
-  @include vex-legacy-component-themes($vex-dark-theme, $vex-dark-theme-static);
+  @include mat.all-component-colors($vex-dark-theme-static);
 
   // Foreground
   --background-app-bar: #{map-get(map-get($vex-dark-theme, background), app-bar)};

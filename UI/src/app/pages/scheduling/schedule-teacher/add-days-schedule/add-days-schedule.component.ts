@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core";
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from "@angular/material/legacy-dialog";
+import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { fadeInUp400ms } from "@vex/animations/fade-in-up.animation";
 import { stagger60ms } from "@vex/animations/stagger.animation";
@@ -45,12 +45,12 @@ import { ProfilesTypes } from "src/app/enums/profiles.enum";
   animations: [stagger60ms, fadeInUp400ms],
   styles: [
     `
-      .cal-month-view .bg-aqua,
-      .cal-week-view .cal-day-columns .bg-aqua,
-      .cal-day-view .bg-aqua {
-        background-color: #ffdee4 !important;
-      }
-    `,
+           .cal-month-view .bg-aqua,
+           .cal-week-view .cal-day-columns .bg-aqua,
+           .cal-day-view .bg-aqua {
+             background-color: #ffdee4 !important;
+           }
+         `,
   ],
   encapsulation: ViewEncapsulation.None,
 })

@@ -1,4 +1,4 @@
-<mat-card class="w-full" *ngIf="mode ==='view'; else add">
+<mat-card appearance="outlined" class="w-full" *ngIf="mode ==='view'; else add">
     <div class="flex justify-between">
         <h3>{{'generalInformation' | translate}}</h3>
         <button *ngIf="permissions?.edit" mat-raised-button color="primary" (click)="editGeneralInfo()">
@@ -132,7 +132,7 @@
     </mat-card-content>
 </mat-card>
 <ng-template #add>
-    <mat-card class="w-full">
+    <mat-card appearance="outlined" class="w-full">
         <h3>{{'generalInformation'|translate}}</h3>
         <mat-card-content>
             <form (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate>

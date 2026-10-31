@@ -24,15 +24,15 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input ,ViewChild} from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router} from '@angular/router';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { EditSchoolClassificationComponent } from './edit-school-classification/edit-school-classification.component';
 import {LovList,LovAddView, LoVSortOrderValuesModel, UpdateLovSortingModel} from '../../../models/lov.model';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { LoaderService } from '../../../services/loader.service';
 import { CommonService } from '../../../services/common.service';
@@ -44,7 +44,7 @@ import { CryptoService } from '../../../services/Crypto.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
-import { MatLegacyPaginatorIntl as MatPaginatorIntl } from '@angular/material/legacy-paginator';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({

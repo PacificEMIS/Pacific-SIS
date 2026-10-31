@@ -27,19 +27,19 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { TranslateService } from '@ngx-translate/core';
 import { ReportService } from 'src/app/services/report.service';
 import { CommonService } from 'src/app/services/common.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { SharedFunction } from 'src/app/pages/shared/shared-function';
 import { LoaderService } from 'src/app/services/loader.service';
 import { ExcelService } from 'src/app/services/excel.service';
 import { GetScheduledAddDropReportModel, filterParams } from 'src/app/models/report.model';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatTableDataSource } from '@angular/material/table';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { UntypedFormControl } from '@angular/forms';
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
+import { MatPaginator } from '@angular/material/paginator';
 import * as moment from 'moment';
-import { MatLegacyCheckbox as MatCheckbox } from '@angular/material/legacy-checkbox';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { MarkingPeriodListModel } from 'src/app/models/marking-period.model';
 

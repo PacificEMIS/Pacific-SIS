@@ -9,6 +9,7 @@ $reponsive-form-bg: #0579bc;
     text-align: right;
   }
 
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
   .mat-form-field-appearance-fill .mat-form-field-flex {
     opacity: 0;
     padding: 0;
@@ -16,34 +17,34 @@ $reponsive-form-bg: #0579bc;
   }
 
 @media only screen and (max-width: 767px) {
-  ::ng-deep .login-bg .mat-form-field {
+  ::ng-deep .login-bg .mat-mdc-form-field {
     background: $reponsive-form-bg;
     border: 2px solid #fff;
     border-radius: 4px;
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
   ::ng-deep .login-bg .mat-checkbox-inner-container {
     height: 20px !important;
     width: 20px !important;
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
   ::ng-deep .login-bg .mat-form-field-label {
     color: rgba(255, 255, 255, 0.4);
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
   ::ng-deep .login-bg .mat-select-value-text {
     color: #ffffff;
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
   ::ng-deep .login-bg .mat-checkbox-frame {
     background-color: rgba(255, 255, 255, 0.3) !important;
     border-color: #ffffff !important;
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
   ::ng-deep .login-bg .mat-checkbox-checked .mat-checkbox-background {
     background-color: #ffffff !important;
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
   ::ng-deep .login-bg .mat-checkbox-checkmark-path {
     stroke: #0579bc !important;
   }

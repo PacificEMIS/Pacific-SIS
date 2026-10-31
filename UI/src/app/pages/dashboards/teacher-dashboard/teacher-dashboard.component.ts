@@ -28,7 +28,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CalendarEvent, CalendarMonthViewBeforeRenderEvent, CalendarView } from 'angular-calendar';
 import { DasboardService } from '../../../services/dasboard.service';
 import { DashboardViewModel, ScheduledCourseSectionViewModel } from '../../../models/dashboard.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subject } from 'rxjs';
 import { CalendarEventModel } from 'src/app/models/calendar-event.model';
 import { CalendarModel } from 'src/app/models/calendar.model';
@@ -47,12 +47,12 @@ import moment from 'moment';
   styleUrls: ['./teacher-dashboard.component.scss'],
   styles: [
     `
-     .cal-month-view .bg-aqua,
-      .cal-week-view .cal-day-columns .bg-aqua,
-      .cal-day-view .bg-aqua {
-        background-color: #ffdee4 !important;
-      }
-    `,
+          .cal-month-view .bg-aqua,
+           .cal-week-view .cal-day-columns .bg-aqua,
+           .cal-day-view .bg-aqua {
+             background-color: #ffdee4 !important;
+           }
+         `,
   ],
 })
 export class TeacherDashboardComponent implements OnInit,OnDestroy {

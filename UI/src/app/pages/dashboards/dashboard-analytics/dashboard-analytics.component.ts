@@ -26,7 +26,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnChanges, O
 import { Order, tableSalesData } from '../../../../static-data/table-sales-data';
 import { TableColumn } from '@vex/interfaces/table-column.interface';
 import { DashboardViewModel, GradeCount, NameCount, ScheduledCourseSectionViewModel } from '../../../models/dashboard.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DasboardService } from '../../../services/dasboard.service';
 import { CalendarDateFormatter, CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarMonthViewBeforeRenderEvent, CalendarMonthViewDay, CalendarView, DAYS_OF_WEEK } from 'angular-calendar';
 import { CalendarEventModel } from '../../../models/calendar-event.model';
@@ -54,12 +54,12 @@ import { MarkingPeriodService } from 'src/app/services/marking-period.service';
   styleUrls: ['./dashboard-analytics.component.scss'],
   styles: [
     `
-     .cal-month-view .bg-aqua,
-      .cal-week-view .cal-day-columns .bg-aqua,
-      .cal-day-view .bg-aqua {
-        background-color: #ffdee4 !important;
-      }
-    `,
+          .cal-month-view .bg-aqua,
+           .cal-week-view .cal-day-columns .bg-aqua,
+           .cal-day-view .bg-aqua {
+             background-color: #ffdee4 !important;
+           }
+         `,
   ],
   providers: [
     {

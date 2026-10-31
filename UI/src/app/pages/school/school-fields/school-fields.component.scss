@@ -2,7 +2,7 @@
   display:none;
 }
 
-.mat-footer-cell{
+.mat-mdc-footer-cell{
   text-align: center;
   font-style: italic;
 }
@@ -23,11 +23,11 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.cdk-drop-list-dragging .mat-row:not(.cdk-drag-placeholder) {
+.cdk-drop-list-dragging .mat-mdc-row:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.mat-table td.mat-cell, .mat-table th.mat-header-cell {
+.mat-mdc-table td.mat-mdc-cell, .mat-table th.mat-mdc-header-cell {
   border-bottom-color: transparent !important; 
 }
 

@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AddStudentComponent } from './add-student/add-student.component';
 import { AddCourseSectionComponent } from './add-course-section/add-course-section.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -33,9 +33,9 @@ import { StudentCourseSectionScheduleAddViewModel, StudentScheduleReportViewMode
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { LoaderService } from '../../../services/loader.service';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatTableDataSource } from '@angular/material/table';
 import { ExcelService } from '../../../services/excel.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TitleCasePipe } from '@angular/common';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../models/roll-based-access.model';

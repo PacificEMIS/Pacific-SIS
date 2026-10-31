@@ -1,6 +1,6 @@
 import { ConstantPool, isNgContent } from '@angular/compiler';
 import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
 import { FinalGradingMarkingPeriodList, GradebookConfigurationAddViewModel, GradebookConfigurationGradescale, GradebookConfigurationProgressPeriods, GradebookConfigurationQuarter, GradebookConfigurationSemester, GradebookConfigurationYear } from '../../../models/gradebook-configuration.model';
 import { GradeScaleListView } from '../../../models/grades.model';

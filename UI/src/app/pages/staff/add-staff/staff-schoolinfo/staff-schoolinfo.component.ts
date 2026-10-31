@@ -36,7 +36,7 @@ import { GetAllGradeLevelsModel } from '../../../../models/grade-level.model';
 import { GradeLevelService } from '../../../../services/grade-level.service';
 import { OnlySchoolListModel } from '../../../../models/get-all-school.model';
 import { SchoolService } from '../../../../services/school.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import moment from 'moment';
 import { ImageCropperService } from '../../../../services/image-cropper.service';
 import { ModuleIdentifier } from '../../../../enums/module-identifier.enum';

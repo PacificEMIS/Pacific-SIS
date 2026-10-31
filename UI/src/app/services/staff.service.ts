@@ -14,7 +14,7 @@ import {
   ScheduledCourseSectionsForStaffModel} from '../models/staff.model';
 import { DefaultValuesService } from '../common/default-values.service';
 import { SchoolCreate } from '../enums/school-create.enum';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { PageRolesPermission } from '../common/page-roles-permissions.service';
 @Injectable({

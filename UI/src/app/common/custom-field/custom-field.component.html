@@ -2,7 +2,7 @@
 
 <div *ngIf="schoolDetailsForViewAndEdit?.schoolMaster?.fieldsCategory && module =='School'">
     <div *ngIf="schoolCreateMode == SchoolCreate.EDIT">
-        <mat-card class="w-full">
+        <mat-card appearance="outlined" class="w-full">
             <form (ngSubmit)="submit()" #f="ngForm" novalidate appInvalidControlScroll>
                 <h3 class="font-medium">{{ categoryTitle }}</h3>
                 <mat-card-content class="mb-0">
@@ -123,7 +123,7 @@
         </mat-card>
     </div>
     <div *ngIf="schoolCreateMode == SchoolCreate.VIEW">
-        <mat-card @fadeInUp class="w-full">
+        <mat-card appearance="outlined" @fadeInUp class="w-full">
             <div class="flex items-center">
                 <h3 class="flex-auto">{{ categoryTitle }}</h3>
                 <div *ngIf="schoolCustomFields?.length > 0">
@@ -170,7 +170,7 @@
 
 <div *ngIf="studentAddViewModel.fieldsCategoryList && module =='Student'">
     <div *ngIf="studentCreateMode == SchoolCreate.EDIT || studentCreateMode===SchoolCreate.ADD">
-        <mat-card class="w-full">
+        <mat-card appearance="outlined" class="w-full">
             <h3 class="flex-auto" *ngIf="studentCustomFields?.length==0">{{ categoryTitle }}</h3>
             <div *ngIf="studentCustomFields?.length > 0">
                 <form (ngSubmit)="submit()" #f="ngForm" novalidate appInvalidControlScroll>
@@ -294,7 +294,7 @@
         </mat-card>
     </div>
     <div *ngIf="studentCreateMode == SchoolCreate.VIEW">
-        <mat-card @fadeInUp class="w-full">
+        <mat-card appearance="outlined" @fadeInUp class="w-full">
             <div class="flex items-center">
                 <h3 class="flex-auto">{{ categoryTitle }}</h3>
                 <div *ngIf="studentCustomFields?.length > 0">
@@ -343,7 +343,7 @@
 <!--Start Staff Module-->
 <div *ngIf="staffAddViewModel.fieldsCategoryList && module =='Staff'">
     <div *ngIf="staffCreateMode == SchoolCreate.EDIT || staffCreateMode == SchoolCreate.ADD">
-        <mat-card class="w-full">
+        <mat-card appearance="outlined" class="w-full">
             <h3 class="flex-auto" *ngIf="staffCustomFields?.length==0">{{ categoryTitle }}</h3>
             <div *ngIf="staffCustomFields?.length > 0">
                 <form (ngSubmit)="submit()" #f="ngForm" novalidate appInvalidControlScroll>
@@ -468,7 +468,7 @@
         </mat-card>
     </div>
     <div *ngIf="staffCreateMode == SchoolCreate.VIEW">
-        <mat-card @fadeInUp class="w-full">
+        <mat-card appearance="outlined" @fadeInUp class="w-full">
             <div class="flex items-center">
                 <h3 class="flex-auto">{{ categoryTitle }}</h3>
                 <div *ngIf="staffCustomFields?.length > 0">

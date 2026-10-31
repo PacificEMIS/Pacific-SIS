@@ -28,7 +28,7 @@ import { UntypedFormControl, NgForm } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { RollingOptionsEnum } from 'src/app/enums/rolling-retention-option.enum';
 import { CountryModel } from 'src/app/models/country.model';
 import { LanguageModel } from 'src/app/models/language.model';
@@ -48,11 +48,11 @@ import { EnrollmentCodesService } from 'src/app/services/enrollment-codes.servic
 import { GradeLevelService } from 'src/app/services/grade-level.service';
 import { StudentScheduleService } from 'src/app/services/student-schedule.service';
 import { SharedFunction } from 'src/app/pages/shared/shared-function';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
+import { MatSelect } from '@angular/material/select';
 import { GetAllSectionModel } from 'src/app/models/section.model';
 import { AdvancedSearchExpansionModel, FilterParamsForAdvancedSearch, FilterParamsForAdvancedSearchModel } from 'src/app/models/common.model';
 import { CourseSectionComponent } from 'src/app/pages/grades/administration/course-section/course-section.component';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from 'src/app/models/course-manager.model';
 import { CourseManagerService } from 'src/app/services/course-manager.service';
 

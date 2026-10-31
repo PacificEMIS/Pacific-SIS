@@ -33,7 +33,7 @@ import { StudentService } from '../../../../services/student.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 import { CountryModel } from 'src/app/models/country.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { StudentInfoModel } from 'src/app/models/student-info.model';
 import { CommonLOV } from 'src/app/pages/shared-module/lov/common-lov';
 import { takeUntil } from 'rxjs/operators';

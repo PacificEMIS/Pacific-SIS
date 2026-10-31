@@ -1,6 +1,6 @@
 <form (ngSubmit)="submit()" #f="ngForm" appInvalidControlScroll
     *ngIf="studentCreateMode==studentCreate.EDIT || studentCreateMode==studentCreate.ADD">
-    <mat-card class="w-full">
+    <mat-card appearance="outlined" class="w-full">
         <h3 class="font-medium">{{'generalInformation'|translate}}</h3>
 
         <mat-card-content>
@@ -365,7 +365,7 @@
     </mat-card>
 </form>
 
-<mat-card class="w-full" *ngIf="studentCreateMode == studentCreate.VIEW">
+<mat-card appearance="outlined" class="w-full" *ngIf="studentCreateMode == studentCreate.VIEW">
     <div class="flex items-center fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'generalInformation'|translate}}</h3>
         <button *ngIf="permissions?.edit" mat-raised-button color="primary" (click)="editGeneralInfo()">

@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, Input } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { AddTeacherCommentsComponent } from './add-teacher-comments/add-teacher-comments.component';
 import { SharedFunction } from "../../../shared/shared-function";
@@ -35,7 +35,7 @@ import { ScheduleStudentListViewModel } from "../../../../models/student-schedul
 import { StudentScheduleService } from "../../../../services/student-schedule.service";
 import { DefaultValuesService } from "../../../../common/default-values.service";
 import { CommonService } from "../../../../services/common.service";
-import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { AddUpdateStudentAttendanceModel, GetAllStudentAttendanceListModel, StudentAttendanceModel } from "../../../../models/take-attendance-list.model";
 import { AttendanceCodeService } from "../../../../services/attendance-code.service";
 import { StudentAttendanceService } from "../../../../services/student-attendance.service";

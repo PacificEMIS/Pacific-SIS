@@ -24,13 +24,13 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ChangeDetectorRef, AfterViewChecked, AfterContentChecked } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { EditCustomProfileComponent } from '../../administration/access-control/edit-custom-profile/edit-custom-profile.component';
 import { RollBasedAccessService } from '../../../services/roll-based-access.service';
 import { RolePermissionListViewModel, PermissionGroupListViewModel } from '../../../models/roll-based-access.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MembershipService } from '../../../services/membership.service';
 import { GetAllMembersList, Membership } from '../../../models/membership.model';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';

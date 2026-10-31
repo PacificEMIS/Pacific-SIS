@@ -144,7 +144,7 @@ $mat-elevation-opacity: 0.3;
   .mat-ripple-element {
     // if it's a color, rgba just works.
     // If it's a variable, rgba works because all color variables should be 3 comma separated numbers
-    background-color: rgba($foreground-base, $mat-ripple-color-opacity);
+    background-color: rgba($foreground-base, 0.1);
   }
 }
 

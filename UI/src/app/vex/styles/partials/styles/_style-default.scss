@@ -1,3 +1,4 @@
+@use '@angular/material' as mat;
 // @formatter:off
 :root {
   // Generic
@@ -24,17 +25,17 @@
   // Typography
   --font: theme('fontFamily.sans');
   --font-weight-medium: 500;
-  --font-caption: #{mat-font-weight($config, caption) #{mat-font-size($config, caption)}/#{mat-line-height($config, caption)} mat-font-family($config, caption)};
-  --font-body-1: #{mat-font-weight($config, body-1) #{mat-font-size($config, body-1)}/#{mat-line-height($config, body-1)} mat-font-family($config, body-1)};
-  --font-body-2: #{mat-font-weight($config, body-2) #{mat-font-size($config, body-2)}/#{mat-line-height($config, body-2)} mat-font-family($config, body-2)};
-  --font-subheading-1: #{mat-font-weight($config, subheading-1) #{mat-font-size($config, subheading-1)}/#{mat-line-height($config, subheading-1)} mat-font-family($config, subheading-1)};
-  --font-subheading-2: #{mat-font-weight($config, subheading-2) #{mat-font-size($config, subheading-2)}/#{mat-line-height($config, subheading-2)} mat-font-family($config, subheading-2)};
-  --font-headline: #{mat-font-weight($config, headline) #{mat-font-size($config, headline)}/#{mat-line-height($config, headline)} mat-font-family($config, headline)};
-  --font-title: #{mat-font-weight($config, title) #{mat-font-size($config, title)}/#{mat-line-height($config, title)} mat-font-family($config, title)};
-  --font-display-1: #{mat-font-weight($config, display-1) #{mat-font-size($config, display-1)}/#{mat-line-height($config, display-1)} mat-font-family($config, display-1)};
-  --font-display-2: #{mat-font-weight($config, display-2) #{mat-font-size($config, display-2)}/#{mat-line-height($config, display-2)} mat-font-family($config, display-2)};
-  --font-display-3: #{mat-font-weight($config, display-3) #{mat-font-size($config, display-3)}/#{mat-line-height($config, display-3)} mat-font-family($config, display-3)};
-  --font-display-4: #{mat-font-weight($config, display-4) #{mat-font-size($config, display-4)}/#{mat-line-height($config, display-4)} mat-font-family($config, display-4)};
+  --font-caption: #{mat.font-weight($config, caption) #{mat.font-size($config, caption)}/#{mat.line-height($config, caption)} mat.font-family($config, caption)};
+  --font-body-1: #{mat.font-weight($config, body-2) #{mat.font-size($config, body-2)}/#{mat.line-height($config, body-2)} mat.font-family($config, body-2)};
+  --font-body-2: #{mat.font-weight($config, body-1) #{mat.font-size($config, body-1)}/#{mat.line-height($config, body-1)} mat.font-family($config, body-1)};
+  --font-subheading-1: #{mat.font-weight($config, subtitle-2) #{mat.font-size($config, subtitle-2)}/#{mat.line-height($config, subtitle-2)} mat.font-family($config, subtitle-2)};
+  --font-subheading-2: #{mat.font-weight($config, subtitle-1) #{mat.font-size($config, subtitle-1)}/#{mat.line-height($config, subtitle-1)} mat.font-family($config, subtitle-1)};
+  --font-headline: #{mat.font-weight($config, headline-5) #{mat.font-size($config, headline-5)}/#{mat.line-height($config, headline-5)} mat.font-family($config, headline-5)};
+  --font-title: #{mat.font-weight($config, headline-6) #{mat.font-size($config, headline-6)}/#{mat.line-height($config, headline-6)} mat.font-family($config, headline-6)};
+  --font-display-1: #{mat.font-weight($config, headline-4) #{mat.font-size($config, headline-4)}/#{mat.line-height($config, headline-4)} mat.font-family($config, headline-4)};
+  --font-display-2: #{mat.font-weight($config, headline-3) #{mat.font-size($config, headline-3)}/#{mat.line-height($config, headline-3)} mat.font-family($config, headline-3)};
+  --font-display-3: #{mat.font-weight($config, headline-2) #{mat.font-size($config, headline-2)}/#{mat.line-height($config, headline-2)} mat.font-family($config, headline-2)};
+  --font-display-4: #{mat.font-weight($config, headline-1) #{mat.font-size($config, headline-1)}/#{mat.line-height($config, headline-1)} mat.font-family($config, headline-1)};
 
   // Transitions
   --trans-ease-in-out: all var(--trans-ease-in-out-duration) var(--trans-ease-in-out-timing-function);
@@ -46,8 +47,8 @@
   --trans-ease-in: all var(--trans-ease-in-duration) var(--trans-ease-in-timing-function);
   --trans-ease-in-duration: #{$swift-ease-in-duration};
   --trans-ease-in-timing-function: #{$swift-ease-in-timing-function};
-  --trans-shadow-duration: #{$mat-elevation-transition-duration};
-  --trans-shadow-timing-function: #{$mat-elevation-transition-timing-function};
+  --trans-shadow-duration: #{280ms};
+  --trans-shadow-timing-function: #{cubic-bezier(0.4, 0, 0.2, 1)};
   --trans-shadow: box-shadow var(--trans-shadow-duration) var(--trans-shadow-timing-function);
 
   --text-color: #{$dark-primary-text};

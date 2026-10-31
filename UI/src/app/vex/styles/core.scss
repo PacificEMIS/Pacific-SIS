@@ -1,7 +1,6 @@
 @use '@angular/material' as mat;
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@import "@angular/material/theming";
 
 // SCSS Variables
 @import "var";
@@ -17,18 +16,16 @@
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-// Material 15: the import-API mixins now theme the new MDC components, which need Sass colours
-// and reject the Vex CSS-variable palette. The app uses the legacy components (see the
-// legacy-* imports), so the legacy core, typography and component themes are included (the
-// component themes through vex-legacy-component-themes in _var.scss).
-@include mat.legacy-core();
-@include mat.all-legacy-component-typographies($config);
-@include mat.legacy-typography-hierarchy($config);
+// Material core, typography (2018 level names mapped from the Vex levels in _var.scss) and the
+// component themes on the static palettes; see vex-m2-theme in _var.scss.
+@include mat.core();
+@include mat.all-component-typographies($config);
+@include mat.typography-hierarchy($config);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include vex-legacy-component-themes($vex-theme, $vex-theme-static);
+@include mat.all-component-themes($vex-theme-static);
 
 // Partials
 @import "partials/horizontal";
@@ -60,7 +57,7 @@ html {
 
 body {
   height: 100%;
-  @include mat-typography-level-to-styles($config, body-1);
+  @include mat.typography-level($config, body-2);
   @apply text-black leading-normal antialiased;
   font-feature-settings: 'kern';
 }

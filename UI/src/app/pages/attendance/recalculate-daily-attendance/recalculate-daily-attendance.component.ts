@@ -29,7 +29,7 @@ import { StudentRecalculateDailyAttendance } from "../../../models/student-recal
 import { DefaultValuesService } from "../../../common/default-values.service";
 import { DatePipe } from "@angular/common";
 import { StudentAttendanceService } from "../../../services/student-attendance.service";
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ValidationService } from '../../shared/validation.service';
 @Component({
   selector: "vex-recalculate-daily-attendance",

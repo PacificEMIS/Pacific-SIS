@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, Subject } from 'rxjs';
 import * as moment from 'moment';
 import { CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarMonthViewBeforeRenderEvent, CalendarMonthViewDay, CalendarView, DAYS_OF_WEEK } from 'angular-calendar';
@@ -41,7 +41,7 @@ import { BlockListViewModel } from '../../../../../models/school-period.model';
 import { RoomListViewModel } from '../../../../../models/room.model';
 import { RoomService } from '../../../../../services/room.service';
 import { CalendarAddViewModel, CalendarModel } from '../../../../../models/calendar.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CourseSectionService } from '../../../../../services/course-section.service';
 import { SharedFunction } from '../../../../shared/shared-function';
 import { CommonService } from 'src/app/services/common.service';
@@ -53,12 +53,12 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
   styleUrls: ['./calendar-days.component.scss'],
   styles: [
     `
-     .cal-month-view .bg-aqua,
-      .cal-week-view .cal-day-columns .bg-aqua,
-      .cal-day-view .bg-aqua {
-        background-color: #ffdee4 !important;
-      }
-    `,
+          .cal-month-view .bg-aqua,
+           .cal-week-view .cal-day-columns .bg-aqua,
+           .cal-day-view .bg-aqua {
+             background-color: #ffdee4 !important;
+           }
+         `,
   ],
   encapsulation: ViewEncapsulation.None
 })

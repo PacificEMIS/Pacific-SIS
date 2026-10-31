@@ -4,8 +4,8 @@ import { LoginService } from "src/app/services/login.service";
 import { DefaultValuesService } from "../../../common/default-values.service";
 import { GetAccessLogInfoModel } from "../../../models/get-access-log.model";
 import { CommonService } from "../../../services/common.service";
-import { MatLegacyTableDataSource as MatTableDataSource } from "@angular/material/legacy-table";
-import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { UntypedFormControl} from "@angular/forms";
 import { DatePipe } from "@angular/common";
 import {
@@ -18,9 +18,9 @@ import * as moment from 'moment';
 import { LoaderService } from "src/app/services/loader.service";
 import { Subject } from "rxjs";
 import { ExcelService } from "../../../services/excel.service";
-import { MatLegacyPaginator as MatPaginator } from "@angular/material/legacy-paginator";
+import { MatPaginator } from "@angular/material/paginator";
 
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { ConfirmDialogComponent } from "../../shared-module/confirm-dialog/confirm-dialog.component";
 import { Router } from "@angular/router";
 // export interface LogData {

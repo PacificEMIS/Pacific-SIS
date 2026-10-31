@@ -14,7 +14,7 @@
         </div>
     </div>
 </mat-card> -->
-<mat-card class="w-full mb-6">
+<mat-card appearance="outlined" class="w-full mb-6">
     <div class="flex justify-between items-center mb-4">
         <h4 class="font-semibold text-green">{{ 'downloadTranscript' | translate }}</h4>
         <mat-icon class="text-gray cursor-pointer" >close</mat-icon>
@@ -64,7 +64,7 @@
             <span class="ml-2 hidden md:inline-block">{{ 'generateTranscriptForSelectedStudents' | translate }}</span>
         </button>
 </mat-card>
-<mat-card *ngIf="pdfByteArrayForTranscript">
+<mat-card appearance="outlined" *ngIf="pdfByteArrayForTranscript">
     <!-- <ngx-doc-viewer [url]="'data:application/pdf;base64,' + pdfByteArrayForTranscript" viewer="pdf"  style="width:100%;height:93vh;">
     </ngx-doc-viewer> -->
 </mat-card>

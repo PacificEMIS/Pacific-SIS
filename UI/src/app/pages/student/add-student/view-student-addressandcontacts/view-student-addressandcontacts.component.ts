@@ -27,7 +27,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { StudentAddModel } from '../../../../models/student.model';
 import { stagger60ms } from '@vex/animations/stagger.animation';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'vex-view-student-addressandcontacts',

@@ -9,13 +9,13 @@ import { WidgetAssistantModule } from '@vex/components/widgets/widget-assistant/
 import { WidgetTableModule } from '@vex/components/widgets/widget-table/widget-table.module';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
 import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatButtonModule } from '@angular/material/button';
 import { PageLayoutModule } from '@vex/components/page-layout/page-layout.module';
 import { ContainerModule } from '@vex/directives/container/container.module';
 import {SharedModuleModule} from '../../shared-module/shared-module.module';
 import { CalendarModule as AngularCalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
-import {MatLegacyTooltipModule as MatTooltipModule} from '@angular/material/legacy-tooltip';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';

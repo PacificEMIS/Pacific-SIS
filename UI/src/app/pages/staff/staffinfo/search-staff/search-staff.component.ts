@@ -37,7 +37,7 @@ import { CommonService } from '../../../../services/common.service';
 import { LoginService } from '../../../../services/login.service';
 import { CountryModel } from '../../../../models/country.model';
 import { LanguageModel } from '../../../../models/language.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { StaffService } from '../../../../services/staff.service';
 import { GetAllStaffModel, StaffMasterSearchModel } from '../../../../models/staff.model';
 import { GetAllMembersList } from '../../../../models/membership.model';
@@ -46,7 +46,7 @@ import { SearchFilterAddViewModel } from '../../../../models/search-filter.model
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { SharedFunction } from '../../../shared/shared-function';
 import moment from 'moment';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
+import { MatSelect } from '@angular/material/select';
 import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
 
 @Component({

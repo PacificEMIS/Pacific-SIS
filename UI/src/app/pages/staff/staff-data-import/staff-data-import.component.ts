@@ -27,7 +27,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BulkDataImport } from '../../../enums/bulk-data-import.enum';
 import { ExcelService } from '../../../services/excel.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FieldCategoryModuleEnum } from '../../../enums/field-category-module.enum';
 import { FieldsCategoryListView, FieldsCategoryModel } from '../../../models/fields-category.model';
 import { CustomFieldService } from '../../../services/custom-field.service';

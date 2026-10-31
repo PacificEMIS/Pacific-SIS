@@ -25,13 +25,13 @@ All rights reserved.
 
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { MatLegacyDialog as MatDialog } from "@angular/material/legacy-dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { AddGradeCommentsComponent } from "./add-grade-comments/add-grade-comments.component";
 import { GradeBookConfigurationService } from "src/app/services/gradebook-configuration.service";
 import { AddGradebookGradeByAssignmentTypeModel, AddGradebookGradeModel, ViewGradebookGradeByAssignmentTypeModel, ViewGradebookGradeModel } from "src/app/models/gradebook-grades.model";
 import { CommonService } from "src/app/services/common.service";
 import { DefaultValuesService } from "src/app/common/default-values.service";
-import { MatLegacySnackBar as MatSnackBar } from "@angular/material/legacy-snack-bar";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { UntypedFormControl } from "@angular/forms";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { ExcelService } from "src/app/services/excel.service";

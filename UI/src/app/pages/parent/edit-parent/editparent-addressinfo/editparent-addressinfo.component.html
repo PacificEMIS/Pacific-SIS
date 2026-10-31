@@ -1,5 +1,5 @@
 <form (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate *ngIf="parentCreateMode == parentCreate.EDIT">
-    <mat-card class="w-full">
+    <mat-card appearance="outlined" class="w-full">
 
         <h3 class="pt-1">{{'addressInformation'|translate}}</h3>
         <mat-card-content>
@@ -79,7 +79,7 @@
 
 </form>
 
- <mat-card class="w-full" *ngIf="parentCreateMode == parentCreate.VIEW">
+ <mat-card appearance="outlined" class="w-full" *ngIf="parentCreateMode == parentCreate.VIEW">
     <div class="flex items-center mx-2 fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'addressInformation' | translate}}</h3>
         <button *ngIf="permissions?.edit" mat-raised-button (click)="editAddressContactInfo()" color="primary">

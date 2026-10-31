@@ -37,12 +37,12 @@ import { CommonService } from '../../../../services/common.service';
 import { LoginService } from '../../../../services/login.service';
 import { CountryModel } from '../../../../models/country.model';
 import { LanguageModel } from '../../../../models/language.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { userProfile} from '../../../../enums/studentAdd.enum';
 import { GetAllParentModel, GetAllParentResponseModel, ParentAdvanceSearchModel } from '../../../../models/parent-info.model';
 import { ParentInfoService } from '../../../../services/parent-info.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
+import { MatSelect } from '@angular/material/select';
 import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
 
 @Component({

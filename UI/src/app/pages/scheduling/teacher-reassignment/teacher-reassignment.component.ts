@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { AddTeacherComponent } from './add-teacher/add-teacher.component';
 import { AddCourseComponent } from './add-course/add-course.component';
@@ -32,7 +32,7 @@ import { StaffListModel, StaffMasterSearchModel } from '../../../models/staff.mo
 import { CourseModel, GetAllProgramModel, GetAllSubjectModel } from '../../../models/course-manager.model';
 import { TeacherScheduleService } from '../../../services/teacher-schedule.service';
 import { AllScheduledCourseSectionForStaffModel, StaffScheduleView, StaffScheduleViewModel } from '../../../models/teacher-schedule.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { GetMarkingPeriodTitleListModel } from '../../../models/marking-period.model';
 import { MarkingPeriodService } from '../../../services/marking-period.service';
 import { CourseSectionService } from '../../../services/course-section.service';

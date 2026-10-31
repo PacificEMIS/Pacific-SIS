@@ -1,4 +1,4 @@
-<mat-card class="w-full" *ngIf="studentCreateMode==studentCreate.EDIT || studentCreateMode==studentCreate.ADD">
+<mat-card appearance="outlined" class="w-full" *ngIf="studentCreateMode==studentCreate.EDIT || studentCreateMode==studentCreate.ADD">
     <form #form="ngForm" novalidate appInvalidControlScroll>
         <h3 class="font-medium">{{'schoolAndEnrollmentInfo'|translate}}</h3>
         <mat-card-content>
@@ -323,7 +323,7 @@
     </form>
 </mat-card>
 
-<mat-card class="w-full" *ngIf="studentCreateMode == studentCreate.VIEW">
+<mat-card appearance="outlined" class="w-full" *ngIf="studentCreateMode == studentCreate.VIEW">
 
     <div class="flex items-center fx-row fx-align-center-center">
         <h3 class="flex-auto">{{'schoolAndEnrollmentInfo' | translate}}</h3>

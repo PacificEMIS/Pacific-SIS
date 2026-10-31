@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FinalGradingMarkingPeriodList } from '../../../models/gradebook-configuration.model';
 import { GradeBookConfigurationService } from '../../../services/gradebook-configuration.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { CommonService } from '../../../services/common.service';
 import { RolloverReadinessViewModel, RolloverViewModel } from '../../../models/roll-over.model';
@@ -13,7 +13,7 @@ import { SharedFunction } from '../../shared/shared-function';
 import { LoaderService } from '../../../services/loader.service';
 import * as moment from 'moment';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { RolloverSummaryDialogComponent } from './rollover-summary-dialog/rollover-summary-dialog.component';
 
 @Component({

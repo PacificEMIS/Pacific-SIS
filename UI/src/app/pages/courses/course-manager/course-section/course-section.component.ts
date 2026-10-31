@@ -25,12 +25,12 @@ All rights reserved.
 
 import { AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { EditCourseSectionComponent } from '../edit-course-section/edit-course-section.component';
 import { CloneCourseSectionsComponent } from '../clone-course-sections/clone-course-sections.component';
 import { CourseSectionService } from '../../../../services/course-section.service';
 import { CourseSectionAddViewModel, CourseSectionDataTransferModel, GetAllCourseSectionModel } from '../../../../models/course-section.model';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoaderService } from '../../../../services/loader.service';
 import { takeUntil } from 'rxjs/operators';
 import { CalendarEvent, CalendarMonthViewBeforeRenderEvent, CalendarView } from 'angular-calendar';
@@ -51,12 +51,12 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
   styleUrls: ['./course-section.component.scss'],
   styles: [
     `
-     .cal-month-view .bg-aqua,
-      .cal-week-view .cal-day-columns .bg-aqua,
-      .cal-day-view .bg-aqua {
-        background-color: #ffdee4 !important;
-      }
-    `,
+          .cal-month-view .bg-aqua,
+           .cal-week-view .cal-day-columns .bg-aqua,
+           .cal-day-view .bg-aqua {
+             background-color: #ffdee4 !important;
+           }
+         `,
   ],
   animations: [
     stagger40ms
