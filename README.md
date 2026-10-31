@@ -21,7 +21,7 @@ Pacific-SIS/
 │   ├── opensis.catelogdb/     # Catalog database (tenant registry)
 │   └── opensis.backgroundjob/ # Console app — nightly scheduled jobs
 └── UI/
-    └── src/                   # Angular 10 frontend
+    └── src/                   # Angular 22 frontend
 ```
 
 **Multi-tenancy:** Each school is a separate MySQL database. The API resolves the tenant from the request subdomain and switches connections dynamically via `MySQLContextFactory`. Migrations run automatically on first connection to each tenant (`context.Database.Migrate()`).
@@ -317,7 +317,7 @@ dotnet publish API/opensis.backgroundjob/opensis.backgroundjob.csproj -c Release
 cd UI && npm run build
 ```
 
-> Always use `npm run build`, not `ng build --prod` directly. The npm script sets a 6 GB Node memory limit (`--max_old_space_size=6144`) that prevents heap out-of-memory failures during production builds on this codebase.
+> Always use `npm run build`, not `ng build --configuration production` directly. The npm script sets a 6 GB Node memory limit (`--max_old_space_size=6144`) that prevents heap out-of-memory failures during production builds on this codebase.
 
 ---
 
@@ -343,7 +343,7 @@ All commands run from the `UI/` directory.
 npm run build
 
 # Avoid — may crash with out-of-memory on this codebase
-ng build --prod
+ng build --configuration production
 ```
 
 ### Scaffolding with `ng`

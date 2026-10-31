@@ -22,8 +22,8 @@ To be upgraded soon.
 | ORM | Entity Framework Core 6 |
 | Database | MySQL 8 (Pomelo provider) |
 | Background jobs | .NET 6 console app (scheduled via cron) |
-| Frontend | Angular 10 / TypeScript |
-| UI framework | Angular Material + Vex theme + Tailwind CSS |
+| Frontend | Angular 22 / TypeScript 6 |
+| UI framework | Angular Material 22 (MDC components, Material 2 theme on static palettes) + the internalised Vex layout code (`src/app/vex`) + Tailwind 2 |
 | Auth | JWT |
 | Reporting | JSReport |
 | Logging | NLog |
@@ -180,7 +180,7 @@ The frontend requires the Node.js version in `UI/.nvmrc` (**v24.21.0** since the
 
 ## Known Technical Debt
 
-- Angular 10 and .NET 6 are both EOL — upgrade is a near future goal
+- .NET 6 is EOL — upgrade is a near future goal. The UI is on Angular 22; the Vex-era styling layer (61 `TODO(mdc-migration)` rules, Tailwind 2 colour utilities) stays until the re-theme to the Pacific EMIS look
 - 132 build warnings (mostly nullable reference warnings in `opensis.data`)
 - `System.IdentityModel.Tokens.Jwt` 6.14.1 has a known moderate vulnerability
 - No automated tests running in CI
