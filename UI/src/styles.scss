@@ -239,14 +239,25 @@ mat-form-field, emis-school-name-filter, emis-lookup-dropdown {
 
   .sidenav-secondary {
     width       : 240px;
-    background  : #fff;
-    border-top  : 1px solid #eee;
-    border-right: 1px solid rgb(228, 228, 228);
+    background  : var(--emis-tile-surface);
+    border-top  : 1px solid var(--mat-sys-outline-variant);
+    border-right: 1px solid var(--mat-sys-outline-variant);
     height      : calc(100vh - 120px);
 
+    // the tab shown: the EMIS blue, a tint of it behind, an accent bar in the gutter
     a.active {
-        background-color: var(--background-hover);
+        background-color: rgba(17, 74, 143, 0.08);
         border-radius: 0;
+        color: var(--emis-blue);
+        font-weight: 500;
+        box-shadow: inset 3px 0 0 var(--emis-blue);
+    }
+    .mat-expansion-panel-header .mat-expansion-panel-header-title {
+        color: var(--mat-sys-on-surface);
+        font-weight: 500;
+    }
+    .list-item {
+        color: var(--mat-sys-on-surface);
     }
 
     .mat-expansion-panel:not([class*="mat-elevation-z"]) {
@@ -273,6 +284,17 @@ mat-form-field, emis-school-name-filter, emis-lookup-dropdown {
               padding: 6px 12px 6px 53px;
               display: block;
               cursor: pointer;
+              color: var(--mat-sys-on-surface);
+              &:hover {
+                background-color: var(--emis-light-grey);
+                text-decoration: none;
+              }
+              &.active {
+                color: var(--emis-blue);
+                font-weight: 500;
+                background-color: rgba(17, 74, 143, 0.08);
+                box-shadow: inset 3px 0 0 var(--emis-blue);
+              }
             }
           }
         }
