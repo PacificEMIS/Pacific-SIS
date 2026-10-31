@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 
 All rights reserved.
 ***********************************************************************************/
-import { Component, ElementRef, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { StudentService } from 'src/app/services/student.service';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
@@ -38,6 +38,7 @@ import { DefaultValuesService } from '../../../../../common/default-values.servi
     selector: 'vex-add-alert',
     templateUrl: './add-alert.component.html',
     styleUrls: ['./add-alert.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddAlertComponent implements OnInit {

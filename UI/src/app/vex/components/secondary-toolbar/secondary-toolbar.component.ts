@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ConfigService } from '../../services/config.service';
 import { map } from 'rxjs/operators';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
     selector: 'vex-secondary-toolbar',
     templateUrl: './secondary-toolbar.component.html',
     styleUrls: ['./secondary-toolbar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SecondaryToolbarComponent implements OnInit {

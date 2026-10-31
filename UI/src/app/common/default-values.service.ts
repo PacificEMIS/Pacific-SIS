@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { CryptoService } from '../services/Crypto.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import * as moment from "moment";
+import moment from "moment";
 import { SharedFunction } from '../pages/shared/shared-function';
 @Injectable({
   providedIn: 'root',

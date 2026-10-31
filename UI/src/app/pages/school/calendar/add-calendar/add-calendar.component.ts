@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -33,7 +33,7 @@ import { CalendarAddViewModel, Weeks } from 'src/app/models/calendar.model';
 import { MembershipService } from '../../../../services/membership.service';
 import { CalendarService } from '../../../../services/calendar.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import * as moment from 'moment';
+import moment from 'moment';
 import { SharedFunction } from '../../../shared/shared-function';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { formatDate } from '@angular/common';
@@ -48,6 +48,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
         stagger60ms,
         fadeInUp400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddCalendarComponent implements OnInit {

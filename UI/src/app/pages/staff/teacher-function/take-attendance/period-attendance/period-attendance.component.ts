@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -43,6 +43,7 @@ import { CommonService } from 'src/app/services/common.service';
     selector: 'vex-period-attendance',
     templateUrl: './period-attendance.component.html',
     styleUrls: ['./period-attendance.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class PeriodAttendanceComponent implements OnInit {

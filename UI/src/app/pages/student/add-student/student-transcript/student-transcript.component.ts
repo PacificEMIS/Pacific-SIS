@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
@@ -60,6 +60,7 @@ import { HistoricalMarkingPeriodService } from "src/app/services/historical-mark
         stagger40ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StudentTranscriptComponent implements OnInit {

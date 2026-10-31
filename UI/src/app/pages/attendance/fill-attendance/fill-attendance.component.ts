@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { StudentAttendanceService } from '../../../services/student-attendance.service';
@@ -16,6 +16,7 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
     templateUrl: './fill-attendance.component.html',
     styleUrls: ['./fill-attendance.component.scss'],
     animations: [fadeInUp400ms],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class FillAttendanceComponent implements OnInit {

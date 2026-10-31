@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { GradeGenderCount, RolloverReadinessViewModel, SectionCompletenessRow } from '../../../../models/roll-over.model';
@@ -37,6 +37,7 @@ export interface ExitCodeView {
     selector: 'vex-rollover-summary-dialog',
     templateUrl: './rollover-summary-dialog.component.html',
     styleUrls: ['./rollover-summary-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class RolloverSummaryDialogComponent implements OnInit {

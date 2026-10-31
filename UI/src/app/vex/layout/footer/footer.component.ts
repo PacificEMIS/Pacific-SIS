@@ -4,6 +4,7 @@ import {
   OnDestroy,
   OnInit,
   TemplateRef,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { CommonService } from "../../../services/common.service";
 import { ReleaseNumberAddViewModel } from "../../../models/release-number-model";
@@ -17,6 +18,7 @@ import { DefaultValuesService } from '../../../common/default-values.service';
     selector: "vex-footer",
     templateUrl: "./footer.component.html",
     styleUrls: ["./footer.component.scss"],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class FooterComponent implements OnInit, OnDestroy {

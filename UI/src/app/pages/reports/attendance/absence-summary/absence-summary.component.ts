@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -27,7 +27,7 @@ import { ExcelService } from 'src/app/services/excel.service';
 import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
-import * as _moment from 'moment';
+import _moment from 'moment';
 import {default as _rollupMoment} from 'moment';
 import { MY_FORMATS } from 'src/app/pages/shared/format-datepicker';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
@@ -47,6 +47,7 @@ const moment = _rollupMoment || _moment;
         },
         { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AbsenceSummaryComponent implements OnInit, AfterViewInit, OnDestroy {

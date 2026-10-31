@@ -23,12 +23,12 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from "@angular/core";
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ChangeDetectionStrategy } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MAT_DATE_FORMATS } from "@angular/material/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
-import * as _moment from 'moment';
+import _moment from 'moment';
 import { fadeInRight400ms } from "@vex/animations/fade-in-right.animation";
 import { fadeInUp400ms } from "@vex/animations/fade-in-up.animation";
 import { stagger60ms } from "@vex/animations/stagger.animation";
@@ -78,6 +78,7 @@ const MY_FORMATS = {
     providers: [
         { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

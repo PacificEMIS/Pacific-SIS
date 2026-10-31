@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -39,7 +39,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MY_FORMATS } from '../../../../pages/shared/format-datepicker';
 import { MembershipService } from '../../../../../app/services/membership.service';
-import * as moment from 'moment';
+import moment from 'moment';
 import { SharedFunction} from '../../../shared/shared-function';
 import { LoaderService } from '../../../../services/loader.service';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -63,6 +63,7 @@ import { OnlySchoolListModel } from 'src/app/models/get-all-school.model';
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditNoticeComponent implements OnInit {

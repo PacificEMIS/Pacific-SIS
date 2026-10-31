@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil } from 'rxjs/operators';
@@ -45,6 +45,7 @@ import { Subject } from 'rxjs';
         stagger40ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class InputEffortGradesComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { trackByRoute } from '../../utils/track-by';
 import { NavigationService } from '../../services/navigation.service';
 import { LayoutService } from '../../services/layout.service';
@@ -21,6 +21,7 @@ import { ProfilesTypes } from 'src/app/enums/profiles.enum';
     selector: 'vex-sidenav',
     templateUrl: './sidenav.component.html',
     styleUrls: ['./sidenav.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SidenavComponent implements OnInit {

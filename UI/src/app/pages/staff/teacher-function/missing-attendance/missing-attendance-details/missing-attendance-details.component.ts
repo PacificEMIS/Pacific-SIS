@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { StudentAttendanceService } from "src/app/services/student-attendance.service";
 import { ScheduledCourseSectionViewModel } from "src/app/models/dashboard.model";
@@ -52,6 +52,7 @@ import { DefaultValuesService } from "src/app/common/default-values.service";
         stagger40ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class MissingAttendanceDetailsComponent implements OnInit ,AfterViewInit, OnDestroy{

@@ -22,13 +22,14 @@ Copyright (c) Open Solutions for Education, Inc.
 
 All rights reserved.
 ***********************************************************************************/
-import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { Component, Inject, OnInit, Optional, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
     selector: 'vex-view-assignment-details',
     templateUrl: './view-assignment-details.component.html',
     styleUrls: ['./view-assignment-details.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ViewAssignmentDetailsComponent implements OnInit {

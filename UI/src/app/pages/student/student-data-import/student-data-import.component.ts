@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from '../../../common/default-values.service';
@@ -45,12 +45,13 @@ import { StudentService } from '../../../services/student.service';
 import { AgeRangeList, BulkDataImportExcelHeader, EducationalStage } from '../../../models/common.model';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Component({
     selector: 'vex-student-data-import',
     templateUrl: './student-data-import.component.html',
     styleUrls: ['./student-data-import.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StudentDataImportComponent implements OnInit {

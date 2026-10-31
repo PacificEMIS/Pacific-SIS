@@ -23,13 +23,14 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'vex-add-comments',
     templateUrl: './add-comments.component.html',
     styleUrls: ['./add-comments.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddCommentsComponent implements OnInit {

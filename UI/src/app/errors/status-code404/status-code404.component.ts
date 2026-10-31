@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/services/common.service';
 import { LoginService } from 'src/app/services/login.service';
 
@@ -6,6 +6,7 @@ import { LoginService } from 'src/app/services/login.service';
     selector: 'vex-status-code404',
     templateUrl: './status-code404.component.html',
     styleUrls: ['./status-code404.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StatusCode404Component implements OnInit {

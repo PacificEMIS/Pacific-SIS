@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { SchoolAddViewModel } from '../../../../models/school-master.model';
@@ -32,6 +32,7 @@ import { SchoolAddViewModel } from '../../../../models/school-master.model';
     selector: 'vex-view-general-info',
     templateUrl: './view-general-info.component.html',
     styleUrls: ['./view-general-info.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

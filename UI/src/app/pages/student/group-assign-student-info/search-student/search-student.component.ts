@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl, NgForm } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { MatSelect } from '@angular/material/select';
@@ -26,6 +26,7 @@ import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
     selector: 'vex-group-assign-search-student',
     templateUrl: './search-student.component.html',
     styleUrls: ['./search-student.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SearchStudentComponent implements OnInit {

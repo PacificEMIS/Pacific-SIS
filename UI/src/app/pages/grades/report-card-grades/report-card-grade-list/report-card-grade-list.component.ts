@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Router} from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -39,6 +39,7 @@ import { EditReportCardGradeComponent } from '../edit-report-card-grade/edit-rep
         fadeInUp400ms,
         stagger40ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ReportCardGradeListComponent implements OnInit {

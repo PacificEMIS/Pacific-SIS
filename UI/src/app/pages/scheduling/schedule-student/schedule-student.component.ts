@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AddStudentComponent } from './add-student/add-student.component';
 import { AddCourseSectionComponent } from './add-course-section/add-course-section.component';
@@ -56,7 +56,7 @@ import { uniqueColors } from "../../../common/static-data";
 import {UntypedFormControl} from '@angular/forms';
 import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
-import * as _moment from 'moment';
+import _moment from 'moment';
 import {default as _rollupMoment} from 'moment';
 
 const moment = _rollupMoment || _moment;
@@ -85,6 +85,7 @@ export const MY_FORMATS = {
         },
         { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScheduleStudentComponent implements OnInit, OnDestroy {

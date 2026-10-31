@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import * as _moment from 'moment';
+import _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 import {SharedFunction} from '../../shared/shared-function'
 const moment =  _rollupMoment || _moment;

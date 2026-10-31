@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -24,6 +24,7 @@ import { ExcelService } from 'src/app/services/excel.service';
     selector: 'vex-absence-summary-details',
     templateUrl: './absence-summary-details.component.html',
     styleUrls: ['./absence-summary-details.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AbsenceSummaryDetailsComponent implements OnInit {

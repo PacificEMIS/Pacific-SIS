@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -15,6 +15,7 @@ import { AvailableTenantViewModel } from '../../../models/available-tenant';
     animations: [
         fadeInUp400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ForgotPasswordComponent implements OnInit {

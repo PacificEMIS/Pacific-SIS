@@ -41,6 +41,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
     selector: 'vex-variable-scheduling',
     templateUrl: './variable-scheduling.component.html',
     styleUrls: ['./variable-scheduling.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class VariableSchedulingComponent implements OnInit, OnChanges {

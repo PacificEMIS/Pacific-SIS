@@ -24,7 +24,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, AfterViewInit, Inject, ViewChild, Input, OnDestroy} from '@angular/core';
+import { Component, OnInit, AfterViewInit, Inject, ViewChild, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { UntypedFormBuilder, UntypedFormControl, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -54,6 +54,7 @@ import { MatSelect } from '@angular/material/select';
         stagger60ms,
         fadeInUp400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditContactComponent implements OnInit,AfterViewInit, OnDestroy {

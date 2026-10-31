@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ScheduleStudentListViewModel } from 'src/app/models/student-schedule.model';
 import { StudentScheduleService } from 'src/app/services/student-schedule.service';
@@ -49,6 +49,7 @@ import { CommonService } from 'src/app/services/common.service';
         stagger60ms,
         fadeInUp400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StudentsComponent implements OnInit, AfterViewInit {

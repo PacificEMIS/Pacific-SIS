@@ -25,7 +25,7 @@ All rights reserved.
 
 import { LovList, LovAddView, UpdateLovSortingModel, LoVSortOrderValuesModel } from '../../../models/lov.model';
 import { CommonService } from './../../../services/common.service';
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router} from '@angular/router';
@@ -55,6 +55,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
         fadeInUp400ms,
         stagger40ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SchoolLevelComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
 import { MatDialog } from "@angular/material/dialog";
 import { AddGradeCommentsComponent } from '../add-grade-comments/add-grade-comments.component';
@@ -27,6 +27,7 @@ import { GradebookConfigurationAddViewModel } from '../../../../../models/gradeb
     templateUrl: './gradebook-grade-list.component.html',
     styleUrls: ['./gradebook-grade-list.component.scss'],
     providers: [DatePipe],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class GradebookGradeListComponent implements OnInit {

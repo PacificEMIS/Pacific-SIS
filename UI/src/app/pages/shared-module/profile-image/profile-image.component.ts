@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ViewChild, TemplateRef, Input, OnDestroy, OnChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input, OnDestroy, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -57,6 +57,7 @@ import { TranslateService } from '@ngx-translate/core';
     animations: [
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ProfileImageComponent implements OnInit, OnDestroy {

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, Input, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -34,7 +34,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from '../../../../services/common.service';
 import { StudentAddModel } from '../../../../models/student.model';
 import { CountryModel } from '../../../../models/country.model';
-import * as _moment from 'moment';
+import _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { ImageCropperService } from '../../../../services/image-cropper.service';
@@ -58,6 +58,7 @@ import { ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/co
         fadeInUp400ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StudentAddressandcontactsComponent implements OnInit, OnDestroy, AfterViewInit {

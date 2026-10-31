@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { AddTeacherCommentsComponent } from './add-teacher-comments/add-teacher-comments.component';
@@ -51,6 +51,7 @@ import { Subject } from "rxjs";
     selector: 'vex-take-attendance',
     templateUrl: './take-attendance.component.html',
     styleUrls: ['./take-attendance.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TakeAttendanceComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { GenerateApiKeyComponent } from './generate-api-key/generate-api-key.component';
@@ -17,6 +17,7 @@ import { LoaderService } from 'src/app/services/loader.service';
     selector: 'vex-api-keys',
     templateUrl: './api-keys.component.html',
     styleUrls: ['./api-keys.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ApiKeysComponent implements OnInit {

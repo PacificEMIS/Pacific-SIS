@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -56,6 +56,7 @@ import { Module } from 'src/app/enums/module.enum';
         fadeInUp400ms,
         stagger40ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SchoolFieldsComponent implements OnInit {

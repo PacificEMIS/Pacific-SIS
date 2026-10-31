@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { StudentAddModel } from '../../../../models/student.model';
 import { SharedFunction } from '../../../shared/shared-function';
@@ -41,6 +41,7 @@ import { PageRolesPermission } from '../../../../common/page-roles-permissions.s
     animations: [
         stagger60ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ViewStudentGeneralinfoComponent implements OnInit {

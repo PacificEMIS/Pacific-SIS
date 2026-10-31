@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { StudentDetails } from '../../../../models/student-details.model';
@@ -59,6 +59,7 @@ import { CommonLOV } from '../../../shared-module/lov/common-lov';
         stagger60ms,
         fadeInUp400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddStudentComponent implements OnInit,OnDestroy {

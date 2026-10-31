@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, ViewEncapsulation } from '@angular/core';
+import { Component, HostBinding, Input, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'vex-page-layout',
@@ -8,6 +8,7 @@ import { Component, HostBinding, Input, ViewEncapsulation } from '@angular/core'
     },
     encapsulation: ViewEncapsulation.None,
     styleUrls: ['./page-layout.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class PageLayoutComponent {

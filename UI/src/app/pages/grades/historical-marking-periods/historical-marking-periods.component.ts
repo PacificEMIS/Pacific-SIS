@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddHistoricalMarkingPeriodsComponent } from './add-historical-marking-periods/add-historical-marking-periods.component';
@@ -14,12 +14,13 @@ import { MatTableDataSource } from '@angular/material/table';
 import { LoaderService } from 'src/app/services/loader.service';
 import { ExcelService } from 'src/app/services/excel.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import * as _moment from 'moment';
+import _moment from 'moment';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 @Component({
     selector: 'vex-historical-marking-periods',
     templateUrl: './historical-marking-periods.component.html',
     styleUrls: ['./historical-marking-periods.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class HistoricalMarkingPeriodsComponent implements OnInit {

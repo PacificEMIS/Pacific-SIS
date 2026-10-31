@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ScheduleReportFilterModel, ScheduleReportFilterViewModel, ScheduleReportStaddAndCourseListFilterModel } from 'src/app/models/schedule-report-filter.model';
 import { StudentScheduleService } from 'src/app/services/student-schedule.service';
@@ -96,6 +96,7 @@ import moment from 'moment';
     selector: 'vex-class-list',
     templateUrl: './class-list.component.html',
     styleUrls: ['./class-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {

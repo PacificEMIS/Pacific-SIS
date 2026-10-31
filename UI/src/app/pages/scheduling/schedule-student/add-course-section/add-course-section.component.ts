@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { SearchStudentCourseSection } from '../../../../models/search-student-course-section.model';
 import { TranslateService } from '@ngx-translate/core';
 import { CourseManagerService } from '../../../../services/course-manager.service';
@@ -41,7 +41,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { CourseSectionService } from '../../../../services/course-section.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatCheckbox } from '@angular/material/checkbox';
-import * as _moment from 'moment';
+import _moment from 'moment';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 
@@ -49,6 +49,7 @@ import { CommonService } from 'src/app/services/common.service';
     selector: 'vex-add-course-section',
     templateUrl: './add-course-section.component.html',
     styleUrls: ['./add-course-section.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddCourseSectionComponent implements OnInit, OnDestroy {

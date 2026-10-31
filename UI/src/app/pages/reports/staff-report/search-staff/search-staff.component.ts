@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl, NgForm } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { MatSelect } from '@angular/material/select';
@@ -25,6 +25,7 @@ import { StaffService } from 'src/app/services/staff.service';
     selector: 'vex-search-staff',
     templateUrl: './search-staff.component.html',
     styleUrls: ['./search-staff.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SearchStaffComponent implements OnInit, AfterViewInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -7,6 +7,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
     selector: 'vex-schedule',
     templateUrl: './schedule.component.html',
     styleUrls: ['./schedule.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScheduleComponent implements OnInit {

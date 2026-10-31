@@ -16,7 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { NgxDropzoneModule } from 'ngx-dropzone';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import {SharedModuleModule} from '../../shared-module/shared-module.module'
 import { MatTooltipModule } from '@angular/material/tooltip';
 @NgModule({ declarations: [StaffDataImportComponent],
@@ -37,5 +37,5 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         FormsModule,
         NgxDropzoneModule,
         SharedModuleModule,
-        MatTooltipModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+        MatTooltipModule], providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())] })
 export class StaffDataImportModule { }

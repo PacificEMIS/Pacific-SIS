@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { LayoutService } from '@vex/services/layout.service';
 import { filter, map, startWith } from 'rxjs/operators';
 import { NavigationEnd, Router } from '@angular/router';
@@ -38,6 +38,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
     selector: 'vex-custom-layout',
     templateUrl: './custom-layout.component.html',
     styleUrls: ['./custom-layout.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CustomLayoutComponent implements OnInit {

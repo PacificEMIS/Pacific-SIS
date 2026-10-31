@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { AddTeacherComponent } from './add-teacher/add-teacher.component';
@@ -58,6 +58,7 @@ import { ProfilesTypes } from 'src/app/enums/profiles.enum';
     selector: 'vex-teacher-reassignment',
     templateUrl: './teacher-reassignment.component.html',
     styleUrls: ['./teacher-reassignment.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TeacherReassignmentComponent implements OnInit {

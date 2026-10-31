@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -37,7 +37,7 @@ import {StudentDocumentAddModel} from '../../../../models/student.model';
 import {StudentService} from '../../../../services/student.service';
 import {ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import * as _moment from 'moment';
+import _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 const moment =  _rollupMoment || _moment;
 import { SchoolCreate } from '../../../../enums/school-create.enum';
@@ -56,6 +56,7 @@ import { CommonService } from 'src/app/services/common.service';
         fadeInUp400ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StudentDocumentsComponent implements OnInit {

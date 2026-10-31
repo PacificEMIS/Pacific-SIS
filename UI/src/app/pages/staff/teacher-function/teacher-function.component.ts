@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { TitleCasePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { RolePermissionListViewModel } from 'src/app/models/roll-based-access.model';
@@ -49,6 +49,7 @@ import { TakeAttendanceComponent } from './take-attendance/take-attendance.compo
         fadeInUp400ms
     ],
     providers: [TitleCasePipe],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

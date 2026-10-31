@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ElementRef, Input, NgZone, OnDestroy } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, Input, NgZone, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import SimpleBar from 'simplebar';
 
 @Component({
@@ -9,6 +9,7 @@ import SimpleBar from 'simplebar';
     host: {
         class: 'vex-scrollbar'
     },
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScrollbarComponent implements AfterContentInit, OnDestroy {

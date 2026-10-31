@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { StaffAddModel } from '../../../../models/staff.model';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -37,6 +37,7 @@ import { StaffService } from 'src/app/services/staff.service';
     animations: [
         stagger60ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

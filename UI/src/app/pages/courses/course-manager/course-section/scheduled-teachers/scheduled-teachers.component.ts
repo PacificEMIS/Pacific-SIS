@@ -22,7 +22,7 @@ Copyright (c) Open Solutions for Education, Inc.
 
 All rights reserved.
 ***********************************************************************************/
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
 import { RemoveStaffCourseSectionSchedule, ScheduledStaffForCourseSection } from '../../../../../models/course-section.model';
@@ -39,6 +39,7 @@ import { TeacherScheduleService } from 'src/app/services/teacher-schedule.servic
     selector: 'vex-scheduled-teachers',
     templateUrl: './scheduled-teachers.component.html',
     styleUrls: ['./scheduled-teachers.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScheduledTeachersComponent implements OnInit {

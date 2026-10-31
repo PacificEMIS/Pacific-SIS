@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -51,6 +51,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
         stagger60ms,
         fadeInUp400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditParentComponent implements OnInit {

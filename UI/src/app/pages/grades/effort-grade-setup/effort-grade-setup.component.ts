@@ -23,13 +23,14 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'vex-effort-grade-setup',
     templateUrl: './effort-grade-setup.component.html',
     styleUrls: ['./effort-grade-setup.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EffortGradeSetupComponent implements OnInit {

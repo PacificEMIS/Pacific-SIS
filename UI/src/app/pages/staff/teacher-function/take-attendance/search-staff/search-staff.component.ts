@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { Subject } from 'rxjs';
@@ -48,6 +48,7 @@ import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
     selector: 'vex-search-staff',
     templateUrl: './search-staff.component.html',
     styleUrls: ['./search-staff.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SearchStaffComponent implements OnInit {

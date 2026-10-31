@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Notification } from '../interfaces/notification.interface';
 import { DateTime } from 'luxon';
 import { trackById } from '../../../../utils/track-by';
@@ -7,6 +7,7 @@ import { trackById } from '../../../../utils/track-by';
     selector: 'vex-toolbar-notifications-dropdown',
     templateUrl: './toolbar-notifications-dropdown.component.html',
     styleUrls: ['./toolbar-notifications-dropdown.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ToolbarNotificationsDropdownComponent implements OnInit {

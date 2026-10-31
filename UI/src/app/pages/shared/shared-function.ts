@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as _moment from 'moment';
+import _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 const moment = _rollupMoment || _moment;
 @Injectable({

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, Inject, Input, OnDestroy, OnInit, TemplateRef, ViewChild, DOCUMENT } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, Inject, Input, OnDestroy, OnInit, TemplateRef, ViewChild, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { LayoutService } from '../services/layout.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -8,7 +8,7 @@ import { filter, map, startWith, withLatestFrom } from 'rxjs/operators';
 import { checkRouterChildsData } from '../utils/check-router-childs-data';
 
 import { ConfigService } from '../services/config.service';
-import * as jwt_decode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import { MatDialog } from '@angular/material/dialog';
 import { SessionExpireAlertComponent } from './session-expire/session-expire-alert/session-expire-alert.component';
 import { DefaultValuesService } from '../../common/default-values.service';
@@ -24,6 +24,7 @@ import { CommonService } from '../../services/common.service';
     selector: 'vex-layout',
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnDestroy, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, AfterViewInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, UntypedFormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -60,6 +60,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
         fadeInUp400ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StaffAddressinfoComponent implements OnInit, AfterViewInit, OnDestroy {

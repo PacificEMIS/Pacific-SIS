@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { AddCourseSectionComponent } from './add-course-section/add-course-section.component';
@@ -59,6 +59,7 @@ import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
     selector: 'vex-group-delete',
     templateUrl: './group-delete.component.html',
     styleUrls: ['./group-delete.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ControlContainer, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, NgForm, Validators } from '@angular/forms';
 import { AddEditStudentMedicalProviderForGroupAssignModel, StudentAddForGroupAssignModel, StudentDocumentAddForGroupAssignModel, StudentEnrollmentForGroupAssignModel, StudentEnrollmentSchoolListModel, StudentListModel } from 'src/app/models/student.model';
@@ -81,6 +81,7 @@ export interface SelectedStudentList {
         fadeInRight400ms,
         stagger60ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

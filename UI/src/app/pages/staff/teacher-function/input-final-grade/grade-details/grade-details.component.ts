@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FinalGradeService } from '../../../../../services/final-grade.service';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -54,7 +54,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { CommonService } from 'src/app/services/common.service';
 import { GradebookConfigurationAddViewModel } from 'src/app/models/gradebook-configuration.model';
 import { GradeBookConfigurationService } from 'src/app/services/gradebook-configuration.service';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Component({
     selector: 'vex-grade-details',
@@ -65,6 +65,7 @@ import * as moment from 'moment';
         stagger60ms,
         fadeInUp400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class GradeDetailsComponent implements OnInit {

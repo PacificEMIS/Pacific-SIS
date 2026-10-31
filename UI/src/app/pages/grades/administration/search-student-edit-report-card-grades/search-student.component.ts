@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, AfterViewInit, ViewChild, Output, EventEmitter, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, Output, EventEmitter, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl, NgForm } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { ReplaySubject, Subject } from 'rxjs';
@@ -62,6 +62,7 @@ import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from 's
     selector: 'vex-search-student-edit-report-card-grades',
     templateUrl: './search-student.component.html',
     styleUrls: ['./search-student.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SearchStudentComponentForEditReportCardGrades implements OnInit, AfterViewInit, OnDestroy {

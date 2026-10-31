@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { SearchStudentCourseSection } from '../../../../models/search-student-course-section.model';
 import { TranslateService } from '@ngx-translate/core';
 import { AllCourseSectionView, GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel, SearchCourseSectionViewModel } from '../../../../models/course-manager.model';
@@ -46,6 +46,7 @@ import { CommonService } from 'src/app/services/common.service';
     selector: 'vex-add-course-section',
     templateUrl: './add-course-section.component.html',
     styleUrls: ['./add-course-section.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddCourseSectionComponent implements OnInit {

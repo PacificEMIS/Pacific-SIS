@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit,Inject } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef ,MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { StudentUpdateAttendanceCommentsModel } from '../../../../../models/take-attendance-list.model';
@@ -35,6 +35,7 @@ import { CommonService } from 'src/app/services/common.service';
     selector: 'vex-add-teacher-comments',
     templateUrl: './add-teacher-comments.component.html',
     styleUrls: ['./add-teacher-comments.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddTeacherCommentsComponent implements OnInit {

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { DasboardService } from '../../services/dasboard.service';
@@ -33,6 +33,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
     selector: 'vex-class',
     templateUrl: './class.component.html',
     styleUrls: ['./class.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ClassComponent implements OnInit {

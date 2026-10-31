@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
@@ -39,7 +39,7 @@ import { EditPeriodComponent } from './edit-period/edit-period.component';
 import { LoaderService } from '../../../services/loader.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ExcelService } from '../../../services/excel.service';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../models/roll-based-access.model';
 import { RollBasedAccessService } from '../../../services/roll-based-access.service';
 import { CryptoService } from '../../../services/Crypto.service';
@@ -54,6 +54,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
         fadeInUp400ms,
         stagger40ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class PeriodsComponent implements OnInit {

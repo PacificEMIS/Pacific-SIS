@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
@@ -55,6 +55,7 @@ import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
         stagger40ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {

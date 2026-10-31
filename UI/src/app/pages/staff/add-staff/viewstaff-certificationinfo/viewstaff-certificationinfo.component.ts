@@ -23,12 +23,13 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'vex-viewstaff-certificationinfo',
     templateUrl: './viewstaff-certificationinfo.component.html',
     styleUrls: ['./viewstaff-certificationinfo.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ViewstaffCertificationinfoComponent implements OnInit {

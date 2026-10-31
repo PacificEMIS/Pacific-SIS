@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { PopoverRef } from '../popover/popover-ref';
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 import { SchoolCreate } from 'src/app/enums/school-create.enum';
@@ -21,6 +21,7 @@ export interface MegaMenuPage {
 @Component({
     selector: 'vex-mega-menu',
     templateUrl: './mega-menu.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class MegaMenuComponent implements OnInit {

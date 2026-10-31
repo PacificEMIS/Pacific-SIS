@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
@@ -42,6 +42,7 @@ import { ProfilesTypes } from 'src/app/enums/profiles.enum';
     animations: [
         stagger60ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ViewStaffGeneralinfoComponent implements OnInit {

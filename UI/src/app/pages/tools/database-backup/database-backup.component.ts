@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from 'src/app/services/common.service';
 import { DatabaseBackupModel } from 'src/app/models/common.model';
@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     selector: 'vex-database-backup',
     templateUrl: './database-backup.component.html',
     styleUrls: ['./database-backup.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class DatabaseBackupComponent implements OnInit {

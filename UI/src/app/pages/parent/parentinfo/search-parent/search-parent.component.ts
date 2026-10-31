@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ViewChild, Output, Input, EventEmitter, OnDestroy, OnChanges, SimpleChanges, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, Input, EventEmitter, OnDestroy, OnChanges, SimpleChanges, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl, NgForm } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { StudentService } from '../../../../services/student.service';
@@ -49,6 +49,7 @@ import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
     selector: 'vex-search-parent',
     templateUrl: './search-parent.component.html',
     styleUrls: ['./search-parent.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SearchParentComponent implements OnInit,AfterViewInit,OnDestroy {

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { RolePermissionListViewModel } from 'src/app/models/roll-based-access.model';
 import { CryptoService } from 'src/app/services/Crypto.service';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
@@ -37,6 +37,7 @@ import { Router } from '@angular/router';
     animations: [
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SchoolSettingsComponent implements OnInit {

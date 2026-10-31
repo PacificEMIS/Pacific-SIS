@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { AddAssignCourseComponent } from "./add-assign-course/add-assign-course.component";
@@ -66,6 +66,7 @@ import { buildSchedulePrintWeekPages, getSchedulePrintStyles } from "src/app/com
     templateUrl: "./student-course-schedule.component.html",
     styleUrls: ["./student-course-schedule.component.scss"],
     encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StudentCourseScheduleComponent implements OnInit {

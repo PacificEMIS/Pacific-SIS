@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { GetAllStaffReportModel } from '../../../../models/staff.model';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -53,6 +53,7 @@ export const generateListData: GenerateListData[] = [
         stagger40ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AdvanceReportComponent implements OnInit {

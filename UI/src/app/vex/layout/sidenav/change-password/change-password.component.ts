@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MatPasswordStrengthComponent } from "@angular-material-extensions/password-strength";
 import { ChangePasswordViewModel } from '../../../../models/common.model';
@@ -14,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
     templateUrl: './change-password.component.html',
     styleUrls: ['./change-password.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ChangePasswordComponent implements OnInit {

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ChangeDetectorRef, AfterViewChecked, AfterContentChecked } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, AfterViewChecked, AfterContentChecked, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { TranslateService } from '@ngx-translate/core';
@@ -48,6 +48,7 @@ import { CommonService } from 'src/app/services/common.service';
     animations: [
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AdministrationSettingsComponent implements OnInit, AfterContentChecked {

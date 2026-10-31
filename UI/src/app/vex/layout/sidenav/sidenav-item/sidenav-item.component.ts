@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, HostBinding, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, Input, OnChanges, OnInit, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationDropdown, NavigationItem, NavigationLink } from '../../../interfaces/navigation-item.interface';
 import { dropdownAnimation } from '../../../animations/dropdown.animation';
 import { NavigationEnd, Router } from '@angular/router';
@@ -16,6 +16,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
     templateUrl: './sidenav-item.component.html',
     styleUrls: ['./sidenav-item.component.scss'],
     animations: [dropdownAnimation],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SidenavItemComponent implements OnInit, OnChanges {

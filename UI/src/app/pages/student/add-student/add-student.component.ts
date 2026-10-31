@@ -28,6 +28,7 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { Subject } from "rxjs";
 import { fadeInRight400ms } from "@vex/animations/fade-in-right.animation";
@@ -57,6 +58,7 @@ import { Module } from "src/app/enums/module.enum";
     templateUrl: "./add-student.component.html",
     styleUrls: ["./add-student.component.scss"],
     animations: [fadeInRight400ms, stagger60ms, fadeInUp400ms],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddStudentComponent implements OnInit, OnDestroy {

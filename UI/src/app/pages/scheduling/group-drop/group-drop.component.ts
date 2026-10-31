@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddCourseSectionComponent } from './add-course-section/add-course-section.component';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -59,6 +59,7 @@ import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
         stagger60ms,
         fadeInUp400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class GroupDropComponent implements OnInit, OnDestroy {

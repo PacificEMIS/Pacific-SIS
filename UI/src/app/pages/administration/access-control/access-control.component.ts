@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
 import { RollBasedAccessService } from '../../../services/roll-based-access.service';
 import { RolePermissionListViewModel, RolePermissionViewModel, PermissionCategory, RolePermission, PermissionSubCategory, PermissionGroupListViewModel } from '../../../models/roll-based-access.model';
@@ -39,6 +39,7 @@ import { CommonService } from 'src/app/services/common.service';
     selector: 'vex-access-control',
     templateUrl: './access-control.component.html',
     styleUrls: ['./access-control.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AccessControlComponent implements OnInit {

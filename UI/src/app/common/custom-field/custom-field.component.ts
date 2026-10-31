@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedFunction } from '../../../../src/app/pages/shared/shared-function';
 import { FieldsCategoryListView, FieldsCategoryModel } from '../../models/fields-category.model';
@@ -61,6 +61,7 @@ import { TranslateService } from '@ngx-translate/core';
         fadeInUp400ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CustomFieldComponent implements OnInit, OnDestroy {

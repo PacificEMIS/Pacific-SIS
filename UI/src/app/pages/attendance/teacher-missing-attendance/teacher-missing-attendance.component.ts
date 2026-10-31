@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { GetStaffModel } from '../../../models/staff.model';
@@ -46,6 +46,7 @@ import {
     selector: 'vex-teacher-missing-attendance',
     templateUrl: './teacher-missing-attendance.component.html',
     styleUrls: ['./teacher-missing-attendance.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TeacherMissingAttendanceComponent implements OnInit {

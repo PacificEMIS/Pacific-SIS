@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,6 +12,7 @@ import { GradesService } from 'src/app/services/grades.service';
     selector: 'vex-edit-report-card-grades-details',
     templateUrl: './edit-report-card-grades-details.component.html',
     styleUrls: ['./edit-report-card-grades-details.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditReportCardGradesDetailsComponent implements OnInit, OnChanges {

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ReportService } from 'src/app/services/report.service';
 import { GetStudentAddDropReportModel, filterParams } from 'src/app/models/report.model';
@@ -38,7 +38,7 @@ import { LoaderService } from 'src/app/services/loader.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { UntypedFormControl } from '@angular/forms';
 import { ExcelService } from 'src/app/services/excel.service';
-import * as moment from 'moment';
+import moment from 'moment';
 import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 import { GradeLevelService } from 'src/app/services/grade-level.service';
 import { MarkingPeriodListModel } from 'src/app/models/marking-period.model';
@@ -48,6 +48,7 @@ import { MarkingPeriodService } from 'src/app/services/marking-period.service';
     selector: 'vex-add-drop-report',
     templateUrl: './add-drop-report.component.html',
     styleUrls: ['./add-drop-report.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

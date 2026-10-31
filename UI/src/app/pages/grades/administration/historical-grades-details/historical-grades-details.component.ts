@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { HistoricalCreditTransfer, HistoricalGrade, HistoricalGradeAddViewModel, HistoricalMarkingPeriodListModel } from 'src/app/models/historical-marking-period.model';
 import { HistoricalMarkingPeriodService } from 'src/app/services/historical-marking-period.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -17,6 +17,7 @@ import { TranslateService } from '@ngx-translate/core';
     selector: 'vex-historical-grades-details',
     templateUrl: './historical-grades-details.component.html',
     styleUrls: ['./historical-grades-details.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {

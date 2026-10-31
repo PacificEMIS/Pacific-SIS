@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm, UntypedFormControl } from '@angular/forms';
 import { MatAccordion } from '@angular/material/expansion';
 import { MatSelect } from '@angular/material/select';
@@ -29,6 +29,7 @@ import { GetAllSubjectModel } from 'src/app/models/course-manager.model';
     selector: 'vex-common-staff-advanced-search',
     templateUrl: './staff-advanced-search.component.html',
     styleUrls: ['./staff-advanced-search.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StaffAdvancedSearchComponent implements OnInit {

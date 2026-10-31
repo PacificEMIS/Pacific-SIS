@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddTeacherComponent } from './add-teacher/add-teacher.component';
 import { AddCourseSectionComponent } from './add-course-section/add-course-section.component';
@@ -60,6 +60,7 @@ import { MembershipService } from '../../../services/membership.service';
         fadeInUp400ms
     ],
     styleUrls: ['./schedule-teacher.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScheduleTeacherComponent implements OnInit, OnDestroy {

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -34,7 +34,7 @@ import { CalendarEventAddViewModel, colors } from '../../../../models/calendar-e
 import { CalendarEventService } from '../../../../services/calendar-event.service';
 import { CalendarService } from '../../../../services/calendar.service';
 import { ValidationService } from '../../../shared/validation.service';
-import * as moment from 'moment';
+import moment from 'moment';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/confirm-dialog.component';
 import { SharedFunction } from '../../../shared/shared-function';
@@ -58,6 +58,7 @@ import { OnlySchoolListModel } from 'src/app/models/get-all-school.model';
         stagger60ms,
         fadeInUp400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddEventComponent implements OnInit {

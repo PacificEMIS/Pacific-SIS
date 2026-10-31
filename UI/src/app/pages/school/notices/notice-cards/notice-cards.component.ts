@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NoticeDeleteModel } from '../../../../models/notice-delete.model';
 import { NoticeService } from '../../../../services/notice.service';
 import { ActivatedRoute } from '@angular/router';
@@ -43,6 +43,7 @@ import { CommonService } from 'src/app/services/common.service';
     selector: 'vex-notice-cards',
     templateUrl: './notice-cards.component.html',
     styleUrls: ['./notice-cards.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class NoticeCardsComponent implements OnInit {

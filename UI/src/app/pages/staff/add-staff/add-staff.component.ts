@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -56,6 +56,7 @@ import { Module } from 'src/app/enums/module.enum';
         stagger60ms,
         fadeInUp400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddStaffComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { trackByValue } from '../../utils/track-by';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -34,6 +34,7 @@ import { ProfilesTypes } from 'src/app/enums/profiles.enum';
     
     </div>
     `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class BreadcrumbsComponent implements OnInit {

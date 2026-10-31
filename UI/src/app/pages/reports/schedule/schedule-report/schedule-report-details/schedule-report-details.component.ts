@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { GetAllCourseSectionModel } from 'src/app/models/course-section.model';
@@ -18,6 +18,7 @@ import { GradeScaleModel } from 'src/app/models/grades.model';
     selector: 'vex-schedule-report-details',
     templateUrl: './schedule-report-details.component.html',
     styleUrls: ['./schedule-report-details.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {

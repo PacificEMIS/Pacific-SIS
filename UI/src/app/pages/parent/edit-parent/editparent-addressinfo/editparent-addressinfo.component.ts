@@ -1,4 +1,4 @@
-import { AfterViewInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 /***********************************************************************************
 openSIS is a free student information system for public and non-public
 schools from Open Solutions for Education, Inc.Website: www.os4ed.com.
@@ -55,6 +55,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
         fadeInUp400ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditparentAddressinfoComponent implements OnInit, AfterViewInit, OnDestroy {

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit, Optional } from "@angular/core";
+import { Component, Inject, OnInit, Optional, ChangeDetectionStrategy } from "@angular/core";
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -38,6 +38,7 @@ import { StaffPortalAssignmentService } from "../../../../services/staff-portal-
     selector: "vex-add-assignment",
     templateUrl: "./add-assignment.component.html",
     styleUrls: ["./add-assignment.component.scss"],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddAssignmentComponent implements OnInit {

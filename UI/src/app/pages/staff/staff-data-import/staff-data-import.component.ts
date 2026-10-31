@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BulkDataImport } from '../../../enums/bulk-data-import.enum';
 import { ExcelService } from '../../../services/excel.service';
@@ -45,12 +45,13 @@ import { CommonService } from '../../../services/common.service';
 import { BulkDataImportExcelHeader } from '../../../models/common.model';
 import { Permissions } from '../../../models/roll-based-access.model';
 import {PageRolesPermission} from '../../../common/page-roles-permissions.service'
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Component({
     selector: 'vex-staff-data-import',
     templateUrl: './staff-data-import.component.html',
     styleUrls: ['./staff-data-import.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StaffDataImportComponent implements OnInit {

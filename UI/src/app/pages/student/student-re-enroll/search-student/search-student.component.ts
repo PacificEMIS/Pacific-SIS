@@ -1,4 +1,4 @@
-import { AfterViewInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 /***********************************************************************************
 openSIS is a free student information system for public and non-public
 schools from Open Solutions for Education, Inc.Website: www.os4ed.com.
@@ -58,6 +58,7 @@ import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
     selector: "vex-search-student",
     templateUrl: "./search-student.component.html",
     styleUrls: ["./search-student.component.scss"],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SearchStudentComponent implements OnInit, AfterViewInit {

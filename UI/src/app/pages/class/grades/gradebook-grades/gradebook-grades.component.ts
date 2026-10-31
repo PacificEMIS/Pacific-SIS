@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { MatDialog } from "@angular/material/dialog";
 import { AddGradeCommentsComponent } from "./add-grade-comments/add-grade-comments.component";
@@ -45,6 +45,7 @@ import { GradebookConfigurationAddViewModel } from '../../../../models/gradebook
     templateUrl: "./gradebook-grades.component.html",
     styleUrls: ["./gradebook-grades.component.scss"],
     providers: [DatePipe],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestroy {

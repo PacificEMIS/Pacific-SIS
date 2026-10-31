@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit, ViewEncapsulation } from "@angular/core";
+import { Component, Inject, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { fadeInUp400ms } from "@vex/animations/fade-in-up.animation";
@@ -53,6 +53,7 @@ import { ProfilesTypes } from "src/app/enums/profiles.enum";
          `,
     ],
     encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddDaysScheduleComponent implements OnInit {

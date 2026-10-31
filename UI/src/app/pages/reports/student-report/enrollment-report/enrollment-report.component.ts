@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from 'src/app/services/common.service';
 import { MatTableDataSource } from '@angular/material/table';
@@ -40,7 +40,7 @@ import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { ReportService } from '../../../../services/report.service'
 import { GetStudentEnrollmentReportModel } from 'src/app/models/report.model';
 import { Subject } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 import { MarkingPeriodListModel } from 'src/app/models/marking-period.model';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
@@ -60,6 +60,7 @@ import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
         stagger40ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EnrollmentReportComponent implements OnInit, AfterViewInit {

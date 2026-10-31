@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
@@ -55,6 +55,7 @@ import { CommonService } from "src/app/services/common.service";
     selector: "vex-student-attendance",
     templateUrl: "./student-attendance.component.html",
     styleUrls: ["./student-attendance.component.scss"],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StudentAttendanceComponent implements OnInit, OnDestroy {

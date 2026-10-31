@@ -23,12 +23,13 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'vex-mat-spinner-overlay',
     templateUrl: './mat-spinner-overlay.component.html',
     styleUrls: ['./mat-spinner-overlay.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class MatSpinnerOverlayComponent implements OnInit {

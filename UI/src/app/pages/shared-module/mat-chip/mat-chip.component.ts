@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -7,6 +7,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
     selector: 'vex-mat-chip',
     templateUrl: './mat-chip.component.html',
     styleUrls: ['./mat-chip.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class MatChipComponent implements OnInit {

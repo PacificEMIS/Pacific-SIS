@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { StudentRecalculateDailyAttendance } from "../../../models/student-recalculate-attendance.model";
 import { DefaultValuesService } from "../../../common/default-values.service";
@@ -35,6 +35,7 @@ import { ValidationService } from '../../shared/validation.service';
     selector: "vex-recalculate-daily-attendance",
     templateUrl: "./recalculate-daily-attendance.component.html",
     styleUrls: ["./recalculate-daily-attendance.component.scss"],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class RecalculateDailyAttendanceComponent implements OnInit {

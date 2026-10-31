@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, LOCALE_ID, NgZone, OnDestroy, OnInit, Renderer2, DOCUMENT } from '@angular/core';
+import { Component, Inject, LOCALE_ID, NgZone, OnDestroy, OnInit, Renderer2, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 import { ConfigService } from '@vex/services/config.service';
 import { Settings } from 'luxon';
 
@@ -51,12 +51,13 @@ import { DefaultValuesService } from './common/default-values.service';
 import { UserViewModel } from './models/user.model';
 import { SessionService } from '@vex/services/session.service';
 import { LoginService } from './services/login.service';
-import * as jwt_decode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 
 @Component({
     selector: 'vex-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AppComponent implements OnInit, OnDestroy {
@@ -683,7 +684,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   tokenDetails() {
     if(this.defaultValueService.getToken()) {
-    let decoded = JSON.parse(JSON.stringify(jwt_decode.default(this.defaultValueService.getToken())));
+    let decoded = JSON.parse(JSON.stringify(jwt_decode(this.defaultValueService.getToken())));
 
     let date1: any = new Date(decoded.exp * 1000)
     let date2: any = new Date();

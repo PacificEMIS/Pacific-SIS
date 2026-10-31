@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { GetAllAttendanceCodeModel, GetStudentAttendanceReport, GetStudentAttendanceReportExport } from 'src/app/models/attendance-code.model';
@@ -60,6 +60,7 @@ export interface StudentListData {
     selector: 'vex-attendance-report',
     templateUrl: './attendance-report.component.html',
     styleUrls: ['./attendance-report.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AttendanceReportComponent implements OnInit {

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, ElementRef, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { AddEditStudentMedicalImmunizationModel } from 'src/app/models/student.model';
@@ -38,6 +38,7 @@ import { DefaultValuesService } from '../../../../../common/default-values.servi
     selector: 'vex-add-immunization',
     templateUrl: './add-immunization.component.html',
     styleUrls: ['./add-immunization.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddImmunizationComponent implements OnInit {

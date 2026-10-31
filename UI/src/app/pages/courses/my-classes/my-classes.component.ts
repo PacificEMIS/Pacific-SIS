@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { classColor } from 'src/app/common/static-data';
@@ -10,6 +10,7 @@ import { LoaderService } from 'src/app/services/loader.service';
     selector: 'vex-my-classes',
     templateUrl: './my-classes.component.html',
     styleUrls: ['./my-classes.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class MyClassesComponent implements OnInit {

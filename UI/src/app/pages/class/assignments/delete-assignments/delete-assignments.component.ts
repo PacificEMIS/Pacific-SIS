@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { Component, Inject, OnInit, Optional, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DasboardService } from '../../../../services/dasboard.service';
 
@@ -31,6 +31,7 @@ import { DasboardService } from '../../../../services/dasboard.service';
     selector: 'vex-delete-assignments',
     templateUrl: './delete-assignments.component.html',
     styleUrls: ['./delete-assignments.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class DeleteAssignmentsComponent implements OnInit {

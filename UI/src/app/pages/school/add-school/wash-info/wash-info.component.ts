@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, EventEmitter, Output, Input, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 import { Router } from '@angular/router';
@@ -40,7 +40,7 @@ import { ImageCropperService } from '../../../../services/image-cropper.service'
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { LovList } from '../../../../models/lov.model';
 import { CommonService } from '../../../../services/common.service';
-import * as cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep';
 import { CommonLOV } from '../../../shared-module/lov/common-lov';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -59,6 +59,7 @@ import { Module } from 'src/app/enums/module.enum';
         fadeInUp400ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class WashInfoComponent implements OnInit,OnDestroy {

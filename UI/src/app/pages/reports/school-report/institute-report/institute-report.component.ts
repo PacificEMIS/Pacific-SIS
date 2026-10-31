@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { GetAllSchoolModel } from 'src/app/models/get-all-school.model';
 import { SchoolService } from 'src/app/services/school.service';
@@ -21,6 +21,7 @@ import { PageRolesPermission } from 'src/app/common/page-roles-permissions.servi
     selector: 'vex-institute-report',
     templateUrl: './institute-report.component.html',
     styleUrls: ['./institute-report.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewInit {

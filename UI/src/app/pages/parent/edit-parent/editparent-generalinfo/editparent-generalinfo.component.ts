@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, UntypedFormControl, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -69,6 +69,7 @@ import { LoginService } from 'src/app/services/login.service';
         fadeInUp400ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditparentGeneralinfoComponent implements OnInit,AfterViewInit, OnDestroy {

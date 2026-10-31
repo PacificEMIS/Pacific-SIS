@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PermissionCategory } from '../../models/roll-based-access.model';
 import { NavigationService } from '@vex/services/navigation.service';
@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
     selector: 'vex-reports',
     templateUrl: './reports.component.html',
     styleUrls: ['./reports.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ReportsComponent implements OnInit {

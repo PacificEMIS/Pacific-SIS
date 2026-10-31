@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,6 +13,7 @@ import { LoaderService } from 'src/app/services/loader.service';
     selector: 'vex-progress-reports',
     templateUrl: './progress-reports.component.html',
     styleUrls: ['./progress-reports.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ProgressReportsComponent implements OnInit {

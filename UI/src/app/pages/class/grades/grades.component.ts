@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { DefaultValuesService } from "src/app/common/default-values.service";
@@ -32,6 +32,7 @@ import { DefaultValuesService } from "src/app/common/default-values.service";
     selector: "vex-grades",
     templateUrl: "./grades.component.html",
     styleUrls: ["./grades.component.scss"],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class GradesComponent implements OnInit, AfterViewInit {

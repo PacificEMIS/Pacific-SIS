@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RoomListViewModel } from '../../../../../models/room.model';
@@ -40,6 +40,7 @@ import { CommonService } from 'src/app/services/common.service';
     selector: 'vex-fixed-scheduling',
     templateUrl: './fixed-scheduling.component.html',
     styleUrls: ['./fixed-scheduling.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class FixedSchedulingComponent implements OnInit,OnChanges {

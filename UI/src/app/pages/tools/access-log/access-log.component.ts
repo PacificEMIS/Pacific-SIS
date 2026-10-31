@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { LoginService } from "src/app/services/login.service";
 import { DefaultValuesService } from "../../../common/default-values.service";
@@ -14,7 +14,7 @@ import {
   takeUntil,
   filter,
 } from "rxjs/operators";
-import * as moment from 'moment';
+import moment from 'moment';
 import { LoaderService } from "src/app/services/loader.service";
 import { Subject } from "rxjs";
 import { ExcelService } from "../../../services/excel.service";
@@ -50,6 +50,7 @@ import { Router } from "@angular/router";
     selector: "vex-access-log",
     templateUrl: "./access-log.component.html",
     styleUrls: ["./access-log.component.scss"],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AccessLogComponent implements OnInit, OnDestroy {

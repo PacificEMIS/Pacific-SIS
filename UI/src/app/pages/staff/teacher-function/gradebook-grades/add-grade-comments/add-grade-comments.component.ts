@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -7,6 +7,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
     selector: 'vex-add-grade-comments',
     templateUrl: './add-grade-comments.component.html',
     styleUrls: ['./add-grade-comments.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddGradeCommentsComponent implements OnInit {

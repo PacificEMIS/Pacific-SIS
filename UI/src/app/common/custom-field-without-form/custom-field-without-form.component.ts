@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm, ControlContainer } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SchoolAddViewModel } from '../../models/school-master.model';
@@ -50,6 +50,7 @@ import { DefaultValuesService } from '../default-values.service';
     templateUrl: './custom-field-without-form.component.html',
     styleUrls: ['./custom-field-without-form.component.scss'],
     animations: [stagger60ms],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CustomFieldWithoutFormComponent implements OnInit, OnDestroy {

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AllCourseSectionView, GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel, SearchCourseForScheduleModel, SearchCourseSectionViewModel } from '../../../../../models/course-manager.model';
@@ -53,6 +53,7 @@ import moment from 'moment';
     selector: 'vex-add-assign-course',
     templateUrl: './add-assign-course.component.html',
     styleUrls: ['./add-assign-course.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddAssignCourseComponent implements OnInit {

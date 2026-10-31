@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { StudentListByDateRangeModel, StudentListModel } from 'src/app/models/student.model';
 import { StudentInfoReportModel } from 'src/app/models/student-info-report.model';
@@ -53,6 +53,7 @@ import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
         stagger40ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class PrintStudentInfoComponent implements OnInit, AfterViewInit {

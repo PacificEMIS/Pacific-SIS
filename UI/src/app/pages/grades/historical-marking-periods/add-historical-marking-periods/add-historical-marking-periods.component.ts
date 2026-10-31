@@ -1,9 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepicker } from '@angular/material/datepicker';
-import * as _moment from 'moment';
+import _moment from 'moment';
 import { default as _rollupMoment, Moment } from 'moment';
 import { HistoricalMarkingPeriodAddViewModel } from 'src/app/models/historical-marking-period.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -37,6 +37,7 @@ export const MY_FORMATS = {
         },
         { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddHistoricalMarkingPeriodsComponent implements OnInit {

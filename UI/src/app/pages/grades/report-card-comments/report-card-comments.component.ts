@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { GetAllCourseListModel } from '../../../models/course-manager.model';
 import { CourseManagerService } from '../../../services/course-manager.service';
@@ -44,6 +44,7 @@ import { CommonService } from 'src/app/services/common.service';
     selector: 'vex-report-card-comments',
     templateUrl: './report-card-comments.component.html',
     styleUrls: ['./report-card-comments.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ReportCardCommentsComponent implements OnInit {

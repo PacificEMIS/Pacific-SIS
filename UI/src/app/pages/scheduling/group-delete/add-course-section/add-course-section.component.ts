@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CourseManagerService } from 'src/app/services/course-manager.service';
@@ -44,6 +44,7 @@ import { Subject } from 'rxjs';
     selector: 'vex-add-course-section',
     templateUrl: './add-course-section.component.html',
     styleUrls: ['./add-course-section.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddCourseSectionComponent implements OnInit, OnDestroy {

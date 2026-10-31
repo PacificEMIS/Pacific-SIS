@@ -88,7 +88,7 @@
                                     <td>
                                         <div class="select-dropdown">
                                             <select
-                                            [ngModel]="addUpdateStudentEffortGradeModel?.studentsByHomeRoomStaffView[selectedStudent]?.studentEffortGradeDetail[j]?.effortGradeScaleId" (ngModelChange)="addUpdateStudentEffortGradeModel?.studentsByHomeRoomStaffView[selectedStudent]?.studentEffortGradeDetail[j].effortGradeScaleId = $event"
+                                            [ngModel]="addUpdateStudentEffortGradeModel?.studentsByHomeRoomStaffView[selectedStudent]?.studentEffortGradeDetail[j]?.effortGradeScaleId" (ngModelChange)="addUpdateStudentEffortGradeModel.studentsByHomeRoomStaffView[selectedStudent].studentEffortGradeDetail[j].effortGradeScaleId = $event"
                                                 (change)="selectCategory(effortItem ,j, $event)" [disabled]="!this.defaultValuesService.checkAcademicYear()">
                                                 <option value=null>NA</option>
                                                 <option *ngFor="let grade of effortGradeScaleModelList"

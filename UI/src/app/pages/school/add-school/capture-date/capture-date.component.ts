@@ -1,13 +1,14 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { SharedFunction } from 'src/app/pages/shared/shared-function';
-import * as moment from 'moment';
+import moment from 'moment';
 @Component({
     selector: 'vex-capture-date',
     templateUrl: './capture-date.component.html',
     styleUrls: ['./capture-date.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CaptureDateComponent implements OnInit {

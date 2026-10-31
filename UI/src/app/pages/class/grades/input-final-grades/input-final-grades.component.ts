@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
@@ -51,7 +51,7 @@ import { StudentScheduleService } from 'src/app/services/student-schedule.servic
 import { TeacherScheduleService } from 'src/app/services/teacher-schedule.service';
 import { GradebookConfigurationAddViewModel } from 'src/app/models/gradebook-configuration.model';
 import { GradeBookConfigurationService } from 'src/app/services/gradebook-configuration.service';
-import * as moment from 'moment';
+import moment from 'moment';
 
 export interface Comment {
   name: string;
@@ -61,6 +61,7 @@ export interface Comment {
     selector: 'vex-input-final-grades',
     templateUrl: './input-final-grades.component.html',
     styleUrls: ['./input-final-grades.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class InputFinalGradesComponent implements OnInit {

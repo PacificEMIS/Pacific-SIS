@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, Optional, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,6 +15,7 @@ import { DasboardService } from '../../../../services/dasboard.service';
     selector: 'vex-copy-assignment',
     templateUrl: './copy-assignment.component.html',
     styleUrls: ['./copy-assignment.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CopyAssignmentComponent implements OnInit {

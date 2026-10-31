@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { LoaderService } from "../../../services/loader.service";
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from "rxjs/operators";
@@ -54,6 +54,7 @@ import { SearchFilter, SearchFilterListViewModel } from "src/app/models/search-f
         stagger40ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDestroy {

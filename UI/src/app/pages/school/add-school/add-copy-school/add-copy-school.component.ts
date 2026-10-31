@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, ElementRef, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchoolService } from 'src/app/services/school.service';
@@ -39,6 +39,7 @@ import { CommonService } from 'src/app/services/common.service';
     selector: 'vex-add-copy-school',
     templateUrl: './add-copy-school.component.html',
     styleUrls: ['./add-copy-school.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddCopySchoolComponent implements OnInit, OnDestroy {

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { GetAllGradeLevelsModel } from "../../../models/grade-level.model";
 import { GradeLevelService } from "../../../services/grade-level.service";
@@ -62,6 +62,7 @@ import { SharedFunction } from "../../shared/shared-function";
         stagger40ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TranscriptsComponent implements OnInit, OnDestroy {

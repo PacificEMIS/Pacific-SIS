@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CourseSectionService } from '../../../services/course-section.service';
 import { ClassRoomURLInCourseSectionModel, CourseSectionAddViewModel, GetAllCourseSectionModel } from 'src/app/models/course-section.model';
@@ -34,6 +34,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
     selector: 'vex-course-overview',
     templateUrl: './course-overview.component.html',
     styleUrls: ['./course-overview.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CourseOverviewComponent implements OnInit {

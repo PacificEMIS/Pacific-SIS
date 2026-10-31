@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { AddCommentsComponent } from './add-comments/add-comments.component';
@@ -45,6 +45,7 @@ import { reportCardType } from '../../../../common/static-data';
     selector: 'vex-student-report-card',
     templateUrl: './student-report-card.component.html',
     styleUrls: ['./student-report-card.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StudentReportCardComponent implements OnInit {

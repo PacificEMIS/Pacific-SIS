@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { SchoolAddViewModel } from '../../../../models/school-master.model';
 
@@ -31,6 +31,7 @@ import { SchoolAddViewModel } from '../../../../models/school-master.model';
     selector: 'vex-view-wash-info',
     templateUrl: './view-wash-info.component.html',
     styleUrls: ['./view-wash-info.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ViewWashInfoComponent implements OnInit {

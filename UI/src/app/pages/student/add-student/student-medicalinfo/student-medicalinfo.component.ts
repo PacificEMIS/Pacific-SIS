@@ -31,6 +31,7 @@ import {
   OnInit,
   Output,
   ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { UntypedFormBuilder, NgForm } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -76,6 +77,7 @@ import { CustomFieldService } from '../../../../services/custom-field.service';
     templateUrl: './student-medicalinfo.component.html',
     styleUrls: ['./student-medicalinfo.component.scss'],
     animations: [stagger60ms, fadeInUp400ms, fadeInRight400ms],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StudentMedicalinfoComponent implements OnInit, OnDestroy {

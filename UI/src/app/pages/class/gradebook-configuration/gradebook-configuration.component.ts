@@ -1,5 +1,5 @@
 import { ConstantPool, isNgContent } from '@angular/compiler';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
 import { FinalGradingMarkingPeriodList, GradebookConfigurationAddViewModel, GradebookConfigurationGradescale, GradebookConfigurationProgressPeriods, GradebookConfigurationQuarter, GradebookConfigurationSemester, GradebookConfigurationYear } from '../../../models/gradebook-configuration.model';
@@ -11,6 +11,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
     selector: 'vex-gradebook-configuration',
     templateUrl: './gradebook-configuration.component.html',
     styleUrls: ['./gradebook-configuration.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class GradebookConfigurationComponent implements OnInit {

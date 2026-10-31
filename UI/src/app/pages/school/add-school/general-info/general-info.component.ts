@@ -24,7 +24,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, Input, ViewChild, AfterViewInit, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, AfterViewInit, OnDestroy, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl, NgForm, Validators } from '@angular/forms';
 import { CheckSchoolInternalIdViewModel, SchoolAddViewModel } from '../../../../models/school-master.model';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -32,7 +32,7 @@ import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { SchoolService } from '../../../../services/school.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import * as _moment from 'moment';
+import _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -78,6 +78,7 @@ import { CaptureDateComponent } from '../capture-date/capture-date.component';
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
         { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

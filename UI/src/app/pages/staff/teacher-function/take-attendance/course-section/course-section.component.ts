@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from "@angular/core";
 import {
   CalendarEvent,
   CalendarView,
@@ -37,7 +37,7 @@ import { GetAllCourseListModel } from "../../../../../models/course-manager.mode
 import { scheduleType } from "../../../../../enums/takeAttendanceList.enum";
 import { days } from "../../../../../common/static-data";
 import { color } from "../../../../../common/static-data";
-import * as moment from 'moment';
+import moment from 'moment';
 import { LoaderService } from "../../../../../services/loader.service";
 import { CommonService } from "src/app/services/common.service";
 @Component({
@@ -54,6 +54,7 @@ import { CommonService } from "src/app/services/common.service";
          `,
     ],
     encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CourseSectionComponent implements OnInit {

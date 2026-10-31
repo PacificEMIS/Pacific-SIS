@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
@@ -24,6 +24,7 @@ import { RoomListViewModel } from '../../../models/room.model';
     selector: 'vex-course-catalog',
     templateUrl: './course-catalog.component.html',
     styleUrls: ['./course-catalog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CourseCatalogComponent implements OnInit {

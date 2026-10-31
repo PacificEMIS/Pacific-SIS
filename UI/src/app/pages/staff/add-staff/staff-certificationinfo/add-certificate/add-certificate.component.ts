@@ -24,7 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 import { StaffService } from '../../../../../services/staff.service';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ControlContainer, UntypedFormBuilder, UntypedFormGroup, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -50,6 +50,7 @@ import { SchoolCreate } from 'src/app/enums/school-create.enum';
         fadeInUp400ms
     ],
     viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddCertificateComponent implements OnInit, OnDestroy {

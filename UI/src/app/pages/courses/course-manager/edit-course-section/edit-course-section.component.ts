@@ -23,10 +23,10 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, ComponentFactoryResolver, Inject, OnInit, Optional, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, Inject, OnInit, Optional, Output, EventEmitter, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, Subject } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 import { CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarMonthViewBeforeRenderEvent, CalendarMonthViewDay, CalendarView, DAYS_OF_WEEK } from 'angular-calendar';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -57,6 +57,7 @@ import { DecimalPipe } from '@angular/common';
         fadeInUp400ms
     ],
     providers: [DecimalPipe],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditCourseSectionComponent implements OnInit {

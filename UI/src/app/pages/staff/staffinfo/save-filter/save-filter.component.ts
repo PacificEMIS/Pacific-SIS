@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonService } from '../../../../services/common.service';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
@@ -38,6 +38,7 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
     selector: 'vex-save-filter',
     templateUrl: './save-filter.component.html',
     styleUrls: ['./save-filter.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SaveFilterComponent implements OnInit {

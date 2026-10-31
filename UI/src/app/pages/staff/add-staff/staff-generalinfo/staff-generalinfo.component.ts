@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ChangeDetectorRef, ViewChild, Input, ComponentFactoryResolver, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, Input, ElementRef, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -45,7 +45,7 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { WashInfoEnum } from '../../../../enums/wash-info.enum';
 import { ImageCropperService } from '../../../../services/image-cropper.service';
 import { LovList } from '../../../../models/lov.model';
-import * as cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep';
 import { MiscModel } from '../../../../models/misc-data-student.model';
 import { CommonLOV } from '../../../shared-module/lov/common-lov';
 import { ModuleIdentifier } from '../../../../enums/module-identifier.enum';
@@ -66,6 +66,7 @@ import { ActiveDeactiveUserModel } from 'src/app/models/common.model';
         fadeInUp400ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StaffGeneralinfoComponent implements OnInit {

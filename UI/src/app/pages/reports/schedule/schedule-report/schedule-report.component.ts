@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -14,6 +14,7 @@ import { Subject } from 'rxjs';
     selector: 'vex-schedule-report',
     templateUrl: './schedule-report.component.html',
     styleUrls: ['./schedule-report.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ScheduleReportComponent implements OnInit , OnDestroy{

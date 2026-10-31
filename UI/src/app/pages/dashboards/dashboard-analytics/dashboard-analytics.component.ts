@@ -22,7 +22,7 @@ Copyright (c) Open Solutions for Education, Inc.
 
 All rights reserved.
 ***********************************************************************************/
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { Order, tableSalesData } from '../../../../static-data/table-sales-data';
 import { TableColumn } from '@vex/interfaces/table-column.interface';
 import { DashboardViewModel, GradeCount, NameCount, ScheduledCourseSectionViewModel } from '../../../models/dashboard.model';
@@ -40,7 +40,7 @@ import { NavigationStart, Router } from '@angular/router';
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { SchoolAddViewModel } from '../../../models/school-master.model';
-import * as _moment from 'moment';
+import _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 const moment = _rollupMoment || _moment;
 import { TranslateService } from '@ngx-translate/core';
@@ -67,6 +67,7 @@ import { MarkingPeriodService } from 'src/app/services/marking-period.service';
             useClass: CustomDateFormatter,
         },
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {

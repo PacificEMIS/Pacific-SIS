@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FinalGradingMarkingPeriodList } from '../../../models/gradebook-configuration.model';
 import { GradeBookConfigurationService } from '../../../services/gradebook-configuration.service';
@@ -11,7 +11,7 @@ import { RollOverService } from '../../../services/roll-over.service';
 import { NgForm } from '@angular/forms';
 import { SharedFunction } from '../../shared/shared-function';
 import { LoaderService } from '../../../services/loader.service';
-import * as moment from 'moment';
+import moment from 'moment';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RolloverSummaryDialogComponent } from './rollover-summary-dialog/rollover-summary-dialog.component';
@@ -20,6 +20,7 @@ import { RolloverSummaryDialogComponent } from './rollover-summary-dialog/rollov
     selector: 'vex-rollover-processing',
     templateUrl: './rollover.component.html',
     styleUrls: ['./rollover.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class RolloverComponent implements OnInit {

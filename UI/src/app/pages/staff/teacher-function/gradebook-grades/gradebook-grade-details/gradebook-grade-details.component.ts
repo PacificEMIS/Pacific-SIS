@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { AddGradebookGradeByStudentModel, ViewGradebookGradeByStudentModel } from 'src/app/models/gradebook-grades.model';
@@ -9,6 +9,7 @@ import { GradeBookConfigurationService } from 'src/app/services/gradebook-config
     selector: 'vex-gradebook-grade-details',
     templateUrl: './gradebook-grade-details.component.html',
     styleUrls: ['./gradebook-grade-details.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class GradebookGradeDetailsComponent implements OnInit {

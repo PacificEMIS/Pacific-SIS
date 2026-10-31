@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { AddAssignmentComponent } from "./add-assignment/add-assignment.component";
 import { CreateAssignmentComponent } from "./create-assignment/create-assignment.component";
@@ -50,6 +50,7 @@ import { GradeBookConfigurationService } from "../../../services/gradebook-confi
     selector: "vex-assignments",
     templateUrl: "./assignments.component.html",
     styleUrls: ["./assignments.component.scss"],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AssignmentsComponent implements OnInit {

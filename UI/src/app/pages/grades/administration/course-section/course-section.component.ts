@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
     selector: 'vex-course-section',
     templateUrl: './course-section.component.html',
     styleUrls: ['./course-section.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CourseSectionComponent implements OnInit {

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -59,6 +59,7 @@ import { ReportService } from 'src/app/services/report.service';
         fadeInRight400ms
     ],
     providers: [DatePipe],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StudentCommentsComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -21,6 +21,7 @@ import { AllScheduledCourseSectionForStaffModel } from '../../../models/teacher-
     templateUrl: './anomalous-grades.component.html',
     styleUrls: ['./anomalous-grades.component.scss'],
     animations: [fadeInUp400ms, stagger40ms],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AnomalousGradesComponent implements OnInit, AfterViewInit, OnDestroy {

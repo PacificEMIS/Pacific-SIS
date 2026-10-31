@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -36,6 +36,7 @@ interface Attendance {
     selector: 'vex-average-attendance-by-day',
     templateUrl: './average-attendance-by-day.component.html',
     styleUrls: ['./average-attendance-by-day.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AverageAttendanceByDayComponent implements OnInit, AfterViewInit {

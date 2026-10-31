@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { ApiKeyService } from 'src/app/services/api-key.service';
@@ -16,6 +16,7 @@ import { LoaderService } from 'src/app/services/loader.service';
     selector: 'vex-api-module-datails',
     templateUrl: './api-module-datails.component.html',
     styleUrls: ['./api-module-datails.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ApiModuleDatailsComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -16,6 +16,7 @@ import { SharedFunction } from 'src/app/pages/shared/shared-function';
     selector: 'vex-progress-report-details',
     templateUrl: './progress-report-details.component.html',
     styleUrls: ['./progress-report-details.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ProgressReportDetailsComponent implements OnInit {

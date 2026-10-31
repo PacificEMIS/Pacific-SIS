@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
 import { PopoverContent, PopoverRef } from './popover-ref';
 import { popoverAnimation } from '../../animations/popover.animation';
 
@@ -6,6 +6,7 @@ import { popoverAnimation } from '../../animations/popover.animation';
     templateUrl: './popover.component.html',
     styleUrls: ['./popover.component.scss'],
     animations: [popoverAnimation],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class PopoverComponent implements OnInit {

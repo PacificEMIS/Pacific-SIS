@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { PopoverService } from '../../../components/popover/popover.service';
 import { ToolbarNotificationsDropdownComponent } from './toolbar-notifications-dropdown/toolbar-notifications-dropdown.component';
 
@@ -6,6 +6,7 @@ import { ToolbarNotificationsDropdownComponent } from './toolbar-notifications-d
     selector: 'vex-toolbar-notifications',
     templateUrl: './toolbar-notifications.component.html',
     styleUrls: ['./toolbar-notifications.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ToolbarNotificationsComponent implements OnInit {

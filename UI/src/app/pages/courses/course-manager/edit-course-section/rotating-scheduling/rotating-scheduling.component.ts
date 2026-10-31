@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { BlockListViewModel } from '../../../../../models/school-period.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SchoolPeriodService } from '../../../../../services/school-period.service';
@@ -40,6 +40,7 @@ import { CommonService } from 'src/app/services/common.service';
     selector: 'vex-rotating-scheduling',
     templateUrl: './rotating-scheduling.component.html',
     styleUrls: ['./rotating-scheduling.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class RotatingSchedulingComponent implements OnInit {

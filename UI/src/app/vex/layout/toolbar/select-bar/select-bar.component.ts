@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -12,13 +12,14 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 import { CommonService } from 'src/app/services/common.service';
 import { SchoolAddViewModel } from '../../../../models/school-master.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import * as moment from "moment";
+import moment from "moment";
 import { ImpersonateServices } from 'src/app/services/impersonate.service';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 @Component({
     selector: 'vex-select-bar',
     templateUrl: './select-bar.component.html',
     styleUrls: ['./select-bar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SelectBarComponent implements OnInit {

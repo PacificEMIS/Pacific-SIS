@@ -25,7 +25,7 @@ All rights reserved.
 
 import { StaffCertificateListModel, StaffCertificateModel } from '../../../../models/staff.model';
 import { StaffService } from '../../../../services/staff.service';
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -55,6 +55,7 @@ import { Subject } from 'rxjs';
         fadeInUp400ms,
         stagger40ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StaffCertificationinfoComponent implements OnInit {

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { StudentAddModel } from '../../../../models/student.model';
 import { stagger60ms } from '@vex/animations/stagger.animation';
@@ -36,6 +36,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     animations: [
         stagger60ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ViewStudentAddressandcontactsComponent implements OnInit {

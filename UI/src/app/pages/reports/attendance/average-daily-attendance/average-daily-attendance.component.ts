@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { AverageDailyAttendanceReportModel } from 'src/app/models/attendance-code.model';
@@ -21,6 +21,7 @@ import { ExcelService } from 'src/app/services/excel.service';
     selector: 'vex-average-daily-attendance',
     templateUrl: './average-daily-attendance.component.html',
     styleUrls: ['./average-daily-attendance.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AverageDailyAttendanceComponent implements OnInit {

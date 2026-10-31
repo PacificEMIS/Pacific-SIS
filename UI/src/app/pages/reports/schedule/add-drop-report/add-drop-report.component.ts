@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ReportService } from 'src/app/services/report.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -38,7 +38,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { UntypedFormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
-import * as moment from 'moment';
+import moment from 'moment';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { MarkingPeriodListModel } from 'src/app/models/marking-period.model';
@@ -47,6 +47,7 @@ import { MarkingPeriodListModel } from 'src/app/models/marking-period.model';
     selector: 'vex-add-drop-report',
     templateUrl: './add-drop-report.component.html',
     styleUrls: ['./add-drop-report.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddDropReportComponent implements OnInit, AfterViewInit, OnDestroy {

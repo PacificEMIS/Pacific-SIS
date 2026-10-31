@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
@@ -59,6 +59,7 @@ import { PromoteStaffComponent } from './promote-staff/promote-staff.component';
     selector: 'vex-super-administrators',
     templateUrl: './super-administrators.component.html',
     styleUrls: ['./super-administrators.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SuperAdministratorsComponent implements OnInit, OnDestroy {

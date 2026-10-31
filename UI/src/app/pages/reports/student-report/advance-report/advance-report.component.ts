@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { StudentListByDateRangeModel } from 'src/app/models/student.model';
 import { StudentService } from 'src/app/services/student.service';
@@ -19,7 +19,7 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
-import * as moment from 'moment';
+import moment from 'moment';
 import { LanguageModel } from 'src/app/models/language.model';
 import { Subject } from 'rxjs';
 import { LoginService } from 'src/app/services/login.service';
@@ -80,6 +80,7 @@ export const generateStudentListData: GenerateStudentListData[] = [
         stagger40ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AdvanceReportComponent implements OnInit, OnDestroy {

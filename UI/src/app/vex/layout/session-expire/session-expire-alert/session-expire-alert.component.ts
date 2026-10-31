@@ -1,11 +1,11 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { UserViewModel } from '../../../../models/user.model';
 import { SessionService } from '../../../services/session.service';
 import { interval, Subscription } from 'rxjs';
-import * as jwt_decode from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 import { UserService } from '../../../../services/user.service';
@@ -15,6 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     selector: 'vex-session-expire-alert',
     templateUrl: './session-expire-alert.component.html',
     styleUrls: ['./session-expire-alert.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SessionExpireAlertComponent implements OnInit, OnDestroy {
@@ -40,7 +41,7 @@ export class SessionExpireAlertComponent implements OnInit, OnDestroy {
   ngOnInit() {
     let tokenExpired=false;
     if(this.defaultValueService.getToken()) {
-      this.decoded = JSON.parse(JSON.stringify(jwt_decode.default(this.defaultValueService.getToken())));
+      this.decoded = JSON.parse(JSON.stringify(jwt_decode(this.defaultValueService.getToken())));
     }
      else {
       this.commonService.clearStorage();

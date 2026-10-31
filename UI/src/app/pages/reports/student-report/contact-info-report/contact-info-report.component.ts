@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { StudentService } from 'src/app/services/student.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -36,6 +36,7 @@ import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
         stagger40ms,
         fadeInRight400ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

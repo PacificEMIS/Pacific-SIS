@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatSpinnerOverlayComponent } from './mat-spinner-overlay/mat-spinner-overlay.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { ProfileImageComponent } from './profile-image/profile-image.component';
-import { ImageCropperModule } from 'ngx-image-cropper';
+import { ImageCropperComponent } from 'ngx-image-cropper';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { MatDialogModule} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
@@ -67,7 +67,7 @@ import { PasswordMaskPipe } from './user-define-pipe/password-mask.pipe';
   imports: [
     CommonModule,
     MatProgressSpinnerModule,
-    ImageCropperModule,
+    ImageCropperComponent,
     MatSnackBarModule,
     MatDialogModule,
     MatButtonModule,

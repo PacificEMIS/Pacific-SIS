@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnInit,Output,EventEmitter, ViewChild, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from 'selenium-webdriver/http';
 import { SchoolService } from '../../../../services/school.service';
 import { GetAllSchoolModel,AllSchoolListModel } from '../../../../models/get-all-school.model';
@@ -65,6 +65,7 @@ import { SchoolCreate } from 'src/app/enums/school-create.enum';
         fadeInUp400ms,
         stagger40ms
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SchoolDetailsComponent implements OnInit,OnDestroy {

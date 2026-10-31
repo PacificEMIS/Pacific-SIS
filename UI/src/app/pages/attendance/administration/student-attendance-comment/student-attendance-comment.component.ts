@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { StudentAttendanceService } from "../../../../services/student-attendance.service";
@@ -36,11 +36,12 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { ProfilesTypes } from "src/app/enums/profiles.enum";
-import * as moment from "moment";
+import moment from "moment";
 @Component({
     selector: "vex-student-attendance-comment",
     templateUrl: "./student-attendance-comment.component.html",
     styleUrls: ["./student-attendance-comment.component.scss"],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StudentAttendanceCommentComponent implements OnInit {
