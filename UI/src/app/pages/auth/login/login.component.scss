@@ -55,6 +55,16 @@ mat-form-field {
   margin: 0 auto 16px;
 }
 
+.lead {
+  margin: 0 0 12px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.error {
+  margin: 0 0 12px;
+  color: var(--mat-sys-error);
+}
+
 .login-footer {
   max-width: 440px;
   margin: 0 auto;
