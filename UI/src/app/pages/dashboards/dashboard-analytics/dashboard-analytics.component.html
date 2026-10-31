@@ -5,23 +5,17 @@
     </vex-secondary-toolbar>
   </vex-page-layout-header>
 
-<!-- <div class="px-gutter pt-4 gd-lt-md-cols-2 gd-lt-sm-cols-1 gd-gap-16" gdColumns="1fr 1fr 1fr 1fr 1fr 1fr" vexContainer>
-
-  <div class="gd-col-1-4 gd-lt-md-col-full gd-lt-sm-col-1">
-    <vex-widget-assistant></vex-widget-assistant>
-  </div>
-
-</div> -->
 
 <div class="px-gutter py-4" vexContainer>
 
-  <!-- Notifications — full width -->
-  <div class="card px-6 py-4 bg-red mb-4 text-white hide cursor-pointer" *ngIf="showRollOver" (click)="goToRollover()">
-    {{'schoolYearIsEndingOrHasEndedRollOverRequiredGoToToolsRolloverToStartTheRolloverProcess'|translate}}
+  <!-- Notifications -->
+  <div class="dash-message error cursor-pointer" *ngIf="showRollOver" (click)="goToRollover()">
+    <mat-icon>autorenew</mat-icon>
+    <span>{{'schoolYearIsEndingOrHasEndedRollOverRequiredGoToToolsRolloverToStartTheRolloverProcess'|translate}}</span>
   </div>
-  <div class="card px-6 py-4 bg-red mb-4 text-white hide cursor-pointer" *ngIf="missingAttendanceCount>0" (click)="goToMissingAttendence()">
-    <mat-icon class="align-middle mr-3">{{ icMissingAttendance }}</mat-icon> {{missingAttendanceCount}}
-    {{'missingAttendanceFound'|translate}}
+  <div class="dash-message error cursor-pointer" *ngIf="missingAttendanceCount>0" (click)="goToMissingAttendence()">
+    <mat-icon>{{ icMissingAttendance }}</mat-icon>
+    <span>{{missingAttendanceCount}} {{'missingAttendanceFound'|translate}}</span>
   </div>
   <div *ngIf="noticeList.length>0" class="card mb-4 px-4 pt-4">
     <h4 class="text-primary font-semibold pb-3">{{ 'notice' | translate }}</h4>
@@ -41,65 +35,32 @@
     </mat-accordion>
   </div>
 
-  <!-- Summary cards — full width -->
-  <div class="gd-cols-3 gd-lt-md-cols-2 gd-lt-sm-cols-1 gd-gap-16" vexContainer>
-    <vex-widget-quick-value-center [icon]="icStudent" cardClass="bg-red" iconClass="bg-white-light text-white"
-      label="{{'students' |translate}}" [value]='studentCount' [subtext]='studentStatusText' (click)="checkIsActive('students')" class="cursor-pointer gd-lt-sm-col-1"></vex-widget-quick-value-center>
-    <vex-widget-quick-value-center [icon]="icStaff" cardClass="bg-green" iconClass="bg-white-light text-white" label="{{'staff' |translate}}" [value]='staffCount' (click)="checkIsActive('staff')" class="cursor-pointer gd-lt-sm-col-1"></vex-widget-quick-value-center>
-    <vex-widget-quick-value-center [icon]="icParent" cardClass="bg-blue" iconClass="bg-white-light text-white"
-      label="{{'parents' |translate}}" [value]='parentCount' (click)="checkIsActive('parents')" class="cursor-pointer gd-lt-sm-col-1"></vex-widget-quick-value-center>
-  </div>
+  <!-- Headline figures and charts, on the dashboard grid of the Pacific EMIS -->
+  <div class="dash-grid">
+    <emis-stat-row>
+      <emis-stat-tile [label]="'students' | translate" [value]="studentCount" class="cursor-pointer" (click)="checkIsActive('students')">{{ studentStatusText }}</emis-stat-tile>
+      <emis-stat-tile [label]="'staff' | translate" [value]="staffCount" class="cursor-pointer" (click)="checkIsActive('staff')"></emis-stat-tile>
+      <emis-stat-tile [label]="'parents' | translate" [value]="parentCount" class="cursor-pointer" (click)="checkIsActive('parents')"></emis-stat-tile>
+    </emis-stat-row>
 
-  <!-- Enrollment by Grade chart — full width -->
-  <div class="card my-4 px-6 py-4" *ngIf="enrollmentByGrade.length > 0">
-    <h4 class="text-primary font-semibold mb-3">{{'enrollmentByGrade' | translate}}</h4>
-    <div *ngFor="let g of enrollmentByGrade" class="flex items-center mb-2">
-      <span class="w-40 flex-shrink-0 text-xs text-secondary mr-2" [title]="g.gradeLevelTitle">{{g.gradeLevelTitle}}</span>
-      <div class="flex-auto bg-gray-100 rounded h-5 relative">
-        <div class="bg-red rounded h-5 transition-all duration-300" [style.width]="barWidth(g.count, maxEnrollment)"></div>
-      </div>
-      <span class="ml-2 text-xs font-medium w-8 text-right">{{g.count}}</span>
-    </div>
-  </div>
-
-  <!-- Repeaters by Grade — full width -->
-  <div class="card my-4 px-6 py-4">
-    <h4 class="text-primary font-semibold mb-3">{{'repeatersByGrade' | translate}}</h4>
-    <div *ngIf="repeatersByGrade.length === 0" class="text-xs text-secondary">{{'noRepeatersThisYear' | translate}}</div>
-    <div *ngFor="let g of repeatersByGrade" class="flex items-center mb-2">
-      <span class="w-40 flex-shrink-0 text-xs text-secondary mr-2" [title]="g.gradeLevelTitle">{{g.gradeLevelTitle}}</span>
-      <div class="flex-auto bg-gray-100 rounded h-5 relative">
-        <div class="bg-orange rounded h-5 transition-all duration-300" [style.width]="barWidth(g.count, maxRepeaters)"></div>
-      </div>
-      <span class="ml-2 text-xs font-medium w-8 text-right">{{g.count}}</span>
-    </div>
-  </div>
-  <!-- Dropouts by Grade: hidden until enrollment codes overhaul (see docs/plans/enrollment-codes-overhaul.md) -->
-
-  <!-- Staff charts — side by side -->
-  <div class="gd-cols-2 gd-lt-sm-cols-1 gd-gap-16" vexContainer>
-    <!-- Staff by Profile -->
-    <div class="card px-6 py-4" *ngIf="staffByProfile.length > 0">
-      <h4 class="text-primary font-semibold mb-3">{{'staffByProfile' | translate}}</h4>
-      <div *ngFor="let s of staffByProfile" class="flex items-center mb-2">
-        <span class="w-40 flex-shrink-0 text-xs text-secondary mr-2" [title]="s.name">{{s.name}}</span>
-        <div class="flex-auto bg-gray-100 rounded h-5 relative">
-          <div class="bg-green rounded h-5 transition-all duration-300" [style.width]="barWidth(s.count, maxStaffByProfile)"></div>
-        </div>
-        <span class="ml-2 text-xs font-medium w-8 text-right">{{s.count}}</span>
-      </div>
-    </div>
-    <!-- Staff by Job Title -->
-    <div class="card px-6 py-4" *ngIf="staffByJobTitle.length > 0">
-      <h4 class="text-primary font-semibold mb-3">{{'staffByJobTitle' | translate}}</h4>
-      <div *ngFor="let s of staffByJobTitle" class="flex items-center mb-2">
-        <span class="w-40 flex-shrink-0 text-xs text-secondary mr-2" [title]="s.name">{{s.name}}</span>
-        <div class="flex-auto bg-gray-100 rounded h-5 relative">
-          <div class="bg-blue rounded h-5 transition-all duration-300" [style.width]="barWidth(s.count, maxStaffByJobTitle)"></div>
-        </div>
-        <span class="ml-2 text-xs font-medium w-8 text-right">{{s.count}}</span>
-      </div>
-    </div>
+    <emis-dashboard-tile *ngIf="enrollmentByGrade.length > 0" [heading]="'enrollmentByGrade' | translate" [width]="6"
+      [height]="tileHeight(enrollmentByGrade.length)">
+      <emis-chart [option]="enrollmentOption"></emis-chart>
+    </emis-dashboard-tile>
+    <emis-dashboard-tile [heading]="'repeatersByGrade' | translate" [width]="6"
+      [height]="repeatersByGrade.length > 0 ? tileHeight(repeatersByGrade.length) : null">
+      <emis-chart *ngIf="repeatersByGrade.length > 0" [option]="repeatersOption"></emis-chart>
+      <p *ngIf="repeatersByGrade.length === 0" class="empty">{{'noRepeatersThisYear' | translate}}</p>
+    </emis-dashboard-tile>
+    <!-- Dropouts by Grade: hidden until enrollment codes overhaul (see docs/plans/enrollment-codes-overhaul.md) -->
+    <emis-dashboard-tile *ngIf="staffByProfile.length > 0" [heading]="'staffByProfile' | translate" [width]="6"
+      [height]="tileHeight(staffByProfile.length)">
+      <emis-chart [option]="staffByProfileOption"></emis-chart>
+    </emis-dashboard-tile>
+    <emis-dashboard-tile *ngIf="staffByJobTitle.length > 0" [heading]="'staffByJobTitle' | translate" [width]="6"
+      [height]="tileHeight(staffByJobTitle.length)">
+      <emis-chart [option]="staffByJobTitleOption"></emis-chart>
+    </emis-dashboard-tile>
   </div>
 
   <!-- Calendar — full width -->

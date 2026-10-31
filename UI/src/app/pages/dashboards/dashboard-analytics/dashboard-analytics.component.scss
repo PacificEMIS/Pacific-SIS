@@ -51,3 +51,40 @@
         }
     }
 }
+
+// the dashboard grid and the message band of the Pacific EMIS dashboards (dashboard-page.component.scss there)
+.dash-grid {
+  display: grid;
+  // minmax(0, 1fr), not 1fr: a chart canvas has a pixel width that would pin a plain track at its first size
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+  margin-bottom: 16px;
+}
+
+.dash-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--mat-sys-on-secondary-container);
+  background: var(--mat-sys-secondary-container);
+  border-radius: 8px;
+
+  mat-icon {
+    flex: none;
+  }
+
+  &.error {
+    color: var(--mat-sys-on-error-container);
+    background: var(--mat-sys-error-container);
+  }
+}
+
+.empty {
+  margin: 8px 0;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+}

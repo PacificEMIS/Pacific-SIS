@@ -1,0 +1,18 @@
+<!-- Copy of PacificEMIS.UI src/app/dashboard/tile/dashboard-tile.component.html at its commit 24de41f8. Shared between the two applications: change it there first and mirror it here (AGENTS.md). -->
+<section class="tile" [class.expanded]="expanded()" [class.receded]="receded()">
+  <header>
+    <button mat-icon-button type="button" [attr.aria-label]="expanded() ? 'Restore' : 'Expand'" (click)="toggle()">
+      <mat-icon>{{ expanded() ? 'close_fullscreen' : 'open_in_full' }}</mat-icon>
+    </button>
+    <h3>{{ heading() }}</h3>
+    <span class="filters">{{ filters() }}</span>
+    <span class="spacer"></span>
+    <ng-content select="[tileOptions]" />
+  </header>
+  <div class="body">
+    <ng-content />
+  </div>
+  <div class="detail" [hidden]="!expanded()">
+    <ng-content select="[tileDetail]" />
+  </div>
+</section>

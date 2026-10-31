@@ -1,0 +1,130 @@
+// Copy of PacificEMIS.UI src/app/dashboard/tile/dashboard-tile.component.scss at its commit 24de41f8. Shared between the two applications: change it there first and mirror it here (AGENTS.md).
+// The tile is a grid item of the dashboard page's 12 column grid.
+:host {
+  display: block;
+  box-sizing: border-box;
+  // a grid item will not shrink below its content without this, and a chart canvas
+  // carries a pixel width: the tile would prop the grid open and stop following the window
+  min-width: 0;
+  grid-column: 1 / -1;
+}
+
+@for $n from 1 through 12 {
+  :host(.width#{$n}) {
+    grid-column: span $n;
+  }
+}
+
+// Below the widest screens a tile that asks for elbow room takes half a row
+@media (max-width: 1799px) {
+  :host(.min-half) {
+    grid-column: span 6;
+  }
+}
+
+// Below a laptop width a quarter-row tile is too narrow to read:
+// small tiles take half a row, the rest a full row
+@media (max-width: 1199px) {
+  :host(.width1),
+  :host(.width2),
+  :host(.width3),
+  :host(.width4),
+  :host(.width5) {
+    grid-column: span 6;
+  }
+
+  :host(.min-half),
+  :host(.width6),
+  :host(.width7),
+  :host(.width8),
+  :host(.width9),
+  :host(.width10),
+  :host(.width11) {
+    grid-column: span 12;
+  }
+}
+
+// Tablet and below: one tile per row
+@media (max-width: 899px) {
+  :host([class*='width']) {
+    grid-column: 1 / -1;
+  }
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 4px 8px 8px;
+  background: var(--emis-tile-surface);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+  transition: opacity 0.2s;
+
+  &.receded {
+    opacity: 0.2;
+  }
+
+  &.expanded {
+    // over the whole content area (the shell makes it the containing block), below the toolbar
+    position: fixed;
+    inset: 72px 24px 24px;
+    height: auto;
+    z-index: 100;
+    padding: 12px 20px 20px;
+    box-shadow: var(--mat-sys-level4);
+    // on a short screen the chart and the table below it keep their least heights
+    // and the tile as a whole scrolls, rather than cut off what does not fit
+    overflow: auto;
+  }
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  min-height: 40px;
+
+  h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface);
+  }
+
+  .filters {
+    margin-left: 6px;
+    font-size: 13px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.expanded {
+  .body {
+    flex: 1 1 55%;
+    min-height: 300px;
+  }
+
+  .detail {
+    flex: 1 1 45%;
+    // room for a heading and a few rows of the table at the least
+    min-height: 180px;
+    margin-top: 16px;
+    overflow: auto;
+  }
+
+  // nothing to show below the body: let it have the whole tile
+  .detail:empty {
+    display: none;
+  }
+}

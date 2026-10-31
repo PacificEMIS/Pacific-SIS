@@ -4,9 +4,10 @@ import { CommonModule } from '@angular/common';
 import { DashboardAnalyticsRoutingModule } from './dashboard-analytics-routing.module';
 import { DashboardAnalyticsComponent } from './dashboard-analytics.component';
 import { MatIconModule } from '@angular/material/icon';
-import { WidgetQuickValueCenterModule } from '@vex/components/widgets/widget-quick-value-center/widget-quick-value-center.module';
-import { WidgetAssistantModule } from '@vex/components/widgets/widget-assistant/widget-assistant.module';
 import { WidgetTableModule } from '@vex/components/widgets/widget-table/widget-table.module';
+import { DashboardTileComponent } from 'src/app/shared/dashboard/dashboard-tile.component';
+import { StatRowComponent, StatTileComponent } from 'src/app/shared/dashboard/stat-tile.component';
+import { ChartComponent } from 'src/app/shared/dashboard/chart.component';
 import { SecondaryToolbarModule } from '@vex/components/secondary-toolbar/secondary-toolbar.module';
 import { BreadcrumbsModule } from '@vex/components/breadcrumbs/breadcrumbs.module';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,9 +32,11 @@ import { MatDividerModule } from '@angular/material/divider';
     DashboardAnalyticsRoutingModule,
     MatIconModule,
     MatTooltipModule,
-    WidgetQuickValueCenterModule,
-    WidgetAssistantModule,
     WidgetTableModule,
+    DashboardTileComponent,
+    StatRowComponent,
+    StatTileComponent,
+    ChartComponent,
     SecondaryToolbarModule,
     BreadcrumbsModule,
     MatButtonModule,

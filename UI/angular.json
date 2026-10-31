@@ -61,7 +61,8 @@
             "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true
+            "namedChunks": true,
+            "inlineStyleLanguage": "scss"
           },
           "configurations": {
             "production": {
@@ -120,7 +121,8 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "inlineStyleLanguage": "scss"
           }
         },
         "lint": {

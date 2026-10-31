@@ -38,6 +38,7 @@
     "angular-user-idle": "^4.0.0",
     "bootstrap": "^4.5.2",
     "date-fns": "^2.12.0",
+    "echarts": "^6.1.0",
     "file-saver": "^2.0.5",
     "jwt-decode": "^3.1.2",
     "luxon": "^1.23.0",

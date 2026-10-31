@@ -26,6 +26,9 @@ import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnChanges, O
 import { Order, tableSalesData } from '../../../../static-data/table-sales-data';
 import { TableColumn } from '@vex/interfaces/table-column.interface';
 import { DashboardViewModel, GradeCount, NameCount, ScheduledCourseSectionViewModel } from '../../../models/dashboard.model';
+import { ECOption } from 'src/app/shared/echart/echart';
+import { BAR_MAX_WIDTH, CHART_INK, CHART_PALETTE, chartBase } from 'src/app/shared/dashboard/chart-theme';
+import { DashboardSelection } from 'src/app/shared/dashboard/dashboard-selection';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DasboardService } from '../../../services/dasboard.service';
 import { CalendarDateFormatter, CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarMonthViewBeforeRenderEvent, CalendarMonthViewDay, CalendarView, DAYS_OF_WEEK } from 'angular-calendar';
@@ -66,6 +69,7 @@ import { MarkingPeriodService } from 'src/app/services/marking-period.service';
             provide: CalendarDateFormatter,
             useClass: CustomDateFormatter,
         },
+        DashboardSelection,
     ],
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
@@ -152,6 +156,10 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
   maxDropouts = 0;
   maxStaffByProfile = 0;
   maxStaffByJobTitle = 0;
+  enrollmentOption: ECOption;
+  repeatersOption: ECOption;
+  staffByProfileOption: ECOption;
+  staffByJobTitleOption: ECOption;
   constructor(
     private cd: ChangeDetectorRef,
     private router: Router,
@@ -252,6 +260,10 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
             ? Math.max(...this.staffByProfile.map(s => s.count)) : 0;
           this.maxStaffByJobTitle = this.staffByJobTitle.length > 0
             ? Math.max(...this.staffByJobTitle.map(s => s.count)) : 0;
+          this.enrollmentOption = this.barOption(this.enrollmentByGrade.map(g => [g.gradeLevelTitle, g.count]), CHART_PALETTE[0]);
+          this.repeatersOption = this.barOption(this.repeatersByGrade.map(g => [g.gradeLevelTitle, g.count]), CHART_PALETTE[1]);
+          this.staffByProfileOption = this.barOption(this.staffByProfile.map(x => [x.name, x.count]), CHART_PALETTE[2]);
+          this.staffByJobTitleOption = this.barOption(this.staffByJobTitle.map(x => [x.name, x.count]), CHART_PALETTE[3]);
           if (res.noticeList?.length>0) {
             this.noticeList = res.noticeList;
           }
@@ -413,9 +425,33 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
     }
   }
 
-  barWidth(value: number, max: number): string {
-    if (max <= 0) return '0%';
-    return Math.round((value / max) * 100) + '%';
+  /** Bars across the page, one per row, the first row at the top, in the dashboard's chart look. */
+  barOption(rows: [string, number][], colour: string): ECOption {
+    return {
+      ...chartBase(),
+      grid: { left: 8, right: 36, top: 8, bottom: 8, containLabel: true },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+      xAxis: {
+        type: 'value', minInterval: 1,
+        splitLine: { lineStyle: { color: CHART_INK.gridline } },
+        axisLabel: { color: CHART_INK.textMuted },
+      },
+      yAxis: {
+        type: 'category', inverse: true, data: rows.map(r => r[0]),
+        axisTick: { show: false }, axisLine: { show: false },
+        axisLabel: { color: CHART_INK.textSecondary },
+      },
+      series: [{
+        type: 'bar', data: rows.map(r => r[1]), barMaxWidth: BAR_MAX_WIDTH,
+        itemStyle: { color: colour, borderRadius: [0, 3, 3, 0] },
+        label: { show: true, position: 'right', color: CHART_INK.textSecondary },
+      }],
+    };
+  }
+
+  /** Tile height in steps of 150px for so many bars. */
+  tileHeight(bars: number): number {
+    return Math.max(2, Math.ceil((bars * 30 + 100) / 150));
   }
 
   ngOnDestroy(): void {
