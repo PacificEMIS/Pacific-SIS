@@ -9,8 +9,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'vex-widget-table',
-  templateUrl: './widget-table.component.html'
+    selector: 'vex-widget-table',
+    templateUrl: './widget-table.component.html',
+    standalone: false
 })
 export class WidgetTableComponent<T> implements OnInit, OnChanges, AfterViewInit {
 

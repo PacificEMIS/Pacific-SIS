@@ -47,13 +47,14 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { LoVSortOrderValuesModel, UpdateLovSortingModel } from 'src/app/models/lov.model';
 
 @Component({
-  selector: 'vex-enrollment-codes',
-  templateUrl: './enrollment-codes.component.html',
-  styleUrls: ['./enrollment-codes.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-enrollment-codes',
+    templateUrl: './enrollment-codes.component.html',
+    styleUrls: ['./enrollment-codes.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class EnrollmentCodesComponent implements OnInit {
   columns = [

@@ -42,13 +42,14 @@ import { PageRolesPermission } from '../../../common/page-roles-permissions.serv
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 @Component({
-  selector: 'vex-marking-periods',
-  templateUrl: './marking-periods.component.html',
-  styleUrls: ['./marking-periods.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-marking-periods',
+    templateUrl: './marking-periods.component.html',
+    styleUrls: ['./marking-periods.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class MarkingPeriodsComponent implements OnInit {
   icArrowDropDown = 'arrow_drop_down';

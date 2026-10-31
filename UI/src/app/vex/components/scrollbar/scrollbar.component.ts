@@ -2,13 +2,14 @@ import { AfterContentInit, Component, ElementRef, Input, NgZone, OnDestroy } fro
 import SimpleBar from 'simplebar';
 
 @Component({
-  selector: 'vex-scrollbar',
-  template: `
+    selector: 'vex-scrollbar',
+    template: `
     <ng-content></ng-content>`,
-  styleUrls: ['./scrollbar.component.scss'],
-  host: {
-    class: 'vex-scrollbar'
-  },
+    styleUrls: ['./scrollbar.component.scss'],
+    host: {
+        class: 'vex-scrollbar'
+    },
+    standalone: false
 })
 export class ScrollbarComponent implements AfterContentInit, OnDestroy {
 

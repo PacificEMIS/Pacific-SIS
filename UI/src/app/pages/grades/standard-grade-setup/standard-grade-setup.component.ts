@@ -27,9 +27,10 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'vex-standard-grade-setup',
-  templateUrl: './standard-grade-setup.component.html',
-  styleUrls: ['./standard-grade-setup.component.scss']
+    selector: 'vex-standard-grade-setup',
+    templateUrl: './standard-grade-setup.component.html',
+    styleUrls: ['./standard-grade-setup.component.scss'],
+    standalone: false
 })
 export class StandardGradeSetupComponent implements OnInit {
 

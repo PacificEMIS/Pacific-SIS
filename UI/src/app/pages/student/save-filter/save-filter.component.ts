@@ -35,13 +35,14 @@ import { ValidationService } from '../../shared/validation.service';
 import { DefaultValuesService } from '../../../common/default-values.service';
 
 @Component({
-  selector: 'vex-save-filter',
-  templateUrl: './save-filter.component.html',
-  styleUrls: ['./save-filter.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-save-filter',
+    templateUrl: './save-filter.component.html',
+    styleUrls: ['./save-filter.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class SaveFilterComponent implements OnInit {
   icClose = 'close';

@@ -42,13 +42,14 @@ export const dateTimeCustomFormats = {
 };
 
 @Component({
-  selector: 'vex-edit-period',
-  templateUrl: './edit-period.component.html',
-  styleUrls: ['./edit-period.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-period',
+    templateUrl: './edit-period.component.html',
+    styleUrls: ['./edit-period.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditPeriodComponent implements OnInit {
   icClose = 'close';

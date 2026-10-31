@@ -29,9 +29,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchoolService } from 'src/app/services/school.service';
 
 @Component({
-  selector: 'vex-success-copy-school',
-  templateUrl: './success-copy-school.component.html',
-  styleUrls: ['./success-copy-school.component.scss']
+    selector: 'vex-success-copy-school',
+    templateUrl: './success-copy-school.component.html',
+    styleUrls: ['./success-copy-school.component.scss'],
+    standalone: false
 })
 export class SuccessCopySchoolComponent implements OnInit {
 

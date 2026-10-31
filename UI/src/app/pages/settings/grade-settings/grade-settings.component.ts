@@ -31,12 +31,13 @@ import { DefaultValuesService } from '../../../common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { TranslateService } from '@ngx-translate/core';
 @Component({
-  selector: 'vex-grade-settings',
-  templateUrl: './grade-settings.component.html',
-  styleUrls: ['./grade-settings.component.scss'],
-  animations: [
-    fadeInRight400ms
-  ]
+    selector: 'vex-grade-settings',
+    templateUrl: './grade-settings.component.html',
+    styleUrls: ['./grade-settings.component.scss'],
+    animations: [
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class GradeSettingsComponent implements OnInit {
   pages=[]

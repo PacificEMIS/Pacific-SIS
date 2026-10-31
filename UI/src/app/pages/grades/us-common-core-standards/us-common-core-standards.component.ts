@@ -51,13 +51,14 @@ import { LoaderService } from "src/app/services/loader.service";
 import { Subject } from "rxjs";
 
 @Component({
-  selector: 'vex-us-common-core-standards',
-  templateUrl: './us-common-core-standards.component.html',
-  styleUrls: ['./us-common-core-standards.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-us-common-core-standards',
+    templateUrl: './us-common-core-standards.component.html',
+    styleUrls: ['./us-common-core-standards.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class UsCommonCoreStandardsComponent implements OnInit {
 

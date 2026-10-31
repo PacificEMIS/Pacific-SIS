@@ -6,8 +6,9 @@ import {
   import { FormGroupDirective, NgForm } from "@angular/forms";
   
   @Directive({
-    selector: "[appInvalidControlScroll]"
-  })
+    selector: "[appInvalidControlScroll]",
+    standalone: false
+})
   export class InvalidControlScrollDirective {
    
     constructor(

@@ -27,9 +27,10 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'vex-add-comments',
-  templateUrl: './add-comments.component.html',
-  styleUrls: ['./add-comments.component.scss']
+    selector: 'vex-add-comments',
+    templateUrl: './add-comments.component.html',
+    styleUrls: ['./add-comments.component.scss'],
+    standalone: false
 })
 export class AddCommentsComponent implements OnInit {
 

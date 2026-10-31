@@ -33,13 +33,14 @@ import { EditPeriodComponent } from '../edit-period/edit-period.component';
 import { SchoolPeriodService } from 'src/app/services/school-period.service';
 
 @Component({
-  selector: 'vex-periods-list',
-  templateUrl: './periods-list.component.html',
-  styleUrls: ['./periods-list.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-periods-list',
+    templateUrl: './periods-list.component.html',
+    styleUrls: ['./periods-list.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class PeriodsListComponent implements OnInit {
 

@@ -26,9 +26,10 @@ All rights reserved.
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'vex-courses',
-  templateUrl: './courses.component.html',
-  styleUrls: ['./courses.component.scss']
+    selector: 'vex-courses',
+    templateUrl: './courses.component.html',
+    styleUrls: ['./courses.component.scss'],
+    standalone: false
 })
 export class CoursesComponent implements OnInit {
 

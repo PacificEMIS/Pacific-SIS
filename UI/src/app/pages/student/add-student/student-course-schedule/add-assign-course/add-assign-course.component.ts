@@ -50,9 +50,10 @@ import moment from 'moment';
 
 
 @Component({
-  selector: 'vex-add-assign-course',
-  templateUrl: './add-assign-course.component.html',
-  styleUrls: ['./add-assign-course.component.scss']
+    selector: 'vex-add-assign-course',
+    templateUrl: './add-assign-course.component.html',
+    styleUrls: ['./add-assign-course.component.scss'],
+    standalone: false
 })
 export class AddAssignCourseComponent implements OnInit {
   icClose = 'close';

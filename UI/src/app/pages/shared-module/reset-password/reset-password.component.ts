@@ -38,9 +38,10 @@ import { takeUntil } from 'rxjs/operators';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-reset-password',
-  templateUrl: './reset-password.component.html',
-  styleUrls: ['./reset-password.component.scss']
+    selector: 'vex-reset-password',
+    templateUrl: './reset-password.component.html',
+    styleUrls: ['./reset-password.component.scss'],
+    standalone: false
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
 

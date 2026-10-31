@@ -57,14 +57,15 @@ import { GradeBookConfigurationService } from 'src/app/services/gradebook-config
 import * as moment from 'moment';
 
 @Component({
-  selector: 'vex-grade-details',
-  templateUrl: './grade-details.component.html',
-  styleUrls: ['./grade-details.component.scss'],
-  animations: [
-    fadeInRight400ms,
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-grade-details',
+    templateUrl: './grade-details.component.html',
+    styleUrls: ['./grade-details.component.scss'],
+    animations: [
+        fadeInRight400ms,
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class GradeDetailsComponent implements OnInit {
   visible = true;

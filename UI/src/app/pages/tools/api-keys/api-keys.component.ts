@@ -14,9 +14,10 @@ import { LoaderService } from 'src/app/services/loader.service';
 
 
 @Component({
-  selector: 'vex-api-keys',
-  templateUrl: './api-keys.component.html',
-  styleUrls: ['./api-keys.component.scss']
+    selector: 'vex-api-keys',
+    templateUrl: './api-keys.component.html',
+    styleUrls: ['./api-keys.component.scss'],
+    standalone: false
 })
 export class ApiKeysComponent implements OnInit {
 

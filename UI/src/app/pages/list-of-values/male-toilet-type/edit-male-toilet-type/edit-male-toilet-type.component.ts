@@ -35,13 +35,14 @@ import { ValidationService } from '../../../shared/validation.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-male-toilet-type',
-  templateUrl: './edit-male-toilet-type.component.html',
-  styleUrls: ['./edit-male-toilet-type.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-male-toilet-type',
+    templateUrl: './edit-male-toilet-type.component.html',
+    styleUrls: ['./edit-male-toilet-type.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditMaleToiletTypeComponent implements OnInit {
   icClose = 'close';

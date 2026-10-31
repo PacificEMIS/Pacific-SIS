@@ -27,15 +27,16 @@ import { GradeScaleListView } from 'src/app/models/grades.model';
 import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 import { SharedFunction } from '../../shared/shared-function';
 @Component({
-  selector: 'vex-administration',
-  templateUrl: './administration.component.html',
-  styleUrls: ['./administration.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms,
-    stagger60ms,
-  ]
+    selector: 'vex-administration',
+    templateUrl: './administration.component.html',
+    styleUrls: ['./administration.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms,
+        stagger60ms,
+    ],
+    standalone: false
 })
 export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit {
   getAllStudent: StudentListModel = new StudentListModel();

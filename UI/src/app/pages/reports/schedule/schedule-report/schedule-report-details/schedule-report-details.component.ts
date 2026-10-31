@@ -15,9 +15,10 @@ import { ExcelService } from 'src/app/services/excel.service';
 import { GradeScaleModel } from 'src/app/models/grades.model';
 
 @Component({
-  selector: 'vex-schedule-report-details',
-  templateUrl: './schedule-report-details.component.html',
-  styleUrls: ['./schedule-report-details.component.scss']
+    selector: 'vex-schedule-report-details',
+    templateUrl: './schedule-report-details.component.html',
+    styleUrls: ['./schedule-report-details.component.scss'],
+    standalone: false
 })
 export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
   icPrint = 'print';

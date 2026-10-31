@@ -44,14 +44,15 @@ import { GetAllParentInfoModel } from 'src/app/models/parent-info.model';
 import { GradeLevelService } from 'src/app/services/grade-level.service';
 import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 @Component({
-  selector: 'vex-student-familyinfo',
-  templateUrl: './student-familyinfo.component.html',
-  styleUrls: ['./student-familyinfo.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-student-familyinfo',
+    templateUrl: './student-familyinfo.component.html',
+    styleUrls: ['./student-familyinfo.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StudentFamilyinfoComponent implements OnInit {
   @Input() studentCreateMode: SchoolCreate;

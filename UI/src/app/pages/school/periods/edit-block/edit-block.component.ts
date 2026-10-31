@@ -36,13 +36,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-block',
-  templateUrl: './edit-block.component.html',
-  styleUrls: ['./edit-block.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-block',
+    templateUrl: './edit-block.component.html',
+    styleUrls: ['./edit-block.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditBlockComponent implements OnInit {
   icClose = 'close';

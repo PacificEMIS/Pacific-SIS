@@ -36,9 +36,10 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-add-nurse-visit',
-  templateUrl: './add-nurse-visit.component.html',
-  styleUrls: ['./add-nurse-visit.component.scss']
+    selector: 'vex-add-nurse-visit',
+    templateUrl: './add-nurse-visit.component.html',
+    styleUrls: ['./add-nurse-visit.component.scss'],
+    standalone: false
 })
 export class AddNurseVisitComponent implements OnInit {
 

@@ -1,13 +1,14 @@
 import { Component, HostBinding, Input, ViewEncapsulation } from '@angular/core';
 
 @Component({
-  selector: 'vex-page-layout',
-  template: '<ng-content></ng-content>',
-  host: {
-    class: 'vex-page-layout'
-  },
-  encapsulation: ViewEncapsulation.None,
-  styleUrls: ['./page-layout.component.scss']
+    selector: 'vex-page-layout',
+    template: '<ng-content></ng-content>',
+    host: {
+        class: 'vex-page-layout'
+    },
+    encapsulation: ViewEncapsulation.None,
+    styleUrls: ['./page-layout.component.scss'],
+    standalone: false
 })
 export class PageLayoutComponent {
 

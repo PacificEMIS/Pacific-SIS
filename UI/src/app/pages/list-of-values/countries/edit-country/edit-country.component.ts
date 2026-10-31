@@ -34,13 +34,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-country',
-  templateUrl: './edit-country.component.html',
-  styleUrls: ['./edit-country.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-country',
+    templateUrl: './edit-country.component.html',
+    styleUrls: ['./edit-country.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 
 export class EditCountryComponent implements OnInit {

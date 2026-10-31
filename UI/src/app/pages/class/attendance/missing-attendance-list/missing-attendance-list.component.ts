@@ -42,14 +42,15 @@ import { CommonService } from 'src/app/services/common.service';
 
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  selector: 'vex-missing-attendance-list',
-  templateUrl: './missing-attendance-list.component.html',
-  styleUrls: ['./missing-attendance-list.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-missing-attendance-list',
+    templateUrl: './missing-attendance-list.component.html',
+    styleUrls: ['./missing-attendance-list.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class MissingAttendanceListComponent implements OnInit, AfterViewInit, OnDestroy {
 

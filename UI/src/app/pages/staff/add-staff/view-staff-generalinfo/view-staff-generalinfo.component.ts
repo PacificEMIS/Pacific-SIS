@@ -36,12 +36,13 @@ import { StaffService } from 'src/app/services/staff.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 @Component({
-  selector: 'vex-view-staff-generalinfo',
-  templateUrl: './view-staff-generalinfo.component.html',
-  styleUrls: ['./view-staff-generalinfo.component.scss'],
-  animations: [
-    stagger60ms
-  ]
+    selector: 'vex-view-staff-generalinfo',
+    templateUrl: './view-staff-generalinfo.component.html',
+    styleUrls: ['./view-staff-generalinfo.component.scss'],
+    animations: [
+        stagger60ms
+    ],
+    standalone: false
 })
 export class ViewStaffGeneralinfoComponent implements OnInit {
   @Input() staffCreateMode;

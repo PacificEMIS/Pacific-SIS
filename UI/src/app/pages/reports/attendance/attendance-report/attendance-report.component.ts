@@ -57,9 +57,10 @@ export interface StudentListData {
 
 
 @Component({
-  selector: 'vex-attendance-report',
-  templateUrl: './attendance-report.component.html',
-  styleUrls: ['./attendance-report.component.scss']
+    selector: 'vex-attendance-report',
+    templateUrl: './attendance-report.component.html',
+    styleUrls: ['./attendance-report.component.scss'],
+    standalone: false
 })
 export class AttendanceReportComponent implements OnInit {
   getStudentAttendanceReportModel: GetStudentAttendanceReport = new GetStudentAttendanceReport();

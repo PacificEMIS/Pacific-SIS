@@ -35,9 +35,10 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from '../../../../../common/default-values.service';
 
 @Component({
-  selector: 'vex-add-immunization',
-  templateUrl: './add-immunization.component.html',
-  styleUrls: ['./add-immunization.component.scss']
+    selector: 'vex-add-immunization',
+    templateUrl: './add-immunization.component.html',
+    styleUrls: ['./add-immunization.component.scss'],
+    standalone: false
 })
 export class AddImmunizationComponent implements OnInit {
 

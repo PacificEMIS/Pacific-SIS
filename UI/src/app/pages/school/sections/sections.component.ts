@@ -48,13 +48,14 @@ import { LoVSortOrderValuesModel, UpdateLovSortingModel } from 'src/app/models/l
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { MatPaginator } from '@angular/material/paginator';
 @Component({
-  selector: 'vex-sections',
-  templateUrl: './sections.component.html',
-  styleUrls: ['./sections.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-sections',
+    templateUrl: './sections.component.html',
+    styleUrls: ['./sections.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class SectionsComponent implements OnInit {
   columns = [

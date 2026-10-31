@@ -55,15 +55,16 @@ export interface StudentList {
   comment: string;
 }
 @Component({
-  selector: "vex-administration",
-  templateUrl: "./administration.component.html",
-  styleUrls: ["./administration.component.scss"],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: "vex-administration",
+    templateUrl: "./administration.component.html",
+    styleUrls: ["./administration.component.scss"],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class AdministrationComponent implements OnInit {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;

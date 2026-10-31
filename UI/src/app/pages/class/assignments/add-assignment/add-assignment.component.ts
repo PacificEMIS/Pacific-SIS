@@ -35,9 +35,10 @@ import { DasboardService } from "../../../../services/dasboard.service";
 import { StaffPortalAssignmentService } from "../../../../services/staff-portal-assignment.service";
 
 @Component({
-  selector: "vex-add-assignment",
-  templateUrl: "./add-assignment.component.html",
-  styleUrls: ["./add-assignment.component.scss"],
+    selector: "vex-add-assignment",
+    templateUrl: "./add-assignment.component.html",
+    styleUrls: ["./add-assignment.component.scss"],
+    standalone: false
 })
 export class AddAssignmentComponent implements OnInit {
   icClose = 'close';

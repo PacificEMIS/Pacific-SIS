@@ -28,14 +28,15 @@ import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 
 
 @Component({
-  selector: 'vex-contact-info-report',
-  templateUrl: './contact-info-report.component.html',
-  styleUrls: ['./contact-info-report.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-contact-info-report',
+    templateUrl: './contact-info-report.component.html',
+    styleUrls: ['./contact-info-report.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 
 export class ContactInfoReportComponent implements OnInit, AfterViewInit {

@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
-    name: 'weekDay'
+    name: 'weekDay',
+    standalone: false
 })
 export class WeekDayPipe implements PipeTransform {
     weeks = [

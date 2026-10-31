@@ -50,15 +50,16 @@ import { ReportService } from 'src/app/services/report.service';
 
 
 @Component({
-  selector: 'vex-student-comments',
-  templateUrl: './student-comments.component.html',
-  styleUrls: ['./student-comments.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ],
-  providers: [DatePipe]
+    selector: 'vex-student-comments',
+    templateUrl: './student-comments.component.html',
+    styleUrls: ['./student-comments.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    providers: [DatePipe],
+    standalone: false
 })
 export class StudentCommentsComponent implements OnInit {
 

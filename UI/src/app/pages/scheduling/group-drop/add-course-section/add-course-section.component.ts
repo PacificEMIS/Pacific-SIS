@@ -43,9 +43,10 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
-  selector: 'vex-add-course-section',
-  templateUrl: './add-course-section.component.html',
-  styleUrls: ['./add-course-section.component.scss']
+    selector: 'vex-add-course-section',
+    templateUrl: './add-course-section.component.html',
+    styleUrls: ['./add-course-section.component.scss'],
+    standalone: false
 })
 export class AddCourseSectionComponent implements OnInit {
 

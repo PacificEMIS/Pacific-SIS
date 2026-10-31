@@ -36,9 +36,10 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
-  selector: 'vex-add-copy-school',
-  templateUrl: './add-copy-school.component.html',
-  styleUrls: ['./add-copy-school.component.scss']
+    selector: 'vex-add-copy-school',
+    templateUrl: './add-copy-school.component.html',
+    styleUrls: ['./add-copy-school.component.scss'],
+    standalone: false
 })
 export class AddCopySchoolComponent implements OnInit, OnDestroy {
 

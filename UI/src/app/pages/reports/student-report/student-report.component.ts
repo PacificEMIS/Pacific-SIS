@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-student-report',
-  templateUrl: './student-report.component.html',
-  styleUrls: ['./student-report.component.scss']
+    selector: 'vex-student-report',
+    templateUrl: './student-report.component.html',
+    styleUrls: ['./student-report.component.scss'],
+    standalone: false
 })
 export class StudentReportComponent implements OnInit {
 

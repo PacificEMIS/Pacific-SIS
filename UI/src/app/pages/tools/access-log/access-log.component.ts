@@ -47,9 +47,10 @@ import { Router } from "@angular/router";
 // ];
 
 @Component({
-  selector: "vex-access-log",
-  templateUrl: "./access-log.component.html",
-  styleUrls: ["./access-log.component.scss"],
+    selector: "vex-access-log",
+    templateUrl: "./access-log.component.html",
+    styleUrls: ["./access-log.component.scss"],
+    standalone: false
 })
 export class AccessLogComponent implements OnInit, OnDestroy {
   columns = [

@@ -43,8 +43,9 @@ import { SuperAdministratorService } from 'src/app/services/super-administrator.
  * are preselected.
  */
 @Component({
-  selector: 'vex-demote-super-administrator',
-  templateUrl: './demote-super-administrator.component.html'
+    selector: 'vex-demote-super-administrator',
+    templateUrl: './demote-super-administrator.component.html',
+    standalone: false
 })
 export class DemoteSuperAdministratorComponent implements OnInit {
   icClose = 'close';

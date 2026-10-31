@@ -50,14 +50,15 @@ import { PageRolesPermission } from '../../../../common/page-roles-permissions.s
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/confirm-dialog.component';
 @Component({
-  selector: 'vex-student-addressandcontacts',
-  templateUrl: './student-addressandcontacts.component.html',
-  styleUrls: ['./student-addressandcontacts.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ],
+    selector: 'vex-student-addressandcontacts',
+    templateUrl: './student-addressandcontacts.component.html',
+    styleUrls: ['./student-addressandcontacts.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StudentAddressandcontactsComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() studentDetailsForViewAndEdit;

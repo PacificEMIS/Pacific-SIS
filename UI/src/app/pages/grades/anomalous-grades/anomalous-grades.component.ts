@@ -17,10 +17,11 @@ import { AnomalousGradeViewModel, StudentAnomalsGrade } from '../../../models/an
 import { AllScheduledCourseSectionForStaffModel } from '../../../models/teacher-schedule.model';
 
 @Component({
-  selector: 'vex-anomalous-grades',
-  templateUrl: './anomalous-grades.component.html',
-  styleUrls: ['./anomalous-grades.component.scss'],
-  animations: [fadeInUp400ms, stagger40ms]
+    selector: 'vex-anomalous-grades',
+    templateUrl: './anomalous-grades.component.html',
+    styleUrls: ['./anomalous-grades.component.scss'],
+    animations: [fadeInUp400ms, stagger40ms],
+    standalone: false
 })
 export class AnomalousGradesComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;

@@ -42,14 +42,15 @@ import { Module } from 'src/app/enums/module.enum';
 import { SchoolCreate } from 'src/app/enums/school-create.enum';
 
 @Component({
-  selector: 'vex-add-certificate',
-  templateUrl: './add-certificate.component.html',
-  styleUrls: ['./add-certificate.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ],
-  viewProviders: [{ provide: ControlContainer, useExisting: NgForm }]
+    selector: 'vex-add-certificate',
+    templateUrl: './add-certificate.component.html',
+    styleUrls: ['./add-certificate.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
+    standalone: false
 })
 export class AddCertificateComponent implements OnInit, OnDestroy {
   icClose = 'close';

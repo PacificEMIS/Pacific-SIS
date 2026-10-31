@@ -6,7 +6,8 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @UntilDestroy()
 @Directive({
-  selector: '[vexContainer]'
+    selector: '[vexContainer]',
+    standalone: false
 })
 export class ContainerDirective {
 

@@ -48,14 +48,15 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { Module } from 'src/app/enums/module.enum';
 
 @Component({
-  selector: 'vex-add-staff',
-  templateUrl: './add-staff.component.html',
-  styleUrls: ['./add-staff.component.scss'],
-  animations: [
-    fadeInRight400ms,
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-add-staff',
+    templateUrl: './add-staff.component.html',
+    styleUrls: ['./add-staff.component.scss'],
+    animations: [
+        fadeInRight400ms,
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class AddStaffComponent implements OnInit, OnDestroy {
   destroySubject$: Subject<void> = new Subject();

@@ -13,9 +13,10 @@ import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 import { SharedFunction } from 'src/app/pages/shared/shared-function';
 
 @Component({
-  selector: 'vex-progress-report-details',
-  templateUrl: './progress-report-details.component.html',
-  styleUrls: ['./progress-report-details.component.scss']
+    selector: 'vex-progress-report-details',
+    templateUrl: './progress-report-details.component.html',
+    styleUrls: ['./progress-report-details.component.scss'],
+    standalone: false
 })
 export class ProgressReportDetailsComponent implements OnInit {
   icPrint = 'print';

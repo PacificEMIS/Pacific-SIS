@@ -21,9 +21,10 @@ import { CommonService } from '../../services/common.service';
 
 @UntilDestroy()
 @Component({
-  selector: 'vex-layout',
-  templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.scss']
+    selector: 'vex-layout',
+    templateUrl: './layout.component.html',
+    styleUrls: ['./layout.component.scss'],
+    standalone: false
 })
 export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   userActivity;

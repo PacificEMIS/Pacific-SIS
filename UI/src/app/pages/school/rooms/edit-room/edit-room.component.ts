@@ -37,13 +37,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-room',
-  templateUrl: './edit-room.component.html',
-  styleUrls: ['./edit-room.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-room',
+    templateUrl: './edit-room.component.html',
+    styleUrls: ['./edit-room.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditRoomComponent implements OnInit {
   roomTitle;

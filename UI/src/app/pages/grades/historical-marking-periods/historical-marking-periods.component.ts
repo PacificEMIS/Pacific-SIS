@@ -17,9 +17,10 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import * as _moment from 'moment';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 @Component({
-  selector: 'vex-historical-marking-periods',
-  templateUrl: './historical-marking-periods.component.html',
-  styleUrls: ['./historical-marking-periods.component.scss']
+    selector: 'vex-historical-marking-periods',
+    templateUrl: './historical-marking-periods.component.html',
+    styleUrls: ['./historical-marking-periods.component.scss'],
+    standalone: false
 })
 export class HistoricalMarkingPeriodsComponent implements OnInit {
 

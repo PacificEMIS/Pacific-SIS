@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-attendance-chart',
-  templateUrl: './attendance-chart.component.html',
-  styleUrls: ['./attendance-chart.component.scss']
+    selector: 'vex-attendance-chart',
+    templateUrl: './attendance-chart.component.html',
+    styleUrls: ['./attendance-chart.component.scss'],
+    standalone: false
 })
 export class AttendanceChartComponent implements OnInit {
 

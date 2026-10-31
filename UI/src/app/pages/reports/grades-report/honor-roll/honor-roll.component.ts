@@ -47,14 +47,15 @@ import { BackGroundImageEnum } from 'src/app/enums/bg-image.enum';
 import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 
 @Component({
-  selector: 'vex-honor-roll',
-  templateUrl: './honor-roll.component.html',
-  styleUrls: ['./honor-roll.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-honor-roll',
+    templateUrl: './honor-roll.component.html',
+    styleUrls: ['./honor-roll.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {
   // displayedColumns: string[] = ['studentCheck', 'studentName', 'studentId', 'alternateId', 'grade', 'section', 'phone', 'honorRoll'];

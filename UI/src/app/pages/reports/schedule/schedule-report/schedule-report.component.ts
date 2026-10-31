@@ -11,9 +11,10 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'vex-schedule-report',
-  templateUrl: './schedule-report.component.html',
-  styleUrls: ['./schedule-report.component.scss']
+    selector: 'vex-schedule-report',
+    templateUrl: './schedule-report.component.html',
+    styleUrls: ['./schedule-report.component.scss'],
+    standalone: false
 })
 export class ScheduleReportComponent implements OnInit , OnDestroy{
 

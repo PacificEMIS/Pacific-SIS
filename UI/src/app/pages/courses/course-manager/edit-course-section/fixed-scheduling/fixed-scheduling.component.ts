@@ -37,9 +37,10 @@ import { DefaultValuesService } from '../../../../../common/default-values.servi
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
-  selector: 'vex-fixed-scheduling',
-  templateUrl: './fixed-scheduling.component.html',
-  styleUrls: ['./fixed-scheduling.component.scss']
+    selector: 'vex-fixed-scheduling',
+    templateUrl: './fixed-scheduling.component.html',
+    styleUrls: ['./fixed-scheduling.component.scss'],
+    standalone: false
 })
 export class FixedSchedulingComponent implements OnInit,OnChanges {
   @ViewChild('f') currentForm: NgForm;

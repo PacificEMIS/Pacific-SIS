@@ -58,14 +58,15 @@ import { PageRolesPermission } from '../../../../common/page-roles-permissions.s
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { ActiveDeactiveUserModel } from 'src/app/models/common.model';
 @Component({
-  selector: 'vex-staff-generalinfo',
-  templateUrl: './staff-generalinfo.component.html',
-  styleUrls: ['./staff-generalinfo.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-staff-generalinfo',
+    templateUrl: './staff-generalinfo.component.html',
+    styleUrls: ['./staff-generalinfo.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StaffGeneralinfoComponent implements OnInit {
   moduleIdentifier = ModuleIdentifier;

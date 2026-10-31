@@ -54,14 +54,15 @@ import { AdvancedSearchExpansionModel } from "src/app/models/common.model";
 import { SharedFunction } from "../../shared/shared-function";
 
 @Component({
-  selector: "vex-transcripts",
-  templateUrl: "./transcripts.component.html",
-  styleUrls: ["./transcripts.component.scss"],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: "vex-transcripts",
+    templateUrl: "./transcripts.component.html",
+    styleUrls: ["./transcripts.component.scss"],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class TranscriptsComponent implements OnInit, OnDestroy {
   icSearch = 'search';

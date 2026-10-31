@@ -5,9 +5,10 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'vex-secondary-toolbar',
-  templateUrl: './secondary-toolbar.component.html',
-  styleUrls: ['./secondary-toolbar.component.scss']
+    selector: 'vex-secondary-toolbar',
+    templateUrl: './secondary-toolbar.component.html',
+    styleUrls: ['./secondary-toolbar.component.scss'],
+    standalone: false
 })
 export class SecondaryToolbarComponent implements OnInit {
 

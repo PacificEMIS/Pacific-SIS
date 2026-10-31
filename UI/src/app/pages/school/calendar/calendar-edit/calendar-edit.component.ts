@@ -29,9 +29,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CalendarEvent } from 'angular-calendar';
 
 @Component({
-  selector: 'vex-calendar-edit',
-  templateUrl: './calendar-edit.component.html',
-  styleUrls: ['./calendar-edit.component.scss']
+    selector: 'vex-calendar-edit',
+    templateUrl: './calendar-edit.component.html',
+    styleUrls: ['./calendar-edit.component.scss'],
+    standalone: false
 })
 export class CalendarEditComponent implements OnInit {
 

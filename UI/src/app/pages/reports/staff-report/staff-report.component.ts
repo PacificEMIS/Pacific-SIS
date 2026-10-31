@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-staff-report',
-  templateUrl: './staff-report.component.html',
-  styleUrls: ['./staff-report.component.scss']
+    selector: 'vex-staff-report',
+    templateUrl: './staff-report.component.html',
+    styleUrls: ['./staff-report.component.scss'],
+    standalone: false
 })
 export class StaffReportComponent implements OnInit {
   pages=[];

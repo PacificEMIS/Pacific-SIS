@@ -47,9 +47,10 @@ import { GradebookConfigurationAddViewModel } from "../../../models/gradebook-co
 import { GradeBookConfigurationService } from "../../../services/gradebook-configuration.service";
 
 @Component({
-  selector: "vex-assignments",
-  templateUrl: "./assignments.component.html",
-  styleUrls: ["./assignments.component.scss"],
+    selector: "vex-assignments",
+    templateUrl: "./assignments.component.html",
+    styleUrls: ["./assignments.component.scss"],
+    standalone: false
 })
 export class AssignmentsComponent implements OnInit {
   icEdit = 'edit';

@@ -35,13 +35,14 @@ import { AddMembershipModel, GetAllMembersList} from '../../../../models/members
 import { MembershipService } from '../../../../services/membership.service';
 import { DefaultValuesService } from "src/app/common/default-values.service";
 @Component({
-  selector: 'vex-edit-custom-profile',
-  templateUrl: './edit-custom-profile.component.html',
-  styleUrls: ['./edit-custom-profile.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-custom-profile',
+    templateUrl: './edit-custom-profile.component.html',
+    styleUrls: ['./edit-custom-profile.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditCustomProfileComponent implements OnInit {
   icClose = 'close';

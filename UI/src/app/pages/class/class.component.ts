@@ -30,9 +30,10 @@ import { DasboardService } from '../../services/dasboard.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-class',
-  templateUrl: './class.component.html',
-  styleUrls: ['./class.component.scss']
+    selector: 'vex-class',
+    templateUrl: './class.component.html',
+    styleUrls: ['./class.component.scss'],
+    standalone: false
 })
 export class ClassComponent implements OnInit {
 

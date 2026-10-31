@@ -53,13 +53,14 @@ import { LoginService } from '../../../services/login.service';
 import { GradeLevelService } from '../../../services/grade-level.service';
 import { MembershipService } from '../../../services/membership.service';
 @Component({
-  selector: 'vex-schedule-teacher',
-  templateUrl: './schedule-teacher.component.html',
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ],
-  styleUrls: ['./schedule-teacher.component.scss']
+    selector: 'vex-schedule-teacher',
+    templateUrl: './schedule-teacher.component.html',
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    styleUrls: ['./schedule-teacher.component.scss'],
+    standalone: false
 })
 export class ScheduleTeacherComponent implements OnInit, OnDestroy {
   selectedTeachers = [];

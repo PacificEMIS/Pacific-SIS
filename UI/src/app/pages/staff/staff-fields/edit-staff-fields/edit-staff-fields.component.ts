@@ -38,13 +38,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-staff-fields',
-  templateUrl: './edit-staff-fields.component.html',
-  styleUrls: ['./edit-staff-fields.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-staff-fields',
+    templateUrl: './edit-staff-fields.component.html',
+    styleUrls: ['./edit-staff-fields.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditStaffFieldsComponent implements OnInit {
   icClose = 'close';

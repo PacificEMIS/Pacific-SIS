@@ -71,13 +71,14 @@ const MY_FORMATS = {
 };
 
 @Component({
-  selector: "vex-attendance",
-  templateUrl: "./attendance.component.html",
-  styleUrls: ["./attendance.component.scss"],
-  animations: [fadeInRight400ms, stagger60ms, fadeInUp400ms],
-  providers: [
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ],
+    selector: "vex-attendance",
+    templateUrl: "./attendance.component.html",
+    styleUrls: ["./attendance.component.scss"],
+    animations: [fadeInRight400ms, stagger60ms, fadeInUp400ms],
+    providers: [
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    standalone: false
 })
 
 export class AttendanceComponent implements OnInit, OnDestroy {

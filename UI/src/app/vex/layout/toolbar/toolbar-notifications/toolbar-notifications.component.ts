@@ -3,9 +3,10 @@ import { PopoverService } from '../../../components/popover/popover.service';
 import { ToolbarNotificationsDropdownComponent } from './toolbar-notifications-dropdown/toolbar-notifications-dropdown.component';
 
 @Component({
-  selector: 'vex-toolbar-notifications',
-  templateUrl: './toolbar-notifications.component.html',
-  styleUrls: ['./toolbar-notifications.component.scss'],
+    selector: 'vex-toolbar-notifications',
+    templateUrl: './toolbar-notifications.component.html',
+    styleUrls: ['./toolbar-notifications.component.scss'],
+    standalone: false
 })
 export class ToolbarNotificationsComponent implements OnInit {
 

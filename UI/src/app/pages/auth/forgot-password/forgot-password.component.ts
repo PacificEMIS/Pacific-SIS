@@ -9,12 +9,13 @@ import { CatalogDbService } from 'src/app/services/catalog-db.service';
 import { AvailableTenantViewModel } from '../../../models/available-tenant';
 
 @Component({
-  selector: 'vex-forgot-password',
-  templateUrl: './forgot-password.component.html',
-  styleUrls: ['../login/login.component.scss'],
-  animations: [
-    fadeInUp400ms
-  ]
+    selector: 'vex-forgot-password',
+    templateUrl: './forgot-password.component.html',
+    styleUrls: ['../login/login.component.scss'],
+    animations: [
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class ForgotPasswordComponent implements OnInit {
 

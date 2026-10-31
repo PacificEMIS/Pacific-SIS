@@ -47,14 +47,15 @@ import { PageRolesPermission } from '../../../../common/page-roles-permissions.s
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-editparent-addressinfo',
-  templateUrl: './editparent-addressinfo.component.html',
-  styleUrls: ['./editparent-addressinfo.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-editparent-addressinfo',
+    templateUrl: './editparent-addressinfo.component.html',
+    styleUrls: ['./editparent-addressinfo.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class EditparentAddressinfoComponent implements OnInit, AfterViewInit, OnDestroy {
 

@@ -72,10 +72,11 @@ import { FieldsCategoryListView } from '../../../../models/fields-category.model
 import { Module } from '../../../../enums/module.enum';
 import { CustomFieldService } from '../../../../services/custom-field.service';
 @Component({
-  selector: 'vex-student-medicalinfo',
-  templateUrl: './student-medicalinfo.component.html',
-  styleUrls: ['./student-medicalinfo.component.scss'],
-  animations: [stagger60ms, fadeInUp400ms, fadeInRight400ms],
+    selector: 'vex-student-medicalinfo',
+    templateUrl: './student-medicalinfo.component.html',
+    styleUrls: ['./student-medicalinfo.component.scss'],
+    animations: [stagger60ms, fadeInUp400ms, fadeInRight400ms],
+    standalone: false
 })
 export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
   moduleIdentifier = ModuleIdentifier;

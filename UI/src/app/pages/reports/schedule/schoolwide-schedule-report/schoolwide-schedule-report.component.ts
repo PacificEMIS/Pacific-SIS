@@ -36,10 +36,11 @@ import { ReportService } from 'src/app/services/report.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'vex-schoolwide-schedule-report',
-  templateUrl: './schoolwide-schedule-report.component.html',
-  styleUrls: ['./schoolwide-schedule-report.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'vex-schoolwide-schedule-report',
+    templateUrl: './schoolwide-schedule-report.component.html',
+    styleUrls: ['./schoolwide-schedule-report.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class SchoolwideScheduleReportComponent implements OnInit, OnDestroy {
 

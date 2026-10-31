@@ -43,14 +43,15 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-parent',
-  templateUrl: './edit-parent.component.html',
-  styleUrls: ['./edit-parent.component.scss'],
-  animations: [  
-    fadeInRight400ms,
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-parent',
+    templateUrl: './edit-parent.component.html',
+    styleUrls: ['./edit-parent.component.scss'],
+    animations: [
+        fadeInRight400ms,
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditParentComponent implements OnInit {
   pageStatus:string="viewParent";

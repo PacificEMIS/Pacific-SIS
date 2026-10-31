@@ -72,16 +72,16 @@ export interface SelectedStudentList {
 
 
 @Component({
-  selector: 'vex-group-assign-student-info',
-  templateUrl: './group-assign-student-info.component.html',
-  styleUrls: ['./group-assign-student-info.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms,
-    stagger60ms
-  ],
-  
+    selector: 'vex-group-assign-student-info',
+    templateUrl: './group-assign-student-info.component.html',
+    styleUrls: ['./group-assign-student-info.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms,
+        stagger60ms
+    ],
+    standalone: false
 })
 
 export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{

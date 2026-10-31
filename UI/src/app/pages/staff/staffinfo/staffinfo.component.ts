@@ -34,14 +34,15 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 
 @Component({
-  selector: 'vex-staffinfo',
-  templateUrl: './staffinfo.component.html',
-  styleUrls: ['./staffinfo.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-staffinfo',
+    templateUrl: './staffinfo.component.html',
+    styleUrls: ['./staffinfo.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StaffinfoComponent implements OnInit{
 

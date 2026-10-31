@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'filterData'
+    name: 'filterData',
+    standalone: false
 })
 export class InputEffortGradesNgForDivFilterPipe implements PipeTransform {
 

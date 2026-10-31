@@ -45,9 +45,10 @@ import { MarkingPeriodListModel } from 'src/app/models/marking-period.model';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 
 @Component({
-  selector: 'vex-add-drop-report',
-  templateUrl: './add-drop-report.component.html',
-  styleUrls: ['./add-drop-report.component.scss']
+    selector: 'vex-add-drop-report',
+    templateUrl: './add-drop-report.component.html',
+    styleUrls: ['./add-drop-report.component.scss'],
+    standalone: false
 })
 
 export class AddDropReportComponent implements OnInit, OnDestroy, AfterViewInit {

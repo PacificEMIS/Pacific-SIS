@@ -31,12 +31,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { StaffService } from 'src/app/services/staff.service';
 
 @Component({
-  selector: 'vex-view-staff-addressinfo',
-  templateUrl: './view-staff-addressinfo.component.html',
-  styleUrls: ['./view-staff-addressinfo.component.scss'],
-  animations: [
-    stagger60ms
-  ]
+    selector: 'vex-view-staff-addressinfo',
+    templateUrl: './view-staff-addressinfo.component.html',
+    styleUrls: ['./view-staff-addressinfo.component.scss'],
+    animations: [
+        stagger60ms
+    ],
+    standalone: false
 })
 
 

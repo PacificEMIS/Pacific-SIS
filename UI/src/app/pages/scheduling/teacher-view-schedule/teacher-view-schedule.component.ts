@@ -18,17 +18,18 @@ import { scheduleType } from '../../../enums/takeAttendanceList.enum';
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
-  selector: 'vex-teacher-view-schedule',
-  templateUrl: './teacher-view-schedule.component.html',
-  styleUrls: ['./teacher-view-schedule.component.scss'],
-  encapsulation: ViewEncapsulation.None,
-  animations: [
-      trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
-      state('expanded', style({ height: '*', visibility: 'visible' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
+    selector: 'vex-teacher-view-schedule',
+    templateUrl: './teacher-view-schedule.component.html',
+    styleUrls: ['./teacher-view-schedule.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
+            state('expanded', style({ height: '*', visibility: 'visible' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ],
+    standalone: false
 })
 export class TeacherViewScheduleComponent implements OnInit {
 

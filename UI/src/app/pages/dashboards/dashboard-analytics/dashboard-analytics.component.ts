@@ -49,24 +49,25 @@ import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 
 
 @Component({
-  selector: 'vex-dashboard-analytics',
-  templateUrl: './dashboard-analytics.component.html',
-  styleUrls: ['./dashboard-analytics.component.scss'],
-  styles: [
-    `
+    selector: 'vex-dashboard-analytics',
+    templateUrl: './dashboard-analytics.component.html',
+    styleUrls: ['./dashboard-analytics.component.scss'],
+    styles: [
+        `
           .cal-month-view .bg-aqua,
            .cal-week-view .cal-day-columns .bg-aqua,
            .cal-day-view .bg-aqua {
              background-color: #ffdee4 !important;
            }
          `,
-  ],
-  providers: [
-    {
-      provide: CalendarDateFormatter,
-      useClass: CustomDateFormatter,
-    },
-  ],
+    ],
+    providers: [
+        {
+            provide: CalendarDateFormatter,
+            useClass: CustomDateFormatter,
+        },
+    ],
+    standalone: false
 })
 export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
   isActive: boolean;

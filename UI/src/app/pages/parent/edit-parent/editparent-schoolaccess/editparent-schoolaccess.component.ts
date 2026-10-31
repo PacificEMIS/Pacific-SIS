@@ -30,14 +30,15 @@ import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 
 @Component({
-  selector: 'vex-editparent-schoolaccess',
-  templateUrl: './editparent-schoolaccess.component.html',
-  styleUrls: ['./editparent-schoolaccess.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-editparent-schoolaccess',
+    templateUrl: './editparent-schoolaccess.component.html',
+    styleUrls: ['./editparent-schoolaccess.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class EditparentSchoolaccessComponent implements OnInit {
 

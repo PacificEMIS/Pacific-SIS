@@ -46,13 +46,14 @@ import { PageRolesPermission } from '../../../common/page-roles-permissions.serv
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from "src/app/common/default-values.service";
 @Component({
-  selector: 'vex-attendance-codes',
-  templateUrl: './attendance-codes.component.html',
-  styleUrls: ['./attendance-codes.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-attendance-codes',
+    templateUrl: './attendance-codes.component.html',
+    styleUrls: ['./attendance-codes.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class AttendanceCodesComponent implements OnInit {
   @ViewChild(MatTabGroup) tabGroup: MatTabGroup;

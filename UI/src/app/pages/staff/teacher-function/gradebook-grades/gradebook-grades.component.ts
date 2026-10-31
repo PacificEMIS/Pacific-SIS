@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 @Component({
-  selector: 'vex-gradebook-grades',
-  templateUrl: './gradebook-grades.component.html',
-  styleUrls: ['./gradebook-grades.component.scss']
+    selector: 'vex-gradebook-grades',
+    templateUrl: './gradebook-grades.component.html',
+    styleUrls: ['./gradebook-grades.component.scss'],
+    standalone: false
 })
 
 

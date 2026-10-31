@@ -52,9 +52,10 @@ import { CommonService } from "src/app/services/common.service";
 
 
 @Component({
-  selector: "vex-student-attendance",
-  templateUrl: "./student-attendance.component.html",
-  styleUrls: ["./student-attendance.component.scss"],
+    selector: "vex-student-attendance",
+    templateUrl: "./student-attendance.component.html",
+    styleUrls: ["./student-attendance.component.scss"],
+    standalone: false
 })
 export class StudentAttendanceComponent implements OnInit, OnDestroy {
   viewDate: Date = new Date();

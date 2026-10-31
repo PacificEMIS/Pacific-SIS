@@ -37,13 +37,14 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  selector: 'vex-edit-section',
-  templateUrl: './edit-section.component.html',
-  styleUrls: ['./edit-section.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-section',
+    templateUrl: './edit-section.component.html',
+    styleUrls: ['./edit-section.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditSectionComponent implements OnInit {
 

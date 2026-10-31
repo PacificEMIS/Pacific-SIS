@@ -55,13 +55,14 @@ import {CourseManagerService} from '../../../services/course-manager.service';
 import {GetAllCourseListModel,AddCourseModel,GetAllProgramModel,GetAllSubjectModel, CourseListFilterModel} from '../../../models/course-manager.model';
 
 @Component({
-  selector: 'vex-school-specific-standards',
-  templateUrl: './school-specific-standards.component.html',
-  styleUrls: ['./school-specific-standards.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-school-specific-standards',
+    templateUrl: './school-specific-standards.component.html',
+    styleUrls: ['./school-specific-standards.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
   

@@ -4,9 +4,10 @@ import { DateTime } from 'luxon';
 import { trackById } from '../../../../utils/track-by';
 
 @Component({
-  selector: 'vex-toolbar-notifications-dropdown',
-  templateUrl: './toolbar-notifications-dropdown.component.html',
-  styleUrls: ['./toolbar-notifications-dropdown.component.scss']
+    selector: 'vex-toolbar-notifications-dropdown',
+    templateUrl: './toolbar-notifications-dropdown.component.html',
+    styleUrls: ['./toolbar-notifications-dropdown.component.scss'],
+    standalone: false
 })
 export class ToolbarNotificationsDropdownComponent implements OnInit {
 

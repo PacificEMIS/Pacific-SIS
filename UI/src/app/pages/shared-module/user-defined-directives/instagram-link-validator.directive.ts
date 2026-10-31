@@ -2,14 +2,15 @@ import { Directive } from '@angular/core';
 import { UntypedFormControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 
 @Directive({
-  selector: '[appInstagramLinkValidator]',
-  providers: [
-    {
-      provide: NG_VALIDATORS,
-      useClass: InstagramLinkValidatorDirective,
-      multi: true
-    }
-  ]
+    selector: '[appInstagramLinkValidator]',
+    providers: [
+        {
+            provide: NG_VALIDATORS,
+            useClass: InstagramLinkValidatorDirective,
+            multi: true
+        }
+    ],
+    standalone: false
 })
 export class InstagramLinkValidatorDirective implements Validator {
 

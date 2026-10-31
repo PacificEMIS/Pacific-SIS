@@ -48,14 +48,15 @@ import { PageRolesPermission } from '../../../../common/page-roles-permissions.s
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
-  selector: 'vex-student-documents',
-  templateUrl: './student-documents.component.html',
-  styleUrls: ['./student-documents.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-student-documents',
+    templateUrl: './student-documents.component.html',
+    styleUrls: ['./student-documents.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StudentDocumentsComponent implements OnInit {
   StudentCreate = SchoolCreate;

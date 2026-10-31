@@ -29,13 +29,14 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 
 @Component({
-  selector: 'vex-view-details',
-  templateUrl: './view-details.component.html',
-  styleUrls: ['./view-details.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-view-details',
+    templateUrl: './view-details.component.html',
+    styleUrls: ['./view-details.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class ViewDetailsComponent implements OnInit {
 

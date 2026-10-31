@@ -46,14 +46,15 @@ import { Module } from 'src/app/enums/module.enum';
 import { SchoolCreate } from 'src/app/enums/school-create.enum';
 
 @Component({
-  selector: 'vex-add-school',
-  templateUrl: './add-school.component.html',
-  styleUrls: ['./add-school.component.scss'],
-  animations: [
-    fadeInRight400ms,
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-add-school',
+    templateUrl: './add-school.component.html',
+    styleUrls: ['./add-school.component.scss'],
+    animations: [
+        fadeInRight400ms,
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 
 export class AddSchoolComponent implements OnInit, OnDestroy {

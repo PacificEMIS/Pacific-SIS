@@ -2,14 +2,15 @@ import { Directive } from '@angular/core';
 import { UntypedFormControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 
 @Directive({
-  selector: '[appWebsiteLinkValidator]',
-  providers: [
-    {
-      provide: NG_VALIDATORS,
-      useClass: WebsiteLinkValidatorDirective,
-      multi: true
-    }
-  ]
+    selector: '[appWebsiteLinkValidator]',
+    providers: [
+        {
+            provide: NG_VALIDATORS,
+            useClass: WebsiteLinkValidatorDirective,
+            multi: true
+        }
+    ],
+    standalone: false
 })
 export class WebsiteLinkValidatorDirective implements Validator {
 

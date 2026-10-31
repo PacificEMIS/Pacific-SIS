@@ -37,13 +37,14 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
-  selector: 'vex-student-fields-category',
-  templateUrl: './student-fields-category.component.html',
-  styleUrls: ['./student-fields-category.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-student-fields-category',
+    templateUrl: './student-fields-category.component.html',
+    styleUrls: ['./student-fields-category.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class StudentFieldsCategoryComponent implements OnInit {
   icClose = 'close';

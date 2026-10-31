@@ -48,13 +48,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
-  selector: 'vex-race',
-  templateUrl: './race.component.html',
-  styleUrls: ['./race.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-race',
+    templateUrl: './race.component.html',
+    styleUrls: ['./race.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class RaceComponent implements OnInit {
   columns = [

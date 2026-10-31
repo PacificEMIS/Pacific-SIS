@@ -27,17 +27,17 @@ export const MY_FORMATS = {
 };
 
 @Component({
-  selector: 'vex-add-historical-marking-periods',
-  templateUrl: './add-historical-marking-periods.component.html',
-  styleUrls: ['./add-historical-marking-periods.component.scss'],
-  providers: [
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-    },
-
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ],
+    selector: 'vex-add-historical-marking-periods',
+    templateUrl: './add-historical-marking-periods.component.html',
+    styleUrls: ['./add-historical-marking-periods.component.scss'],
+    providers: [
+        {
+            provide: DateAdapter,
+            useClass: MomentDateAdapter,
+        },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    standalone: false
 })
 export class AddHistoricalMarkingPeriodsComponent implements OnInit {
   historyTitle: string;

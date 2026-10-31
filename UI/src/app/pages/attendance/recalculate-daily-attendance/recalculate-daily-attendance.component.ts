@@ -32,9 +32,10 @@ import { StudentAttendanceService } from "../../../services/student-attendance.s
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ValidationService } from '../../shared/validation.service';
 @Component({
-  selector: "vex-recalculate-daily-attendance",
-  templateUrl: "./recalculate-daily-attendance.component.html",
-  styleUrls: ["./recalculate-daily-attendance.component.scss"],
+    selector: "vex-recalculate-daily-attendance",
+    templateUrl: "./recalculate-daily-attendance.component.html",
+    styleUrls: ["./recalculate-daily-attendance.component.scss"],
+    standalone: false
 })
 export class RecalculateDailyAttendanceComponent implements OnInit {
   dateVal:Date;

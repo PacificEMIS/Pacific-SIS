@@ -53,14 +53,15 @@ export const studentListsData: StudentListsData[] = [
 ];
 
 @Component({
-  selector: 'vex-progress-report',
-  templateUrl: './progress-report.component.html',
-  styleUrls: ['./progress-report.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-progress-report',
+    templateUrl: './progress-report.component.html',
+    styleUrls: ['./progress-report.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class ProgressReportComponent implements OnInit {
 

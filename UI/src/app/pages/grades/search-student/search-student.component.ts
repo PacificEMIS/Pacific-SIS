@@ -44,9 +44,10 @@ import { GetAllSectionModel } from '../../../../app/models/section.model';
 import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
 
 @Component({
-  selector: 'vex-search-student',
-  templateUrl: './search-student.component.html',
-  styleUrls: ['./search-student.component.scss']
+    selector: 'vex-search-student',
+    templateUrl: './search-student.component.html',
+    styleUrls: ['./search-student.component.scss'],
+    standalone: false
 })
 export class SearchStudentComponent implements OnInit {
   @ViewChild(MatAccordion) accordion: MatAccordion;

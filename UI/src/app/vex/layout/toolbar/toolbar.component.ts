@@ -15,13 +15,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { ImpersonateServices } from 'src/app/services/impersonate.service';
 
 @Component({
-  selector: 'vex-toolbar',
-  templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ],
+    selector: 'vex-toolbar',
+    templateUrl: './toolbar.component.html',
+    styleUrls: ['./toolbar.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class ToolbarComponent implements OnInit,OnDestroy {
 

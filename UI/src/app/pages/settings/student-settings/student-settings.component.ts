@@ -31,12 +31,13 @@ import { DefaultValuesService } from '../../../common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 
 @Component({
-  selector: 'vex-student-settings',
-  templateUrl: './student-settings.component.html',
-  styleUrls: ['./student-settings.component.scss'],
-  animations: [
-    fadeInRight400ms
-  ]
+    selector: 'vex-student-settings',
+    templateUrl: './student-settings.component.html',
+    styleUrls: ['./student-settings.component.scss'],
+    animations: [
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StudentSettingsComponent implements OnInit {
   pages=[]

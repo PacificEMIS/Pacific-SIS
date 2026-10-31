@@ -65,14 +65,15 @@ import { MatCheckbox } from '@angular/material/checkbox';
 
 
 @Component({
-  selector: 'vex-student',
-  templateUrl: './student.component.html',
-  styleUrls: ['./student.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-student',
+    templateUrl: './student.component.html',
+    styleUrls: ['./student.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StudentComponent implements OnInit, OnDestroy {
   columns = [

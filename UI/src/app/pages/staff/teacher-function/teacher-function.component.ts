@@ -40,16 +40,16 @@ import { InputEffortGradesComponent } from './input-effort-grades/input-effort-g
 import { InputFinalGradeComponent } from './input-final-grade/input-final-grade.component';
 import { TakeAttendanceComponent } from './take-attendance/take-attendance.component';
 @Component({
-  selector: 'vex-teacher-function',
-  templateUrl: './teacher-function.component.html',
-  styleUrls: ['./teacher-function.component.scss'],
-  animations: [
-    fadeInRight400ms,
-    stagger60ms,
-    fadeInUp400ms
-  ],
-  providers: [TitleCasePipe]
-
+    selector: 'vex-teacher-function',
+    templateUrl: './teacher-function.component.html',
+    styleUrls: ['./teacher-function.component.scss'],
+    animations: [
+        fadeInRight400ms,
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    providers: [TitleCasePipe],
+    standalone: false
 })
 
 export class TeacherFunctionComponent implements OnInit {

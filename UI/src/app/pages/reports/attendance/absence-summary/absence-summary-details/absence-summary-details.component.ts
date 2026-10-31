@@ -21,9 +21,10 @@ import { SchoolPeriodService } from 'src/app/services/school-period.service';
 import moment from 'moment';
 import { ExcelService } from 'src/app/services/excel.service';
 @Component({
-  selector: 'vex-absence-summary-details',
-  templateUrl: './absence-summary-details.component.html',
-  styleUrls: ['./absence-summary-details.component.scss']
+    selector: 'vex-absence-summary-details',
+    templateUrl: './absence-summary-details.component.html',
+    styleUrls: ['./absence-summary-details.component.scss'],
+    standalone: false
 })
 export class AbsenceSummaryDetailsComponent implements OnInit {
 

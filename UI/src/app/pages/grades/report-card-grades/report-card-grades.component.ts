@@ -49,13 +49,14 @@ import { CommonService } from 'src/app/services/common.service';
 
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  selector: 'vex-report-card-grades',
-  templateUrl: './report-card-grades.component.html',
-  styleUrls: ['./report-card-grades.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-report-card-grades',
+    templateUrl: './report-card-grades.component.html',
+    styleUrls: ['./report-card-grades.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class ReportCardGradesComponent implements OnInit, OnDestroy {
 

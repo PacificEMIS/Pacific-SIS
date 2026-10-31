@@ -2,14 +2,15 @@ import { Directive } from '@angular/core';
 import { Validator, NG_VALIDATORS, ValidatorFn, UntypedFormControl } from '@angular/forms';
 
 @Directive({
-  selector: '[appYoutubeLinkValidator]',
-  providers: [
-    {
-      provide: NG_VALIDATORS,
-      useClass: youtubeLinkValidatorDirective,
-      multi: true
-    }
-  ]
+    selector: '[appYoutubeLinkValidator]',
+    providers: [
+        {
+            provide: NG_VALIDATORS,
+            useClass: youtubeLinkValidatorDirective,
+            multi: true
+        }
+    ],
+    standalone: false
 })
 export class youtubeLinkValidatorDirective implements Validator {
 

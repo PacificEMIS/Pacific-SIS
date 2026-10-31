@@ -35,13 +35,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { ValidationService } from 'src/app/pages/shared/validation.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  selector: 'vex-edit-school-classification',
-  templateUrl: './edit-school-classification.component.html',
-  styleUrls: ['./edit-school-classification.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-school-classification',
+    templateUrl: './edit-school-classification.component.html',
+    styleUrls: ['./edit-school-classification.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditSchoolClassificationComponent implements OnInit {
   icClose = 'close';

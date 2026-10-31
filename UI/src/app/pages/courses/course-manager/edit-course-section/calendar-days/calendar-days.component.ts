@@ -48,19 +48,20 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-calendar-days',
-  templateUrl: './calendar-days.component.html',
-  styleUrls: ['./calendar-days.component.scss'],
-  styles: [
-    `
+    selector: 'vex-calendar-days',
+    templateUrl: './calendar-days.component.html',
+    styleUrls: ['./calendar-days.component.scss'],
+    styles: [
+        `
           .cal-month-view .bg-aqua,
            .cal-week-view .cal-day-columns .bg-aqua,
            .cal-day-view .bg-aqua {
              background-color: #ffdee4 !important;
            }
          `,
-  ],
-  encapsulation: ViewEncapsulation.None
+    ],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class CalendarDaysComponent implements OnInit, OnChanges {
   icClose = 'close';

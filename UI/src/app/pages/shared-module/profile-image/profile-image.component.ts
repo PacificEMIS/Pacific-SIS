@@ -51,12 +51,13 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'vex-profile-image',
-  templateUrl: './profile-image.component.html',
-  styleUrls: ['./profile-image.component.scss'],
-  animations: [
-    fadeInRight400ms
-  ]
+    selector: 'vex-profile-image',
+    templateUrl: './profile-image.component.html',
+    styleUrls: ['./profile-image.component.scss'],
+    animations: [
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class ProfileImageComponent implements OnInit, OnDestroy {
   @ViewChild('mytemplate') mytemplate: TemplateRef<any>;

@@ -46,11 +46,11 @@ import { DefaultValuesService } from '../default-values.service';
 
 
 @Component({
-  selector: 'vex-custom-field-without-form',
-  templateUrl: './custom-field-without-form.component.html',
-  styleUrls: ['./custom-field-without-form.component.scss'],
-  animations: [stagger60ms],
-  // viewProviders: [{ provide: ControlContainer, useExisting: NgForm }]
+    selector: 'vex-custom-field-without-form',
+    templateUrl: './custom-field-without-form.component.html',
+    styleUrls: ['./custom-field-without-form.component.scss'],
+    animations: [stagger60ms],
+    standalone: false
 })
 export class CustomFieldWithoutFormComponent implements OnInit, OnDestroy {
   schoolCreate = SchoolCreate;

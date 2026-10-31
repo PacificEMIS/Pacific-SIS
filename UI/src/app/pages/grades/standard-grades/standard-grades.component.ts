@@ -50,13 +50,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 
 @Component({
-  selector: 'vex-standard-grades',
-  templateUrl: './standard-grades.component.html',
-  styleUrls: ['./standard-grades.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-standard-grades',
+    templateUrl: './standard-grades.component.html',
+    styleUrls: ['./standard-grades.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class StandardGradesComponent implements OnInit, OnDestroy {
 

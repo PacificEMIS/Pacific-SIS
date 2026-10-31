@@ -29,13 +29,14 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '@vex/animations/stagger.animation';
 
 @Component({
-  selector: 'vex-edit-category',
-  templateUrl: './edit-category.component.html',
-  styleUrls: ['./edit-category.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-category',
+    templateUrl: './edit-category.component.html',
+    styleUrls: ['./edit-category.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditCategoryComponent implements OnInit {
   icClose = 'close';

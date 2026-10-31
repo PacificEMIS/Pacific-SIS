@@ -54,9 +54,10 @@ import { LoginService } from './services/login.service';
 import * as jwt_decode from 'jwt-decode';
 
 @Component({
-  selector: 'vex-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'vex-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'vex';

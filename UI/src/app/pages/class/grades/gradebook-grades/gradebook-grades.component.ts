@@ -41,10 +41,11 @@ import { Subject } from "rxjs";
 import { GradebookConfigurationAddViewModel } from '../../../../models/gradebook-configuration.model';
 
 @Component({
-  selector: "vex-gradebook-grades",
-  templateUrl: "./gradebook-grades.component.html",
-  styleUrls: ["./gradebook-grades.component.scss"],
-  providers: [DatePipe]
+    selector: "vex-gradebook-grades",
+    templateUrl: "./gradebook-grades.component.html",
+    styleUrls: ["./gradebook-grades.component.scss"],
+    providers: [DatePipe],
+    standalone: false
 })
 export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestroy {
   icSearch = 'search';

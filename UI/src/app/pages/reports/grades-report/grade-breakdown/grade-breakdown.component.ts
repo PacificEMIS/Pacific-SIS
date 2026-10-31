@@ -4,9 +4,10 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 
 @Component({
-  selector: 'vex-grade-breakdown',
-  templateUrl: './grade-breakdown.component.html',
-  styleUrls: ['./grade-breakdown.component.scss']
+    selector: 'vex-grade-breakdown',
+    templateUrl: './grade-breakdown.component.html',
+    styleUrls: ['./grade-breakdown.component.scss'],
+    standalone: false
 })
 export class GradeBreakdownComponent implements OnInit {
 

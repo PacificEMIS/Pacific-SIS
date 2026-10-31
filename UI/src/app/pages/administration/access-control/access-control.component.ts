@@ -36,9 +36,10 @@ import { DefaultValuesService } from '../../../common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
-  selector: 'vex-access-control',
-  templateUrl: './access-control.component.html',
-  styleUrls: ['./access-control.component.scss']
+    selector: 'vex-access-control',
+    templateUrl: './access-control.component.html',
+    styleUrls: ['./access-control.component.scss'],
+    standalone: false
 })
 export class AccessControlComponent implements OnInit {
 

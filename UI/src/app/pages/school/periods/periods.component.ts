@@ -47,13 +47,14 @@ import { PageRolesPermission} from '../../../common/page-roles-permissions.servi
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  selector: 'vex-periods',
-  templateUrl: './periods.component.html',
-  styleUrls: ['./periods.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-periods',
+    templateUrl: './periods.component.html',
+    styleUrls: ['./periods.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class PeriodsComponent implements OnInit {
 

@@ -49,13 +49,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { Module } from 'src/app/enums/module.enum';
 
 @Component({
-  selector: 'vex-school-fields',
-  templateUrl: './school-fields.component.html',
-  styleUrls: ['./school-fields.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-school-fields',
+    templateUrl: './school-fields.component.html',
+    styleUrls: ['./school-fields.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class SchoolFieldsComponent implements OnInit {
   

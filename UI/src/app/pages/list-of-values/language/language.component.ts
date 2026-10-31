@@ -50,13 +50,14 @@ import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
-  selector: 'vex-language',
-  templateUrl: './language.component.html',
-  styleUrls: ['./language.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-language',
+    templateUrl: './language.component.html',
+    styleUrls: ['./language.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class LanguageComponent implements OnInit, AfterViewInit {
   columns = [

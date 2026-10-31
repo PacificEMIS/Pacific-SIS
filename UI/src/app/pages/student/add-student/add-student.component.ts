@@ -53,10 +53,11 @@ import { PageRolesPermission } from "../../../common/page-roles-permissions.serv
 import { Module } from "src/app/enums/module.enum";
 
 @Component({
-  selector: "vex-add-student",
-  templateUrl: "./add-student.component.html",
-  styleUrls: ["./add-student.component.scss"],
-  animations: [fadeInRight400ms, stagger60ms, fadeInUp400ms],
+    selector: "vex-add-student",
+    templateUrl: "./add-student.component.html",
+    styleUrls: ["./add-student.component.scss"],
+    animations: [fadeInRight400ms, stagger60ms, fadeInUp400ms],
+    standalone: false
 })
 export class AddStudentComponent implements OnInit, OnDestroy {
   studentCreate = SchoolCreate;

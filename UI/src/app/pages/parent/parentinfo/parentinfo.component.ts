@@ -52,14 +52,15 @@ import { DataEditInfoComponent } from '../../shared-module/data-edit-info/data-e
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'vex-parentinfo',
-  templateUrl: './parentinfo.component.html',
-  styleUrls: ['./parentinfo.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-parentinfo',
+    templateUrl: './parentinfo.component.html',
+    styleUrls: ['./parentinfo.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class ParentinfoComponent implements OnInit, OnDestroy {
   columns = [

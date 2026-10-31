@@ -48,13 +48,14 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'vex-staff-certificationinfo',
-  templateUrl: './staff-certificationinfo.component.html',
-  styleUrls: ['./staff-certificationinfo.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-staff-certificationinfo',
+    templateUrl: './staff-certificationinfo.component.html',
+    styleUrls: ['./staff-certificationinfo.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class StaffCertificationinfoComponent implements OnInit {
   columns = [

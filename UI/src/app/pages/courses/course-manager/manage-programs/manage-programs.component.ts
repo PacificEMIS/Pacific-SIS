@@ -40,13 +40,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
 @Component({
-  selector: 'vex-manage-programs',
-  templateUrl: './manage-programs.component.html',
-  styleUrls: ['./manage-programs.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-manage-programs',
+    templateUrl: './manage-programs.component.html',
+    styleUrls: ['./manage-programs.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class ManageProgramsComponent implements OnInit {
 

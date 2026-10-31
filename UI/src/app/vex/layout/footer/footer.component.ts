@@ -14,9 +14,10 @@ import { Subject } from "rxjs";
 import { DefaultValuesService } from '../../../common/default-values.service';
 
 @Component({
-  selector: "vex-footer",
-  templateUrl: "./footer.component.html",
-  styleUrls: ["./footer.component.scss"],
+    selector: "vex-footer",
+    templateUrl: "./footer.component.html",
+    styleUrls: ["./footer.component.scss"],
+    standalone: false
 })
 export class FooterComponent implements OnInit, OnDestroy {
   @Input() customTemplate: TemplateRef<any>;

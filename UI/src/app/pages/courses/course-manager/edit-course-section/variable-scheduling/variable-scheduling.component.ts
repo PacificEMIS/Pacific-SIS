@@ -38,9 +38,10 @@ import { weeks } from '../../../../../common/static-data';
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  selector: 'vex-variable-scheduling',
-  templateUrl: './variable-scheduling.component.html',
-  styleUrls: ['./variable-scheduling.component.scss'],
+    selector: 'vex-variable-scheduling',
+    templateUrl: './variable-scheduling.component.html',
+    styleUrls: ['./variable-scheduling.component.scss'],
+    standalone: false
 })
 export class VariableSchedulingComponent implements OnInit, OnChanges {
   @Input() selectedCalendar;

@@ -31,9 +31,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  selector: 'vex-course-overview',
-  templateUrl: './course-overview.component.html',
-  styleUrls: ['./course-overview.component.scss']
+    selector: 'vex-course-overview',
+    templateUrl: './course-overview.component.html',
+    styleUrls: ['./course-overview.component.scss'],
+    standalone: false
 })
 export class CourseOverviewComponent implements OnInit {
 

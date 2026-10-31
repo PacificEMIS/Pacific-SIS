@@ -51,16 +51,17 @@ export const MY_FORMATS = {
 };
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  selector: 'vex-edit-school-fields',
-  templateUrl: './edit-school-fields.component.html',
-  styleUrls: ['./edit-school-fields.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ],
-  providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'en-US' }
-  ],
+    selector: 'vex-edit-school-fields',
+    templateUrl: './edit-school-fields.component.html',
+    styleUrls: ['./edit-school-fields.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    providers: [
+        { provide: MAT_DATE_LOCALE, useValue: 'en-US' }
+    ],
+    standalone: false
 })
 export class EditSchoolFieldsComponent implements OnInit {
   icClose = 'close';

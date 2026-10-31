@@ -35,13 +35,14 @@ import { LovAddView } from '../../../../models/lov.model';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-race',
-  templateUrl: './edit-race.component.html',
-  styleUrls: ['./edit-race.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-race',
+    templateUrl: './edit-race.component.html',
+    styleUrls: ['./edit-race.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditRaceComponent implements OnInit {
   icClose = 'close';

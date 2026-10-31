@@ -46,14 +46,15 @@ import { takeUntil } from 'rxjs/operators';
 import { ReplaySubject, Subject } from 'rxjs';
 import { CommonLOV } from '../../../../../pages/shared-module/lov/common-lov';
 @Component({
-  selector: 'vex-student-contacts',
-  templateUrl: './student-contacts.component.html',
-  styleUrls: ['./student-contacts.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-student-contacts',
+    templateUrl: './student-contacts.component.html',
+    styleUrls: ['./student-contacts.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StudentContactsComponent implements OnInit {
   @Input() studentDetailsForViewAndEditData;

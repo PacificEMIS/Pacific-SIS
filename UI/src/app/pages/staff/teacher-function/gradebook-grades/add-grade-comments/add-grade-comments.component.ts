@@ -4,9 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-add-grade-comments',
-  templateUrl: './add-grade-comments.component.html',
-  styleUrls: ['./add-grade-comments.component.scss']
+    selector: 'vex-add-grade-comments',
+    templateUrl: './add-grade-comments.component.html',
+    styleUrls: ['./add-grade-comments.component.scss'],
+    standalone: false
 })
 export class AddGradeCommentsComponent implements OnInit {
   icClose = 'close';

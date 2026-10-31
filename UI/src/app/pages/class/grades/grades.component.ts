@@ -29,9 +29,10 @@ import { TranslateService } from "@ngx-translate/core";
 import { DefaultValuesService } from "src/app/common/default-values.service";
 
 @Component({
-  selector: "vex-grades",
-  templateUrl: "./grades.component.html",
-  styleUrls: ["./grades.component.scss"],
+    selector: "vex-grades",
+    templateUrl: "./grades.component.html",
+    styleUrls: ["./grades.component.scss"],
+    standalone: false
 })
 export class GradesComponent implements OnInit, AfterViewInit {
   currentTab: string;

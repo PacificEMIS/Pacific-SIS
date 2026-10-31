@@ -45,14 +45,15 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 
 @Component({
-  selector: 'vex-print-student-info',
-  templateUrl: './print-student-info.component.html',
-  styleUrls: ['./print-student-info.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-print-student-info',
+    templateUrl: './print-student-info.component.html',
+    styleUrls: ['./print-student-info.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
   icListAlt = 'list_alt';

@@ -12,9 +12,10 @@ import { UserService } from '../../../../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'vex-session-expire-alert',
-  templateUrl: './session-expire-alert.component.html',
-  styleUrls: ['./session-expire-alert.component.scss']
+    selector: 'vex-session-expire-alert',
+    templateUrl: './session-expire-alert.component.html',
+    styleUrls: ['./session-expire-alert.component.scss'],
+    standalone: false
 })
 export class SessionExpireAlertComponent implements OnInit, OnDestroy {
 

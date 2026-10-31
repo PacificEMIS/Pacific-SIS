@@ -28,12 +28,13 @@ import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-parent-settings',
-  templateUrl: './parent-settings.component.html',
-  styleUrls: ['./parent-settings.component.scss'],
-  animations: [
-    fadeInRight400ms
-  ]
+    selector: 'vex-parent-settings',
+    templateUrl: './parent-settings.component.html',
+    styleUrls: ['./parent-settings.component.scss'],
+    animations: [
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class ParentSettingsComponent implements OnInit {
   pages=['Parent Fields']

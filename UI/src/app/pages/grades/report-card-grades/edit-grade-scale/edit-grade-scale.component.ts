@@ -37,13 +37,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-grade-scale',
-  templateUrl: './edit-grade-scale.component.html',
-  styleUrls: ['./edit-grade-scale.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-grade-scale',
+    templateUrl: './edit-grade-scale.component.html',
+    styleUrls: ['./edit-grade-scale.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditGradeScaleComponent implements OnInit {
   icClose = 'close';

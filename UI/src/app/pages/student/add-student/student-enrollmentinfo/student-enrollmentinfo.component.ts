@@ -51,14 +51,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'src/app/pages/shared-module/confirm-dialog/confirm-dialog.component';
 import { Module } from 'src/app/enums/module.enum';
 @Component({
-  selector: 'vex-student-enrollmentinfo',
-  templateUrl: './student-enrollmentinfo.component.html',
-  styleUrls: ['./student-enrollmentinfo.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ],
+    selector: 'vex-student-enrollmentinfo',
+    templateUrl: './student-enrollmentinfo.component.html',
+    styleUrls: ['./student-enrollmentinfo.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
   icAdd = 'add';

@@ -30,14 +30,15 @@ import { stagger60ms } from '@vex/animations/stagger.animation';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 
 @Component({
-  selector: 'vex-input-final-grade',
-  templateUrl: './input-final-grade.component.html',
-  styleUrls: ['./input-final-grade.component.scss'],
-  animations: [
-    fadeInRight400ms,
-    stagger60ms,
-    fadeInUp400ms
-  ],
+    selector: 'vex-input-final-grade',
+    templateUrl: './input-final-grade.component.html',
+    styleUrls: ['./input-final-grade.component.scss'],
+    animations: [
+        fadeInRight400ms,
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class InputFinalGradeComponent implements OnInit {
 

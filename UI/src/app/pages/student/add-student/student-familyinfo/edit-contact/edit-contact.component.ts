@@ -47,14 +47,14 @@ import { DefaultValuesService } from '../../../../../common/default-values.servi
 import { MatSelect } from '@angular/material/select';
 
 @Component({
-  selector: 'vex-edit-contact',
-  templateUrl: './edit-contact.component.html',
-  styleUrls: ['./edit-contact.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
-
+    selector: 'vex-edit-contact',
+    templateUrl: './edit-contact.component.html',
+    styleUrls: ['./edit-contact.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditContactComponent implements OnInit,AfterViewInit, OnDestroy {
   @ViewChild('f') currentForm: NgForm;

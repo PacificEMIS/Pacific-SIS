@@ -21,9 +21,10 @@ import { FixedSchedulingCourseSectionAddModel, OutputEmitDataFormat } from '../.
 import { RoomService } from '../../../services/room.service';
 import { RoomListViewModel } from '../../../models/room.model';
 @Component({
-  selector: 'vex-course-catalog',
-  templateUrl: './course-catalog.component.html',
-  styleUrls: ['./course-catalog.component.scss']
+    selector: 'vex-course-catalog',
+    templateUrl: './course-catalog.component.html',
+    styleUrls: ['./course-catalog.component.scss'],
+    standalone: false
 })
 export class CourseCatalogComponent implements OnInit {
 

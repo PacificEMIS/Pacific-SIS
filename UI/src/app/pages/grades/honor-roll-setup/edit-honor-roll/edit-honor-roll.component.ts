@@ -36,13 +36,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-honor-roll',
-  templateUrl: './edit-honor-roll.component.html',
-  styleUrls: ['./edit-honor-roll.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-honor-roll',
+    templateUrl: './edit-honor-roll.component.html',
+    styleUrls: ['./edit-honor-roll.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditHonorRollComponent implements OnInit,AfterViewInit {
   icClose = 'close';

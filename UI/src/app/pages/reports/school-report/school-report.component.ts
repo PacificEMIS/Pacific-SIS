@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'vex-school-report',
-  templateUrl: './school-report.component.html',
-  styleUrls: ['./school-report.component.scss']
+    selector: 'vex-school-report',
+    templateUrl: './school-report.component.html',
+    styleUrls: ['./school-report.component.scss'],
+    standalone: false
 })
 export class SchoolReportComponent implements OnInit {
   pages=[];

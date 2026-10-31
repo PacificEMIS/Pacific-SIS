@@ -50,13 +50,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonLOV } from '../../../shared-module/lov/common-lov';
 
 @Component({
-  selector: 'vex-add-teacher',
-  templateUrl: './add-teacher.component.html',
-  styleUrls: ['./add-teacher.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-add-teacher',
+    templateUrl: './add-teacher.component.html',
+    styleUrls: ['./add-teacher.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class AddTeacherComponent implements OnInit {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;

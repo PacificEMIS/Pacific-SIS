@@ -44,14 +44,15 @@ import { CommonService } from "src/app/services/common.service";
 
 import { DefaultValuesService } from "src/app/common/default-values.service";
 @Component({
-  selector: "vex-missing-attendance-details",
-  templateUrl: "./missing-attendance-details.component.html",
-  styleUrls: ["./missing-attendance-details.component.scss"],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: "vex-missing-attendance-details",
+    templateUrl: "./missing-attendance-details.component.html",
+    styleUrls: ["./missing-attendance-details.component.scss"],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class MissingAttendanceDetailsComponent implements OnInit ,AfterViewInit, OnDestroy{
   icSearch = 'search';

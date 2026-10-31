@@ -46,9 +46,10 @@ import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
 import { StudentAttendanceService } from 'src/app/services/student-attendance.service';
 
 @Component({
-  selector: 'vex-search-staff',
-  templateUrl: './search-staff.component.html',
-  styleUrls: ['./search-staff.component.scss']
+    selector: 'vex-search-staff',
+    templateUrl: './search-staff.component.html',
+    styleUrls: ['./search-staff.component.scss'],
+    standalone: false
 })
 export class SearchStaffComponent implements OnInit {
 

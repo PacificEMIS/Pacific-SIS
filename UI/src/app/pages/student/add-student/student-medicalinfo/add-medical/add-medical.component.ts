@@ -35,9 +35,10 @@ import { CommonService } from 'src/app/services/common.service';
 
 import { DefaultValuesService } from '../../../../../common/default-values.service';
 @Component({
-  selector: 'vex-add-medical',
-  templateUrl: './add-medical.component.html',
-  styleUrls: ['./add-medical.component.scss']
+    selector: 'vex-add-medical',
+    templateUrl: './add-medical.component.html',
+    styleUrls: ['./add-medical.component.scss'],
+    standalone: false
 })
 export class AddMedicalComponent implements OnInit {
 

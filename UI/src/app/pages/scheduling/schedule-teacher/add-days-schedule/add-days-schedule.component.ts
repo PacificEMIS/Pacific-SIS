@@ -39,20 +39,21 @@ import { weeks } from "../../../../common/static-data";
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { ProfilesTypes } from "src/app/enums/profiles.enum";
 @Component({
-  selector: "vex-add-days-schedule",
-  templateUrl: "./add-days-schedule.component.html",
-  styleUrls: ["./add-days-schedule.component.scss"],
-  animations: [stagger60ms, fadeInUp400ms],
-  styles: [
-    `
+    selector: "vex-add-days-schedule",
+    templateUrl: "./add-days-schedule.component.html",
+    styleUrls: ["./add-days-schedule.component.scss"],
+    animations: [stagger60ms, fadeInUp400ms],
+    styles: [
+        `
            .cal-month-view .bg-aqua,
            .cal-week-view .cal-day-columns .bg-aqua,
            .cal-day-view .bg-aqua {
              background-color: #ffdee4 !important;
            }
          `,
-  ],
-  encapsulation: ViewEncapsulation.None,
+    ],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class AddDaysScheduleComponent implements OnInit {
   icClose = 'close';

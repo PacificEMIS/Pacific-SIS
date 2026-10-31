@@ -36,13 +36,14 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 
 
 @Component({
-  selector: 'vex-edit-language',
-  templateUrl: './edit-language.component.html',
-  styleUrls: ['./edit-language.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-language',
+    templateUrl: './edit-language.component.html',
+    styleUrls: ['./edit-language.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 
 export class EditLanguageComponent implements OnInit {

@@ -73,10 +73,11 @@ const colors: any = {
 };
 
 @Component({
-  selector: 'vex-calendar',
-  templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'vex-calendar',
+    templateUrl: './calendar.component.html',
+    styleUrls: ['./calendar.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 
 export class CalendarComponent implements OnInit {

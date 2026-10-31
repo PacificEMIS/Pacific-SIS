@@ -31,12 +31,13 @@ import { DefaultValuesService } from '../../../common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 
 @Component({
-  selector: 'vex-attendance-settings',
-  templateUrl: './attendance-settings.component.html',
-  styleUrls: ['./attendance-settings.component.scss'],
-  animations: [
-    fadeInRight400ms
-  ]
+    selector: 'vex-attendance-settings',
+    templateUrl: './attendance-settings.component.html',
+    styleUrls: ['./attendance-settings.component.scss'],
+    animations: [
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class AttendanceSettingsComponent implements OnInit {
   pages=[]

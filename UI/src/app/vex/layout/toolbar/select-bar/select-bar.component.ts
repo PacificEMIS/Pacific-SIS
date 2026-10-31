@@ -16,9 +16,10 @@ import * as moment from "moment";
 import { ImpersonateServices } from 'src/app/services/impersonate.service';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 @Component({
-  selector: 'vex-select-bar',
-  templateUrl: './select-bar.component.html',
-  styleUrls: ['./select-bar.component.scss']
+    selector: 'vex-select-bar',
+    templateUrl: './select-bar.component.html',
+    styleUrls: ['./select-bar.component.scss'],
+    standalone: false
 })
 export class SelectBarComponent implements OnInit {
   getSchoolList: OnlySchoolListModel = new OnlySchoolListModel();

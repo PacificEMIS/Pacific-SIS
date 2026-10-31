@@ -10,9 +10,10 @@ import moment from 'moment';
 import { LoaderService } from 'src/app/services/loader.service';
 
 @Component({
-  selector: 'vex-progress-reports',
-  templateUrl: './progress-reports.component.html',
-  styleUrls: ['./progress-reports.component.scss']
+    selector: 'vex-progress-reports',
+    templateUrl: './progress-reports.component.html',
+    styleUrls: ['./progress-reports.component.scss'],
+    standalone: false
 })
 export class ProgressReportsComponent implements OnInit {
 

@@ -52,13 +52,14 @@ import { GradeLevelService } from 'src/app/services/grade-level.service';
 import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 
 @Component({
-  selector: 'vex-group-drop',
-  templateUrl: './group-drop.component.html',
-  styleUrls: ['./group-drop.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-group-drop',
+    templateUrl: './group-drop.component.html',
+    styleUrls: ['./group-drop.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class GroupDropComponent implements OnInit, OnDestroy {
   icClose = 'close';

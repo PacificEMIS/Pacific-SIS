@@ -58,13 +58,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { SchoolCreate } from 'src/app/enums/school-create.enum';
 
 @Component({
-  selector: 'vex-school-details',
-  templateUrl: './school-details.component.html',
-  styleUrls: ['./school-details.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ],
+    selector: 'vex-school-details',
+    templateUrl: './school-details.component.html',
+    styleUrls: ['./school-details.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class SchoolDetailsComponent implements OnInit,OnDestroy {
   columns = [

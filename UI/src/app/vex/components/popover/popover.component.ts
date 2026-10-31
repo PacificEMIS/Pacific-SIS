@@ -3,9 +3,10 @@ import { PopoverContent, PopoverRef } from './popover-ref';
 import { popoverAnimation } from '../../animations/popover.animation';
 
 @Component({
-  templateUrl: './popover.component.html',
-  styleUrls: ['./popover.component.scss'],
-  animations: [popoverAnimation]
+    templateUrl: './popover.component.html',
+    styleUrls: ['./popover.component.scss'],
+    animations: [popoverAnimation],
+    standalone: false
 })
 export class PopoverComponent implements OnInit {
   renderMethod: 'template' | 'component' | 'text' = 'component';

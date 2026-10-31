@@ -48,9 +48,10 @@ import { Subject } from "rxjs";
 
 
 @Component({
-  selector: 'vex-take-attendance',
-  templateUrl: './take-attendance.component.html',
-  styleUrls: ['./take-attendance.component.scss']
+    selector: 'vex-take-attendance',
+    templateUrl: './take-attendance.component.html',
+    styleUrls: ['./take-attendance.component.scss'],
+    standalone: false
 })
 export class TakeAttendanceComponent implements OnInit {
 

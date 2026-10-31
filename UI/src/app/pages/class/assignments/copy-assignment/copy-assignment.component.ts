@@ -12,9 +12,10 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 import { DasboardService } from '../../../../services/dasboard.service';
 
 @Component({
-  selector: 'vex-copy-assignment',
-  templateUrl: './copy-assignment.component.html',
-  styleUrls: ['./copy-assignment.component.scss']
+    selector: 'vex-copy-assignment',
+    templateUrl: './copy-assignment.component.html',
+    styleUrls: ['./copy-assignment.component.scss'],
+    standalone: false
 })
 export class CopyAssignmentComponent implements OnInit {
 

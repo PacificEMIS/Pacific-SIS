@@ -12,10 +12,11 @@ import { Subject } from 'rxjs';
 import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 
 @Component({
-  selector: 'vex-fill-attendance',
-  templateUrl: './fill-attendance.component.html',
-  styleUrls: ['./fill-attendance.component.scss'],
-  animations: [fadeInUp400ms]
+    selector: 'vex-fill-attendance',
+    templateUrl: './fill-attendance.component.html',
+    styleUrls: ['./fill-attendance.component.scss'],
+    animations: [fadeInUp400ms],
+    standalone: false
 })
 export class FillAttendanceComponent implements OnInit {
   destroySubject$: Subject<void> = new Subject();

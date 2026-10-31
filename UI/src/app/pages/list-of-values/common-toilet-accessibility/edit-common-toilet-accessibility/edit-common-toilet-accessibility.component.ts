@@ -35,13 +35,14 @@ import { stagger60ms } from '@vex/animations/stagger.animation';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-common-toilet-accessibility',
-  templateUrl: './edit-common-toilet-accessibility.component.html',
-  styleUrls: ['./edit-common-toilet-accessibility.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-common-toilet-accessibility',
+    templateUrl: './edit-common-toilet-accessibility.component.html',
+    styleUrls: ['./edit-common-toilet-accessibility.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditCommonToiletAccessibilityComponent implements OnInit {
   icClose = 'close';

@@ -39,8 +39,9 @@ import { SharedFunction } from '../../../shared/shared-function';
  * is the school currently selected in the top bar.
  */
 @Component({
-  selector: 'vex-add-super-administrator',
-  templateUrl: './add-super-administrator.component.html'
+    selector: 'vex-add-super-administrator',
+    templateUrl: './add-super-administrator.component.html',
+    standalone: false
 })
 export class AddSuperAdministratorComponent implements OnInit {
   icClose = 'close';

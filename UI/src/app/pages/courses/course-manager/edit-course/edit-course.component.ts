@@ -47,19 +47,20 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatCheckbox } from '@angular/material/checkbox';
 @Component({
-  selector: 'vex-edit-course',
-  templateUrl: './edit-course.component.html',
-  styleUrls: ['./edit-course.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    stagger40ms,
-    trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ]
+    selector: 'vex-edit-course',
+    templateUrl: './edit-course.component.html',
+    styleUrls: ['./edit-course.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        stagger40ms,
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ],
+    standalone: false
 })
 export class EditCourseComponent implements OnInit {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;

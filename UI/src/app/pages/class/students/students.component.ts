@@ -42,13 +42,14 @@ import { debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/oper
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
-  selector: 'vex-students',
-  templateUrl: './students.component.html',
-  styleUrls: ['./students.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-students',
+    templateUrl: './students.component.html',
+    styleUrls: ['./students.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class StudentsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;

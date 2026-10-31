@@ -13,9 +13,10 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { LoaderService } from 'src/app/services/loader.service';
 
 @Component({
-  selector: 'vex-api-module-datails',
-  templateUrl: './api-module-datails.component.html',
-  styleUrls: ['./api-module-datails.component.scss']
+    selector: 'vex-api-module-datails',
+    templateUrl: './api-module-datails.component.html',
+    styleUrls: ['./api-module-datails.component.scss'],
+    standalone: false
 })
 export class ApiModuleDatailsComponent implements OnInit {
 

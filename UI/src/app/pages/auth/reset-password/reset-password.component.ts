@@ -10,12 +10,13 @@ import { CatalogDbService } from 'src/app/services/catalog-db.service';
 import { AvailableTenantViewModel } from '../../../models/available-tenant';
 
 @Component({
-  selector: 'vex-reset-password',
-  templateUrl: './reset-password.component.html',
-  styleUrls: ['../login/login.component.scss'],
-  animations: [
-    fadeInUp400ms
-  ]
+    selector: 'vex-reset-password',
+    templateUrl: './reset-password.component.html',
+    styleUrls: ['../login/login.component.scss'],
+    animations: [
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class ResetPasswordComponent implements OnInit {
 

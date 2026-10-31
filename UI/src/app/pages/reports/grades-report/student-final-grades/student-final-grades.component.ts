@@ -52,14 +52,15 @@ import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 import { SharedFunction } from 'src/app/pages/shared/shared-function';
 
 @Component({
-  selector: 'vex-student-final-grades',
-  templateUrl: './student-final-grades.component.html',
-  styleUrls: ['./student-final-grades.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-student-final-grades',
+    templateUrl: './student-final-grades.component.html',
+    styleUrls: ['./student-final-grades.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDestroy {
   currentTab: string = 'selectStudents';

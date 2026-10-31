@@ -4,9 +4,10 @@ import { Observable } from 'rxjs';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
-  selector: 'vex-mat-chip',
-  templateUrl: './mat-chip.component.html',
-  styleUrls: ['./mat-chip.component.scss']
+    selector: 'vex-mat-chip',
+    templateUrl: './mat-chip.component.html',
+    styleUrls: ['./mat-chip.component.scss'],
+    standalone: false
 })
 export class MatChipComponent implements OnInit {
   filteredFruits: Observable<string[]>;

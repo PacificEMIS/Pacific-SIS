@@ -32,12 +32,13 @@ import { PageRolesPermission } from '../../../common/page-roles-permissions.serv
 
 
 @Component({
-  selector: 'vex-staff-settings',
-  templateUrl: './staff-settings.component.html',
-  styleUrls: ['./staff-settings.component.scss'],
-  animations: [
-    fadeInRight400ms
-  ]
+    selector: 'vex-staff-settings',
+    templateUrl: './staff-settings.component.html',
+    styleUrls: ['./staff-settings.component.scss'],
+    animations: [
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StaffSettingsComponent implements OnInit {
   pages=[]

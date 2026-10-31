@@ -73,19 +73,19 @@ export const MY_FORMATS = {
   },
 };
 @Component({
-  selector: 'vex-schedule-student',
-  templateUrl: './schedule-student.component.html',
-  styleUrls: ['./schedule-student.component.scss'],
-  providers: [
-    TitleCasePipe,
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
-    },
-
-    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
-  ]
+    selector: 'vex-schedule-student',
+    templateUrl: './schedule-student.component.html',
+    styleUrls: ['./schedule-student.component.scss'],
+    providers: [
+        TitleCasePipe,
+        {
+            provide: DateAdapter,
+            useClass: MomentDateAdapter,
+            deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+        },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    standalone: false
 })
 export class ScheduleStudentComponent implements OnInit, OnDestroy {
   studentList = [];

@@ -48,9 +48,10 @@ import { ReportService } from 'src/app/services/report.service';
 import { GetStudentAbsenceReport } from 'src/app/models/absence-summary.model';
 
 @Component({
-  selector: 'vex-search-student',
-  templateUrl: './search-student.component.html',
-  styleUrls: ['./search-student.component.scss']
+    selector: 'vex-search-student',
+    templateUrl: './search-student.component.html',
+    styleUrls: ['./search-student.component.scss'],
+    standalone: false
 })
 export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy {
 

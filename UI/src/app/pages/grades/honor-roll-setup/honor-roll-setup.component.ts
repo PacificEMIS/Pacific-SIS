@@ -49,13 +49,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-honor-roll-setup',
-  templateUrl: './honor-roll-setup.component.html',
-  styleUrls: ['./honor-roll-setup.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-honor-roll-setup',
+    templateUrl: './honor-roll-setup.component.html',
+    styleUrls: ['./honor-roll-setup.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class HonorRollSetupComponent implements OnInit,AfterViewInit {
 

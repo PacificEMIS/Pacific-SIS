@@ -9,9 +9,10 @@ import { CommonService } from 'src/app/services/common.service';
 import { GradesService } from 'src/app/services/grades.service';
 
 @Component({
-  selector: 'vex-edit-report-card-grades-details',
-  templateUrl: './edit-report-card-grades-details.component.html',
-  styleUrls: ['./edit-report-card-grades-details.component.scss']
+    selector: 'vex-edit-report-card-grades-details',
+    templateUrl: './edit-report-card-grades-details.component.html',
+    styleUrls: ['./edit-report-card-grades-details.component.scss'],
+    standalone: false
 })
 export class EditReportCardGradesDetailsComponent implements OnInit, OnChanges {
 

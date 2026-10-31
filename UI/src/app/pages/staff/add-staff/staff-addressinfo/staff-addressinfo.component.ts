@@ -52,14 +52,15 @@ import { MatSelect } from '@angular/material/select';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  selector: 'vex-staff-addressinfo',
-  templateUrl: './staff-addressinfo.component.html',
-  styleUrls: ['./staff-addressinfo.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-staff-addressinfo',
+    templateUrl: './staff-addressinfo.component.html',
+    styleUrls: ['./staff-addressinfo.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StaffAddressinfoComponent implements OnInit, AfterViewInit, OnDestroy {
   staffCreate = SchoolCreate;

@@ -36,13 +36,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from "src/app/common/default-values.service";
 
 @Component({
-  selector: 'vex-edit-attendance-code',
-  templateUrl: './edit-attendance-code.component.html',
-  styleUrls: ['./edit-attendance-code.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-attendance-code',
+    templateUrl: './edit-attendance-code.component.html',
+    styleUrls: ['./edit-attendance-code.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditAttendanceCodeComponent implements OnInit {
   icClose = 'close';

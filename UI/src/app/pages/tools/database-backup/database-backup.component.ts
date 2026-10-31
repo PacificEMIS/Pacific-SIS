@@ -8,9 +8,10 @@ import { LoaderService } from 'src/app/services/loader.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'vex-database-backup',
-  templateUrl: './database-backup.component.html',
-  styleUrls: ['./database-backup.component.scss']
+    selector: 'vex-database-backup',
+    templateUrl: './database-backup.component.html',
+    styleUrls: ['./database-backup.component.scss'],
+    standalone: false
 })
 export class DatabaseBackupComponent implements OnInit {
 

@@ -41,9 +41,10 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'vex-add-course-section',
-  templateUrl: './add-course-section.component.html',
-  styleUrls: ['./add-course-section.component.scss']
+    selector: 'vex-add-course-section',
+    templateUrl: './add-course-section.component.html',
+    styleUrls: ['./add-course-section.component.scss'],
+    standalone: false
 })
 export class AddCourseSectionComponent implements OnInit, OnDestroy {
   icClose = 'close';

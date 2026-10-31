@@ -59,9 +59,10 @@ import { CourseManagerService } from 'src/app/services/course-manager.service';
 import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from 'src/app/models/course-manager.model';
 
 @Component({
-  selector: 'vex-search-student-edit-report-card-grades',
-  templateUrl: './search-student.component.html',
-  styleUrls: ['./search-student.component.scss']
+    selector: 'vex-search-student-edit-report-card-grades',
+    templateUrl: './search-student.component.html',
+    styleUrls: ['./search-student.component.scss'],
+    standalone: false
 })
 export class SearchStudentComponentForEditReportCardGrades implements OnInit, AfterViewInit, OnDestroy {
 

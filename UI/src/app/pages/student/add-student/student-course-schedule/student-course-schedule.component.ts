@@ -62,10 +62,11 @@ import { ReportService } from "src/app/services/report.service";
 import { ProfilesTypes } from "src/app/enums/profiles.enum";
 import { buildSchedulePrintWeekPages, getSchedulePrintStyles } from "src/app/common/schedule-print-pivot";
 @Component({
-  selector: "vex-student-course-schedule",
-  templateUrl: "./student-course-schedule.component.html",
-  styleUrls: ["./student-course-schedule.component.scss"],
-  encapsulation: ViewEncapsulation.None,
+    selector: "vex-student-course-schedule",
+    templateUrl: "./student-course-schedule.component.html",
+    styleUrls: ["./student-course-schedule.component.scss"],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class StudentCourseScheduleComponent implements OnInit {
   icEdit = 'edit';

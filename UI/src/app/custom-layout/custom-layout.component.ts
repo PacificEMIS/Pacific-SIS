@@ -35,9 +35,10 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @UntilDestroy()
 @Component({
-  selector: 'vex-custom-layout',
-  templateUrl: './custom-layout.component.html',
-  styleUrls: ['./custom-layout.component.scss']
+    selector: 'vex-custom-layout',
+    templateUrl: './custom-layout.component.html',
+    styleUrls: ['./custom-layout.component.scss'],
+    standalone: false
 })
 export class CustomLayoutComponent implements OnInit {
 

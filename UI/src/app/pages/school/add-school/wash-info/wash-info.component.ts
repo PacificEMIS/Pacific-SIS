@@ -51,14 +51,15 @@ import { PageRolesPermission } from '../../../../common/page-roles-permissions.s
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { Module } from 'src/app/enums/module.enum';
 @Component({
-  selector: 'vex-wash-info',
-  templateUrl: './wash-info.component.html',
-  styleUrls: ['./wash-info.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-wash-info',
+    templateUrl: './wash-info.component.html',
+    styleUrls: ['./wash-info.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class WashInfoComponent implements OnInit,OnDestroy {
   schoolCreate = SchoolCreate;

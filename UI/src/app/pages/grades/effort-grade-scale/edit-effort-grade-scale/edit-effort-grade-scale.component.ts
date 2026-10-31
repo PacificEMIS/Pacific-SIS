@@ -35,13 +35,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-effort-grade-scale',
-  templateUrl: './edit-effort-grade-scale.component.html',
-  styleUrls: ['./edit-effort-grade-scale.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-effort-grade-scale',
+    templateUrl: './edit-effort-grade-scale.component.html',
+    styleUrls: ['./edit-effort-grade-scale.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditEffortGradeScaleComponent implements OnInit {
   icClose = 'close';

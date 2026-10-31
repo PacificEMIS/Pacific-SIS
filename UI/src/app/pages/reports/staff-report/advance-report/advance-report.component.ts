@@ -45,14 +45,15 @@ export const generateListData: GenerateListData[] = [
 ];
 
 @Component({
-  selector: 'vex-advance-report',
-  templateUrl: './advance-report.component.html',
-  styleUrls: ['./advance-report.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-advance-report',
+    templateUrl: './advance-report.component.html',
+    styleUrls: ['./advance-report.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class AdvanceReportComponent implements OnInit {
   icPrint = 'print';

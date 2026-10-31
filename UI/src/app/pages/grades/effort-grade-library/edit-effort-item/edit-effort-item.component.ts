@@ -36,13 +36,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-effort-item',
-  templateUrl: './edit-effort-item.component.html',
-  styleUrls: ['./edit-effort-item.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-effort-item',
+    templateUrl: './edit-effort-item.component.html',
+    styleUrls: ['./edit-effort-item.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditEffortItemComponent implements OnInit {
   icClose = 'close';

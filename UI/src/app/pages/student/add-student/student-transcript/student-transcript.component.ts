@@ -52,14 +52,15 @@ import { HistoricalGradeAddViewModel } from "src/app/models/historical-marking-p
 import { HistoricalMarkingPeriodService } from "src/app/services/historical-marking-period.service";
 
 @Component({
-  selector: "vex-student-transcript",
-  templateUrl: "./student-transcript.component.html",
-  styleUrls: ["./student-transcript.component.scss"],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: "vex-student-transcript",
+    templateUrl: "./student-transcript.component.html",
+    styleUrls: ["./student-transcript.component.scss"],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StudentTranscriptComponent implements OnInit {
   icSearch = 'search';

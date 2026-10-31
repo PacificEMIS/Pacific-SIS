@@ -40,9 +40,10 @@ import { ScheduleStudentListViewModel } from '../../../../../models/student-sche
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 @Component({
-  selector: 'vex-period-attendance',
-  templateUrl: './period-attendance.component.html',
-  styleUrls: ['./period-attendance.component.scss']
+    selector: 'vex-period-attendance',
+    templateUrl: './period-attendance.component.html',
+    styleUrls: ['./period-attendance.component.scss'],
+    standalone: false
 })
 export class PeriodAttendanceComponent implements OnInit {
   pageStatus = "Teacher Function";

@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { CustomFieldModel } from 'src/app/models/custom-field.model';
 
 @Pipe({
-    name: 'systemCategoryCheckPipe'
+    name: 'systemCategoryCheckPipe',
+    standalone: false
 })
 export class SystemCategoryCheckPipe implements PipeTransform {
     transform(items: any[]): any {

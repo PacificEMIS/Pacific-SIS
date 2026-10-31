@@ -9,9 +9,10 @@ import { LoaderService } from 'src/app/services/loader.service';
 import { KeysGenerateService } from '../service/keys-generate.service';
 
 @Component({
-  selector: 'vex-generate-api-key',
-  templateUrl: './generate-api-key.component.html',
-  styleUrls: ['./generate-api-key.component.scss']
+    selector: 'vex-generate-api-key',
+    templateUrl: './generate-api-key.component.html',
+    styleUrls: ['./generate-api-key.component.scss'],
+    standalone: false
 })
 export class GenerateApiKeyComponent implements OnInit {
 

@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DateTime } from 'luxon';
 
 @Pipe({
-  name: 'relativeDateTime'
+    name: 'relativeDateTime',
+    standalone: false
 })
 export class RelativeDateTimePipe implements PipeTransform {
 

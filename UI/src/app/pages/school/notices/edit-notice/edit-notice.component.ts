@@ -50,19 +50,20 @@ import { SchoolService } from 'src/app/services/school.service';
 import { OnlySchoolListModel } from 'src/app/models/get-all-school.model';
 
 @Component({
-  selector: 'vex-edit-notice',
-  templateUrl: './edit-notice.component.html',
-  styleUrls: ['./edit-notice.component.scss',
-    '../../../../../../node_modules/quill/dist/quill.snow.css',
-    '../../../../vex/styles/partials/plugins/_quill.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ],
-  providers: [
-    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ]
+    selector: 'vex-edit-notice',
+    templateUrl: './edit-notice.component.html',
+    styleUrls: ['./edit-notice.component.scss',
+        '../../../../../../node_modules/quill/dist/quill.snow.css',
+        '../../../../vex/styles/partials/plugins/_quill.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    providers: [
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    standalone: false
 })
 export class EditNoticeComponent implements OnInit {
   @ViewChild('checkBox' ) checkBox:MatCheckbox;

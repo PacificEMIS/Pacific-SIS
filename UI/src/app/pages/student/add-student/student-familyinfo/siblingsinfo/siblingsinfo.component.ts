@@ -46,14 +46,15 @@ import { GradeLevelService } from '../../../../../services/grade-level.service';
 import { GetAllGradeLevelsModel } from '../../../../../models/grade-level.model';
 
 @Component({
-  selector: 'vex-siblingsinfo',
-  templateUrl: './siblingsinfo.component.html',
-  styleUrls: ['./siblingsinfo.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-siblingsinfo',
+    templateUrl: './siblingsinfo.component.html',
+    styleUrls: ['./siblingsinfo.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class SiblingsinfoComponent implements OnInit {
   @Input() multipleData;

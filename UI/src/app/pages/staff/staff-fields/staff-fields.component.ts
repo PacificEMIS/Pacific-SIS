@@ -50,13 +50,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { Module } from 'src/app/enums/module.enum';
 
 @Component({
-  selector: 'vex-staff-fields',
-  templateUrl: './staff-fields.component.html',
-  styleUrls: ['./staff-fields.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-staff-fields',
+    templateUrl: './staff-fields.component.html',
+    styleUrls: ['./staff-fields.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class StaffFieldsComponent implements OnInit {
   columns = [

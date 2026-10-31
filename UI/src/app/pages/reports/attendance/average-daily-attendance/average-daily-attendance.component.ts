@@ -18,9 +18,10 @@ import { ExcelService } from 'src/app/services/excel.service';
 
 
 @Component({
-  selector: 'vex-average-daily-attendance',
-  templateUrl: './average-daily-attendance.component.html',
-  styleUrls: ['./average-daily-attendance.component.scss']
+    selector: 'vex-average-daily-attendance',
+    templateUrl: './average-daily-attendance.component.html',
+    styleUrls: ['./average-daily-attendance.component.scss'],
+    standalone: false
 })
 export class AverageDailyAttendanceComponent implements OnInit {
   isVisible: boolean = false;

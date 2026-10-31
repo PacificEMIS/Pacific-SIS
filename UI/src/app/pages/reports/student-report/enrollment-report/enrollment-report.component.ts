@@ -52,14 +52,15 @@ import { StudentReportService } from 'src/app/services/student-report.service';
 import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 
 @Component({
-  selector: 'vex-enrollment-report',
-  templateUrl: './enrollment-report.component.html',
-  styleUrls: ['./enrollment-report.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-enrollment-report',
+    templateUrl: './enrollment-report.component.html',
+    styleUrls: ['./enrollment-report.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class EnrollmentReportComponent implements OnInit, AfterViewInit {
   destroySubject$: Subject<void> = new Subject();

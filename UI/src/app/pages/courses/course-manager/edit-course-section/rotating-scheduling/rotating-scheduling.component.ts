@@ -37,9 +37,10 @@ import { DefaultValuesService } from '../../../../../common/default-values.servi
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
-  selector: 'vex-rotating-scheduling',
-  templateUrl: './rotating-scheduling.component.html',
-  styleUrls: ['./rotating-scheduling.component.scss']
+    selector: 'vex-rotating-scheduling',
+    templateUrl: './rotating-scheduling.component.html',
+    styleUrls: ['./rotating-scheduling.component.scss'],
+    standalone: false
 })
 export class RotatingSchedulingComponent implements OnInit {
   icClose = 'close';

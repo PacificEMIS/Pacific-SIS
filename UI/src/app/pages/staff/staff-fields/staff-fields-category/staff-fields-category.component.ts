@@ -36,13 +36,14 @@ import { ValidationService } from 'src/app/pages/shared/validation.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  selector: 'vex-staff-fields-category',
-  templateUrl: './staff-fields-category.component.html',
-  styleUrls: ['./staff-fields-category.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-staff-fields-category',
+    templateUrl: './staff-fields-category.component.html',
+    styleUrls: ['./staff-fields-category.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class StaffFieldsCategoryComponent implements OnInit {
   icClose = 'close';

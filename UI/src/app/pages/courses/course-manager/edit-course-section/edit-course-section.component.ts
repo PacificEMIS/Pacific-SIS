@@ -49,14 +49,15 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 import { CommonService } from 'src/app/services/common.service';
 import { DecimalPipe } from '@angular/common';
 @Component({
-  selector: 'vex-edit-course-section',
-  templateUrl: './edit-course-section.component.html',
-  styleUrls: ['./edit-course-section.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ],
-  providers: [DecimalPipe]
+    selector: 'vex-edit-course-section',
+    templateUrl: './edit-course-section.component.html',
+    styleUrls: ['./edit-course-section.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    providers: [DecimalPipe],
+    standalone: false
 })
 export class EditCourseSectionComponent implements OnInit {
 
@@ -201,7 +202,7 @@ export class EditCourseSectionComponent implements OnInit {
 // Patching value in Update Time
   patchFormValue() {
     this.durationType = this.data.courseSectionDetails.courseSection.durationBasedOnPeriod ? '1' : '2'
-    if(this.data.courseSectionDetails.courseSection.gradeScaleId!=( null && undefined)){
+    if(this.data.courseSectionDetails.courseSection.gradeScaleId != null){
       this.form.controls.gradeScaleId.patchValue(this.data.courseSectionDetails.courseSection.gradeScaleId);
     }
     else{

@@ -32,13 +32,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { EditReportCardGradeComponent } from '../edit-report-card-grade/edit-report-card-grade.component';
 
 @Component({
-  selector: 'vex-report-card-grade-list',
-  templateUrl: './report-card-grade-list.component.html',
-  styleUrls: ['./report-card-grade-list.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-report-card-grade-list',
+    templateUrl: './report-card-grade-list.component.html',
+    styleUrls: ['./report-card-grade-list.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class ReportCardGradeListComponent implements OnInit {
 

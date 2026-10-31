@@ -65,18 +65,19 @@ import { ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/co
 import { ActiveDeactiveUserModel } from 'src/app/models/common.model';
 import { ValidationService } from 'src/app/pages/shared/validation.service';
 @Component({
-  selector: 'vex-student-generalinfo',
-  templateUrl: './student-generalinfo.component.html',
-  styleUrls: ['./student-generalinfo.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ],
-  providers: [
-    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ],
+    selector: 'vex-student-generalinfo',
+    templateUrl: './student-generalinfo.component.html',
+    styleUrls: ['./student-generalinfo.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    providers: [
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    standalone: false
 })
 export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDestroy {
   icEdit = 'edit';

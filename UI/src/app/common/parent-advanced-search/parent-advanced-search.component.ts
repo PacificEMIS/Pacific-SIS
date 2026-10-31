@@ -40,9 +40,10 @@ import { CountryModel } from 'src/app/models/country.model';
 import { filterParams } from 'src/app/models/student.model';
 
 @Component({
-  selector: 'vex-common-parent-advanced-search',
-  templateUrl: './parent-advanced-search.component.html',
-  styleUrls: ['./parent-advanced-search.component.scss']
+    selector: 'vex-common-parent-advanced-search',
+    templateUrl: './parent-advanced-search.component.html',
+    styleUrls: ['./parent-advanced-search.component.scss'],
+    standalone: false
 })
 export class ParentAdvancedSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 

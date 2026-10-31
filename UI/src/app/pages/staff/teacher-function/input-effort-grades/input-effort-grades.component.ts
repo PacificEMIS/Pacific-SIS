@@ -30,14 +30,15 @@ import { fadeInUp400ms } from '@vex/animations/fade-in-up.animation';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'vex-input-effort-grades',
-  templateUrl: './input-effort-grades.component.html',
-  styleUrls: ['./input-effort-grades.component.scss'],
-  animations: [
-    fadeInRight400ms,
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-input-effort-grades',
+    templateUrl: './input-effort-grades.component.html',
+    styleUrls: ['./input-effort-grades.component.scss'],
+    animations: [
+        fadeInRight400ms,
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class InputEffortGradesComponent implements OnInit {
 

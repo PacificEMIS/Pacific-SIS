@@ -50,14 +50,15 @@ import { stagger40ms } from '@vex/animations/stagger.animation';
 import { ReportService } from 'src/app/services/report.service';
 
 @Component({
-  selector: 'vex-print-schedules',
-  templateUrl: './print-schedules.component.html',
-  styleUrls: ['./print-schedules.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-print-schedules',
+    templateUrl: './print-schedules.component.html',
+    styleUrls: ['./print-schedules.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class PrintSchedulesComponent implements OnInit, AfterViewInit, OnDestroy {
   // displayedColumns: string[] = ['studentCheck', 'studentName', 'studentId', 'alternateId', 'grade', 'section', 'phone'];

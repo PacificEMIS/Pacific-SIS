@@ -4,7 +4,8 @@ import { NgControl } from '@angular/forms';
 
 
 @Directive({
-  selector: '[appPhoneMask]',
+    selector: '[appPhoneMask]',
+    standalone: false
 })
 export class PhoneMaskDirective {
 

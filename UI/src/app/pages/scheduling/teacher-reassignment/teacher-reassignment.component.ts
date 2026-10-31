@@ -55,9 +55,10 @@ import { MembershipService } from '../../../services/membership.service';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 
 @Component({
-  selector: 'vex-teacher-reassignment',
-  templateUrl: './teacher-reassignment.component.html',
-  styleUrls: ['./teacher-reassignment.component.scss']
+    selector: 'vex-teacher-reassignment',
+    templateUrl: './teacher-reassignment.component.html',
+    styleUrls: ['./teacher-reassignment.component.scss'],
+    standalone: false
 })
 export class TeacherReassignmentComponent implements OnInit {
 

@@ -59,14 +59,15 @@ import { AdvancedSearchExpansionModel } from "src/app/models/common.model";
 import { SharedFunction } from "../../shared/shared-function";
 
 @Component({
-  selector: "vex-report-cards",
-  templateUrl: "./report-cards.component.html",
-  styleUrls: ["./report-cards.component.scss"],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: "vex-report-cards",
+    templateUrl: "./report-cards.component.html",
+    styleUrls: ["./report-cards.component.scss"],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class ReportCardsComponent implements OnInit {
 

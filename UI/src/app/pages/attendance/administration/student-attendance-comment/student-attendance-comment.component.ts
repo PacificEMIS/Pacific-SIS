@@ -38,9 +38,10 @@ import { Subject } from "rxjs";
 import { ProfilesTypes } from "src/app/enums/profiles.enum";
 import * as moment from "moment";
 @Component({
-  selector: "vex-student-attendance-comment",
-  templateUrl: "./student-attendance-comment.component.html",
-  styleUrls: ["./student-attendance-comment.component.scss"],
+    selector: "vex-student-attendance-comment",
+    templateUrl: "./student-attendance-comment.component.html",
+    styleUrls: ["./student-attendance-comment.component.scss"],
+    standalone: false
 })
 export class StudentAttendanceCommentComponent implements OnInit {
   icClose = 'close';

@@ -3,9 +3,10 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { StudentService } from 'src/app/services/student.service';
 
 @Component({
-  selector: 'vex-student-progress-report',
-  templateUrl: './student-progress-report.component.html',
-  styleUrls: ['./student-progress-report.component.scss']
+    selector: 'vex-student-progress-report',
+    templateUrl: './student-progress-report.component.html',
+    styleUrls: ['./student-progress-report.component.scss'],
+    standalone: false
 })
 export class StudentProgressReportComponent implements OnInit {
 

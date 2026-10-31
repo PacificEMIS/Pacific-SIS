@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-grades-report',
-  templateUrl: './grades-report.component.html',
-  styleUrls: ['./grades-report.component.scss']
+    selector: 'vex-grades-report',
+    templateUrl: './grades-report.component.html',
+    styleUrls: ['./grades-report.component.scss'],
+    standalone: false
 })
 export class GradesReportComponent implements OnInit {
   pages=[];

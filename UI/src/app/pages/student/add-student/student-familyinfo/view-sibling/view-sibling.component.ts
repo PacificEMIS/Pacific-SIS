@@ -42,13 +42,14 @@ import { RollBasedAccessService } from 'src/app/services/roll-based-access.servi
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 import { Router } from '@angular/router';
 @Component({
-  selector: 'vex-view-sibling',
-  templateUrl: './view-sibling.component.html',
-  styleUrls: ['./view-sibling.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-view-sibling',
+    templateUrl: './view-sibling.component.html',
+    styleUrls: ['./view-sibling.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class ViewSiblingComponent implements OnInit {
   icClose = 'close';

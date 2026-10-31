@@ -41,9 +41,10 @@ import { CommonService } from 'src/app/services/common.service';
 
 
 @Component({
-  selector: 'vex-report-card-comments',
-  templateUrl: './report-card-comments.component.html',
-  styleUrls: ['./report-card-comments.component.scss']
+    selector: 'vex-report-card-comments',
+    templateUrl: './report-card-comments.component.html',
+    styleUrls: ['./report-card-comments.component.scss'],
+    standalone: false
 })
 export class ReportCardCommentsComponent implements OnInit {
   icEdit = 'edit';

@@ -36,9 +36,10 @@ import { PageRolesPermission } from 'src/app/common/page-roles-permissions.servi
 import { Router } from '@angular/router';
 import { TeacherScheduleService } from 'src/app/services/teacher-schedule.service';
 @Component({
-  selector: 'vex-scheduled-teachers',
-  templateUrl: './scheduled-teachers.component.html',
-  styleUrls: ['./scheduled-teachers.component.scss']
+    selector: 'vex-scheduled-teachers',
+    templateUrl: './scheduled-teachers.component.html',
+    styleUrls: ['./scheduled-teachers.component.scss'],
+    standalone: false
 })
 export class ScheduledTeachersComponent implements OnInit {
   icDelete = 'delete';

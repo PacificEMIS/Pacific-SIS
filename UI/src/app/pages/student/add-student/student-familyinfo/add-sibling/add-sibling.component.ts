@@ -44,14 +44,15 @@ import { CommonService } from '../../../../../services/common.service';
 import { DefaultValuesService } from '../../../../../common/default-values.service';
 import { SharedFunction } from '../../../../../pages/shared/shared-function';
 @Component({
-  selector: 'vex-add-sibling',
-  templateUrl: './add-sibling.component.html',
-  styleUrls: ['./add-sibling.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-add-sibling',
+    templateUrl: './add-sibling.component.html',
+    styleUrls: ['./add-sibling.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class AddSiblingComponent implements OnInit {
   icClose = 'close';

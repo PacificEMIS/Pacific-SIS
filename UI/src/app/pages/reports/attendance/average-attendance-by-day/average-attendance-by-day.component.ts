@@ -33,9 +33,10 @@ interface Attendance {
 }
 
 @Component({
-  selector: 'vex-average-attendance-by-day',
-  templateUrl: './average-attendance-by-day.component.html',
-  styleUrls: ['./average-attendance-by-day.component.scss']
+    selector: 'vex-average-attendance-by-day',
+    templateUrl: './average-attendance-by-day.component.html',
+    styleUrls: ['./average-attendance-by-day.component.scss'],
+    standalone: false
 })
 export class AverageAttendanceByDayComponent implements OnInit, AfterViewInit {
   columns = [

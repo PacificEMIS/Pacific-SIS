@@ -33,9 +33,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
-  selector: 'vex-add-comments',
-  templateUrl: './add-comments.component.html',
-  styleUrls: ['./add-comments.component.scss']
+    selector: 'vex-add-comments',
+    templateUrl: './add-comments.component.html',
+    styleUrls: ['./add-comments.component.scss'],
+    standalone: false
 })
 export class AddCommentsComponent implements OnInit {  icClose = 'close';
   comments:string;

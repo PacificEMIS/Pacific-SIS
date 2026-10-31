@@ -41,14 +41,15 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { StaffService } from 'src/app/services/staff.service';
 
 @Component({
-  selector: 'vex-take-attendance',
-  templateUrl: './take-attendance.component.html',
-  styleUrls: ['./take-attendance.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-take-attendance',
+    templateUrl: './take-attendance.component.html',
+    styleUrls: ['./take-attendance.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class TakeAttendanceComponent implements OnInit {
 

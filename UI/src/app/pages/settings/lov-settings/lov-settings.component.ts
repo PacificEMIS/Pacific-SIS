@@ -31,12 +31,13 @@ import { DefaultValuesService } from '../../../common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 
 @Component({
-  selector: 'vex-lov-settings',
-  templateUrl: './lov-settings.component.html',
-  styleUrls: ['./lov-settings.component.scss'],
-  animations: [
-    fadeInRight400ms
-  ]
+    selector: 'vex-lov-settings',
+    templateUrl: './lov-settings.component.html',
+    styleUrls: ['./lov-settings.component.scss'],
+    animations: [
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class LovSettingsComponent implements OnInit {
   pages=[]

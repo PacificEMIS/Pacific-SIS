@@ -28,9 +28,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DasboardService } from '../../../../services/dasboard.service';
 
 @Component({
-  selector: 'vex-delete-assignments',
-  templateUrl: './delete-assignments.component.html',
-  styleUrls: ['./delete-assignments.component.scss']
+    selector: 'vex-delete-assignments',
+    templateUrl: './delete-assignments.component.html',
+    styleUrls: ['./delete-assignments.component.scss'],
+    standalone: false
 })
 export class DeleteAssignmentsComponent implements OnInit {
 

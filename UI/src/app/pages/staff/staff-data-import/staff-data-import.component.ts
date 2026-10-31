@@ -48,9 +48,10 @@ import {PageRolesPermission} from '../../../common/page-roles-permissions.servic
 import * as moment from 'moment';
 
 @Component({
-  selector: 'vex-staff-data-import',
-  templateUrl: './staff-data-import.component.html',
-  styleUrls: ['./staff-data-import.component.scss']
+    selector: 'vex-staff-data-import',
+    templateUrl: './staff-data-import.component.html',
+    styleUrls: ['./staff-data-import.component.scss'],
+    standalone: false
 })
 export class StaffDataImportComponent implements OnInit {
   bulkDataImport = BulkDataImport;

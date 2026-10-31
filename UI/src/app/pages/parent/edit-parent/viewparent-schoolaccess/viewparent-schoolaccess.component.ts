@@ -30,14 +30,15 @@ import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'vex-viewparent-schoolaccess',
-  templateUrl: './viewparent-schoolaccess.component.html',
-  styleUrls: ['./viewparent-schoolaccess.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-viewparent-schoolaccess',
+    templateUrl: './viewparent-schoolaccess.component.html',
+    styleUrls: ['./viewparent-schoolaccess.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class ViewparentSchoolaccessComponent implements OnInit {
 

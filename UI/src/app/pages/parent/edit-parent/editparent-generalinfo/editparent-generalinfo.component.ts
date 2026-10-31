@@ -61,14 +61,15 @@ import { LoginService } from 'src/app/services/login.service';
 
 
 @Component({
-  selector: 'vex-editparent-generalinfo',
-  templateUrl: './editparent-generalinfo.component.html',
-  styleUrls: ['./editparent-generalinfo.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-editparent-generalinfo',
+    templateUrl: './editparent-generalinfo.component.html',
+    styleUrls: ['./editparent-generalinfo.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class EditparentGeneralinfoComponent implements OnInit,AfterViewInit, OnDestroy {
   schoolCreate = SchoolCreate;

@@ -32,9 +32,10 @@ import { StudentAttendanceService } from '../../../../../services/student-attend
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
 @Component({
-  selector: 'vex-add-teacher-comments',
-  templateUrl: './add-teacher-comments.component.html',
-  styleUrls: ['./add-teacher-comments.component.scss']
+    selector: 'vex-add-teacher-comments',
+    templateUrl: './add-teacher-comments.component.html',
+    styleUrls: ['./add-teacher-comments.component.scss'],
+    standalone: false
 })
 export class AddTeacherCommentsComponent implements OnInit {
   icClose = 'close';

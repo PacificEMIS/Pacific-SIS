@@ -64,15 +64,16 @@ export interface StudentList {
   phone: number;
 }
 @Component({
-  selector: "vex-add-absences",
-  templateUrl: "./add-absences.component.html",
-  styleUrls: ["./add-absences.component.scss"],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: "vex-add-absences",
+    templateUrl: "./add-absences.component.html",
+    styleUrls: ["./add-absences.component.scss"],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class AddAbsencesComponent implements OnInit, AfterViewInit {
   icSearch = 'search';

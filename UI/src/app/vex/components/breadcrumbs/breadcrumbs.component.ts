@@ -5,8 +5,8 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 
 @Component({
-  selector: 'vex-breadcrumbs',
-  template: `
+    selector: 'vex-breadcrumbs',
+    template: `
     <div class="flex items-center">
       <vex-breadcrumb>
         <a *ngIf="membershipType === profiles.SuperAdmin || membershipType === profiles.SchoolAdmin || membershipType === profiles.AdminAssitant" [routerLink]="['/school/dashboards']">
@@ -25,7 +25,8 @@ import { ProfilesTypes } from 'src/app/enums/profiles.enum';
       </ng-container>
  
     </div>
-  `
+  `,
+    standalone: false
 })
 export class BreadcrumbsComponent implements OnInit {
 

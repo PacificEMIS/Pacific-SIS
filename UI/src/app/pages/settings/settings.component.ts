@@ -34,9 +34,10 @@ import { DefaultValuesService } from '../../common/default-values.service';
 import { PageRolesPermission } from '../../common/page-roles-permissions.service';
 
 @Component({
-  selector: 'vex-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss']
+    selector: 'vex-settings',
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.scss'],
+    standalone: false
 })
 export class SettingsComponent implements OnInit {
 

@@ -35,13 +35,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-ethnicity',
-  templateUrl: './edit-ethnicity.component.html',
-  styleUrls: ['./edit-ethnicity.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-ethnicity',
+    templateUrl: './edit-ethnicity.component.html',
+    styleUrls: ['./edit-ethnicity.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditEthnicityComponent implements OnInit {
   icClose = 'close';

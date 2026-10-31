@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'passwordMask'
+    name: 'passwordMask',
+    standalone: false
 })
 export class PasswordMaskPipe implements PipeTransform {
 

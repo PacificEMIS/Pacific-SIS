@@ -56,14 +56,15 @@ import { Module } from 'src/app/enums/module.enum';
 
 
 @Component({
-  selector: 'vex-staff-schoolinfo',
-  templateUrl: './staff-schoolinfo.component.html',
-  styleUrls: ['./staff-schoolinfo.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-staff-schoolinfo',
+    templateUrl: './staff-schoolinfo.component.html',
+    styleUrls: ['./staff-schoolinfo.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   getSchoolList: OnlySchoolListModel = new OnlySchoolListModel();

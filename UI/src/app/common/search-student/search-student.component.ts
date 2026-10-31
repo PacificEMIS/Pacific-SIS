@@ -57,9 +57,10 @@ import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from 's
 import { CourseManagerService } from 'src/app/services/course-manager.service';
 
 @Component({
-  selector: 'vex-common-search-student',
-  templateUrl: './search-student.component.html',
-  styleUrls: ['./search-student.component.scss']
+    selector: 'vex-common-search-student',
+    templateUrl: './search-student.component.html',
+    styleUrls: ['./search-student.component.scss'],
+    standalone: false
 })
 export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatAccordion) accordion: MatAccordion;

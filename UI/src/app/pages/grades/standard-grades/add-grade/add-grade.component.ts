@@ -37,13 +37,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-add-grade',
-  templateUrl: './add-grade.component.html',
-  styleUrls: ['./add-grade.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-add-grade',
+    templateUrl: './add-grade.component.html',
+    styleUrls: ['./add-grade.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class AddGradeComponent implements OnInit {
 

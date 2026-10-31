@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml, SafeStyle, SafeScript, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
 
 @Pipe({
-    name: 'evenOddPipe'
+    name: 'evenOddPipe',
+    standalone: false
 })
 
 export class EvenOddPipe implements PipeTransform {

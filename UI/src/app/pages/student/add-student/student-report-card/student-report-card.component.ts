@@ -42,9 +42,10 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { reportCardType } from '../../../../common/static-data';
 @Component({
-  selector: 'vex-student-report-card',
-  templateUrl: './student-report-card.component.html',
-  styleUrls: ['./student-report-card.component.scss']
+    selector: 'vex-student-report-card',
+    templateUrl: './student-report-card.component.html',
+    styleUrls: ['./student-report-card.component.scss'],
+    standalone: false
 })
 export class StudentReportCardComponent implements OnInit {
 

@@ -18,9 +18,10 @@ import { ImpersonateServices } from 'src/app/services/impersonate.service';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 
 @Component({
-  selector: 'vex-sidenav',
-  templateUrl: './sidenav.component.html',
-  styleUrls: ['./sidenav.component.scss']
+    selector: 'vex-sidenav',
+    templateUrl: './sidenav.component.html',
+    styleUrls: ['./sidenav.component.scss'],
+    standalone: false
 })
 export class SidenavComponent implements OnInit {
 

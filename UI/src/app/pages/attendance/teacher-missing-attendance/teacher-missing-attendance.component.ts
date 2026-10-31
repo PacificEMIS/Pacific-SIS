@@ -43,9 +43,10 @@ import {
 } from "rxjs/operators";
 
 @Component({
-  selector: 'vex-teacher-missing-attendance',
-  templateUrl: './teacher-missing-attendance.component.html',
-  styleUrls: ['./teacher-missing-attendance.component.scss']
+    selector: 'vex-teacher-missing-attendance',
+    templateUrl: './teacher-missing-attendance.component.html',
+    styleUrls: ['./teacher-missing-attendance.component.scss'],
+    standalone: false
 })
 export class TeacherMissingAttendanceComponent implements OnInit {
 

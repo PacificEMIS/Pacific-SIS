@@ -47,13 +47,14 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { LoVSortOrderValuesModel, UpdateLovSortingModel } from 'src/app/models/lov.model';
 
 @Component({
-  selector: 'vex-grade-levels',
-  templateUrl: './grade-levels.component.html',
-  styleUrls: ['./grade-levels.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-grade-levels',
+    templateUrl: './grade-levels.component.html',
+    styleUrls: ['./grade-levels.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class GradeLevelsComponent implements OnInit {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;

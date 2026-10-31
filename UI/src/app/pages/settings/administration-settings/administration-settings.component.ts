@@ -42,12 +42,13 @@ import { CryptoService } from '../../../services/Crypto.service';
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 @Component({
-  selector: 'vex-administration-settings',
-  templateUrl: './administration-settings.component.html',
-  styleUrls: ['./administration-settings.component.scss'],
-  animations: [
-    fadeInRight400ms
-  ],
+    selector: 'vex-administration-settings',
+    templateUrl: './administration-settings.component.html',
+    styleUrls: ['./administration-settings.component.scss'],
+    animations: [
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class AdministrationSettingsComponent implements OnInit, AfterContentChecked {
   pages = []

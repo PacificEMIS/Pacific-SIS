@@ -50,13 +50,14 @@ import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
-  selector: 'vex-countries',
-  templateUrl: './countries.component.html',
-  styleUrls: ['./countries.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-countries',
+    templateUrl: './countries.component.html',
+    styleUrls: ['./countries.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class CountriesComponent implements OnInit, AfterViewInit {
   columns = [

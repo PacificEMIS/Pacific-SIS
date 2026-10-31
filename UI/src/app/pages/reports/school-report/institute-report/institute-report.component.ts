@@ -18,9 +18,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 
 @Component({
-  selector: 'vex-institute-report',
-  templateUrl: './institute-report.component.html',
-  styleUrls: ['./institute-report.component.scss']
+    selector: 'vex-institute-report',
+    templateUrl: './institute-report.component.html',
+    styleUrls: ['./institute-report.component.scss'],
+    standalone: false
 })
 export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewInit {
   icListAlt = 'list_alt';

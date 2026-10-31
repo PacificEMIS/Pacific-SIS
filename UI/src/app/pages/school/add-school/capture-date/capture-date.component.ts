@@ -5,9 +5,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { SharedFunction } from 'src/app/pages/shared/shared-function';
 import * as moment from 'moment';
 @Component({
-  selector: 'vex-capture-date',
-  templateUrl: './capture-date.component.html',
-  styleUrls: ['./capture-date.component.scss']
+    selector: 'vex-capture-date',
+    templateUrl: './capture-date.component.html',
+    styleUrls: ['./capture-date.component.scss'],
+    standalone: false
 })
 export class CaptureDateComponent implements OnInit {
 

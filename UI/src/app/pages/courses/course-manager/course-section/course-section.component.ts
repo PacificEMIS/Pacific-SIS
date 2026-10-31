@@ -46,21 +46,22 @@ import { PageRolesPermission } from '../../../../common/page-roles-permissions.s
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  selector: 'vex-course-section',
-  templateUrl: './course-section.component.html',
-  styleUrls: ['./course-section.component.scss'],
-  styles: [
-    `
+    selector: 'vex-course-section',
+    templateUrl: './course-section.component.html',
+    styleUrls: ['./course-section.component.scss'],
+    styles: [
+        `
           .cal-month-view .bg-aqua,
            .cal-week-view .cal-day-columns .bg-aqua,
            .cal-day-view .bg-aqua {
              background-color: #ffdee4 !important;
            }
          `,
-  ],
-  animations: [
-    stagger40ms
-  ]
+    ],
+    animations: [
+        stagger40ms
+    ],
+    standalone: false
 })
 export class CourseSectionComponent implements OnInit,OnDestroy,AfterViewChecked{
   icAdd = 'add';

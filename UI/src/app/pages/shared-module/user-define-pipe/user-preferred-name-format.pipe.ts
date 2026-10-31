@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
-    name: 'UserPreferredNameFormatPipe'
+    name: 'UserPreferredNameFormatPipe',
+    standalone: false
 })
 export class UserPreferredNameFormatPipe implements PipeTransform {
     transform(user: any): string {

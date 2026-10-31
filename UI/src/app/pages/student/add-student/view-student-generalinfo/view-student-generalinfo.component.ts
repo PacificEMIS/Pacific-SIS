@@ -35,12 +35,13 @@ import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } fro
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 
 @Component({
-  selector: 'vex-view-student-generalinfo',
-  templateUrl: './view-student-generalinfo.component.html',
-  styleUrls: ['./view-student-generalinfo.component.scss'],
-  animations: [
-    stagger60ms
-  ]
+    selector: 'vex-view-student-generalinfo',
+    templateUrl: './view-student-generalinfo.component.html',
+    styleUrls: ['./view-student-generalinfo.component.scss'],
+    animations: [
+        stagger60ms
+    ],
+    standalone: false
 })
 export class ViewStudentGeneralinfoComponent implements OnInit {
 

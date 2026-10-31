@@ -37,9 +37,10 @@ import { LoaderService } from '../../../../services/loader.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-add-course',
-  templateUrl: './add-course.component.html',
-  styleUrls: ['./add-course.component.scss']
+    selector: 'vex-add-course',
+    templateUrl: './add-course.component.html',
+    styleUrls: ['./add-course.component.scss'],
+    standalone: false
 })
 export class AddCourseComponent implements OnInit,OnDestroy {
   icClose = 'close';

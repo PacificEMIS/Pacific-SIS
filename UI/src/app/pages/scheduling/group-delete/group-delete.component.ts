@@ -56,9 +56,10 @@ import { GradeLevelService } from 'src/app/services/grade-level.service';
 import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 
 @Component({
-  selector: 'vex-group-delete',
-  templateUrl: './group-delete.component.html',
-  styleUrls: ['./group-delete.component.scss']
+    selector: 'vex-group-delete',
+    templateUrl: './group-delete.component.html',
+    styleUrls: ['./group-delete.component.scss'],
+    standalone: false
 })
 export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
 

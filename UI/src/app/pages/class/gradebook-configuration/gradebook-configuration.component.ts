@@ -8,9 +8,10 @@ import { GradeBookConfigurationService } from '../../../services/gradebook-confi
 import { GradesService } from '../../../services/grades.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  selector: 'vex-gradebook-configuration',
-  templateUrl: './gradebook-configuration.component.html',
-  styleUrls: ['./gradebook-configuration.component.scss']
+    selector: 'vex-gradebook-configuration',
+    templateUrl: './gradebook-configuration.component.html',
+    styleUrls: ['./gradebook-configuration.component.scss'],
+    standalone: false
 })
 export class GradebookConfigurationComponent implements OnInit {
   selectedCourseSection;

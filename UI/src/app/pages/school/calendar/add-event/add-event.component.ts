@@ -51,13 +51,14 @@ import { OnlySchoolListModel } from 'src/app/models/get-all-school.model';
 
 
 @Component({
-  selector: 'vex-add-event',
-  templateUrl: './add-event.component.html',
-  styleUrls: ['./add-event.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-add-event',
+    templateUrl: './add-event.component.html',
+    styleUrls: ['./add-event.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class AddEventComponent implements OnInit {
   @ViewChild('selectAllCheckBox') selectAllCheckBox: MatCheckbox;

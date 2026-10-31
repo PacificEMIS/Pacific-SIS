@@ -49,9 +49,10 @@ import { StudentAttendanceService } from '../../../../services/student-attendanc
 import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
 
 @Component({
-  selector: 'vex-search-student',
-  templateUrl: './search-student.component.html',
-  styleUrls: ['./search-student.component.scss']
+    selector: 'vex-search-student',
+    templateUrl: './search-student.component.html',
+    styleUrls: ['./search-student.component.scss'],
+    standalone: false
 })
 export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy {
 

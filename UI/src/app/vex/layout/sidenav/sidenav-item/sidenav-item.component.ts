@@ -12,10 +12,11 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @UntilDestroy()
 @Component({
-  selector: 'vex-sidenav-item',
-  templateUrl: './sidenav-item.component.html',
-  styleUrls: ['./sidenav-item.component.scss'],
-  animations: [dropdownAnimation],
+    selector: 'vex-sidenav-item',
+    templateUrl: './sidenav-item.component.html',
+    styleUrls: ['./sidenav-item.component.scss'],
+    animations: [dropdownAnimation],
+    standalone: false
 })
 export class SidenavItemComponent implements OnInit, OnChanges {
 

@@ -46,9 +46,10 @@ import { MatSelect } from '@angular/material/select';
 import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
 
 @Component({
-  selector: 'vex-search-parent',
-  templateUrl: './search-parent.component.html',
-  styleUrls: ['./search-parent.component.scss']
+    selector: 'vex-search-parent',
+    templateUrl: './search-parent.component.html',
+    styleUrls: ['./search-parent.component.scss'],
+    standalone: false
 })
 export class SearchParentComponent implements OnInit,AfterViewInit,OnDestroy {
 

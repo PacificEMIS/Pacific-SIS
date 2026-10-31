@@ -45,13 +45,14 @@ import { DefaultValuesService } from '../../../common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
 @Component({
-  selector: 'vex-notices',
-  templateUrl: './notices.component.html',
-  styleUrls: ['./notices.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-notices',
+    templateUrl: './notices.component.html',
+    styleUrls: ['./notices.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class NoticesComponent implements OnInit, AfterViewChecked, OnDestroy {
 

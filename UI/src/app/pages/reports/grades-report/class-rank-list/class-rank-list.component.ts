@@ -28,12 +28,13 @@ export interface StudentListData {
 }
 
 @Component({
-  selector: 'vex-class-rank-list',
-  templateUrl: './class-rank-list.component.html',
-  styleUrls: ['./class-rank-list.component.scss'],
-  animations: [
-    fadeInRight400ms
-  ]
+    selector: 'vex-class-rank-list',
+    templateUrl: './class-rank-list.component.html',
+    styleUrls: ['./class-rank-list.component.scss'],
+    animations: [
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class ClassRankListComponent implements OnInit {
 

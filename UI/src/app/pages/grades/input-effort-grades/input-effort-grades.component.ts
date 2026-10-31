@@ -37,14 +37,15 @@ import { ProfilesTypes } from '../../../enums/profiles.enum';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'vex-input-effort-grades',
-  templateUrl: './input-effort-grades.component.html',
-  styleUrls: ['./input-effort-grades.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-input-effort-grades',
+    templateUrl: './input-effort-grades.component.html',
+    styleUrls: ['./input-effort-grades.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class InputEffortGradesComponent implements OnInit, OnDestroy {
   loading: boolean = false;

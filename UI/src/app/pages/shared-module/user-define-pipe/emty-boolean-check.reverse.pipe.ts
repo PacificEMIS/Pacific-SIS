@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'EmtyBooleanCheckReversePipe'
+    name: 'EmtyBooleanCheckReversePipe',
+    standalone: false
 })
 export class EmtyBooleanCheckReversePipe implements PipeTransform {
 

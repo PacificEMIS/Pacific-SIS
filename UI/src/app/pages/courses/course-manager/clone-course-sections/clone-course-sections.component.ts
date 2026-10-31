@@ -17,9 +17,10 @@ import { MarkingPeriodService } from 'src/app/services/marking-period.service';
  * something was written so the caller can refresh.
  */
 @Component({
-  selector: 'vex-clone-course-sections',
-  templateUrl: './clone-course-sections.component.html',
-  styleUrls: ['./clone-course-sections.component.scss']
+    selector: 'vex-clone-course-sections',
+    templateUrl: './clone-course-sections.component.html',
+    styleUrls: ['./clone-course-sections.component.scss'],
+    standalone: false
 })
 export class CloneCourseSectionsComponent implements OnInit {
   icClose = 'close';

@@ -14,9 +14,10 @@ import { NgForm } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'vex-historical-grades-details',
-  templateUrl: './historical-grades-details.component.html',
-  styleUrls: ['./historical-grades-details.component.scss']
+    selector: 'vex-historical-grades-details',
+    templateUrl: './historical-grades-details.component.html',
+    styleUrls: ['./historical-grades-details.component.scss'],
+    standalone: false
 })
 export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
   destroySubject$: Subject<void> = new Subject();

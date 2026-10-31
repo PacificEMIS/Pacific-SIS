@@ -36,13 +36,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-report-card-grade',
-  templateUrl: './edit-report-card-grade.component.html',
-  styleUrls: ['./edit-report-card-grade.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-report-card-grade',
+    templateUrl: './edit-report-card-grade.component.html',
+    styleUrls: ['./edit-report-card-grade.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditReportCardGradeComponent implements OnInit {
   icClose = 'close';

@@ -4,7 +4,8 @@ import { default as _rollupMoment } from 'moment';
 import { SharedFunction } from '../../shared/shared-function'
 const moment = _rollupMoment || _moment;
 @Pipe({
-  name: 'transform24to12Pipe'
+    name: 'transform24to12Pipe',
+    standalone: false
 })
 export class Transform24to12Pipe implements PipeTransform {
   constructor(public commonfunction: SharedFunction) { }

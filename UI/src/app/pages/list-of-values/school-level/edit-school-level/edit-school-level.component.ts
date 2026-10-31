@@ -35,13 +35,14 @@ import { ValidationService } from 'src/app/pages/shared/validation.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-school-level',
-  templateUrl: './edit-school-level.component.html',
-  styleUrls: ['./edit-school-level.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-school-level',
+    templateUrl: './edit-school-level.component.html',
+    styleUrls: ['./edit-school-level.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditSchoolLevelComponent implements OnInit {
   icClose = 'close';

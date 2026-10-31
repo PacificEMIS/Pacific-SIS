@@ -35,9 +35,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 
 @Component({
-  selector: 'vex-save-filter',
-  templateUrl: './save-filter.component.html',
-  styleUrls: ['./save-filter.component.scss']
+    selector: 'vex-save-filter',
+    templateUrl: './save-filter.component.html',
+    styleUrls: ['./save-filter.component.scss'],
+    standalone: false
 })
 export class SaveFilterComponent implements OnInit {
 

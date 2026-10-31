@@ -31,12 +31,13 @@ import { DefaultValuesService } from '../../../common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { Router } from '@angular/router';
 @Component({
-  selector: 'vex-school-settings',
-  templateUrl: './school-settings.component.html',
-  styleUrls: ['./school-settings.component.scss'],
-  animations: [
-    fadeInRight400ms
-  ]
+    selector: 'vex-school-settings',
+    templateUrl: './school-settings.component.html',
+    styleUrls: ['./school-settings.component.scss'],
+    animations: [
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class SchoolSettingsComponent implements OnInit {
   pages=[];

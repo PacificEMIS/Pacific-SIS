@@ -58,9 +58,10 @@ export interface Comment {
 }
 
 @Component({
-  selector: 'vex-input-final-grades',
-  templateUrl: './input-final-grades.component.html',
-  styleUrls: ['./input-final-grades.component.scss']
+    selector: 'vex-input-final-grades',
+    templateUrl: './input-final-grades.component.html',
+    styleUrls: ['./input-final-grades.component.scss'],
+    standalone: false
 })
 export class InputFinalGradesComponent implements OnInit {
   @Input() currentTab: string;

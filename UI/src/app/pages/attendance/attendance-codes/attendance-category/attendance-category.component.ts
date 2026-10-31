@@ -34,13 +34,14 @@ import { AttendanceCodeCategoryModel } from '../../../../models/attendance-code.
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from "src/app/common/default-values.service";
 @Component({
-  selector: 'vex-attendance-category',
-  templateUrl: './attendance-category.component.html',
-  styleUrls: ['./attendance-category.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-attendance-category',
+    templateUrl: './attendance-category.component.html',
+    styleUrls: ['./attendance-category.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class AttendanceCategoryComponent implements OnInit {
   icClose = 'close';

@@ -50,13 +50,14 @@ import { GradesService } from 'src/app/services/grades.service';
 import { GradeStandardSubjectCourseListModel } from 'src/app/models/grades.model';
 
 @Component({
-  selector: 'vex-course-manager',
-  templateUrl: './course-manager.component.html',
-  styleUrls: ['./course-manager.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-course-manager',
+    templateUrl: './course-manager.component.html',
+    styleUrls: ['./course-manager.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class CourseManagerComponent implements OnInit {
   columns = [

@@ -30,14 +30,15 @@ import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'vex-viewparent-addressinfo',
-  templateUrl: './viewparent-addressinfo.component.html',
-  styleUrls: ['./viewparent-addressinfo.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-viewparent-addressinfo',
+    templateUrl: './viewparent-addressinfo.component.html',
+    styleUrls: ['./viewparent-addressinfo.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class ViewparentAddressinfoComponent implements OnInit {
   icEdit = 'edit';

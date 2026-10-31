@@ -47,12 +47,13 @@ import { ProfilesTypes } from '../../../enums/profiles.enum';
 import { AvailableTenantViewModel } from '../../../models/available-tenant';
 import { CatalogDbService } from 'src/app/services/catalog-db.service';
 @Component({
-  selector: 'vex-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
-  animations: [
-    fadeInUp400ms
-  ]
+    selector: 'vex-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    animations: [
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class LoginComponent implements OnInit {
 

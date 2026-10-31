@@ -36,18 +36,18 @@ const moment = _rollupMoment || _moment;
 
 
 @Component({
-  selector: 'vex-absence-summary',
-  templateUrl: './absence-summary.component.html',
-  styleUrls: ['./absence-summary.component.scss'],
-  providers: [
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
-    },
-    
-    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
-  ]
+    selector: 'vex-absence-summary',
+    templateUrl: './absence-summary.component.html',
+    styleUrls: ['./absence-summary.component.scss'],
+    providers: [
+        {
+            provide: DateAdapter,
+            useClass: MomentDateAdapter,
+            deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+        },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    standalone: false
 })
 export class AbsenceSummaryComponent implements OnInit, AfterViewInit, OnDestroy {
   getStudentAbsenceReportModel: GetStudentAbsenceReportForSearch = new GetStudentAbsenceReportForSearch();

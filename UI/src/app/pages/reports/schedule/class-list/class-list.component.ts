@@ -93,9 +93,10 @@ import moment from 'moment';
 // ];
 
 @Component({
-  selector: 'vex-class-list',
-  templateUrl: './class-list.component.html',
-  styleUrls: ['./class-list.component.scss']
+    selector: 'vex-class-list',
+    templateUrl: './class-list.component.html',
+    styleUrls: ['./class-list.component.scss'],
+    standalone: false
 })
 export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
   icPrint = 'print';

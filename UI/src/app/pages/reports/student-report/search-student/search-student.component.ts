@@ -53,9 +53,10 @@ import { EnrollmentCodesService } from '../../../../services/enrollment-codes.se
 import { EnrollmentCodeListView } from '../../../../models/enrollment-code.model';
 
 @Component({
-  selector: 'vex-search-student',
-  templateUrl: './search-student.component.html',
-  styleUrls: ['./search-student.component.scss']
+    selector: 'vex-search-student',
+    templateUrl: './search-student.component.html',
+    styleUrls: ['./search-student.component.scss'],
+    standalone: false
 })
 export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy {
 

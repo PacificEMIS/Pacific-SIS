@@ -38,13 +38,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 
 @Component({
-  selector: 'vex-school-fields-category',
-  templateUrl: './school-fields-category.component.html',
-  styleUrls: ['./school-fields-category.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-school-fields-category',
+    templateUrl: './school-fields-category.component.html',
+    styleUrls: ['./school-fields-category.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class SchoolFieldsCategoryComponent implements OnInit {
   icClose = 'close';

@@ -66,18 +66,19 @@ import { MatDialog } from "@angular/material/dialog";
 import { CaptureDateComponent } from '../capture-date/capture-date.component';
 
 @Component({
-  selector: 'vex-general-info',
-  templateUrl: './general-info.component.html',
-  styleUrls: ['./general-info.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ],
-  providers: [
-    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
-  ],
+    selector: 'vex-general-info',
+    templateUrl: './general-info.component.html',
+    styleUrls: ['./general-info.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    providers: [
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    standalone: false
 })
 
 export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {

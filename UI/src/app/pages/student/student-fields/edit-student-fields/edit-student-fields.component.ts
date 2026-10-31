@@ -38,13 +38,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-student-fields',
-  templateUrl: './edit-student-fields.component.html',
-  styleUrls: ['./edit-student-fields.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-student-fields',
+    templateUrl: './edit-student-fields.component.html',
+    styleUrls: ['./edit-student-fields.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditStudentFieldsComponent implements OnInit {
   icClose = 'close';

@@ -3,9 +3,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'vex-course-section',
-  templateUrl: './course-section.component.html',
-  styleUrls: ['./course-section.component.scss']
+    selector: 'vex-course-section',
+    templateUrl: './course-section.component.html',
+    styleUrls: ['./course-section.component.scss'],
+    standalone: false
 })
 export class CourseSectionComponent implements OnInit {
 

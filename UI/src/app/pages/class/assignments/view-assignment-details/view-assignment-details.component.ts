@@ -26,9 +26,10 @@ import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'vex-view-assignment-details',
-  templateUrl: './view-assignment-details.component.html',
-  styleUrls: ['./view-assignment-details.component.scss']
+    selector: 'vex-view-assignment-details',
+    templateUrl: './view-assignment-details.component.html',
+    styleUrls: ['./view-assignment-details.component.scss'],
+    standalone: false
 })
 export class ViewAssignmentDetailsComponent implements OnInit {
   icClose = 'close';

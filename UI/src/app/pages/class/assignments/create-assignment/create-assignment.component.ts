@@ -35,9 +35,10 @@ import { StaffPortalAssignmentService } from '../../../../services/staff-portal-
 import { SharedFunction } from '../../../shared/shared-function';
 
 @Component({
-  selector: 'vex-create-assignment',
-  templateUrl: './create-assignment.component.html',
-  styleUrls: ['./create-assignment.component.scss']
+    selector: 'vex-create-assignment',
+    templateUrl: './create-assignment.component.html',
+    styleUrls: ['./create-assignment.component.scss'],
+    standalone: false
 })
 export class CreateAssignmentComponent implements OnInit {
 

@@ -41,19 +41,20 @@ import * as moment from 'moment';
 import { LoaderService } from "../../../../../services/loader.service";
 import { CommonService } from "src/app/services/common.service";
 @Component({
-  selector: "vex-course-section",
-  templateUrl: "./course-section.component.html",
-  styleUrls: ["./course-section.component.scss"],
-  styles: [
-    `
+    selector: "vex-course-section",
+    templateUrl: "./course-section.component.html",
+    styleUrls: ["./course-section.component.scss"],
+    styles: [
+        `
            .cal-month-view .bg-aqua,
            .cal-week-view .cal-day-columns .bg-aqua,
            .cal-day-view .bg-aqua {
              background-color: #ffdee4 !important;
            }
          `,
-  ],
-  encapsulation: ViewEncapsulation.None,
+    ],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class CourseSectionComponent implements OnInit {
   view: CalendarView = CalendarView.Month;

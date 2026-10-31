@@ -41,13 +41,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-add-calendar',
-  templateUrl: './add-calendar.component.html',
-  styleUrls: ['./add-calendar.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-add-calendar',
+    templateUrl: './add-calendar.component.html',
+    styleUrls: ['./add-calendar.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class AddCalendarComponent implements OnInit {
   @ViewChild('checkBox') checkBox: MatCheckbox;

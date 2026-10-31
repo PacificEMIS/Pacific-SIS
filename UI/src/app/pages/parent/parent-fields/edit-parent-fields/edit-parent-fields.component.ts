@@ -38,13 +38,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-parent-fields',
-  templateUrl: './edit-parent-fields.component.html',
-  styleUrls: ['./edit-parent-fields.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-parent-fields',
+    templateUrl: './edit-parent-fields.component.html',
+    styleUrls: ['./edit-parent-fields.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditParentFieldsComponent implements OnInit {
   icClose = 'close';

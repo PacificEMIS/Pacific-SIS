@@ -34,14 +34,15 @@ import { SharedFunction } from 'src/app/pages/shared/shared-function';
 import { StudentAttendanceService } from 'src/app/services/student-attendance.service';
 
 @Component({
-  selector: 'vex-common-staff-list',
-  templateUrl: './common-staff-list.component.html',
-  styleUrls: ['./common-staff-list.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-common-staff-list',
+    templateUrl: './common-staff-list.component.html',
+    styleUrls: ['./common-staff-list.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class CommonStaffListComponent implements OnInit {
   @Input() parentComponent;

@@ -52,13 +52,14 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonLOV } from '../../../shared-module/lov/common-lov';
 @Component({
-  selector: 'vex-add-student',
-  templateUrl: './add-student.component.html',
-  styleUrls: ['./add-student.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-add-student',
+    templateUrl: './add-student.component.html',
+    styleUrls: ['./add-student.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class AddStudentComponent implements OnInit,OnDestroy {
   languageList;

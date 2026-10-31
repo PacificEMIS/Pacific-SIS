@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonService } from '../services/common.service';
 
 @Component({
-  selector: 'vex-errors',
-  templateUrl: './errors.component.html',
-  styleUrls: ['./errors.component.scss']
+    selector: 'vex-errors',
+    templateUrl: './errors.component.html',
+    styleUrls: ['./errors.component.scss'],
+    standalone: false
 })
 export class ErrorsComponent implements OnInit {
 

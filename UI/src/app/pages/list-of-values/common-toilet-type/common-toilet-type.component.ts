@@ -48,13 +48,14 @@ import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
-  selector: 'vex-common-toilet-type',
-  templateUrl: './common-toilet-type.component.html',
-  styleUrls: ['./common-toilet-type.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-common-toilet-type',
+    templateUrl: './common-toilet-type.component.html',
+    styleUrls: ['./common-toilet-type.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class CommonToiletTypeComponent implements OnInit {
   columns = [

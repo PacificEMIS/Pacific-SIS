@@ -48,13 +48,14 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
-  selector: 'vex-school-classification',
-  templateUrl: './school-classification.component.html',
-  styleUrls: ['./school-classification.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-school-classification',
+    templateUrl: './school-classification.component.html',
+    styleUrls: ['./school-classification.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class SchoolClassificationComponent implements OnInit {
   columns = [

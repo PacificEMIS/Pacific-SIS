@@ -19,8 +19,9 @@ export interface MegaMenuPage {
 }
 
 @Component({
-  selector: 'vex-mega-menu',
-  templateUrl: './mega-menu.component.html'
+    selector: 'vex-mega-menu',
+    templateUrl: './mega-menu.component.html',
+    standalone: false
 })
 export class MegaMenuComponent implements OnInit {
   stateObj = {type: SchoolCreate.ADD};

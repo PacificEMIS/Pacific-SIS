@@ -48,13 +48,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { LoVSortOrderValuesModel, UpdateLovSortingModel } from 'src/app/models/lov.model';
 @Component({
-  selector: 'vex-rooms',
-  templateUrl: './rooms.component.html',
-  styleUrls: ['./rooms.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-rooms',
+    templateUrl: './rooms.component.html',
+    styleUrls: ['./rooms.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class RoomsComponent implements OnInit {
 

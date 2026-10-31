@@ -29,9 +29,10 @@ import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { SchoolAddViewModel } from '../../../../models/school-master.model';
 
 @Component({
-  selector: 'vex-view-general-info',
-  templateUrl: './view-general-info.component.html',
-  styleUrls: ['./view-general-info.component.scss']
+    selector: 'vex-view-general-info',
+    templateUrl: './view-general-info.component.html',
+    styleUrls: ['./view-general-info.component.scss'],
+    standalone: false
 })
 
 export class ViewGeneralInfoComponent implements OnInit {

@@ -26,9 +26,10 @@ All rights reserved.
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'vex-attendance',
-  templateUrl: './attendance.component.html',
-  styleUrls: ['./attendance.component.scss']
+    selector: 'vex-attendance',
+    templateUrl: './attendance.component.html',
+    styleUrls: ['./attendance.component.scss'],
+    standalone: false
 })
 export class AttendanceComponent implements OnInit {
 

@@ -42,18 +42,19 @@ import { Router } from '@angular/router';
 import moment from 'moment';
 
 @Component({
-  selector: 'vex-teacher-dashboard',
-  templateUrl: './teacher-dashboard.component.html',
-  styleUrls: ['./teacher-dashboard.component.scss'],
-  styles: [
-    `
+    selector: 'vex-teacher-dashboard',
+    templateUrl: './teacher-dashboard.component.html',
+    styleUrls: ['./teacher-dashboard.component.scss'],
+    styles: [
+        `
           .cal-month-view .bg-aqua,
            .cal-week-view .cal-day-columns .bg-aqua,
            .cal-day-view .bg-aqua {
              background-color: #ffdee4 !important;
            }
          `,
-  ],
+    ],
+    standalone: false
 })
 export class TeacherDashboardComponent implements OnInit,OnDestroy {
   view: CalendarView = CalendarView.Month;

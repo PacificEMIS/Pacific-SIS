@@ -30,14 +30,15 @@ import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'vex-viewstudent-logininfo',
-  templateUrl: './viewstudent-logininfo.component.html',
-  styleUrls: ['./viewstudent-logininfo.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ],
+    selector: 'vex-viewstudent-logininfo',
+    templateUrl: './viewstudent-logininfo.component.html',
+    styleUrls: ['./viewstudent-logininfo.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class ViewstudentLogininfoComponent implements OnInit {
 

@@ -38,13 +38,14 @@ import { LoaderService } from '../../../../../services/loader.service';
 import { StudentScheduleService } from '../../../../../services/student-schedule.service';
 
 @Component({
-  selector: 'vex-scheduled-students',
-  templateUrl: './scheduled-students.component.html',
-  styleUrls: ['./scheduled-students.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-scheduled-students',
+    templateUrl: './scheduled-students.component.html',
+    styleUrls: ['./scheduled-students.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class ScheduledStudentsComponent implements OnInit, AfterViewInit{
   icSearch = 'search';

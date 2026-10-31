@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'EmtyNumberCheckPipe'
+    name: 'EmtyNumberCheckPipe',
+    standalone: false
 })
 export class EmtyNumberCheckPipe implements PipeTransform {
 

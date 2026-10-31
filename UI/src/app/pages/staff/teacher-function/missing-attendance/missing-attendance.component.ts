@@ -46,14 +46,15 @@ import { CommonService } from "src/app/services/common.service";
 import moment from "moment";
 
 @Component({
-  selector: "vex-missing-attendance",
-  templateUrl: "./missing-attendance.component.html",
-  styleUrls: ["./missing-attendance.component.scss"],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: "vex-missing-attendance",
+    templateUrl: "./missing-attendance.component.html",
+    styleUrls: ["./missing-attendance.component.scss"],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDestroy {
   icSearch = 'search';

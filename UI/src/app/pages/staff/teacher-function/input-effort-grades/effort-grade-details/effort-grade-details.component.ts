@@ -47,14 +47,15 @@ import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 
 
 @Component({
-  selector: 'vex-effort-grade-details',
-  templateUrl: './effort-grade-details.component.html',
-  styleUrls: ['./effort-grade-details.component.scss'],
-  animations: [
-    fadeInRight400ms,
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-effort-grade-details',
+    templateUrl: './effort-grade-details.component.html',
+    styleUrls: ['./effort-grade-details.component.scss'],
+    animations: [
+        fadeInRight400ms,
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EffortGradeDetailsComponent implements OnInit, OnDestroy {
   pageStatus = "Grade Details";

@@ -56,9 +56,10 @@ import { PromoteStaffComponent } from './promote-staff/promote-staff.component';
  * (for example the caller's own row has no actions).
  */
 @Component({
-  selector: 'vex-super-administrators',
-  templateUrl: './super-administrators.component.html',
-  styleUrls: ['./super-administrators.component.scss']
+    selector: 'vex-super-administrators',
+    templateUrl: './super-administrators.component.html',
+    styleUrls: ['./super-administrators.component.scss'],
+    standalone: false
 })
 export class SuperAdministratorsComponent implements OnInit, OnDestroy {
   icAdd = 'add';

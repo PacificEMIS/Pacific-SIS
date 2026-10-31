@@ -4,9 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-attendance',
-  templateUrl: './attendance.component.html',
-  styleUrls: ['./attendance.component.scss']
+    selector: 'vex-attendance',
+    templateUrl: './attendance.component.html',
+    styleUrls: ['./attendance.component.scss'],
+    standalone: false
 })
 export class AttendanceComponent implements OnInit {
   pages=[];

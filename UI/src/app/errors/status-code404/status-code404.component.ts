@@ -3,9 +3,10 @@ import { CommonService } from 'src/app/services/common.service';
 import { LoginService } from 'src/app/services/login.service';
 
 @Component({
-  selector: 'vex-status-code404',
-  templateUrl: './status-code404.component.html',
-  styleUrls: ['./status-code404.component.scss']
+    selector: 'vex-status-code404',
+    templateUrl: './status-code404.component.html',
+    styleUrls: ['./status-code404.component.scss'],
+    standalone: false
 })
 export class StatusCode404Component implements OnInit {
 

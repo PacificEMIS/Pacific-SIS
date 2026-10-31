@@ -40,9 +40,10 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
 @Component({
-  selector: 'vex-notice-cards',
-  templateUrl: './notice-cards.component.html',
-  styleUrls: ['./notice-cards.component.scss']
+    selector: 'vex-notice-cards',
+    templateUrl: './notice-cards.component.html',
+    styleUrls: ['./notice-cards.component.scss'],
+    standalone: false
 })
 export class NoticeCardsComponent implements OnInit {
   noticeListViewModel: NoticeListViewModel = new NoticeListViewModel();

@@ -45,9 +45,10 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
 
 @Component({
-  selector: 'vex-search-staff',
-  templateUrl: './search-staff.component.html',
-  styleUrls: ['./search-staff.component.scss']
+    selector: 'vex-search-staff',
+    templateUrl: './search-staff.component.html',
+    styleUrls: ['./search-staff.component.scss'],
+    standalone: false
 })
 export class SearchStaffComponent implements OnInit {
 

@@ -31,15 +31,15 @@ import { fadeInRight400ms } from '@vex/animations/fade-in-right.animation';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 
 @Component({
-  selector: 'vex-student-logininfo',
-  templateUrl: './student-logininfo.component.html',
-  styleUrls: ['./student-logininfo.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-
-  ],
+    selector: 'vex-student-logininfo',
+    templateUrl: './student-logininfo.component.html',
+    styleUrls: ['./student-logininfo.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StudentLogininfoComponent implements OnInit {
   StudentCreate = SchoolCreate;

@@ -2,14 +2,15 @@ import { Directive } from '@angular/core';
 import { Validator, NG_VALIDATORS, ValidatorFn, UntypedFormControl } from '@angular/forms';
 
 @Directive({
-  selector: '[appPhonevalidator]',
-  providers: [
-    {
-      provide: NG_VALIDATORS,
-      useClass: PhonevalidatorDirective,
-      multi: true
-    }
-  ]
+    selector: '[appPhonevalidator]',
+    providers: [
+        {
+            provide: NG_VALIDATORS,
+            useClass: PhonevalidatorDirective,
+            multi: true
+        }
+    ],
+    standalone: false
 })
 export class PhonevalidatorDirective implements Validator {
 

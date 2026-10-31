@@ -34,9 +34,10 @@ export interface ExitCodeView {
 }
 
 @Component({
-  selector: 'vex-rollover-summary-dialog',
-  templateUrl: './rollover-summary-dialog.component.html',
-  styleUrls: ['./rollover-summary-dialog.component.scss']
+    selector: 'vex-rollover-summary-dialog',
+    templateUrl: './rollover-summary-dialog.component.html',
+    styleUrls: ['./rollover-summary-dialog.component.scss'],
+    standalone: false
 })
 export class RolloverSummaryDialogComponent implements OnInit {
   icClose = 'close';

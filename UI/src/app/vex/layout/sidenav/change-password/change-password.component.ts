@@ -10,10 +10,11 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'vex-change-password',
-  templateUrl: './change-password.component.html',
-  styleUrls: ['./change-password.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+    selector: 'vex-change-password',
+    templateUrl: './change-password.component.html',
+    styleUrls: ['./change-password.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class ChangePasswordComponent implements OnInit {
   icClose = 'close';

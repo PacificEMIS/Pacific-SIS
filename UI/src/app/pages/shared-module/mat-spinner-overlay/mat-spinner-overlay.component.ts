@@ -26,9 +26,10 @@ All rights reserved.
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'vex-mat-spinner-overlay',
-  templateUrl: './mat-spinner-overlay.component.html',
-  styleUrls: ['./mat-spinner-overlay.component.scss']
+    selector: 'vex-mat-spinner-overlay',
+    templateUrl: './mat-spinner-overlay.component.html',
+    styleUrls: ['./mat-spinner-overlay.component.scss'],
+    standalone: false
 })
 export class MatSpinnerOverlayComponent implements OnInit {
 

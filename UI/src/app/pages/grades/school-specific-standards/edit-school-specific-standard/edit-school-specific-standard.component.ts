@@ -42,13 +42,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-edit-school-specific-standard',
-  templateUrl: './edit-school-specific-standard.component.html',
-  styleUrls: ['./edit-school-specific-standard.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-school-specific-standard',
+    templateUrl: './edit-school-specific-standard.component.html',
+    styleUrls: ['./edit-school-specific-standard.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditSchoolSpecificStandardComponent implements OnInit, OnDestroy{
   @ViewChild('subject') subject: ElementRef;

@@ -36,13 +36,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-parent-fields-category',
-  templateUrl: './parent-fields-category.component.html',
-  styleUrls: ['./parent-fields-category.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-parent-fields-category',
+    templateUrl: './parent-fields-category.component.html',
+    styleUrls: ['./parent-fields-category.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class ParentFieldsCategoryComponent implements OnInit {
   icClose = 'close';

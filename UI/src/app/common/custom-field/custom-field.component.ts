@@ -53,14 +53,15 @@ import { ConstantPool } from '@angular/compiler';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'vex-custom-field',
-  templateUrl: './custom-field.component.html',
-  styleUrls: ['./custom-field.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-custom-field',
+    templateUrl: './custom-field.component.html',
+    styleUrls: ['./custom-field.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class CustomFieldComponent implements OnInit, OnDestroy {
   staffCustomFields = [];

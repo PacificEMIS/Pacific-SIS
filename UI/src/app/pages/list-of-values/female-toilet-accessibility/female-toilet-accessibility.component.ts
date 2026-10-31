@@ -48,13 +48,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
-  selector: 'vex-female-toilet-accessibility',
-  templateUrl: './female-toilet-accessibility.component.html',
-  styleUrls: ['./female-toilet-accessibility.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-female-toilet-accessibility',
+    templateUrl: './female-toilet-accessibility.component.html',
+    styleUrls: ['./female-toilet-accessibility.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class FemaleToiletAccessibilityComponent implements OnInit {
   columns = [

@@ -2,14 +2,15 @@ import { Directive } from '@angular/core';
 import { UntypedFormControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 
 @Directive({
-  selector: '[appLinkedinLinkValidator]',
-  providers: [
-    {
-      provide: NG_VALIDATORS,
-      useClass: LinkedinLinkValidatorDirective,
-      multi: true
-    }
-  ]
+    selector: '[appLinkedinLinkValidator]',
+    providers: [
+        {
+            provide: NG_VALIDATORS,
+            useClass: LinkedinLinkValidatorDirective,
+            multi: true
+        }
+    ],
+    standalone: false
 })
 export class LinkedinLinkValidatorDirective implements Validator {
 

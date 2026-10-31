@@ -26,9 +26,10 @@ import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 import { GetAllSubjectModel } from 'src/app/models/course-manager.model';
 
 @Component({
-  selector: 'vex-common-staff-advanced-search',
-  templateUrl: './staff-advanced-search.component.html',
-  styleUrls: ['./staff-advanced-search.component.scss']
+    selector: 'vex-common-staff-advanced-search',
+    templateUrl: './staff-advanced-search.component.html',
+    styleUrls: ['./staff-advanced-search.component.scss'],
+    standalone: false
 })
 export class StaffAdvancedSearchComponent implements OnInit {
   @ViewChild(MatAccordion) accordion: MatAccordion;

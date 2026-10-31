@@ -7,9 +7,10 @@ import { CommonService } from 'src/app/services/common.service';
 import { DasboardService } from 'src/app/services/dasboard.service';
 import { LoaderService } from 'src/app/services/loader.service';
 @Component({
-  selector: 'vex-my-classes',
-  templateUrl: './my-classes.component.html',
-  styleUrls: ['./my-classes.component.scss']
+    selector: 'vex-my-classes',
+    templateUrl: './my-classes.component.html',
+    styleUrls: ['./my-classes.component.scss'],
+    standalone: false
 })
 export class MyClassesComponent implements OnInit {
   loading: boolean;

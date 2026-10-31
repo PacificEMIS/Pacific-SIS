@@ -28,9 +28,10 @@ import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { SchoolAddViewModel } from '../../../../models/school-master.model';
 
 @Component({
-  selector: 'vex-view-wash-info',
-  templateUrl: './view-wash-info.component.html',
-  styleUrls: ['./view-wash-info.component.scss']
+    selector: 'vex-view-wash-info',
+    templateUrl: './view-wash-info.component.html',
+    styleUrls: ['./view-wash-info.component.scss'],
+    standalone: false
 })
 export class ViewWashInfoComponent implements OnInit {
   @Input() schoolCreateMode: SchoolCreate;

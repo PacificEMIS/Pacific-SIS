@@ -28,9 +28,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'vex-add-comments',
-  templateUrl: './add-comments.component.html',
-  styleUrls: ['./add-comments.component.scss']
+    selector: 'vex-add-comments',
+    templateUrl: './add-comments.component.html',
+    styleUrls: ['./add-comments.component.scss'],
+    standalone: false
 })
 export class AddCommentsComponent implements OnInit {
 

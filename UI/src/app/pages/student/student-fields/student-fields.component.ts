@@ -51,13 +51,14 @@ import { Module } from 'src/app/enums/module.enum';
 
 
 @Component({
-  selector: 'vex-student-fields',
-  templateUrl: './student-fields.component.html',
-  styleUrls: ['./student-fields.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-student-fields',
+    templateUrl: './student-fields.component.html',
+    styleUrls: ['./student-fields.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class StudentFieldsComponent implements OnInit {
   columns = [

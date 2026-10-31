@@ -17,9 +17,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { RolloverSummaryDialogComponent } from './rollover-summary-dialog/rollover-summary-dialog.component';
 
 @Component({
-  selector: 'vex-rollover-processing',
-  templateUrl: './rollover.component.html',
-  styleUrls: ['./rollover.component.scss']
+    selector: 'vex-rollover-processing',
+    templateUrl: './rollover.component.html',
+    styleUrls: ['./rollover.component.scss'],
+    standalone: false
 })
 export class RolloverComponent implements OnInit {
 

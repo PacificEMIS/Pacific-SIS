@@ -35,9 +35,10 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from '../../../../../common/default-values.service';
 
 @Component({
-  selector: 'vex-add-alert',
-  templateUrl: './add-alert.component.html',
-  styleUrls: ['./add-alert.component.scss']
+    selector: 'vex-add-alert',
+    templateUrl: './add-alert.component.html',
+    styleUrls: ['./add-alert.component.scss'],
+    standalone: false
 })
 export class AddAlertComponent implements OnInit {
 

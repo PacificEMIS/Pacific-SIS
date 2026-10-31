@@ -30,12 +30,13 @@ import { stagger60ms } from '@vex/animations/stagger.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'vex-view-student-addressandcontacts',
-  templateUrl: './view-student-addressandcontacts.component.html',
-  styleUrls: ['./view-student-addressandcontacts.component.scss'],
-  animations: [
-    stagger60ms
-  ],
+    selector: 'vex-view-student-addressandcontacts',
+    templateUrl: './view-student-addressandcontacts.component.html',
+    styleUrls: ['./view-student-addressandcontacts.component.scss'],
+    animations: [
+        stagger60ms
+    ],
+    standalone: false
 })
 export class ViewStudentAddressandcontactsComponent implements OnInit {
   icCheckBoxOutlineBlank = 'check_box_outline_blank';

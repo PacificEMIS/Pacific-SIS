@@ -54,13 +54,14 @@ import { CommonService } from 'src/app/services/common.service';
 
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
-  selector: 'vex-effort-grade-library',
-  templateUrl: './effort-grade-library.component.html',
-  styleUrls: ['./effort-grade-library.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-effort-grade-library',
+    templateUrl: './effort-grade-library.component.html',
+    styleUrls: ['./effort-grade-library.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class EffortGradeLibraryComponent implements OnInit {
   columns = [

@@ -37,13 +37,14 @@ import { DefaultValuesService } from '../../../../../common/default-values.servi
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
-  selector: 'vex-edit-comment',
-  templateUrl: './edit-comment.component.html',
-  styleUrls: ['./edit-comment.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-comment',
+    templateUrl: './edit-comment.component.html',
+    styleUrls: ['./edit-comment.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditCommentComponent implements OnInit {
 

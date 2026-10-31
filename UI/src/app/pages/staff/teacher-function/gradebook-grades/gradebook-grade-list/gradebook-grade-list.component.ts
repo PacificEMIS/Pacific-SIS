@@ -23,10 +23,11 @@ import { GradebookConfigurationAddViewModel } from '../../../../../models/gradeb
 
 
 @Component({
-  selector: 'vex-gradebook-grade-list',
-  templateUrl: './gradebook-grade-list.component.html',
-  styleUrls: ['./gradebook-grade-list.component.scss'],
-  providers: [DatePipe]
+    selector: 'vex-gradebook-grade-list',
+    templateUrl: './gradebook-grade-list.component.html',
+    styleUrls: ['./gradebook-grade-list.component.scss'],
+    providers: [DatePipe],
+    standalone: false
 })
 export class GradebookGradeListComponent implements OnInit {
   icSearch = 'search';

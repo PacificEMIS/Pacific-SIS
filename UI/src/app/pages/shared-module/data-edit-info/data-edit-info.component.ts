@@ -3,9 +3,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'vex-data-edit-info',
-  templateUrl: './data-edit-info.component.html',
-  styleUrls: ['./data-edit-info.component.scss']
+    selector: 'vex-data-edit-info',
+    templateUrl: './data-edit-info.component.html',
+    styleUrls: ['./data-edit-info.component.scss'],
+    standalone: false
 })
 export class DataEditInfoComponent implements OnInit {
   icClose = 'close';

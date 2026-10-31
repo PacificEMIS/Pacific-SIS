@@ -35,23 +35,18 @@ import { GetStaffPrintScheduleReportModel } from "src/app/models/report.model";
 import { ReportService } from "src/app/services/report.service";
 import { buildSchedulePrintWeekPages, getSchedulePrintStyles } from "src/app/common/schedule-print-pivot";
 @Component({
-  selector: "vex-staff-course-schedule",
-  templateUrl: "./staff-course-schedule.component.html",
-  styleUrls: ["./staff-course-schedule.component.scss"],
-  encapsulation: ViewEncapsulation.None,
-  animations: [
-    trigger("detailExpand", [
-      state(
-        "collapsed",
-        style({ height: "0px", minHeight: "0", visibility: "hidden" })
-      ),
-      state("expanded", style({ height: "*", visibility: "visible" })),
-      transition(
-        "expanded <=> collapsed",
-        animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")
-      ),
-    ]),
-  ],
+    selector: "vex-staff-course-schedule",
+    templateUrl: "./staff-course-schedule.component.html",
+    styleUrls: ["./staff-course-schedule.component.scss"],
+    encapsulation: ViewEncapsulation.None,
+    animations: [
+        trigger("detailExpand", [
+            state("collapsed", style({ height: "0px", minHeight: "0", visibility: "hidden" })),
+            state("expanded", style({ height: "*", visibility: "visible" })),
+            transition("expanded <=> collapsed", animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")),
+        ]),
+    ],
+    standalone: false
 })
 export class StaffCourseScheduleComponent implements OnInit {
   icInfo = 'info';

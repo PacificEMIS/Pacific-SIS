@@ -6,9 +6,10 @@ import { CommonService } from 'src/app/services/common.service';
 import { GradeBookConfigurationService } from 'src/app/services/gradebook-configuration.service';
 
 @Component({
-  selector: 'vex-gradebook-grade-details',
-  templateUrl: './gradebook-grade-details.component.html',
-  styleUrls: ['./gradebook-grade-details.component.scss']
+    selector: 'vex-gradebook-grade-details',
+    templateUrl: './gradebook-grade-details.component.html',
+    styleUrls: ['./gradebook-grade-details.component.scss'],
+    standalone: false
 })
 export class GradebookGradeDetailsComponent implements OnInit {
   icEdiit = 'edit';

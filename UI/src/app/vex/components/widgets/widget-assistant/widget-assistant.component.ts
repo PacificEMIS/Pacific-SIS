@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 @Component({
-  selector: 'vex-widget-assistant',
-  templateUrl: './widget-assistant.component.html',
-  styleUrls: ['./widget-assistant.component.scss']
+    selector: 'vex-widget-assistant',
+    templateUrl: './widget-assistant.component.html',
+    styleUrls: ['./widget-assistant.component.scss'],
+    standalone: false
 })
 export class WidgetAssistantComponent implements OnInit {
 

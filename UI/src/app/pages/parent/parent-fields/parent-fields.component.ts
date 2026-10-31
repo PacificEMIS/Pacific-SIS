@@ -45,13 +45,14 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { Module } from 'src/app/enums/module.enum';
 
 @Component({
-  selector: 'vex-parent-fields',
-  templateUrl: './parent-fields.component.html',
-  styleUrls: ['./parent-fields.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-parent-fields',
+    templateUrl: './parent-fields.component.html',
+    styleUrls: ['./parent-fields.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class ParentFieldsComponent implements OnInit {
   @Input()

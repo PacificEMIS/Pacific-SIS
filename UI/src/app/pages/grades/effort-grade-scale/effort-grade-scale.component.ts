@@ -50,13 +50,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
-  selector: 'vex-effort-grade-scale',
-  templateUrl: './effort-grade-scale.component.html',
-  styleUrls: ['./effort-grade-scale.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms
-  ]
+    selector: 'vex-effort-grade-scale',
+    templateUrl: './effort-grade-scale.component.html',
+    styleUrls: ['./effort-grade-scale.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms
+    ],
+    standalone: false
 })
 export class EffortGradeScaleComponent implements OnInit,OnDestroy {
   icMoreVert = 'more_vert';

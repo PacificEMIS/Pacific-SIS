@@ -35,9 +35,10 @@ import { PageRolesPermission } from '../../../common/page-roles-permissions.serv
 import { Permissions } from '../../../models/roll-based-access.model';
 
 @Component({
-  selector: 'vex-preference',
-  templateUrl: './preference.component.html',
-  styleUrls: ['./preference.component.scss']
+    selector: 'vex-preference',
+    templateUrl: './preference.component.html',
+    styleUrls: ['./preference.component.scss'],
+    standalone: false
 })
 export class PreferenceComponent implements OnInit {
   schoolPreferenceAddViewModel: SchoolPreferenceAddViewModel = new SchoolPreferenceAddViewModel(); 

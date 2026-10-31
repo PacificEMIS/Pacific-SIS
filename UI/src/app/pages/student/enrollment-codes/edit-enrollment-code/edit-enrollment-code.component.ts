@@ -37,13 +37,14 @@ import { CommonService } from 'src/app/services/common.service';
 import { id } from 'date-fns/locale';
 
 @Component({
-  selector: 'vex-edit-enrollment-code',
-  templateUrl: './edit-enrollment-code.component.html',
-  styleUrls: ['./edit-enrollment-code.component.scss'],
-  animations: [
-    stagger60ms,
-    fadeInUp400ms
-  ]
+    selector: 'vex-edit-enrollment-code',
+    templateUrl: './edit-enrollment-code.component.html',
+    styleUrls: ['./edit-enrollment-code.component.scss'],
+    animations: [
+        stagger60ms,
+        fadeInUp400ms
+    ],
+    standalone: false
 })
 export class EditEnrollmentCodeComponent implements OnInit {
   icClose = 'close';

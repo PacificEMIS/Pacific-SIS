@@ -44,8 +44,9 @@ import { SuperAdministratorService } from 'src/app/services/super-administrator.
  * membership and the staff profile change.
  */
 @Component({
-  selector: 'vex-promote-staff',
-  templateUrl: './promote-staff.component.html'
+    selector: 'vex-promote-staff',
+    templateUrl: './promote-staff.component.html',
+    standalone: false
 })
 export class PromoteStaffComponent implements OnInit, OnDestroy {
   icClose = 'close';

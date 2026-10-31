@@ -59,14 +59,15 @@ import { GetCalendarAndHolidayListModel } from 'src/app/models/calendar.model';
 import { MatSort } from '@angular/material/sort';
 import moment from 'moment';
 @Component({
-  selector: 'vex-student-re-enroll',
-  templateUrl: './student-re-enroll.component.html',
-  styleUrls: ['./student-re-enroll.component.scss'],
-  animations: [
-    fadeInUp400ms,
-    stagger40ms,
-    fadeInRight400ms
-  ]
+    selector: 'vex-student-re-enroll',
+    templateUrl: './student-re-enroll.component.html',
+    styleUrls: ['./student-re-enroll.component.scss'],
+    animations: [
+        fadeInUp400ms,
+        stagger40ms,
+        fadeInRight400ms
+    ],
+    standalone: false
 })
 export class StudentReEnrollComponent implements OnInit {
   @ViewChild('f') currentForm: NgForm;
