@@ -1,8 +1,8 @@
-<div class="footer md:bg-white md:shadow border-t opacity-50 md:opacity-100">
-  <div class="flex justify-between py-4">
+<div class="footer">
+  <div class="flex justify-between items-center">
     <div [innerHTML]="tenantFooter"></div>
     <div *ngIf="releaseNumberAddViewModel?.releaseNumber?.releaseNumber1">
-      <p class="text-primary">
+      <p class="m-0">
         <span>Version {{releaseNumberAddViewModel?.releaseNumber?.releaseNumber1}}</span>
       </p>
     </div>

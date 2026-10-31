@@ -1,8 +1,9 @@
-<div class="bg-skyblue px-gutter py-4 border-b border-t text-primary">
-<vex-secondary-toolbar current="{{'dashboard'}}">
-  <vex-breadcrumbs [crumbs]="['dashboards']" class="flex-auto"></vex-breadcrumbs>
-</vex-secondary-toolbar>
-</div>
+<vex-page-layout>
+  <vex-page-layout-header class="fx-column fx-align-center-start">
+    <vex-secondary-toolbar current="{{'dashboard'}}" class="w-full">
+      <vex-breadcrumbs [crumbs]="['dashboards']" class="flex-auto"></vex-breadcrumbs>
+    </vex-secondary-toolbar>
+  </vex-page-layout-header>
 
 <!-- <div class="px-gutter pt-4 gd-lt-md-cols-2 gd-lt-sm-cols-1 gd-gap-16" gdColumns="1fr 1fr 1fr 1fr 1fr 1fr" vexContainer>
 
@@ -142,3 +143,4 @@
     class="w-full overflow-auto shadow"></vex-widget-table>
 
 </div>
+</vex-page-layout>

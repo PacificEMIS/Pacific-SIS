@@ -1,107 +1,173 @@
+// One entry of the side menu, in the Pacific EMIS menu's terms (menu.component.scss there): a
+// module row with its icon, an open module and its pages as one solid block, the page shown as a
+// pill, and the accent bar on the module of the page shown while it is closed.
+:host {
+  display: block;
+}
+
+:host(.item-level-0) {
+  margin: 2px 0;
+}
+
 .item {
-  align-items: center;
-  box-sizing: border-box;
-  color: var(--sidenav-item-color);
-  cursor: pointer;
   display: flex;
-  flex-direction: row;
-  min-height: 48px;
-  padding: var(--padding-8) var(--sidenav-item-padding);
-  position: relative;
-  text-decoration: none;
-  transition: var(--trans-ease-out);
-  user-select: none;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
   width: 100%;
-  border-left: var(--sidenav-item-border);
+  min-height: 36px;
+  padding: 6px 8px 6px 10px;
+  border-radius: 6px;
+  color: var(--nav-ink);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: background-color 120ms, color 120ms;
 
-  &:hover, &.active {
-    background: var(--sidenav-item-background-active);
-    border-left-color: var(--sidenav-item-border-color-active);
-
-    .item-icon {
-      color: var(--sidenav-item-icon-color-active);
-    }
-
-    .item-label {
-      color: var(--sidenav-item-color-active);
-    }
-
-    .item-dropdown-icon {
-      color: var(--sidenav-item-color-active);
-    }
+  &:hover {
+    background: var(--nav-hover);
   }
 
-  &.active {
-    font-weight: 800;
+  &:focus-visible {
+    outline: 2px solid var(--nav-accent);
+    outline-offset: -2px;
   }
 
+  &.open .item-dropdown-icon {
+    transform: rotate(90deg);
+  }
+
+  &.open .item-icon,
+  &.active .item-icon {
+    color: var(--nav-ink);
+  }
+
+  // an open module: the head of the block it shares with its pages
   &.open {
-    .item-dropdown-icon {
-      transform: rotate(90deg) !important;
-    }
+    background: var(--nav-block);
+    border-radius: 8px 8px 0 0;
+  }
+
+  // the module of the page shown carries the accent bar while it is closed
+  &.active:not(.open):has(.item-dropdown-icon)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    border-radius: 2px;
+    background: var(--nav-accent);
   }
 }
 
-@for $i from 1 through 6 {
-  :host(.item-level-#{$i}) .item {
-    background: var(--sidenav-item-dropdown-background);
-    padding-inline-start: calc(var(--sidenav-item-icon-size) + var(--sidenav-item-icon-gap) + var(--sidenav-item-padding) + (var(--sidenav-item-dropdown-gap) * #{$i - 1}));
+// the page shown: a solid pill
+a.item.active,
+div.item.active:not(:has(.item-dropdown-icon)) {
+  background: var(--nav-current);
+  color: #fff;
+  font-weight: 500;
 
-    &:hover {
-      background: var(--sidenav-item-dropdown-background-hover);
-    }
+  &:hover {
+    background: var(--nav-current);
   }
-}
-
-.item-icon, .item-label, .item-dropdown-icon {
-  transition: inherit;
 }
 
 .item-icon {
-  color: var(--sidenav-item-icon-color);
-  font-size: var(--sidenav-item-icon-size);
-  height: var(--sidenav-item-icon-size);
-  margin-inline-end: var(--sidenav-item-icon-gap);
-  width: var(--sidenav-item-icon-size);
+  flex: none;
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+  color: var(--nav-muted);
+  transition: color 120ms;
 }
 
 .item-label {
   flex: 1;
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.item-dropdown-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  line-height: 18px;
+  color: var(--nav-muted);
+  transform: rotate(0deg);
+  transition: transform 150ms ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
 
 .item-badge {
   border-radius: 9999px;
   font-size: 11px;
   line-height: 20px;
-  margin-inline-start: var(--padding-8);
   padding: 0 7px;
   text-align: center;
 }
 
-.item-dropdown-icon {
-  color: var(--sidenav-item-icon-color);
-  font-size: 18px;
-  height: 18px;
-  line-height: 18px;
-  margin-inline-start: var(--padding-8);
-  transform: rotate(0deg) !important;
-  width: 18px;
-}
-
+// the pages of an open module: the rest of its block, the icon column kept free
 .item-dropdown {
   overflow: hidden;
+  background: var(--nav-block);
+  border-radius: 0 0 8px 8px;
+  padding: 4px 8px 4px 20px;
+  margin-bottom: 6px;
+}
 
+@for $i from 1 through 6 {
+  :host(.item-level-#{$i}) .item {
+    min-height: 32px;
+    padding: 5px 8px 5px 14px;
+    color: var(--nav-muted);
+    font-weight: 400;
+
+    &:hover {
+      color: var(--nav-ink);
+    }
+
+    &.open {
+      background: none;
+    }
+  }
+}
+
+// a sub-group within a module: one step further in, with a rule to hold its pages together
+:host(:not(.item-level-0)) .item-dropdown {
+  position: relative;
+  margin: 0 0 4px;
+  padding: 0 0 0 14px;
+  border-radius: 0;
+  background: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 6px;
+    bottom: 6px;
+    width: 1px;
+    background: var(--nav-rule);
+  }
 }
 
 .subheading {
   box-sizing: border-box;
-  color: var(--sidenav-item-color);
-  font: var(--font-caption);
-  margin-top: var(--padding);
-  padding: var(--padding-12) var(--padding);
+  color: var(--nav-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-top: var(--padding-12);
+  padding: var(--padding-8) 10px;
   text-transform: uppercase;
   white-space: nowrap;
 }

@@ -9,8 +9,11 @@
   background: var(--footer-background);
   color: var(--footer-color);
   height: var(--footer-height);
-  padding-left: var(--padding);
-  padding-right: var(--padding);
+  box-sizing: border-box;
+  padding: 0 16px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  font-size: 12px;
+  line-height: var(--footer-height);
   position: relative;
   z-index: var(--footer-z-index);
 

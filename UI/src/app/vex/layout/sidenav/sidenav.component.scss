@@ -1,18 +1,48 @@
-::ng-deep {
-  .mat-sidenav {
-    overflow: hidden !important;
-  }
-}
-
+// The side menu, styled as the Pacific EMIS menu (PacificEMIS.UI menu.component.scss): a column
+// of the brand blue, the lagoon ripples behind it, one accent that marks where one is. The
+// structure (tenant logo plate, user block, the permission-driven item tree, collapse to a rail
+// that opens on hover) is the SIS's own. Change the inks here and in the EMIS menu together.
 .sidenav {
-  color: var(--sidenav-color);
+  --nav-bg: var(--emis-blue);
+  // the open module and its pages share one solid block; the page shown is a pill
+  --nav-block: var(--emis-blue-dark);
+  --nav-current: var(--emis-blue-light);
+  --nav-ink: #f1f6fc;
+  --nav-muted: #b9cfea;
+  --nav-accent: #7fe3d8;
+  --nav-line: rgba(255, 255, 255, 0.12);
+  --nav-rule: rgba(255, 255, 255, 0.22);
+  --nav-hover: rgba(255, 255, 255, 0.08);
+
+  position: relative;
+  isolation: isolate;
   height: 100%;
-  transition: var(--trans-ease-out);
   width: var(--sidenav-width);
+  background: var(--nav-bg);
+  color: var(--nav-ink);
+  font-size: 14px;
+  line-height: 1.3;
+  transition: width var(--trans-ease-out-duration) var(--trans-ease-out-timing-function);
+
+  // the lagoon: the EMIS menu's ripples, drawn behind everything and never scrolled with the tree
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.16;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='1100'%3E%3Cg fill='none' stroke='%23fff'%3E%3Cellipse cx='118' cy='261' rx='51' ry='14'/%3E%3Cellipse cx='118' cy='262' rx='68' ry='19'/%3E%3Cellipse cx='117' cy='264' rx='86' ry='24'/%3E%3Cellipse cx='117' cy='266' rx='103' ry='29'/%3E%3Cellipse cx='116' cy='269' rx='122' ry='35'/%3E%3Cellipse cx='115' cy='273' rx='141' ry='41'/%3E%3Cellipse cx='115' cy='277' rx='161' ry='47'/%3E%3Cellipse cx='114' cy='282' rx='182' ry='54'/%3E%3Cellipse cx='112' cy='288' rx='204' ry='62'/%3E%3Cellipse cx='111' cy='295' rx='228' ry='72'/%3E%3Cellipse cx='109' cy='303' rx='254' ry='82'/%3E%3Cellipse cx='107' cy='314' rx='283' ry='94'/%3E%3Cellipse cx='105' cy='327' rx='315' ry='109'/%3E%3Cellipse cx='101' cy='343' rx='351' ry='127'/%3E%3Cellipse cx='97' cy='364' rx='392' ry='150'/%3E%3Cellipse cx='92' cy='392' rx='441' ry='179'/%3E%3Cellipse cx='84' cy='431' rx='502' ry='219'/%3E%3Cellipse cx='72' cy='488' rx='579' ry='278'/%3E%3Cellipse cx='54' cy='579' rx='685' ry='371'/%3E%3Cellipse cx='20' cy='750' rx='849' ry='543'/%3E%3Cellipse cx='239' cy='221' rx='19' ry='3'/%3E%3Cellipse cx='239' cy='221' rx='29' ry='5'/%3E%3Cellipse cx='240' cy='221' rx='40' ry='7'/%3E%3Cellipse cx='240' cy='222' rx='51' ry='9'/%3E%3Cellipse cx='241' cy='222' rx='62' ry='11'/%3E%3Cellipse cx='242' cy='223' rx='73' ry='13'/%3E%3Cellipse cx='243' cy='224' rx='84' ry='15'/%3E%3Cellipse cx='244' cy='225' rx='96' ry='17'/%3E%3Cellipse cx='246' cy='226' rx='107' ry='20'/%3E%3Cellipse cx='248' cy='227' rx='119' ry='22'/%3E%3Cellipse cx='249' cy='228' rx='131' ry='24'/%3E%3Cellipse cx='252' cy='230' rx='144' ry='27'/%3E%3C/g%3E%3C/svg%3E")
+      left top / 280px auto no-repeat;
+    mask-image:
+      linear-gradient(to right, #000 55%, transparent 100%),
+      linear-gradient(to bottom, #000 45%, transparent 100%);
+    mask-composite: intersect;
+  }
 
   &.collapsed {
     @media (min-width: 992px) {
-    width: var(--sidenav-collapsed-width);
+      width: var(--sidenav-collapsed-width);
     }
 
     .logo-small {
@@ -24,27 +54,42 @@
     }
 
     &:not(.open) {
-      .sidenav-toolbar {
-        background: transparent;
-        .title {
-          opacity: 0;
-          padding-inline-start: var(--sidenav-item-padding);
+      &::before {
+        display: none;
+      }
+
+      .sidenav-toolbar .title {
+        opacity: 0;
+      }
+
+      .user-block {
+        padding: 10px 0;
+        justify-content: center;
+
+        .user-text,
+        .user-menu {
+          display: none;
         }
       }
 
       ::ng-deep {
         .sidenav-items {
-          .item-icon {
-            margin-inline-end: var(--sidenav-item-padding);
+          padding-left: 8px;
+          padding-right: 8px;
+
+          .item {
+            padding-left: 13px;
+            padding-right: 13px;
           }
 
           @media (min-width: 992px) {
             .subheading,
             .item-badge,
-            .item-label {
-            opacity: 0;
+            .item-label,
+            .item-dropdown-icon {
+              opacity: 0;
+            }
           }
-        }
         }
 
         .simplebar-track.simplebar-vertical {
@@ -57,17 +102,13 @@
       .subheading,
       .item-badge,
       .item-label {
-        transition: all 200ms var(--trans-ease-out-timing-function);
+        transition: opacity 200ms var(--trans-ease-out-timing-function);
       }
     }
 
     &.open {
       width: var(--sidenav-width);
       box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-
-      .sidenav-toolbar {
-        background: var(--sidenav-toolbar-background);
-      }
 
       .logo-small {
         display: none;
@@ -79,11 +120,11 @@
 
       .expand-btn {
         display: block;
-    }
+      }
 
       + .collapse-btn {
         display: none;
-  }
+      }
     }
   }
 }
@@ -99,6 +140,7 @@
   background: transparent;
 }
 
+// the tenant's logo on a white plate, the height of the toolbar beside it
 .sidenav-toolbar {
   align-items: center;
   background: #ffffff;
@@ -117,6 +159,68 @@
   }
 }
 
-/*.sidenav-items {
-  padding-top: var(--padding);
-}*/
+.nav-rule {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--nav-line);
+}
+
+// who is signed in, and the account menu
+.user-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  position: relative;
+
+  img {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .user-text {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .name {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .role {
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--nav-muted);
+    }
+  }
+
+  .user-menu {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--nav-muted);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--nav-hover);
+      color: var(--nav-ink);
+    }
+  }
+}
+
+::ng-deep .sidenav-items {
+  padding: 4px 8px 16px;
+}

@@ -32,7 +32,8 @@
 
 .vex-page-layout-header {
   align-items: center;
-  @apply bg-skyblue text-primary border-t border-b;
+  background: var(--emis-blue);
+  color: #fff;
   box-sizing: content-box !important;
   display: flex;
   flex-direction: row;
@@ -42,10 +43,18 @@
   padding-right: var(--padding);
   place-content: center flex-start;
 
-  .vex-breadcrumb {
+  .vex-breadcrumb,
+  a {
+    color: rgba(255, 255, 255, 0.85);
+
     &:hover {
-      @apply text-primary opacity-100;
+      color: #fff;
+      opacity: 1;
     }
+  }
+
+  .bg-gray {
+    background: rgba(255, 255, 255, 0.5);
   }
 }
 

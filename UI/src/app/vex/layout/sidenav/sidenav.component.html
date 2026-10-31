@@ -17,19 +17,15 @@
     </button>
   </div>
 
-  <hr class="mt-0 mb-4 bg-white opacity-25"/>
-  <div class="flex items-center ml-4 mr-4 relative">
-    <div class="flex-shrink-0 h-10 w-10">
-      <img class="h-10 w-10 rounded-full" [src]="userPhoto" alt="Profile picture">
-    </div>
-    <div class="ml-4 whitespace-nowrap">
-      <div class="text-sm leading-5 font-medium text-gray-900">{{this.defaultValuesService.getFullUserName()}}</div>
-      <div class="text-xs leading-5 text-gray-500 opacity-50">{{defaultValuesService.getuserMembershipName()}}</div>
+  <hr class="nav-rule"/>
+  <div class="user-block">
+    <img class="avatar" [src]="userPhoto" alt="Profile picture">
+    <div class="user-text">
+      <div class="name">{{this.defaultValuesService.getFullUserName()}}</div>
+      <div class="role">{{defaultValuesService.getuserMembershipName()}}</div>
     </div>
     <div>
-      <button 
-              [matMenuTriggerFor]="addNewMenu" (click)="expandSidebar()" class="absolute right-0 top-3"
-              type="button"><mat-icon style="font-size: 20px">{{ icArrowDropDown }}</mat-icon>
+      <button [matMenuTriggerFor]="addNewMenu" (click)="expandSidebar()" class="user-menu" type="button" aria-label="Account menu"><mat-icon style="font-size: 20px">{{ icArrowDropDown }}</mat-icon>
       </button>
 
       <mat-menu #addNewMenu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
@@ -51,7 +47,7 @@
       </mat-menu>
     </div>
   </div>
-  <hr class="mb-0 mt-4 bg-white opacity-25"/>
+  <hr class="nav-rule"/>
   <vex-scrollbar class="flex-auto">
     <div class="sidenav-items">
       <vex-sidenav-item *ngFor="let item of items; trackBy: trackByRoute"

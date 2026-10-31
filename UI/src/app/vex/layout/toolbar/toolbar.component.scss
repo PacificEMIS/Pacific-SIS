@@ -1,5 +1,6 @@
 :host {
   background: var(--toolbar-background);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
   box-sizing: border-box;
   color: var(--toolbar-color);
   display: block;
