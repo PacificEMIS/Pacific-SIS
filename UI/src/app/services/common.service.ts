@@ -357,7 +357,7 @@ export class CommonService {
     }
 
     isOnline() {
-      return merge<boolean>(
+      return merge(
         fromEvent(window, 'offline').pipe(map(() => false)),
         fromEvent(window, 'online').pipe(map(() => true)),
         new Observable((sub: Observer<boolean>) => {

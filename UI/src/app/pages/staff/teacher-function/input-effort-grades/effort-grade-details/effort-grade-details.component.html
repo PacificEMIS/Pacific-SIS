@@ -105,7 +105,7 @@
                     <h4 class="text-base font-medium text-green py-2">{{ "generalComments" | translate }}</h4>
                     <div class="w-full border w-full p-2 rounded mb-2">
                         <textarea placeholder="Comments" name="teacherComment"
-                            [(ngModel)]="addUpdateStudentEffortGradeModel?.studentsByHomeRoomStaffView[selectedStudent].teacherComment"
+                            [ngModel]="addUpdateStudentEffortGradeModel?.studentsByHomeRoomStaffView[selectedStudent].teacherComment" (ngModelChange)="addUpdateStudentEffortGradeModel.studentsByHomeRoomStaffView[selectedStudent].teacherComment = $event"
                             class="w-full" rows="8" [readonly]="!this.defaultValuesService.checkAcademicYear()"></textarea>
                     </div>
                 </div>

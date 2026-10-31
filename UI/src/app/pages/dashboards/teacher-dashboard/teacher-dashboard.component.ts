@@ -411,7 +411,7 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
     this.filterDays = allDays.filter(f => !splitDays.includes(f));
     this.weekendDays = this.filterDays;
     this.cssClass = 'bg-aqua';
-    this.refresh.next();
+    this.refresh.next(undefined);
   }
 
   goToCalendar() {

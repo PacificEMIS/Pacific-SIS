@@ -23,10 +23,10 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, LOCALE_ID, NgZone, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Component, Inject, LOCALE_ID, NgZone, OnDestroy, OnInit, Renderer2, DOCUMENT } from '@angular/core';
 import { ConfigService } from '@vex/services/config.service';
 import { Settings } from 'luxon';
-import { DOCUMENT } from '@angular/common';
+
 import { Platform } from '@angular/cdk/platform';
 import { NavigationService } from '@vex/services/navigation.service';
 import { LayoutService } from '@vex/services/layout.service';

@@ -328,7 +328,7 @@ export class CalendarComponent implements OnInit {
           this.getAllCalendarEvent();
           this.getAllBellSchedule();
         }
-        this.refresh.next();
+        this.refresh.next(undefined);
       }
 
     });
@@ -362,7 +362,7 @@ export class CalendarComponent implements OnInit {
     this.events$.subscribe(data => {
       this.allData = [...data];
     });
-    this.refresh.next();
+    this.refresh.next(undefined);
   }
 
   getDays(days: string) {
@@ -372,7 +372,7 @@ export class CalendarComponent implements OnInit {
     this.filterDays = allDays.filter(f => !splitDays.includes(f));
     this.weekendDays = this.filterDays;
     this.cssClass = 'bg-aqua';
-    this.refresh.next();
+    this.refresh.next(undefined);
   }
 
   //for rendar weekends
@@ -472,7 +472,7 @@ export class CalendarComponent implements OnInit {
         this.getAllCalendarEvent();
       }
     });
-    this.refresh.next();
+    this.refresh.next(undefined);
   }
 
   //Open modal for add new calendar

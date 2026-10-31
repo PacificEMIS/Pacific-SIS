@@ -1,6 +1,6 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, DOCUMENT } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { DOCUMENT } from '@angular/common';
+
 import { DeepPartial } from '../interfaces/deep-partial.type';
 import { mergeDeep } from '../utils/merge-deep';
 import { LayoutService } from './layout.service';

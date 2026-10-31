@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Inject, Injectable, DOCUMENT } from '@angular/core';
+
 import { BehaviorSubject } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 

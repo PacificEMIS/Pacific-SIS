@@ -1,6 +1,6 @@
 import { ElementRef, Injectable, Injector } from '@angular/core';
 import { ConnectionPositionPair, Overlay, OverlayConfig, PositionStrategy } from '@angular/cdk/overlay';
-import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
+import { ComponentPortal } from '@angular/cdk/portal';
 import { PopoverContent, PopoverRef } from './popover-ref';
 import { PopoverComponent } from './popover.component';
 
@@ -32,8 +32,8 @@ export class PopoverService {
   }
 
   createInjector(popoverRef: PopoverRef, injector: Injector) {
-    const tokens = new WeakMap([[PopoverRef, popoverRef]]);
-    return new PortalInjector(injector, tokens);
+    // CDK 20 removed PortalInjector; Injector.create is what it wrapped.
+    return Injector.create({ parent: injector, providers: [{ provide: PopoverRef, useValue: popoverRef }] });
   }
 
   private getOverlayConfig({ origin, width, height, position, offsetX, offsetY }): OverlayConfig {

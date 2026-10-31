@@ -234,7 +234,7 @@
                             <mat-form-field class="w-full mb-0" appearance="outline" color="primary">
                                 <mat-label>{{ "assignGrade" | translate }}</mat-label>
                                 <mat-select
-                                    [(value)]="addUpdateStudentFinalGradeModel?.studentFinalGradeList[selectedStudent]?.studentFinalGradeStandard[i].gradeObtained"
+                                    [value]="addUpdateStudentFinalGradeModel?.studentFinalGradeList[selectedStudent]?.studentFinalGradeStandard[i].gradeObtained" (valueChange)="addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent].studentFinalGradeStandard[i].gradeObtained = $event"
                                     (selectionChange)="setValue(standard.gradeUsStandard.gradeStandardId, $event.value,i)"
                                     name="gradeObtained">
                                     <mat-option></mat-option>

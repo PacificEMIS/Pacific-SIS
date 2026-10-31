@@ -17,7 +17,7 @@
                             <mat-error *ngIf="stCheckBox.errors?.required">
                             {{customField.title}} {{'isRequired'|translate}}</mat-error> 
 
-                        <!-- <input type="checkbox" [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                        <!-- <input type="checkbox" [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                         name="{{customField.title.replace(' ','_')}}" color="primary" class="form-check-input mr-2" #stCheckBox="ngModel" [required]="customField.required ? true : null ">
                         <label class="form-check-label">{{customField.title}}</label>-->
                        
@@ -26,7 +26,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
                             <mat-select name="{{customField.title.replace(' ','_')}}" #schoolDropdown="ngModel"
-                                [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                                [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 [required]="customField.required ? true : null ">
                                 <mat-option *ngFor="let option of customField.selectOptions.split('|')"
                                     [value]="option">
@@ -41,7 +41,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
                             <textarea name="{{customField.title.replace(' ','_')}}" #schoolTextArea="ngModel" matInput
-                                [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                                [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 [required]="customField.required ? true : null "></textarea>
 
                             <mat-error *ngIf="schoolTextArea.errors?.required">
@@ -51,7 +51,7 @@
                     <div *ngSwitchCase="'number'">
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
-                            <input matInput #schoolNumber="ngModel" [type]="customField.type" maxlength="100" [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                            <input matInput #schoolNumber="ngModel" [type]="customField.type" maxlength="100" [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 [required]="customField.required ? true : null"
                                 name="{{customField.title.replace(' ','_')}}">
                                 <mat-error *ngIf="schoolNumber.errors?.required">
@@ -64,7 +64,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
                             <input name="{{customField.title.replace(' ','_')}}" #schoolDate="ngModel"
-                                [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                                [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 [matDatepicker]="testDate" matInput [required]="customField.required ? true : null ">
                             <mat-datepicker-toggle [for]="testDate" matSuffix></mat-datepicker-toggle>
                             <mat-datepicker #testDate></mat-datepicker>
@@ -77,7 +77,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
                             <input name="{{customField.title.replace(' ','_')}}" #schoolField="ngModel"
-                                [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                                [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 matInput type="customField.type" maxlength="100"
                                 [required]="customField.required ? true : null ">
                             <mat-error *ngIf="schoolField.errors?.required">
@@ -133,12 +133,12 @@
                     [ngSwitch]="customField.type">
                     <div *ngSwitchCase="'Checkbox'">
                         
-                        <!-- <input type="checkbox" [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                        <!-- <input type="checkbox" [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                         name="{{customField.title.replace(' ','_')}}" color="primary" class="form-check-input mr-2" #stCheckBox="ngModel" [required]="customField.required ? true : null ">
                         <label class="form-check-label">{{customField.title}}</label>-->
                        
                         <mat-checkbox
-                            [(ngModel)]="customField?.customFieldsValue[0].customFieldValue" 
+                            [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event" 
                             name="{{customField.title.replace(' ','_')}}" color="primary" class="mr-6" #stCheckBox="ngModel" [required]="customField.required ? true : null ">
                             {{customField.title}}
                         </mat-checkbox>
@@ -149,7 +149,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
                             <mat-select name="{{customField.title.replace(' ','_')}}" #schoolDropdown="ngModel"
-                                [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                                [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 [required]="customField.required ? true : null ">
                                 <mat-option *ngFor="let option of customField.selectOptions.split('|')"
                                     [value]="option">
@@ -164,7 +164,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
                             <textarea name="{{customField.title.replace(' ','_')}}" #schoolTextArea="ngModel" matInput
-                                [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                                [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 [required]="customField.required ? true : null "></textarea>
 
                             <mat-error *ngIf="schoolTextArea.errors?.required">
@@ -174,7 +174,7 @@
                     <div *ngSwitchCase="'number'">
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
-                            <input matInput [type]="customField.type" maxlength="100" #studentNumber="ngModel" [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                            <input matInput [type]="customField.type" maxlength="100" #studentNumber="ngModel" [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 [required]="customField.required ? true : null"
                                 name="{{customField.title.replace(' ','_')}}">
                                 <mat-error *ngIf="studentNumber.errors?.required">
@@ -187,7 +187,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
                             <input name="{{customField.title.replace(' ','_')}}"  #studentDate="ngModel"
-                                [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                                [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 [matDatepicker]="testDate" matInput [required]="customField.required ? true : null ">
                             <mat-datepicker-toggle [for]="testDate" matSuffix></mat-datepicker-toggle>
                             <mat-datepicker #testDate></mat-datepicker>
@@ -200,7 +200,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
                             <input name="{{customField.title.replace(' ','_')}}" #schoolField="ngModel"
-                                [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                                [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 matInput type="customField.type" maxlength="100"
                                 [required]="customField.required ? true : null ">
                             <mat-error *ngIf="schoolField.errors?.required">
@@ -252,12 +252,12 @@
                 <li *ngFor="let customField of staffCustomFields; let index = index"
                     [ngSwitch]="customField.type">
                     <div *ngSwitchCase="'Checkbox'">
-                        <!-- <input type="checkbox" [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                        <!-- <input type="checkbox" [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                         name="{{customField.title.replace(' ','_')}}" color="primary" class="form-check-input mr-2" #stCheckBox="ngModel" [required]="customField.required ? true : null ">
                         <label class="form-check-label">{{customField.title}}</label> -->
                         
                         <mat-checkbox
-                            [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                            [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                             name="{{customField.title.replace(' ','_')}}" color="primary" class="mr-6"  #stCheckBox="ngModel" [required]="customField.required ? true : null ">
                             {{customField.title}}
                         </mat-checkbox>
@@ -268,7 +268,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
                             <mat-select name="{{customField.title.replace(' ','_')}}" #schoolDropdown="ngModel"
-                                [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                                [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 [required]="customField.required ? true : null ">
                                 <mat-option *ngFor="let option of customField.selectOptions.split('|')"
                                     [value]="option">
@@ -283,7 +283,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
                             <textarea name="{{customField.title.replace(' ','_')}}" #schoolTextArea="ngModel" matInput
-                                [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                                [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 [required]="customField.required ? true : null "></textarea>
 
                             <mat-error *ngIf="schoolTextArea.errors?.required">
@@ -293,7 +293,7 @@
                     <div *ngSwitchCase="'number'">
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
-                            <input #staffNumber="ngModel" matInput [type]="customField.type" maxlength="100" [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                            <input #staffNumber="ngModel" matInput [type]="customField.type" maxlength="100" [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 [required]="customField.required ? true : null"
                                 name="{{customField.title.replace(' ','_')}}">
                                 <mat-error *ngIf="staffNumber.errors?.required">
@@ -306,7 +306,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{customField.title}}</mat-label>
                             <input name="{{customField.title.replace(' ','_')}}" #staffDate="ngModel"
-                                [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                                [ngModel]="customField?.customFieldsValue[0].customFieldValue" (ngModelChange)="customField.customFieldsValue[0].customFieldValue = $event"
                                 [matDatepicker]="testDate" matInput [required]="customField.required ? true : null ">
                             <mat-datepicker-toggle [for]="testDate" matSuffix></mat-datepicker-toggle>
                             <mat-datepicker #testDate></mat-datepicker>

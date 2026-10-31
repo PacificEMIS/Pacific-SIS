@@ -187,7 +187,7 @@ export class CourseSectionComponent implements OnInit {
     } else {
       this.events = this.masterCalendarEvents;
     }
-    this.refresh.next();
+    this.refresh.next(undefined);
   }
 
   generateEventForCalendar(responseFromServer) {
@@ -304,7 +304,7 @@ export class CourseSectionComponent implements OnInit {
       }
     });
     this.masterCalendarEvents = this.events;
-    this.refresh.next();
+    this.refresh.next(undefined);
   }
 
 }

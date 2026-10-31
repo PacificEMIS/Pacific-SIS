@@ -1,6 +1,6 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, DOCUMENT } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { DOCUMENT } from '@angular/common';
+
 import { filter, take } from 'rxjs/operators';
 import { animate, AnimationBuilder, style } from '@angular/animations';
 

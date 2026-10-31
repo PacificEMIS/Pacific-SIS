@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, Inject, Input, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, Inject, Input, OnDestroy, OnInit, TemplateRef, ViewChild, DOCUMENT } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { LayoutService } from '../services/layout.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -6,7 +6,7 @@ import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav';
 import { Event, NavigationEnd, Router, Scroll } from '@angular/router';
 import { filter, map, startWith, withLatestFrom } from 'rxjs/operators';
 import { checkRouterChildsData } from '../utils/check-router-childs-data';
-import { DOCUMENT } from '@angular/common';
+
 import { ConfigService } from '../services/config.service';
 import * as jwt_decode from 'jwt-decode';
 import { MatDialog } from '@angular/material/dialog';

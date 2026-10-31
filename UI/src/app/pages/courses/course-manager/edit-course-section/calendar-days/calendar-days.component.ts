@@ -194,7 +194,7 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
     else {
       this.showError = false;
       this.getDays(this.selectedCalendar.days);
-      this.refresh.next()
+      this.refresh.next(undefined)
     }
   }
 
@@ -224,7 +224,7 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
         draggable: true,
         meta: { scheduleDetails: schedule, randomColor: this.color[random] }
       });
-      this.refresh.next();
+      this.refresh.next(undefined);
     }
   }
 
@@ -269,14 +269,14 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
       this.calendarSchedulingModel.courseCalendarScheduleList.splice(classIndex, 1);
       let eventIndex = this.events.findIndex(x => x.meta.scheduleDetails.serial == event.meta.scheduleDetails.serial);
       this.events.splice(eventIndex, 1);
-      this.refresh.next();
+      this.refresh.next(undefined);
     }
     else{
       let classIndex = this.calendarSchedulingModel.courseCalendarScheduleList.findIndex(x => x.serial == event.meta.scheduleDetails.serial);
       this.calendarSchedulingModel.courseCalendarScheduleList.splice(classIndex, 1);
       let eventIndex = this.events.findIndex(x => x.meta.scheduleDetails.serial == event.meta.scheduleDetails.serial);
       this.events.splice(eventIndex, 1);
-      this.refresh.next();
+      this.refresh.next(undefined);
     }
     
   }
@@ -396,7 +396,7 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
         draggable: true,
         meta: { scheduleDetails: this.courseCalendarSchedule, randomColor: this.color[random] }
       });
-      this.refresh.next();
+      this.refresh.next(undefined);
       this.addCalendarDay = 0;
     }
 
@@ -422,7 +422,7 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
     this.filterDays = allDays.filter(f => !splitDays.includes(f));
     this.weekendDays = this.filterDays;
     this.cssClass = 'bg-aqua';
-    this.refresh.next();
+    this.refresh.next(undefined);
   }
 
   //for rendar weekends

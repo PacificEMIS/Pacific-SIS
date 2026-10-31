@@ -153,7 +153,7 @@ export class AddDaysScheduleComponent implements OnInit {
     this.filterDays = allDays.filter((f) => !splitDays.includes(f));
     this.weekendDays = this.filterDays;
     this.cssClass = "bg-aqua";
-    this.refresh.next();
+    this.refresh.next(undefined);
   }
 
   renderCalendarPeriods() {
@@ -174,7 +174,7 @@ export class AddDaysScheduleComponent implements OnInit {
         draggable: false,
         meta: { scheduleDetails: schedule, randomColor: this.color[random] },
       });
-      this.refresh.next();
+      this.refresh.next(undefined);
     }
   }
 

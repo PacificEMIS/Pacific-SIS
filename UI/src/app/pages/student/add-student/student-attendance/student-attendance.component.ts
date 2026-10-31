@@ -568,7 +568,7 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
       item.meta.bgColor = calculatedColour;
       return item;
     });
-    this.refresh.next();
+    this.refresh.next(undefined);
   }
 
   countIfPresent(attendanceStatus, periodInMinutes, existingPresentCount=null){

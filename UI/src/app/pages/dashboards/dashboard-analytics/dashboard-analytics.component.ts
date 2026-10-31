@@ -370,7 +370,7 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
     this.filterDays = allDays.filter(f => !splitDays.includes(f));
     this.weekendDays = this.filterDays;
     this.cssClass = 'bg-aqua';
-    this.refresh.next();
+    this.refresh.next(undefined);
   }
 
   checkIsActive(data) {
