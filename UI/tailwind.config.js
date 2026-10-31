@@ -1,3 +1,5 @@
+// The colours are the Pacific EMIS tokens (src/styles.scss) and Material's system tokens; the
+// names stay those the templates use. See docs/plans in repositories-data for the mapping.
 module.exports = {
   // Unused utilities are removed in production builds (the CLI sets NODE_ENV there);
   // the content globs match what the former purgecss loader scanned.
@@ -23,28 +25,28 @@ module.exports = {
       'contrast-black': 'black',
       'contrast-white': 'white',
       gray: {
-        light: 'rgba(158, 158, 158, 0.5)',
-        DEFAULT: 'rgb(158, 158, 158)',
+        light: 'var(--mat-sys-outline-variant)',
+        DEFAULT: 'var(--mat-sys-on-surface-variant)',
       },
       red: {
-        light: 'rgba(210, 50, 64, 0.1)',
-        DEFAULT: 'rgb(210, 50, 64)',
+        light: 'var(--mat-sys-error-container)',
+        DEFAULT: 'var(--mat-sys-error)',
       },
       orange: {
-        light: 'rgba(255, 152, 0, 0.1)',
-        DEFAULT: 'rgb(255, 152, 0)',
+        light: 'rgba(240, 160, 0, 0.1)',
+        DEFAULT: '#f0a000',
       },
       'deep-orange': {
-        light: 'rgba(255, 87, 34, 0.1)',
-        DEFAULT: 'rgb(255, 87, 34)',
+        light: 'rgba(235, 104, 52, 0.1)',
+        DEFAULT: '#eb6834',
       },
       amber: {
-        light: 'rgba(255, 193, 7, 0.1)',
-        DEFAULT: 'rgb(255, 193, 7)',
+        light: 'rgba(240, 160, 0, 0.1)',
+        DEFAULT: '#f0a000',
       },
       green: {
-        light: 'rgba(76, 175, 80, 0.1)',
-        DEFAULT: 'rgb(76, 175, 80)',
+        light: 'rgba(46, 125, 50, 0.1)',
+        DEFAULT: 'var(--emis-good)',
       },
       teal: {
         light: 'rgba(0, 150, 136, 0.1)',
@@ -83,8 +85,8 @@ module.exports = {
         DEFAULT: 'rgb(var(--color-warn))',
       },
       skyblue: {
-        light: 'rgba(230, 242, 248, .5)',
-        DEFAULT: 'rgb(230, 242, 248)',
+        light: 'var(--mat-sys-surface-container-low)',
+        DEFAULT: 'var(--mat-sys-surface-container)',
       }
     },
     spacing: {
