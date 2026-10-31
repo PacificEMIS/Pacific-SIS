@@ -1,124 +1,83 @@
-$reponsive-form-bg: #0579bc;
-
-.trademarks {
-    position  : fixed;
-    bottom    : 25px;
-    right     : 25px;
-    width     : 323px;
-    // color     : rgba(255, 255, 255, 0.3);
-    text-align: right;
-  }
-
-  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-  .mat-form-field-appearance-fill .mat-form-field-flex {
-    opacity: 0;
-    padding: 0;
-    border: 0;
-  }
-
-@media only screen and (max-width: 767px) {
-  ::ng-deep .login-bg .mat-mdc-form-field {
-    background: $reponsive-form-bg;
-    border: 2px solid #fff;
-    border-radius: 4px;
-  }
-  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
-  ::ng-deep .login-bg .mat-checkbox-inner-container {
-    height: 20px !important;
-    width: 20px !important;
-  }
-  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-  ::ng-deep .login-bg .mat-form-field-label {
-    color: rgba(255, 255, 255, 0.4);
-  }
-  /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
-  ::ng-deep .login-bg .mat-select-value-text {
-    color: #ffffff;
-  }
-  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
-  ::ng-deep .login-bg .mat-checkbox-frame {
-    background-color: rgba(255, 255, 255, 0.3) !important;
-    border-color: #ffffff !important;
-  }
-  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
-  ::ng-deep .login-bg .mat-checkbox-checked .mat-checkbox-background {
-    background-color: #ffffff !important;
-  }
-  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
-  ::ng-deep .login-bg .mat-checkbox-checkmark-path {
-    stroke: #0579bc !important;
-  }
-  
-  .login-bg {
-  .card {
-    box-shadow: none;
-    background: none;
-    color: #fff;
-
-    .login-logo {
-      background: url("../../../../assets/img/logo-bg.png") no-repeat center;
-      background-size: cover;
-      width: 70vw;
-      height: 70vw;
-      text-align: center;
-      position: relative;
-
-      &::before {
-        content: " ";
-        position: absolute;
-        top: -20%;
-        left: -20%;
-        background: rgba(255, 255, 255, 0.02);
-        width: 140%;
-        height: 140%;
-        border-radius: 50%;
-      }
-
-      &::after {
-        content: " ";
-        position: absolute;
-        top: 0%;
-        left: 0%;
-        background: rgba(255, 255, 255, 0.04);
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-      }
-
-      img {
-        width: 50%;
-      }
-    }
-
-    .login-btn {
-      background: #ffffff;
-      color: #000000;
-    }
-
-    input,
-    select {
-      background: $reponsive-form-bg !important;
-      color: #ffffff;
-      /* Change the white to any color */
-    }
-
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    input:-webkit-autofill:active {
-      -webkit-box-shadow: 0 0 0 30px $reponsive-form-bg inset !important;
-    }
-
-    input:-webkit-autofill {
-      -webkit-text-fill-color: #ffffff !important;
-    }
-  }
-  }
+// The sign-in page in the Pacific EMIS look (PacificEMIS.UI login.component.scss): one card on the
+// surface, its heading a toolbar of the brand blue. The clock and the tenant's footer line are this
+// application's own.
+:host {
+  display: block;
+  height: 100%;
 }
 
+.login-page {
+  position: relative;
+  box-sizing: border-box;
+  min-height: 100%;
+  overflow: auto;
+  background: var(--mat-sys-surface);
+}
 
-.achor-color {
-  a{
-    color: white !important;
+.login-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 24px;
+  padding: 48px 16px 16px;
+}
+
+mat-card {
+  flex: 1 1 340px;
+  max-width: 440px;
+  overflow: hidden;
+}
+
+mat-toolbar h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+mat-card-content {
+  display: flex;
+  flex-direction: column;
+  padding-top: 16px;
+}
+
+mat-card-actions {
+  padding: 8px 16px 16px;
+}
+
+mat-form-field {
+  width: 100%;
+  margin: 0;
+}
+
+.logo {
+  width: 150px;
+  margin: 0 auto 16px;
+}
+
+.login-footer {
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.clock {
+  position: fixed;
+  left: 40px;
+  bottom: 40px;
+  color: var(--mat-sys-on-surface-variant);
+  opacity: 0.5;
+  pointer-events: none;
+
+  .time {
+    font-size: 56px;
+    line-height: 1.1;
+  }
+
+  .date {
+    font-size: 20px;
   }
 }

@@ -9,6 +9,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -26,6 +28,8 @@ import {MatSelectModule} from '@angular/material/select';
     MatSnackBarModule,
     MatTooltipModule,
     MatButtonModule,
+    MatCardModule,
+    MatToolbarModule,
     MatCheckboxModule,   
     TranslateModule,
     MatProgressBarModule,
