@@ -23,7 +23,7 @@ To be upgraded soon.
 | Database | MySQL 8 (Pomelo provider) |
 | Background jobs | .NET 6 console app (scheduled via cron) |
 | Frontend | Angular 22 / TypeScript 6 |
-| UI framework | Angular Material 22 (MDC components, Material 2 theme on static palettes) + the internalised Vex layout code (`src/app/vex`) + Tailwind 2 |
+| UI framework | Angular Material 22 on the Pacific EMIS theme (Material 3, `src/styles.scss` is a copy of PacificEMIS.UI's) + the internalised Vex layout code (`src/app/vex`) + Tailwind 2 for layout utilities + echarts 6 for charts |
 | Auth | JWT |
 | Reporting | JSReport |
 | Logging | NLog |
@@ -85,6 +85,9 @@ server=HOST;database={tenant};user=USER;password=PASSWORD
 | `UI/src/assets/config.json` | Gitignored — local API URL, encryption keys, tenant |
 | `UI/src/assets/config.template.json` | Committed template — copy to config.json to start |
 | `UI/src/app/common/default-values.service.ts` | Central state service — tenant, school, token, etc. |
+| `UI/src/styles.scss` | The Pacific EMIS theme (copy of PacificEMIS.UI `src/styles.scss`) followed by this application's own rules |
+| `UI/src/app/vex/styles/_vex-bridge.scss` | The Vex-era CSS variables the templates still read, defined from the EMIS tokens |
+| `UI/src/app/shared/echart/`, `UI/src/app/shared/dashboard/` | Copies of the EMIS echarts directive, chart theme, chart, dashboard tile and stat tile components |
 
 ---
 
@@ -169,6 +172,11 @@ Deployment is managed via Ansible from a separate systems-tools repository (see 
 - Design notes and plans are **not** kept in this repo (they pick up real data). They live in
   the private Drive folder `repositories-data/Pacific-SIS/docs/plans/`. Code comments that
   cite `docs/plans/<name>.md` refer to that folder. Never recreate `docs/plans` here.
+- **Pieces shared with PacificEMIS.UI are copies, not a package.** The global stylesheet's
+  theme block and everything under `UI/src/app/shared/echart` and `UI/src/app/shared/dashboard`
+  mirror files of the `pineapples/PacificEMIS.UI` repository; each copy names its origin and the
+  EMIS commit it matches. A change to one of them is discussed first, made in PacificEMIS.UI,
+  then mirrored here with the new commit noted. See README § *UI theme and shared components*.
 
 ---
 
@@ -180,7 +188,7 @@ The frontend requires the Node.js version in `UI/.nvmrc` (**v24.21.0** since the
 
 ## Known Technical Debt
 
-- .NET 6 is EOL — upgrade is a near future goal. The UI is on Angular 22; the Vex-era styling layer (61 `TODO(mdc-migration)` rules, Tailwind 2 colour utilities) stays until the re-theme to the Pacific EMIS look
+- .NET 6 is EOL — upgrade is a near future goal. The UI is on Angular 22 with the Pacific EMIS theme; what remains of the Vex era is the layout code in `src/app/vex`, its CSS-variable bridge, the `fx-*` layout helpers, the Vex fade and stagger animations, and the Tailwind colour classes in templates (re-pointed at the EMIS tokens through `tailwind.config.js`)
 - 132 build warnings (mostly nullable reference warnings in `opensis.data`)
 - `System.IdentityModel.Tokens.Jwt` 6.14.1 has a known moderate vulnerability
 - No automated tests running in CI

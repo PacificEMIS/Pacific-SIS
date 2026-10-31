@@ -321,6 +321,36 @@ cd UI && npm run build
 
 ---
 
+## UI theme and shared components
+
+The frontend wears the Pacific EMIS look. The theme is Angular Material 3 on the azure palette,
+Roboto bundled from `@fontsource/roboto`, density -1, and a handful of `--emis-*` tokens; it lives
+at the top of `UI/src/styles.scss` and is a copy of `src/styles.scss` in the `PacificEMIS.UI`
+repository (the comment at the top says which EMIS commit it matches). Below the theme come the
+application's own rules.
+
+What templates still read from the Vex era is served by two thin layers that can shrink over time:
+
+- `UI/src/app/vex/styles/_vex-bridge.scss` defines the old Vex CSS variables (`--color-primary`,
+  `--background-card`, `--text-secondary`, ...) from the EMIS tokens and Material's system tokens.
+- `UI/tailwind.config.js` points the Tailwind colour names the templates use (`text-gray`,
+  `bg-red`, `text-primary`, ...) at the same tokens, so the templates did not have to change.
+
+Dashboards are built from copies of the EMIS dashboard pieces: the echarts directive and chart
+option type in `UI/src/app/shared/echart/`, and the chart theme, `emis-chart`, `emis-dashboard-tile`,
+`emis-stat-tile` and `emis-stat-row` components in `UI/src/app/shared/dashboard/`. They are
+standalone components imported straight into the page modules.
+
+**These copies are shared with PacificEMIS.UI by hand, not through a package.** Each file names its
+origin and the EMIS commit it was copied at. To change one: agree the change with the EMIS side, make
+it in `PacificEMIS.UI`, then copy it here and update the commit noted in the header. Application-specific
+needs go in the application's own files, not in the copies.
+
+Inline component `styles` compile as Sass (`inlineStyleLanguage` in `angular.json`), as in the EMIS,
+because the copied components rely on it.
+
+---
+
 ## UI Commands Reference
 
 All commands run from the `UI/` directory.
