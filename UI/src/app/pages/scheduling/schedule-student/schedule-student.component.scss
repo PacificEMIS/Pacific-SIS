@@ -163,36 +163,8 @@
 }
 ::ng-deep {
     .course-section-table {
-        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-        .mat-form-field-appearance-outline .mat-form-field-prefix,
-        .mat-form-field-appearance-outline .mat-form-field-suffix {
-            top: 3px !important;
-        }
         .mat-mdc-form-field {
             &.mat-form-field-appearance-outline {
-                /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-                /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-                .mat-form-field-wrapper {
-                    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-                    .mat-form-field-infix {
-                        border-top-width: 5px;
-                        padding: 0.5em 0;
-                    }
-                }
-            }
-            /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-            /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-            /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-            .mat-form-field-wrapper {
-                /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-                /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-                .mat-form-field-flex {
-                    margin-top: 0;
-                    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-                    .mat-form-field-outline {
-                        min-height: 40px;
-                    }
-                }
             }
         }
     }

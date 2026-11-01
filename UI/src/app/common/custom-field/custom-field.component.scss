@@ -1,9 +1,5 @@
 .mat-mdc-checkbox {
     label {
         white-space: normal;
-        /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
-        .mat-checkbox-inner-container {
-            margin-top: 6px;
-        }
     }
 }
